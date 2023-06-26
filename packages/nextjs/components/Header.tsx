@@ -39,12 +39,13 @@ export const Header = () => {
       <li>
         <NavLink href="/">Home</NavLink>
       </li>
-      <li>
+      {/* <li>
         <NavLink href="/debug">
           <BugAntIcon className="h-4 w-4" />
           Debug Contracts
         </NavLink>
-      </li>
+      </li> */}
+      {/* Kept ExampleUI for reference*/}
       <li>
         <NavLink href="/example-ui">
           <SparklesIcon className="h-4 w-4" />
