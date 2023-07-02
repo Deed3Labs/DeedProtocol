@@ -8,30 +8,29 @@ contract DeedNFT is ERC721, AccessControl {
     uint256 private _nextTokenId;
 
     mapping(uint256 => string) private _tokenNames;
-    mapping(uint256 => string) private _tokenSymbols;
     mapping(uint256 => string) private _tokenURIs;
     mapping(uint256 => AssetType) private _tokenAssetTypes;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    enum AssetType { Land, Vehicle, Estate }
+    enum AssetType { Land, Vehicle, Estate, CommercialEquipment}
 
     constructor() ERC721("DeedNFT", "DEED") {
         _nextTokenId = 1;
-        _setupRole(MINTER_ROLE, _msgSender());
+        _setupRole(MINTER_ROLE, msg.sender);
+        _setupRole(DEFAULT_ADMIN_ROLE,msg.sender);
     }
 
     function mintAsset(
         address _to,
         string memory _tokenURI,
         string memory _name,
-        string memory _symbol,
         AssetType _assetType
     ) public onlyRole(MINTER_ROLE) {
+        // require(_to != address(0), "invalid address");
         _mint(_to, _nextTokenId);
         _setTokenURI(_nextTokenId, _tokenURI);
         _setName(_nextTokenId, _name);
-        _setSymbol(_nextTokenId, _symbol);
         _setAssetType(_nextTokenId, _assetType);
         _nextTokenId = _nextTokenId + 1;
     }
@@ -55,15 +54,8 @@ contract DeedNFT is ERC721, AccessControl {
         return _tokenNames[tokenId];
     }
 
-    function _setSymbol(uint256 tokenId, string memory _symbol) internal virtual {
-        require(_exists(tokenId), "ERC721Metadata: Symbol set of nonexistent token");
-        _tokenSymbols[tokenId] = _symbol;
-    }
 
-    function getTokenSymbol(uint256 tokenId) public view returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: Symbol query for nonexistent token");
-        return _tokenSymbols[tokenId];
-    }
+
 
     function _setAssetType(uint256 tokenId, AssetType _assetType) internal virtual {
         require(_exists(tokenId), "ERC721Metadata: Asset type set of nonexistent token");
@@ -82,7 +74,7 @@ contract DeedNFT is ERC721, AccessControl {
     function removeMinter(address minter) public onlyRole(DEFAULT_ADMIN_ROLE) {
         revokeRole(MINTER_ROLE, minter);
     }
-    
+    //External instead of public?
     function canSubdivide(uint256 tokenId) public view returns (bool) {
         AssetType assetType = getAssetType(tokenId);
         return assetType == AssetType.Land || assetType == AssetType.Estate;

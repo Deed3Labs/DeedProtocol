@@ -17,7 +17,9 @@ contract LeaseNFT is ERC721, Ownable {
         _mint(to, tokenId);
     }
 
-    function burn(uint256 tokenId) external onlyOwner {
+    //Can't be onlyOwner, because this means leaseNft contract deployer can burn the nfts of tokenOwners
+    function burn(uint256 tokenId) external{
+        require(msg.sender == this.ownerOf(tokenId),"Only token owner can burn the leaseNFT");
         _burn(tokenId);
     }
 }

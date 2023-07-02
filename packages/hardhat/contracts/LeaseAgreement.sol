@@ -210,12 +210,10 @@ contract LeaseAgreement {
     }
 
     function verifySubdivisionOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
-        // try subdivisionNFT.ownerOf(_propertyTokenId) returns (address owner) {
-        //     return owner == _owner;
-        // } catch {
-        //     return false;
-        // }
-        //error here because of ownerOf call, erc1155 doesnt have ownerOf because might have multiple owners. 
-        return subdivisionNFT.ownerOf(_propertyTokenId)==_owner;
+        try subdivisionNFT.ownerOfSubdivision(_propertyTokenId) returns (address owner) {
+            return owner == _owner;
+        } catch {
+            return false;
+        }
     }
 }
