@@ -18,8 +18,9 @@ describe("LeaseNFT", function () {
   describe("mintToken()", function () {
     it("Should be in the balance of designated address", async function () {
       [contractOwner] = await ethers.getSigners();
-      await leaseNFT.mintToken(contractOwner.address, 2);
+      await leaseNFT.mintToken(contractOwner.address, 0);
       expect(await leaseNFT.balanceOf(contractOwner.address)).to.equal(1);
+      expect(await leaseNFT.ownerOf(0)).to.equal(contractOwner.address);
     });
     it("Should revert if caller isn't contractOwner", async function () {
       [contractOwner, tokenOwner] = await ethers.getSigners();

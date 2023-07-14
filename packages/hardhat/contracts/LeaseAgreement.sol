@@ -16,14 +16,14 @@ contract LeaseAgreement {
         address lessee;
         uint256 startDate;
         uint256 endDate;
-        uint256 rentAmount;
-        uint256 securityDeposit;
+        uint32 rentAmount;
+        uint32 securityDeposit;
         uint256 rentDueDate;
-        uint256 unpaidMonths;
+        uint8 unpaidMonths;
         uint256 extensionCount;
         uint256 propertyTokenId;
         address agent;
-        uint256 agentPercentage;
+        uint8 agentPercentage;
         bool depositPaid;
     }
 
@@ -36,7 +36,7 @@ contract LeaseAgreement {
     mapping(uint256 => Lease) public leases;
     uint256 public leaseCounter;
     ILeaseNFT public leaseNFT;
-    IERC20 public xDai;
+    IERC20 public paymentToken;
     DeedNFT public deedNFT;
     SubdivisionNFT public subdivisionNFT;
 
@@ -44,14 +44,14 @@ contract LeaseAgreement {
     event AgentSet(uint256 leaseId, address agent, uint256 percentage);
     event AgentRemoved(uint256 leaseId);
 
-    constructor(address _leaseNFT, address _xDaiToken, address _deedNFT, address _subdivisionNFT) {
+    constructor(address _leaseNFT, address _paymentToken, address _deedNFT, address _subdivisionNFT) {
         require(_leaseNFT != address(0), "Invalid LeaseNFT address");
-        require(_xDaiToken != address(0), "Invalid xDai token address");
+        require(_paymentToken != address(0), "Invalid xDai token address");
         require(_deedNFT != address(0), "Invalid DeedNFT address");
         require(_subdivisionNFT != address(0), "Invalid SubdivisionNFT address");
 
         leaseNFT = ILeaseNFT(_leaseNFT);
-        xDai = IERC20(_xDaiToken);
+        paymentToken = IERC20(_paymentToken);
         deedNFT = DeedNFT(_deedNFT);
         subdivisionNFT = SubdivisionNFT(_subdivisionNFT);
         leaseCounter = 0;
@@ -61,13 +61,17 @@ contract LeaseAgreement {
         address _lessee,
         uint256 _startDate,
         uint256 _endDate,
-        uint256 _rentAmount,
-        uint256 _securityDeposit,
+        uint32 _rentAmount,
+        uint32 _securityDeposit,
         uint256 _propertyTokenId
     ) external {
+        //Do we want startDate to be after time.now()?
+        //Minimum gap between startDate and end date?
+        //PropertyTokenID subNFT ?
         require(_lessee != address(0), "LeaseAgreement: Invalid lessee address");
         require(_startDate < _endDate, "LeaseAgreement: Invalid start and end dates");
-        bool isDeedOwner = verifyDeedOwnership(msg.sender, _propertyTokenId);
+        require(_endDate-_startDate > 30 days, "LeaseAgreement: ");
+        bool isDeedOwner =verifyDeedOwnership(msg.sender, _propertyTokenId);
         bool isSubdivisionOwner = verifySubdivisionOwnership(msg.sender, _propertyTokenId);
         require(isDeedOwner || isSubdivisionOwner, "LeaseAgreement: Lessor must own the property NFT");
         uint256 leaseId = leaseCounter;
@@ -90,7 +94,7 @@ contract LeaseAgreement {
         emit LeaseCreated(leaseId);
     }
 
-      function setAgent(uint256 leaseId, address _agent, uint256 _percentage) external {
+      function setAgent(uint256 leaseId, address _agent, uint8 _percentage) external {
         Lease storage lease = leases[leaseId];
         require(msg.sender == lease.lessor, "Only lessor can set the agent");
         require(_percentage >= 0 && _percentage <= 100, "Invalid agent percentage");
@@ -114,7 +118,7 @@ contract LeaseAgreement {
         require(msg.sender == lease.lessee, "Only the lessee can submit the deposit");
         require(!lease.depositPaid, "Security deposit already paid");
 
-        xDai.transferFrom(msg.sender, address(this), lease.securityDeposit);
+        paymentToken.transferFrom(msg.sender, address(this), lease.securityDeposit);
         lease.depositPaid = true;
     }
 
@@ -126,7 +130,7 @@ contract LeaseAgreement {
 
         RentPaymentInfo memory rentInfo = _calculateRentPaymentInfo(leaseId);
 
-        xDai.transferFrom(msg.sender, address(this), _amount);
+        paymentToken.transferFrom(msg.sender, address(this), _amount);
         require(_amount >= rentInfo.amount, "Insufficient amount for rent payment");
 
         if (rentInfo.unpaidMonths >= 3) {
@@ -161,11 +165,11 @@ contract LeaseAgreement {
 
         if (lease.agent != address(0)) {
             agentAmount = (_amount * lease.agentPercentage) / 100;
-            xDai.transfer(lease.agent, agentAmount);
+            paymentToken.transfer(lease.agent, agentAmount);
         }
 
         uint256 lessorAmount = _amount - agentAmount;
-        xDai.transfer(lease.lessor, lessorAmount);
+        paymentToken.transfer(lease.lessor, lessorAmount);
     }
 
     function terminateLease(uint256 leaseId) public {
@@ -177,14 +181,14 @@ contract LeaseAgreement {
         bool shouldSendDepositToLessor = (lease.unpaidMonths >= 3) || (msg.sender == lease.lessor && block.timestamp < lease.endDate);
 
         if (shouldSendDepositToLessor) {
-            xDai.transfer(lease.lessor, lease.securityDeposit);
+            paymentToken.transfer(lease.lessor, lease.securityDeposit);
         } else {
-            xDai.transfer(lease.lessee, lease.securityDeposit);
+            paymentToken.transfer(lease.lessee, lease.securityDeposit);
         }
 
-        uint256 remainingBalance = xDai.balanceOf(address(this));
+        uint256 remainingBalance = paymentToken.balanceOf(address(this));
         if (remainingBalance > 0) {
-            xDai.transfer(lease.lessor, remainingBalance);
+            paymentToken.transfer(lease.lessor, remainingBalance);
         }
 
         leaseNFT.burn(leaseId);
@@ -210,10 +214,6 @@ contract LeaseAgreement {
     }
 
     function verifySubdivisionOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
-        try subdivisionNFT.ownerOfSubdivision(_propertyTokenId) returns (address owner) {
-            return owner == _owner;
-        } catch {
-            return false;
-        }
+       return subdivisionNFT.isOwnerOfSubdivision(_propertyTokenId);
     }
 }

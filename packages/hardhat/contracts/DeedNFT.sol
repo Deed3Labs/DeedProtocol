@@ -75,11 +75,12 @@ contract DeedNFT is ERC721, AccessControl {
         revokeRole(MINTER_ROLE, minter);
     }
     //External instead of public?
-    function canSubdivide(uint256 tokenId) public view returns (bool) {
+    function canSubdivide(uint256 tokenId) external view returns (bool) {
         AssetType assetType = getAssetType(tokenId);
         return assetType == AssetType.Land || assetType == AssetType.Estate;
     }
 
+    //Use?
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
