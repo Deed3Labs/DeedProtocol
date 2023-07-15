@@ -14,7 +14,22 @@ jobs:
             - name: Install node
               uses: actions/setup-node@v1
               with:
-                  node-version: 18.x
+                  node-version: 18
+
+            - name: Cache yarn modules
+              uses: actions/cache@v2
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+
+            - name: Cache contracts
+              uses: actions/cache@v2
+              with:
+                  path: |
+                      packages/*/cache
+                      packages/*/artifacts
+                      ~/.cache/hardhat-nodejs/
+                  key: ${{ runner.os }}-contracts-${{ hashFiles('packages/*/contracts/**/*.sol') }}
 
             - name: Install dependencies
               run: yarn install --immutable
