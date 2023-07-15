@@ -7,23 +7,29 @@ on:
 jobs:
     coverage:
         name: Contract coverage
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                node: [18.x]
+
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
             - name: Install node
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v3
               with:
-                  node-version: 16
+                  node-version: ${{ matrix.node }}
+                  cache: 'yarn'
 
-            - name: Cache yarn modules
-              uses: actions/cache@v2
-              with:
-                  path: '**/node_modules'
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+            - name: Install dependencies
+              run: yarn install --immutable
 
             - name: Cache contracts
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: |
                       packages/*/cache
@@ -31,16 +37,12 @@ jobs:
                       ~/.cache/hardhat-nodejs/
                   key: ${{ runner.os }}-contracts-${{ hashFiles('packages/*/contracts/**/*.sol') }}
 
-            - name: Install dependencies
-              run: yarn install
-
-            - name: Build contracts
-              run: yarn compile
-
             - name: Run coverage
+              if: steps.cache-contracts.outputs.cache-hit != 'true'
               run: yarn coverage
 
             - name: Upload report
+              if: steps.cache-contracts.outputs.cache-hit != 'true'
               run: bash <(curl -s https://codecov.io/bash)
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
