@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "name": "Frontend",
+            "path": "./packages/nextjs"
+        },
+        {
+            "name": "Hardhat",
+            "path": "./packages/hardhat"
+        },
+        {
+            "name": "Root",
+            "path": "."
+        },
+    ],
+    "settings": {
+        "editor.tabSize": 2,
+        "prettier.tabWidth": 4
+    }
+}

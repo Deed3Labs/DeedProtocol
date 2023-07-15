@@ -319,6 +319,90 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@deed-protocol/hardhat@workspace:packages/hardhat":
+  version: 0.0.0-use.local
+  resolution: "@deed-protocol/hardhat@workspace:packages/hardhat"
+  dependencies:
+    "@eth-optimism/hardhat-ovm": ^0.2.4
+    "@ethersproject/abi": ^5.7.0
+    "@ethersproject/providers": ^5.7.1
+    "@matterlabs/hardhat-zksync-solc": ^0.3.17
+    "@matterlabs/hardhat-zksync-verify": ^0.1.8
+    "@nomicfoundation/hardhat-chai-matchers": ^1.0.3
+    "@nomicfoundation/hardhat-network-helpers": ^1.0.8
+    "@nomicfoundation/hardhat-toolbox": ^2.0.0
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13"
+    "@nomiclabs/hardhat-etherscan": ^3.1.0
+    "@openzeppelin/contracts": ^4.8.1
+    "@typechain/ethers-v5": ^10.1.0
+    "@typechain/hardhat": ^6.1.3
+    "@types/eslint": ^8
+    "@types/mocha": ^9.1.1
+    "@types/prettier": ^2
+    "@types/qrcode": ^1
+    "@typescript-eslint/eslint-plugin": latest
+    "@typescript-eslint/parser": latest
+    chai: ^4.3.6
+    dotenv: ^16.0.3
+    envfile: ^6.18.0
+    eslint: ^8.26.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-prettier: ^4.2.1
+    ethers: ^5.7.1
+    hardhat: ^2.11.2
+    hardhat-deploy: ^0.11.26
+    hardhat-gas-reporter: ^1.0.9
+    prettier: ^2.8.4
+    qrcode: ^1.5.1
+    solidity-coverage: ^0.8.4
+    ts-node: ^10.9.1
+    typechain: ^8.1.0
+    typescript: ^4.9.5
+  languageName: unknown
+  linkType: soft
+
+"@deed-protocol/nextjs@workspace:packages/nextjs":
+  version: 0.0.0-use.local
+  resolution: "@deed-protocol/nextjs@workspace:packages/nextjs"
+  dependencies:
+    "@ethersproject/networks": ^5.7.1
+    "@ethersproject/web": ^5.7.1
+    "@heroicons/react": ^2.0.11
+    "@rainbow-me/rainbowkit": ^0.11.0
+    "@trivago/prettier-plugin-sort-imports": ^4.1.1
+    "@types/node": ^17.0.35
+    "@types/react": ^18.0.9
+    "@types/react-blockies": ^1.4.1
+    "@types/react-copy-to-clipboard": ^5.0.4
+    "@typescript-eslint/eslint-plugin": ^5.39.0
+    "@uniswap/sdk": ^3.0.3
+    autoprefixer: ^10.4.12
+    daisyui: ^2.31.0
+    eslint: ^8.15.0
+    eslint-config-next: ^13.1.6
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-prettier: ^4.2.1
+    ethers: ^5.0.0
+    next: ^13.1.6
+    nextjs-progressbar: ^0.0.16
+    postcss: ^8.4.16
+    prettier: ^2.8.4
+    react: ^18.2.0
+    react-blockies: ^1.4.1
+    react-copy-to-clipboard: ^5.1.0
+    react-dom: ^18.2.0
+    react-fast-marquee: ^1.3.5
+    react-hot-toast: ^2.4.0
+    tailwindcss: ^3.1.8
+    typescript: ^4.9.5
+    use-debounce: ^8.0.4
+    usehooks-ts: ^2.7.2
+    vercel: ^28.15.1
+    wagmi: ^0.11.6
+    zustand: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
 "@edge-runtime/format@npm:1.1.0":
   version: 1.1.0
   resolution: "@edge-runtime/format@npm:1.1.0"
@@ -380,6 +464,18 @@ __metadata:
     minimatch: ^3.1.2
     strip-json-comments: ^3.1.1
   checksum: f03e9d6727efd3e0719da2051ea80c0c73d20e28c171121527dbb868cd34232ca9c1d0525a66e517a404afea26624b1e47895b6a92474678418c2f50c9566694
+  languageName: node
+  linkType: hard
+
+"@eth-optimism/hardhat-ovm@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@eth-optimism/hardhat-ovm@npm:0.2.4"
+  dependencies:
+    node-fetch: ^2.6.1
+  peerDependencies:
+    ethers: ^5.4.5
+    hardhat: ^2.3.0
+  checksum: 602acf597470ac7fb4b8adc03cdb55c0de0457945ce0bbcc23d4458b70072775a7dd32b9e84460feea8ef00d562b9e64986a1dd87c5a16c783b5dbfa435bcae5
   languageName: node
   linkType: hard
 
@@ -1473,14 +1569,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nomicfoundation/hardhat-network-helpers@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "@nomicfoundation/hardhat-network-helpers@npm:1.0.6"
+"@nomicfoundation/hardhat-network-helpers@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "@nomicfoundation/hardhat-network-helpers@npm:1.0.8"
   dependencies:
     ethereumjs-util: ^7.1.4
   peerDependencies:
     hardhat: ^2.9.5
-  checksum: 196e0273563edd232b8e663a73a9cf60d3e6ce3c00c1b8a7d9b4d9173b01b02ab5a0202eaea0658180318e14773290e226f95ae3626c89e46f8c699f2fd46b2f
+  checksum: cf865301fa7a8cebf5c249bc872863d2e69f0f3d14cceadbc5d5761bd97745f38fdb17c9074d46ef0d3a75748f43c0e14d37a54a09ae3b7e0e981c7f437c8553
   languageName: node
   linkType: hard
 
@@ -1812,89 +1908,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@se-2/hardhat@workspace:packages/hardhat":
-  version: 0.0.0-use.local
-  resolution: "@se-2/hardhat@workspace:packages/hardhat"
-  dependencies:
-    "@ethersproject/abi": ^5.7.0
-    "@ethersproject/providers": ^5.7.1
-    "@matterlabs/hardhat-zksync-solc": ^0.3.17
-    "@matterlabs/hardhat-zksync-verify": ^0.1.8
-    "@nomicfoundation/hardhat-chai-matchers": ^1.0.3
-    "@nomicfoundation/hardhat-network-helpers": ^1.0.6
-    "@nomicfoundation/hardhat-toolbox": ^2.0.0
-    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13"
-    "@nomiclabs/hardhat-etherscan": ^3.1.0
-    "@openzeppelin/contracts": ^4.8.1
-    "@typechain/ethers-v5": ^10.1.0
-    "@typechain/hardhat": ^6.1.3
-    "@types/eslint": ^8
-    "@types/mocha": ^9.1.1
-    "@types/prettier": ^2
-    "@types/qrcode": ^1
-    "@typescript-eslint/eslint-plugin": latest
-    "@typescript-eslint/parser": latest
-    chai: ^4.3.6
-    dotenv: ^16.0.3
-    envfile: ^6.18.0
-    eslint: ^8.26.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-prettier: ^4.2.1
-    ethers: ^5.7.1
-    hardhat: ^2.11.2
-    hardhat-deploy: ^0.11.26
-    hardhat-gas-reporter: ^1.0.9
-    prettier: ^2.8.4
-    qrcode: ^1.5.1
-    solidity-coverage: ^0.8.2
-    ts-node: ^10.9.1
-    typechain: ^8.1.0
-    typescript: ^4.9.5
-  languageName: unknown
-  linkType: soft
-
-"@se-2/nextjs@workspace:packages/nextjs":
-  version: 0.0.0-use.local
-  resolution: "@se-2/nextjs@workspace:packages/nextjs"
-  dependencies:
-    "@ethersproject/networks": ^5.7.1
-    "@ethersproject/web": ^5.7.1
-    "@heroicons/react": ^2.0.11
-    "@rainbow-me/rainbowkit": ^0.11.0
-    "@trivago/prettier-plugin-sort-imports": ^4.1.1
-    "@types/node": ^17.0.35
-    "@types/react": ^18.0.9
-    "@types/react-blockies": ^1.4.1
-    "@types/react-copy-to-clipboard": ^5.0.4
-    "@typescript-eslint/eslint-plugin": ^5.39.0
-    "@uniswap/sdk": ^3.0.3
-    autoprefixer: ^10.4.12
-    daisyui: ^2.31.0
-    eslint: ^8.15.0
-    eslint-config-next: ^13.1.6
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-prettier: ^4.2.1
-    ethers: ^5.0.0
-    next: ^13.1.6
-    nextjs-progressbar: ^0.0.16
-    postcss: ^8.4.16
-    prettier: ^2.8.4
-    react: ^18.2.0
-    react-blockies: ^1.4.1
-    react-copy-to-clipboard: ^5.1.0
-    react-dom: ^18.2.0
-    react-fast-marquee: ^1.3.5
-    react-hot-toast: ^2.4.0
-    tailwindcss: ^3.1.8
-    typescript: ^4.9.5
-    use-debounce: ^8.0.4
-    usehooks-ts: ^2.7.2
-    vercel: ^28.15.1
-    wagmi: ^0.11.6
-    zustand: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
 "@sentry/core@npm:5.30.0":
   version: 5.30.0
   resolution: "@sentry/core@npm:5.30.0"
@@ -2010,12 +2023,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solidity-parser/parser@npm:^0.14.0, @solidity-parser/parser@npm:^0.14.1":
+"@solidity-parser/parser@npm:^0.14.0":
   version: 0.14.3
   resolution: "@solidity-parser/parser@npm:0.14.3"
   dependencies:
     antlr4ts: ^0.5.0-alpha.4
   checksum: 9a27eb961c22a3b8732bd9782ce3b7912e67b2e2183acada552116dd0bbe637c33265177ab3db9610063da48aa57299d67afdeb0616450b631a0e3da865c4e88
+  languageName: node
+  linkType: hard
+
+"@solidity-parser/parser@npm:^0.16.0":
+  version: 0.16.1
+  resolution: "@solidity-parser/parser@npm:0.16.1"
+  dependencies:
+    antlr4ts: ^0.5.0-alpha.4
+  checksum: d9e2f7042434fb850a97a2c3679f5fbf4997c7845278d0a436b3de30169e6758fe3818191694ece36dc39a40f55ae0384c4ae0ae912790b5b0806728a50466c2
   languageName: node
   linkType: hard
 
@@ -5665,6 +5687,15 @@ __metadata:
   checksum: f3749344ab9305ffcfe4bfe300e2dbb61fc6359e2b736812100a3b1b6db0a5668cba31a05e4b45d4d63dbf1a18dfa354cd3ca5bb3ededddabb8cd293f4404f94
   languageName: node
   linkType: hard
+
+"deed-protocol@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "deed-protocol@workspace:."
+  dependencies:
+    husky: ^8.0.1
+    lint-staged: ^13.0.3
+  languageName: unknown
+  linkType: soft
 
 "deep-eql@npm:^3.0.1":
   version: 3.0.1
@@ -12072,15 +12103,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"se-2@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "se-2@workspace:."
-  dependencies:
-    husky: ^8.0.1
-    lint-staged: ^13.0.3
-  languageName: unknown
-  linkType: soft
-
 "secp256k1@npm:^4.0.1":
   version: 4.0.3
   resolution: "secp256k1@npm:4.0.3"
@@ -12339,12 +12361,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"solidity-coverage@npm:^0.8.2":
-  version: 0.8.2
-  resolution: "solidity-coverage@npm:0.8.2"
+"solidity-coverage@npm:^0.8.4":
+  version: 0.8.4
+  resolution: "solidity-coverage@npm:0.8.4"
   dependencies:
     "@ethersproject/abi": ^5.0.9
-    "@solidity-parser/parser": ^0.14.1
+    "@solidity-parser/parser": ^0.16.0
     chalk: ^2.4.2
     death: ^1.1.0
     detect-port: ^1.3.0
@@ -12367,7 +12389,7 @@ __metadata:
     hardhat: ^2.11.0
   bin:
     solidity-coverage: plugins/bin.js
-  checksum: 489f73d56a1279f2394b7a14db315532884895baa00a4016e68a4e5be0eddca90a95cb3322e6a0b15e67f2d9003b9413ee24c1c61d78f558f5a2e1e233840825
+  checksum: 263089376d05f572350a2e47b61b2c604b3b5deedf4547cb0334342ecf6b732f823c069790e21063a56502a0d1fb9051a6f7bae1b990e2917af56fc94ac96759
   languageName: node
   linkType: hard
 
@@ -13596,9 +13618,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usehooks-ts@patch:usehooks-ts@npm:^2.7.2#./.yarn/patches/usehooks-ts-npm-2.7.2-fceffe0e43.patch::locator=se-2%40workspace%3A.":
+"usehooks-ts@patch:usehooks-ts@npm:^2.7.2#./.yarn/patches/usehooks-ts-npm-2.7.2-fceffe0e43.patch::locator=deed-protocol%40workspace%3A.":
   version: 2.9.1
-  resolution: "usehooks-ts@patch:usehooks-ts@npm%3A2.9.1#./.yarn/patches/usehooks-ts-npm-2.7.2-fceffe0e43.patch::version=2.9.1&hash=68bde7&locator=se-2%40workspace%3A."
+  resolution: "usehooks-ts@patch:usehooks-ts@npm%3A2.9.1#./.yarn/patches/usehooks-ts-npm-2.7.2-fceffe0e43.patch::version=2.9.1&hash=68bde7&locator=deed-protocol%40workspace%3A."
   peerDependencies:
     react: ^16.8.0  || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0  || ^17.0.0 || ^18.0.0
