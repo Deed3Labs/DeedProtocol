@@ -9,7 +9,7 @@ jobs:
         name: Contract coverage
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
             - name: Install node
               uses: actions/setup-node@v1
@@ -17,13 +17,13 @@ jobs:
                   node-version: 18
 
             - name: Cache yarn modules
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: '**/node_modules'
                   key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
 
             - name: Cache contracts
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: |
                       packages/*/cache
@@ -32,15 +32,15 @@ jobs:
                   key: ${{ runner.os }}-contracts-${{ hashFiles('packages/*/contracts/**/*.sol') }}
 
             - name: Install dependencies
+              if: steps.cache-yarn-modules.outputs.cache-hit != 'true'
               run: yarn install --immutable
 
-            - name: Build contracts
-              run: yarn compile
-
             - name: Run coverage
+              if: steps.cache-contracts.outputs.cache-hit != 'true'
               run: yarn coverage
 
             - name: Upload report
+              if: steps.cache-contracts.outputs.cache-hit != 'true'
               run: bash <(curl -s https://codecov.io/bash)
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
