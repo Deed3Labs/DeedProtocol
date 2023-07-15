@@ -19,6 +19,7 @@
     "hardhat:lint": "yarn workspace @deed-protocol/hardhat lint",
     "hardhat:lint-staged": "yarn workspace @deed-protocol/hardhat lint-staged",
     "hardhat:test": "yarn workspace @deed-protocol/hardhat test",
+    "coverage": "yarn workspace @deed-protocol/hardhat coverage",
     "start": "yarn workspace @deed-protocol/nextjs dev",
     "next:lint": "yarn workspace @deed-protocol/nextjs lint",
     "next:format": "yarn workspace @deed-protocol/nextjs format",
@@ -26,8 +27,7 @@
     "postinstall": "husky install",
     "precommit": "lint-staged",
     "vercel": "yarn workspace @deed-protocol/nextjs vercel",
-    "vercel:yolo": "yarn workspace @deed-protocol/nextjs vercel:yolo",
-    "coverage": "yarn workspace @deed-protocol/hardhat coverage"
+    "vercel:yolo": "yarn workspace @deed-protocol/nextjs vercel:yolo"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
