@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-
 contract DeedNFT is ERC721, AccessControl {
     uint256 private _nextTokenId;
 
@@ -13,12 +12,17 @@ contract DeedNFT is ERC721, AccessControl {
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    enum AssetType { Land, Vehicle, Estate, CommercialEquipment}
+    enum AssetType {
+        Land,
+        Vehicle,
+        Estate,
+        CommercialEquipment
+    }
 
     constructor() ERC721("DeedNFT", "DEED") {
         _nextTokenId = 1;
         _setupRole(MINTER_ROLE, msg.sender);
-        _setupRole(DEFAULT_ADMIN_ROLE,msg.sender);
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     function mintAsset(
@@ -49,13 +53,11 @@ contract DeedNFT is ERC721, AccessControl {
         require(_exists(tokenId), "ERC721Metadata: Name set of nonexistent token");
         _tokenNames[tokenId] = _name;
     }
+
     function getTokenName(uint256 tokenId) public view returns (string memory) {
         require(_exists(tokenId), "ERC721Metadata: Name query for nonexistent token");
         return _tokenNames[tokenId];
     }
-
-
-
 
     function _setAssetType(uint256 tokenId, AssetType _assetType) internal virtual {
         require(_exists(tokenId), "ERC721Metadata: Asset type set of nonexistent token");
@@ -74,6 +76,7 @@ contract DeedNFT is ERC721, AccessControl {
     function removeMinter(address minter) public onlyRole(DEFAULT_ADMIN_ROLE) {
         revokeRole(MINTER_ROLE, minter);
     }
+
     //External instead of public?
     function canSubdivide(uint256 tokenId) external view returns (bool) {
         AssetType assetType = getAssetType(tokenId);
