@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Contract coverage
 on:
     push:
         branches: [main, dev]
