@@ -26,7 +26,7 @@ jobs:
                   cache: yarn
 
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: yarn install --immutable-cache
 
             - name: Run nextjs lint
               run: yarn next:lint --max-warnings=0

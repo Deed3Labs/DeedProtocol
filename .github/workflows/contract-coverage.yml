@@ -32,7 +32,7 @@ jobs:
                   key: ${{ runner.os }}-contracts-${{ hashFiles('packages/*/contracts/**/*.sol') }}
 
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: yarn install --immutable-cache
 
             - name: Build contracts
               run: yarn compile
