@@ -7,7 +7,13 @@ on:
 jobs:
     coverage:
         name: Contract coverage
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                node: [18.x]
+
         steps:
             - uses: actions/checkout@v3
               with:
@@ -16,13 +22,11 @@ jobs:
             - name: Install node
               uses: actions/setup-node@v1
               with:
-                  node-version: 18
+                  node-version: ${{ matrix.node }}
+                  cache: 'yarn'
 
-            - name: Cache yarn modules
-              uses: actions/cache@v3
-              with:
-                  path: '**/node_modules'
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+            - name: Install dependencies
+              run: yarn install --immutable
 
             - name: Cache contracts
               uses: actions/cache@v3
@@ -32,10 +36,6 @@ jobs:
                       packages/*/artifacts
                       ~/.cache/hardhat-nodejs/
                   key: ${{ runner.os }}-contracts-${{ hashFiles('packages/*/contracts/**/*.sol') }}
-
-            - name: Install dependencies
-              if: steps.cache-yarn-modules.outputs.cache-hit != 'true'
-              run: yarn install --immutable
 
             - name: Run coverage
               if: steps.cache-contracts.outputs.cache-hit != 'true'

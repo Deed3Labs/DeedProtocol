@@ -7,7 +7,7 @@ on:
         branches: [main, dev]
 
 jobs:
-    Lint:
+    lint:
         runs-on: ${{ matrix.os }}
 
         strategy:
