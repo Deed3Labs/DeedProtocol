@@ -2,9 +2,11 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "@eth-optimism/hardhat-ovm";
 import "hardhat-deploy";
 import "@matterlabs/hardhat-zksync-solc";
 import "@matterlabs/hardhat-zksync-verify";
+import "solidity-coverage";
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
@@ -26,7 +28,9 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  defaultNetwork: "localhost",
+  ovm: {
+    solcVersion: "0.8.17",
+  },
   namedAccounts: {
     deployer: {
       // By default, it will take the first Hardhat account as the deployer
