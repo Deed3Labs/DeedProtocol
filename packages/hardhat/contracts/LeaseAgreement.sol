@@ -70,9 +70,6 @@ contract LeaseAgreement {
         uint32 _securityDeposit,
         uint256 _propertyTokenId
     ) external {
-        //Do we want startDate to be after time.now()?
-        //Minimum gap between startDate and end date?
-        //PropertyTokenID subNFT ?
         require(_lessee != address(0), "LeaseAgreement: Invalid lessee address");
         require(_startDate < _endDate, "LeaseAgreement: Invalid start and end dates");
         require(_endDate - _startDate > 30 days, "LeaseAgreement: End date and start date should be 30 days appart");
@@ -86,7 +83,7 @@ contract LeaseAgreement {
         lease.lessor = msg.sender;
         lease.lessee = _lessee;
         lease.dates.startDate = _startDate;
-        lease.dates.endDate = _startDate;
+        lease.dates.endDate = _endDate;
         lease.rentAmount = _rentAmount;
         lease.securityDeposit = _securityDeposit;
         lease.dates.rentDueDate = _startDate + 30 days;
@@ -108,7 +105,7 @@ contract LeaseAgreement {
         lease.agentPercentage = _percentage;
         emit AgentSet(leaseId, _agent, _percentage);
     }
-
+   
     function removeAgent(uint256 leaseId) external {
         Lease storage lease = leases[leaseId];
         require(msg.sender == lease.lessor || msg.sender == lease.agent, "Only lessor or agent can remove the agent");

@@ -13,7 +13,7 @@ contract LeaseNFT is ERC721, Ownable {
     constructor() ERC721("LeaseNFT", "LEASE") {}
 
     //Ask Kai: was this tokenID meant for minting or it represents the deed that will be leased?
-    function mintToken(address to, uint256 tokenId) external onlyOwner {
+    function mintToken(address to, uint256 tokenId) external {
         _mint(to, tokenId);
     }
 
