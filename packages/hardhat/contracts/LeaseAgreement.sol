@@ -75,7 +75,7 @@ contract LeaseAgreement {
         //PropertyTokenID subNFT ?
         require(_lessee != address(0), "LeaseAgreement: Invalid lessee address");
         require(_startDate < _endDate, "LeaseAgreement: Invalid start and end dates");
-        require(_endDate - _startDate > 30 days, "LeaseAgreement: ");
+        require(_endDate - _startDate > 30 days, "LeaseAgreement: End date and start date should be 30 days appart");
         bool isDeedOwner = _verifyDeedOwnership(msg.sender, _propertyTokenId);
         bool isSubdivisionOwner = _verifySubdivisionOwnership(/*msg.sender, */ _propertyTokenId);
         require(isDeedOwner || isSubdivisionOwner, "LeaseAgreement: Lessor must own the property NFT");

@@ -41,9 +41,9 @@ describe("LeaseAgreement", function () {
     await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "House", 0);
     await subNFT.connect(deedOwner).mintSubdivision(subOwner.address, 1, 1);
   });
-  describe("createLease", function () {
+  describe.only("createLease", function () {
     it("Should create a new lease with the right values", async function () {
-      //   await leaseAgreement.createLease(lessee.address, 1000,100000, 1000, 400, 1);
+      await leaseAgreement.connect(deedOwner).createLease(lessee.address, 1000, 10000000, 1000, 400, 1);
     });
   });
 });
