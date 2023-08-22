@@ -2,6 +2,7 @@
 pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
 
@@ -29,11 +30,13 @@ contract LeaseAgreement {
         address agent;
         uint8 agentPercentage;
         bool depositPaid;
+        uint256 latePaymentFee;
         LeaseDates dates;
     }
 
     struct RentPaymentInfo {
-        uint256 amount;
+        uint256 rentAmount;
+        uint256 totalBalance;
         uint256 unpaidMonths;
         uint256 rentDueDate;
     }
@@ -41,6 +44,7 @@ contract LeaseAgreement {
     mapping(uint256 => Lease) public leases;
     uint256 public leaseCounter;
     ILeaseNFT public leaseNFT;
+    // using SafeERC20 for IERC20;
     IERC20 public paymentToken;
     DeedNFT public deedNFT;
     SubdivisionNFT public subdivisionNFT;
@@ -68,7 +72,8 @@ contract LeaseAgreement {
         uint256 _endDate,
         uint32 _rentAmount,
         uint32 _securityDeposit,
-        uint256 _propertyTokenId
+        uint256 _propertyTokenId,
+        uint32 _latePaymentFee
     ) external {
         require(_lessee != address(0), "LeaseAgreement: Invalid lessee address");
         require(_startDate < _endDate, "LeaseAgreement: Invalid start and end dates");
@@ -87,10 +92,10 @@ contract LeaseAgreement {
         lease.rentAmount = _rentAmount;
         lease.securityDeposit = _securityDeposit;
         lease.dates.rentDueDate = _startDate + 30 days;
-        lease.unpaidMonths = 0;
         lease.extensionCount = 0;
         lease.propertyTokenId = _propertyTokenId;
         lease.depositPaid = false;
+        lease.latePaymentFee=_latePaymentFee;
 
         leaseNFT.mintToken(msg.sender, leaseId);
         emit LeaseCreated(leaseId);
@@ -119,8 +124,19 @@ contract LeaseAgreement {
         Lease storage lease = leases[leaseId];
         require(msg.sender == lease.lessee, "Only the lessee can submit the deposit");
         require(!lease.depositPaid, "Security deposit already paid");
-
-        paymentToken.transferFrom(msg.sender, address(this), lease.securityDeposit);
+        require(paymentToken.balanceOf(msg.sender)>=lease.securityDeposit,"Balance of sender lower than security deposit");
+        
+        //Verify allowance
+        uint256 allowance = paymentToken.allowance(
+            msg.sender,
+            address(this)
+        );
+        require(
+            allowance >= lease.securityDeposit,
+            "ERROR : Insufficient security allowance"
+        );
+        paymentToken.transferFrom(msg.sender,address(this),lease.securityDeposit);
+        // paymentToken.safeTransferFrom(msg.sender, address(this), lease.securityDeposit);
         lease.depositPaid = true;
     }
 
@@ -135,18 +151,21 @@ contract LeaseAgreement {
 
         RentPaymentInfo memory rentInfo = _calculateRentPaymentInfo(leaseId);
 
+        require(_amount >= rentInfo.totalBalance, "Insufficient amount for rent balance payment");
         paymentToken.transferFrom(msg.sender, address(this), _amount);
-        require(_amount >= rentInfo.amount, "Insufficient amount for rent payment");
+        
 
         if (rentInfo.unpaidMonths >= 3) {
             if (block.timestamp <= rentInfo.rentDueDate + (3 * 30 days) + 15 days) {
-                _distributeRent(leaseId, rentInfo.amount);
+                _distributeRent(leaseId, rentInfo.totalBalance);
+                lease.dates.rentDueDate += lease.unpaidMonths* (30 days);
                 lease.unpaidMonths = 0;
             } else {
                 terminateLease(leaseId);
             }
         } else {
-            _distributeRent(leaseId, rentInfo.amount);
+            _distributeRent(leaseId, rentInfo.totalBalance);
+            // uint32 addedMonths = lease.unpaidMonths;
             lease.dates.rentDueDate += 30 days;
         }
     }
@@ -191,14 +210,21 @@ contract LeaseAgreement {
         leaseNFT.burn(leaseId);
     }
 
-    function _calculateRentPaymentInfo(uint256 leaseId) internal view returns (RentPaymentInfo memory rentInfo) {
+    //unpaidMonths in lease struct almost useless, we can calculate with block.timestamp-lease.dates.rentDueDate) % 30
+    //Since the rentDueDate of a lease will increase each time a lease is paid. Need to confirm its validity however.
+    //Just removed lease.unpaid motnhs, check 
+    function _calculateRentPaymentInfo(uint256 leaseId) public view returns (RentPaymentInfo memory rentInfo) {
         Lease storage lease = leases[leaseId];
-        rentInfo.amount = lease.rentAmount;
+        rentInfo.rentAmount = lease.rentAmount;
+        //sidenote: rent due date is incremented by 1 month each time the rent is paid.(function payRent)
         if (block.timestamp > lease.dates.rentDueDate + 15 days) {
-            rentInfo.amount += (lease.rentAmount * 10) / 100;
-            rentInfo.unpaidMonths = lease.unpaidMonths + 1;
+            //Function to calculate rentAmountIncrease increase
+            rentInfo.rentAmount += (lease.rentAmount * lease.latePaymentFee) / 100;
+            rentInfo.unpaidMonths += (block.timestamp-lease.dates.rentDueDate) / (30 days) + 1;
+            rentInfo.totalBalance = (rentInfo.unpaidMonths-1)*lease.rentAmount + rentInfo.rentAmount;
         } else {
-            rentInfo.unpaidMonths = lease.unpaidMonths;
+            rentInfo.unpaidMonths = 0;
+            rentInfo.totalBalance =  rentInfo.rentAmount;
         }
         rentInfo.rentDueDate = lease.dates.rentDueDate;
         return rentInfo;
@@ -208,7 +234,7 @@ contract LeaseAgreement {
         Lease storage lease = leases[leaseId];
         uint256 agentAmount = 0;
 
-        if (lease.agent != address(0)) {
+        if (lease.agent != address(0) ) {
             agentAmount = (_amount * lease.agentPercentage) / 100;
             paymentToken.transfer(lease.agent, agentAmount);
         }
