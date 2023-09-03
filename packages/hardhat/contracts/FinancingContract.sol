@@ -5,17 +5,17 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+// Mocking the DeedNFT contract. Replace with actual DeedNFT contract interface
 interface IDeedNFT is IERC721 {
-    // Add any DeedNFT-specific methods here if needed
+    // Additional functions specific to DeedNFT can be added here if needed
 }
 
 contract OwnerFinancing is ERC721("FinancingNFT", "FINT"), Ownable, ReentrancyGuard, Pausable {
     using SafeMath for uint256;
 
-    // Data structure for Financing
     struct Financing {
         address buyer;
         address seller;
@@ -26,32 +26,66 @@ contract OwnerFinancing is ERC721("FinancingNFT", "FINT"), Ownable, ReentrancyGu
         uint256 remainingAmount;
         uint256 nextPaymentDue;
         uint256 missedPayments;
+        bool approved;
         bool defaulted;
+    }
+
+    struct Offer {
+        address proposer;
+        uint256 principal;
+        uint256 downPayment;
+        uint256 interestRate;
+        uint256 termInMonths;
+        bool approved;
     }
 
     IDeedNFT public deedNftContract;
     uint256 public financingNftCounter = 0;
-    uint256 public maxMonthsPastDue = 3; // Default value for maximum months past due
-
     mapping(uint256 => Financing) public financings;
     mapping(uint256 => uint256) public financingNfts;
+    mapping(uint256 => Offer[]) public offers;
+
+    uint256 public maxMonthsPastDue;
 
     event FinancingStarted(
         uint256 indexed deedNftTokenId,
         uint256 indexed financingNftTokenId,
-        address indexed seller,
+        address indexed buyer,
         uint256 principal,
         uint256 downPayment,
         uint256 interestRate,
         uint256 termInMonths
     );
-    event FinancingAccepted(uint256 indexed deedNftTokenId, address indexed buyer);
-    event MonthlyPaymentMade(uint256 indexed deedNftTokenId, address indexed buyer, uint256 payment, uint256 remainingAmount);
-    event FinancingTerminated(uint256 indexed deedNftTokenId, address indexed buyer, uint256 remainingAmount, bool defaulted);
-    event MaxMonthsPastDueChanged(uint256 newMaxMonthsPastDue);
+    event OfferMade(
+        uint256 indexed deedNftTokenId,
+        address indexed proposer,
+        uint256 principal,
+        uint256 downPayment,
+        uint256 interestRate,
+        uint256 termInMonths
+    );
+    event OfferAccepted(
+        uint256 indexed deedNftTokenId,
+        address indexed buyer
+    );
+    event MonthlyPaymentMade(
+        uint256 indexed deedNftTokenId,
+        uint256 indexed financingNftTokenId,
+        address indexed payer,
+        uint256 payment,
+        uint256 remainingAmount
+    );
+    event FinancingTerminated(
+        uint256 indexed deedNftTokenId,
+        uint256 indexed financingNftTokenId,
+        address indexed buyer,
+        uint256 remainingAmount,
+        bool defaulted
+    );
 
-    constructor(address _deedNftAddress) {
+    constructor(address _deedNftAddress, uint256 _maxMonthsPastDue) {
         deedNftContract = IDeedNFT(_deedNftAddress);
+        maxMonthsPastDue = _maxMonthsPastDue;
     }
 
     function pause() external onlyOwner {
@@ -64,15 +98,15 @@ contract OwnerFinancing is ERC721("FinancingNFT", "FINT"), Ownable, ReentrancyGu
 
     function setMaxMonthsPastDue(uint256 _maxMonthsPastDue) external onlyOwner {
         maxMonthsPastDue = _maxMonthsPastDue;
-        emit MaxMonthsPastDueChanged(_maxMonthsPastDue);
     }
 
+    // Initialize financing for a DeedNFT with preferred terms (optional)
     function startFinancing(
         uint256 deedNftTokenId,
-        uint256 principal,
-        uint256 downPayment,
-        uint256 interestRate,
-        uint256 termInMonths
+        uint256 preferredPrincipal,
+        uint256 preferredDownPayment,
+        uint256 preferredInterestRate,
+        uint256 preferredTermInMonths
     )
         external
         nonReentrant
@@ -80,137 +114,180 @@ contract OwnerFinancing is ERC721("FinancingNFT", "FINT"), Ownable, ReentrancyGu
     {
         require(deedNftContract.ownerOf(deedNftTokenId) == msg.sender, "Only the DeedNFT owner can initiate financing.");
         require(financings[deedNftTokenId].buyer == address(0), "Financing already exists for this DeedNFT.");
-        require(principal > downPayment, "Principal should be greater than down payment.");
 
         deedNftContract.transferFrom(msg.sender, address(this), deedNftTokenId);
 
         uint256 financingNftTokenId = financingNftCounter++;
         _mint(msg.sender, financingNftTokenId);
-        
+
         financings[deedNftTokenId] = Financing({
-            buyer: address(0),
-            seller: msg.sender,
-            principal: principal,
-            downPayment: downPayment,
-            interestRate: interestRate,
-            termInMonths: termInMonths,
-            remainingAmount: principal,
+            buyer: msg.sender,
+            seller: address(0),
+            principal: preferredPrincipal,
+            downPayment: preferredDownPayment,
+            interestRate: preferredInterestRate,
+            termInMonths: preferredTermInMonths,
+            remainingAmount: preferredPrincipal - preferredDownPayment,
             nextPaymentDue: 0,
             missedPayments: 0,
+            approved: false,
             defaulted: false
         });
 
         financingNfts[financingNftTokenId] = deedNftTokenId;
 
-        emit FinancingStarted(deedNftTokenId, financingNftTokenId, msg.sender, principal, downPayment, interestRate, termInMonths);
+        emit FinancingStarted(deedNftTokenId, financingNftTokenId, msg.sender, preferredPrincipal, preferredDownPayment, preferredInterestRate, preferredTermInMonths);
     }
 
-    function acceptFinancingTerms(uint256 deedNftTokenId) external payable nonReentrant whenNotPaused {
-        Financing storage financing = financings[deedNftTokenId];
-        
-        require(financing.buyer == address(0), "Financing already accepted by another buyer.");
-        require(msg.value == financing.downPayment, "Down payment amount does not match.");
-        
-        financing.buyer = msg.sender;
-        financing.nextPaymentDue = block.timestamp + 30 days;
-        
-        payable(financing.seller).transfer(financing.downPayment);
+    // Make an offer for financing a DeedNFT
+    function makeOffer(
+        uint256 deedNftTokenId,
+        uint256 proposedPrincipal,
+        uint256 proposedDownPayment,
+        uint256 proposedInterestRate,
+        uint256 proposedTermInMonths
+    )
+        external
+        nonReentrant
+        whenNotPaused
+    {
+        require(financings[deedNftTokenId].buyer != address(0), "Financing does not exist for this DeedNFT.");
 
-        emit FinancingAccepted(deedNftTokenId, msg.sender);
+        offers[deedNftTokenId].push(Offer({
+            proposer: msg.sender,
+            principal: proposedPrincipal,
+            downPayment: proposedDownPayment,
+            interestRate: proposedInterestRate,
+            termInMonths: proposedTermInMonths,
+            approved: false
+        }));
+
+        emit OfferMade(deedNftTokenId, msg.sender, proposedPrincipal, proposedDownPayment, proposedInterestRate, proposedTermInMonths);
     }
 
-    function makeMonthlyPayment(uint256 deedNftTokenId) external payable nonReentrant whenNotPaused {
-        Financing storage financing = financings[deedNftTokenId];
+    // Accept an offer made for a DeedNFT
+    function acceptOffer(uint256 deedNftTokenId, uint256 offerIndex)
+        external
+        nonReentrant
+        whenNotPaused
+    {
+        require(deedNftContract.ownerOf(deedNftTokenId) == msg.sender, "Only the DeedNFT owner can accept offers.");
+        require(offers[deedNftTokenId][offerIndex].proposer != address(0), "Offer does not exist.");
 
-        require(financing.buyer == msg.sender, "Only the buyer can make payments.");
-        require(!financing.defaulted, "Financing has defaulted.");
+        // Implementing your requirement to set 'approved' flag
+        financings[deedNftTokenId].approved = true;
 
-        if (block.timestamp > financing.nextPaymentDue) {
-            financing.missedPayments += 1;
+        emit OfferAccepted(deedNftTokenId, offers[deedNftTokenId][offerIndex].proposer);
+    }
 
-            if (financing.missedPayments >= maxMonthsPastDue) {
-                terminateFinancing(deedNftTokenId, false);
-                return;
-            }
+    // Function to execute monthly payments
+    function makeMonthlyPayment(uint256 deedNftTokenId)
+        external
+        payable
+        nonReentrant
+        whenNotPaused
+    {
+        require(financings[deedNftTokenId].approved, "Financing has not been approved.");
+        require(msg.sender == financings[deedNftTokenId].buyer, "Only the approved buyer can make payments.");
+
+        Financing storage f = financings[deedNftTokenId];
+        uint256 paymentAmount = f.remainingAmount.div(f.termInMonths); // Simplified for demonstration, interest rate is not applied
+
+        require(msg.value >= paymentAmount, "Insufficient payment.");
+
+        f.remainingAmount = f.remainingAmount.sub(paymentAmount);
+        f.nextPaymentDue = block.timestamp + 30 days;
+        if (f.remainingAmount == 0) {
+            // Transfer DeedNFT to buyer
+            deedNftContract.transferFrom(address(this), f.buyer, deedNftTokenId);
+
+            emit FinancingTerminated(deedNftTokenId, financingNfts[deedNftTokenId], f.buyer, f.remainingAmount, false);
         }
 
-        uint256 dueAmount = calculateDueAmount(financing);
-        require(msg.value >= dueAmount, "Payment amount does not match the due amount.");
-
-        financing.remainingAmount = financing.remainingAmount.sub(dueAmount);
-        financing.nextPaymentDue = financing.nextPaymentDue + 30 days;
-        financing.missedPayments = 0;
-
-        if (financing.remainingAmount == 0) {
-            terminateFinancing(deedNftTokenId, true);
-            return;
-        }
-
-        payable(financing.seller).transfer(dueAmount);
-
-        emit MonthlyPaymentMade(deedNftTokenId, msg.sender, dueAmount, financing.remainingAmount);
+        emit MonthlyPaymentMade(deedNftTokenId, financingNfts[deedNftTokenId], msg.sender, msg.value, f.remainingAmount);
     }
 
-    function terminateFinancing(uint256 deedNftTokenId, bool completed) internal {
-        Financing storage financing = financings[deedNftTokenId];
-        require(financing.buyer != address(0), "Financing not initialized.");
+        // ...Continued from the previous part
 
-        uint256 financingNftTokenId = financingNfts[deedNftTokenId];
+    // Decline an offer made for a DeedNFT
+    function declineOffer(uint256 deedNftTokenId, uint256 offerIndex)
+        external
+        nonReentrant
+        whenNotPaused
+    {
+        require(deedNftContract.ownerOf(deedNftTokenId) == msg.sender, "Only the DeedNFT owner can decline offers.");
+        require(offers[deedNftTokenId][offerIndex].proposer != address(0), "Offer does not exist.");
 
-        if (completed) {
-            deedNftContract.transferFrom(address(this), financing.buyer, deedNftTokenId);
+        // Remove the offer from storage
+        delete offers[deedNftTokenId][offerIndex];
+
+        emit OfferDeclined(deedNftTokenId, offers[deedNftTokenId][offerIndex].proposer);
+    }
+
+    // Emergency stop mechanism
+    function togglePause()
+        external
+        onlyOwner
+    {
+        paused = !paused;
+
+        if (paused) {
+            emit Paused();
         } else {
-            deedNftContract.transferFrom(address(this), financing.seller, deedNftTokenId);
-            financing.defaulted = true;
+            emit Unpaused();
         }
-
-        _burn(financingNftTokenId);
-        delete financings[deedNftTokenId];
-        delete financingNfts[financingNftTokenId];
-
-        emit FinancingTerminated(deedNftTokenId, financing.buyer, financing.remainingAmount, financing.defaulted);
     }
 
-    function calculateDueAmount(Financing storage financing) internal view returns (uint256) {
-        uint256 interest = (financing.remainingAmount * financing.interestRate) / 10000;  // Assuming interest rate is in basis points
-        uint256 principalPayment = financing.principal / financing.termInMonths;
-        return interest.add(principalPayment);
+    // Withdraw ETH from the contract (for owner)
+    function withdrawEth(uint256 amount)
+        external
+        onlyOwner
+    {
+        require(address(this).balance >= amount, "Insufficient balance.");
+        payable(owner()).transfer(amount);
+        emit Withdrawn(owner(), amount);
     }
 
-    // Helper functions
-    function getFinancingDetails(uint256 deedNftTokenId) external view returns(
-        address seller,
-        address buyer,
-        uint256 downPayment,
+    // Events for contract actions
+    event OfferMade(
+        uint256 indexed deedNftTokenId,
+        address indexed proposer,
         uint256 principal,
+        uint256 downPayment,
         uint256 interestRate,
-        uint256 termInMonths,
+        uint256 termInMonths
+    );
+
+    event OfferAccepted(
+        uint256 indexed deedNftTokenId,
+        address indexed proposer
+    );
+
+    event OfferDeclined(
+        uint256 indexed deedNftTokenId,
+        address indexed proposer
+    );
+
+    event MonthlyPaymentMade(
+        uint256 indexed deedNftTokenId,
+        address indexed financingNft,
+        address indexed payer,
+        uint256 paymentAmount,
+        uint256 remainingAmount
+    );
+
+    event FinancingTerminated(
+        uint256 indexed deedNftTokenId,
+        address indexed financingNft,
+        address indexed buyer,
         uint256 remainingAmount,
-        uint256 nextPaymentDue,
-        uint256 missedPayments,
         bool defaulted
-    ) {
-        Financing memory financing = financings[deedNftTokenId];
-        return (
-            financing.seller,
-            financing.buyer,
-            financing.downPayment,
-            financing.principal,
-            financing.interestRate,
-            financing.termInMonths,
-            financing.remainingAmount,
-            financing.nextPaymentDue,
-            financing.missedPayments,
-            financing.defaulted
-        );
-    }
+    );
 
-    function setMaxMonthsPastDue(uint256 _maxMonthsPastDue) external onlyOwner {
-        maxMonthsPastDue = _maxMonthsPastDue;
-    }
+    event Withdrawn(address indexed operator, uint256 amount);
+    event Paused();
+    event Unpaused();
 
-    // Optional: To set or change DeedNFT contract address. Only by the owner
-    function setDeedNftContract(address _deedNftAddress) external onlyOwner {
-        deedNftContract = IDeedNFT(_deedNftAddress);
-    }
+
 }
+
