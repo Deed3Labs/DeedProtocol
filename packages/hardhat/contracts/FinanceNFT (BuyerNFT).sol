@@ -74,3 +74,4 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
         // Transfer doesn't change any specific state in BuyerNFT but you can add any additional logic here if necessary
     }
 }
+
