@@ -5,28 +5,34 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract BuyerNFT is ERC721URIStorage, Ownable {
+// EIP-2981 Interface for royalties
+interface IERC2981 {
+    function royaltyInfo(uint256 tokenId, uint256 salePrice) external view returns (address receiver, uint256 royaltyAmount);
+}
+
+contract BuyerNFT is ERC721URIStorage, Ownable, IERC2981 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    // Custom struct to hold Buyer-specific data
+    address public platformWallet;  // Wallet address to receive platform fees
+    uint256 public constant PLATFORM_FEE = 500;  // 5% in basis points
+
     struct BuyerData {
         uint256 totalPaid;
         bool isFinancingComplete;
         bool isUnderDefault;
     }
 
-    // Mapping from token ID to BuyerData
     mapping(uint256 => BuyerData) public buyerData;
 
-    // Events to log important changes and actions
     event TotalPaidUpdated(uint256 tokenId, uint256 newTotalPaid);
     event FinancingStatusUpdated(uint256 tokenId, bool isFinancingComplete);
     event DefaultStatusUpdated(uint256 tokenId, bool isUnderDefault);
 
-    constructor() ERC721("BuyerNFT", "B-NFT") {}
+    constructor(address _platformWallet) ERC721("BuyerNFT", "B-NFT") {
+        platformWallet = _platformWallet;
+    }
 
-    // Create a new BuyerNFT token
     function mintNFT(address buyer, string memory tokenURI) public onlyOwner returns (uint256) {
         _tokenIds.increment();
         uint256 tokenId = _tokenIds.current();
@@ -40,7 +46,6 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
         return tokenId;
     }
 
-    // Update the total amount paid by the buyer
     function updateTotalPaid(uint256 tokenId, uint256 amountPaid) public onlyOwner {
         require(_exists(tokenId), "Token does not exist");
         buyerData[tokenId].totalPaid += amountPaid;
@@ -48,7 +53,6 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
         emit TotalPaidUpdated(tokenId, buyerData[tokenId].totalPaid);
     }
 
-    // Mark the financing as complete for a specific token ID
     function markFinancingComplete(uint256 tokenId) public onlyOwner {
         require(_exists(tokenId), "Token does not exist");
         require(!buyerData[tokenId].isFinancingComplete, "Financing is already complete");
@@ -58,7 +62,6 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
         emit FinancingStatusUpdated(tokenId, true);
     }
 
-    // Mark the token as under default
     function markAsDefault(uint256 tokenId) public onlyOwner {
         require(_exists(tokenId), "Token does not exist");
         require(!buyerData[tokenId].isUnderDefault, "Token is already under default");
@@ -68,10 +71,12 @@ contract BuyerNFT is ERC721URIStorage, Ownable {
         emit DefaultStatusUpdated(tokenId, true);
     }
 
-    // Custom logic for transferring tokens that updates internal state as well
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory _data) public override {
-        super.safeTransferFrom(from, to, tokenId, _data);
-        // Transfer doesn't change any specific state in BuyerNFT but you can add any additional logic here if necessary
+    // EIP-2981 implementation
+    function royaltyInfo(uint256, uint256 salePrice) external view override returns (address receiver, uint256 royaltyAmount) {
+        royaltyAmount = salePrice * PLATFORM_FEE / 10000;
+        receiver = platformWallet;
+        return (receiver, royaltyAmount);
     }
 }
+
 
