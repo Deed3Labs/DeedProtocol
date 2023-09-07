@@ -30,6 +30,8 @@ contract OwnerFinancing {
     address payable public platformWallet;
 
     mapping(uint256 => FinancingDetails) public financingDetails;
+    mapping(address => uint256) public pendingSellerWithdrawals;
+    mapping(address => uint256) public pendingBuyerWithdrawals;
     uint256 public nextFinancingId;
     uint256 public platformFeeRate = 500; // 5% fee in basis points
 
@@ -79,56 +81,82 @@ contract OwnerFinancing {
         require(_downPayment >= fd.downPayment, "Down payment is less than the required amount.");
         require(msg.value >= _downPayment, "Sent funds are less than the down payment.");
 
-        uint256 platformFee = (_downPayment * PLATFORM_FEE_RATE) / 10000; // Calculate 5% platform fee
+        uint256 platformFee = (_downPayment * platformFeeRate) / 10000;
         uint256 toSeller = _downPayment - platformFee;
-        
-        fd.isTermsAccepted = true;
-        fd.downPayment = toSeller; // Update downpayment if it's greater
 
+        // Keep funds within the contract for future withdrawal by the Seller and Buyer
+        pendingSellerWithdrawals[fd.seller] += toSeller;
+        pendingBuyerWithdrawals[fd.buyer] += msg.value - _downPayment;
+
+        fd.isTermsAccepted = true;
+        fd.downPayment = toSeller;
+        
         // Initialize Financing
         fd.isActive = true;
-        fd.totalPaymentsMade = toSeller; // Exclude platform fee
+        fd.totalPaymentsMade = toSeller;
 
         // Mint NFTs
-        sellerNFTContract.mintSellerNFT(fd.seller, financingId);
-        buyerNFTContract.mintBuyerNFT(fd.buyer, financingId);
+        sellerNFTContract.mintNFT(fd.seller, financingId);
+        buyerNFTContract.mintNFT(fd.buyer, financingId);
         
-        // Transfer down payment to seller and platform
-        payable(fd.seller).transfer(toSeller);
+        // Transfer the platform fee immediately
         platformWallet.transfer(platformFee);
     }
+
+    mapping(address => uint256) public pendingSellerWithdrawals;
+    mapping(address => uint256) public pendingBuyerWithdrawals;
+
+    event SellerWithdrawal(uint256 financingId, address to, uint256 amount);
+    event BuyerWithdrawal(uint256 financingId, address to, uint256 amount);
 
     function makePayment(uint256 financingId) public payable {
         FinancingDetails storage fd = financingDetails[financingId];
 
         require(fd.isActive, "Financing is not active.");
         require(msg.sender == fd.buyer, "Only the buyer can make payments.");
-
+        
         uint256 monthlyPayment = calculateMonthlyPayment(fd.price, fd.termLength, fd.interestRate, fd.downPayment);
-        uint256 platformFee = (monthlyPayment * PLATFORM_FEE_RATE) / 10000; // 5% platform fee
+        uint256 platformFee = (monthlyPayment * platformFeeRate) / 10000;
         uint256 toSeller = monthlyPayment - platformFee;
 
         require(msg.value >= monthlyPayment, "Insufficient payment.");
 
-        // Transfer to the seller and platform
-        payable(fd.seller).transfer(toSeller);
-        platformWallet.transfer(platformFee);
+        // Hold funds within the contract for future withdrawal by the Seller
+        pendingSellerWithdrawals[fd.seller] += toSeller;
+        pendingBuyerWithdrawals[fd.buyer] += msg.value - monthlyPayment;
 
         // Update the state
         fd.totalPaymentsMade += toSeller;
         
         emit PaymentMade(financingId, msg.sender, monthlyPayment);
 
+        // Transfer the platform fee immediately
+        platformWallet.transfer(platformFee);
+        
         // Check if all payments have been made
         if (fd.totalPaymentsMade >= (fd.price + fd.downPayment)) {
             completeFinancing(financingId);
         }
     }
 
-    function calculateMonthlyPayment(uint256 price, uint256 termLength, uint256 interestRate, uint256 downPayment) public pure returns (uint256) {
-        uint256 remainingAmount = price - downPayment;
-        uint256 monthlyInterest = (remainingAmount * interestRate) / 120000;  // Assuming it's a basis point and 12 months
-        return remainingAmount / termLength + monthlyInterest;
+    function withdrawFunds(uint256 financingId, uint256 amount, bool isSeller) public {
+        FinancingDetails storage fd = financingDetails[financingId];
+        
+        require(fd.isActive, "Financing is not active.");
+
+        if (isSeller) {
+            require(msg.sender == fd.seller, "Only the seller can withdraw.");
+            require(pendingSellerWithdrawals[msg.sender] >= amount, "Insufficient funds.");
+            pendingSellerWithdrawals[msg.sender] -= amount;
+        } else {
+            require(msg.sender == fd.buyer, "Only the buyer can withdraw.");
+            require(pendingBuyerWithdrawals[msg.sender] >= amount, "Insufficient funds.");
+            pendingBuyerWithdrawals[msg.sender] -= amount;
+        }
+
+        payable(msg.sender).transfer(amount);
+
+        emit isSeller ? SellerWithdrawal(financingId, msg.sender, amount) : BuyerWithdrawal(financingId, msg.sender, amount);
     }
 
     function completeFinancing(uint256 financingId) private {
@@ -136,41 +164,34 @@ contract OwnerFinancing {
         
         require(fd.isActive, "Financing is not active.");
 
-        // Transfer the deed to the buyer
-        deedNFTContract.transferFrom(fd.seller, fd.buyer, financingId);
-        
+        // If financing is completed, allow buyer to withdraw DeedNFT
+        if (fd.totalPaymentsMade >= (fd.price + fd.downPayment)) {
+            deedNFTContract.transferFrom(fd.seller, fd.buyer, financingId);
+            pendingBuyerWithdrawals[fd.buyer] += fd.totalPaymentsMade;
+        } 
+        // If defaulted, allow seller to withdraw all funds and DeedNFT
+        else {
+            deedNFTContract.transferFrom(fd.buyer, fd.seller, financingId);
+            pendingSellerWithdrawals[fd.seller] += fd.totalPaymentsMade;
+        }
+
         fd.isActive = false;
         
         emit FinancingCompleted(financingId);
     }
 
-    // Option to change interest rate (only by the seller)
-    function adjustInterestRate(uint256 financingId, uint256 newInterestRate) public {
+    function withdrawNFT(uint256 financingId, bool isSeller) public {
         FinancingDetails storage fd = financingDetails[financingId];
         
-        require(fd.isActive, "Financing is not active.");
-        require(msg.sender == fd.seller, "Only the seller can adjust the interest rate.");
-        require(newInterestRate <= MAX_INTEREST_RATE, "Max interest rate is 30%"); // Basis points
-        require(newInterestRate > fd.interestRate, "New rate must be greater than the current rate.");
+        require(!fd.isActive, "Financing must be completed or defaulted.");
 
-        uint256 maxAllowedAdjustment = (fd.interestRate * MAX_ADJUSTABLE_RATE_INCREASE) / 10000;
-        require(newInterestRate <= maxAllowedAdjustment, "Adjustment exceeds max allowed.");
-
-        uint256 oldRate = fd.interestRate;
-        fd.interestRate = newInterestRate;
-        
-        emit InterestRateChanged(financingId, oldRate, newInterestRate);
+        if (isSeller) {
+            require(msg.sender == fd.seller, "Only the seller can withdraw the SellerNFT.");
+            sellerNFTContract.transferFrom(address(this), fd.seller, financingId);
+        } else {
+            require(msg.sender == fd.buyer, "Only the buyer can withdraw the BuyerNFT.");
+            buyerNFTContract.transferFrom(address(this), fd.buyer, financingId);
+        }
     }
-
-    function getCurrentTerms(uint256 financingId) public view returns (uint256 price, uint256 termLength, uint256 interestRate, uint256 downPayment) {
-        FinancingDetails storage fd = financingDetails[financingId];
-        return (fd.price, fd.termLength, fd.interestRate, fd.downPayment);
-    }
-
-    function getCurrentPaymentState(uint256 financingId) public view returns (uint256 totalPaymentsMade, bool isActive) {
-        FinancingDetails storage fd = financingDetails[financingId];
-        return (fd.totalPaymentsMade, fd.isActive);
-    }
-}
 
 
