@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
 
-import "hardhat/console.sol";
 
 interface ILeaseNFT {
     function mintToken(address to, uint256 tokenId) external;
