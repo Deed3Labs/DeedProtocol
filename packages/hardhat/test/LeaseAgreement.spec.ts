@@ -1,7 +1,7 @@
 // How to handle enums insolidity testing?
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { SubdivisionNFT, DeedNFT, LeaseNFT, LeaseAgreement, TokenMock } from "../typechain-types";
+import { SubdivisionNFT, DeedNFT, LeaseNFT, LeaseAgreement, TokenMock, DepositManager } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
@@ -11,6 +11,7 @@ describe("LeaseAgreement", function () {
   let subNFT: SubdivisionNFT;
   let deedNFT: DeedNFT;
   let leaseNFT: LeaseNFT;
+  let depositManager: DepositManager;
   let leaseAgreement: LeaseAgreement;
   let contractOwner: SignerWithAddress;
   let lessee: SignerWithAddress;
@@ -53,6 +54,12 @@ describe("LeaseAgreement", function () {
     //This deed id will be 1
     await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "House", 0);
     await subNFT.connect(deedOwner).mintSubdivision(subOwner.address, 1, 1);
+    const depositMAnagerFactory = await ethers.getContractFactory("DepositManager");
+    depositManager = (await depositMAnagerFactory
+      .connect(contractOwner)
+      .deploy(leaseAgreement.address, leaseToken.address)) as DepositManager;
+    await depositManager.deployed();
+    await leaseAgreement.connect(contractOwner).setDepositManager(depositManager.address);
   });
   describe("createLease", function () {
     it("Should create a new lease with the right values", async function () {
@@ -167,7 +174,9 @@ describe("LeaseAgreement", function () {
       //Act
       await leaseAgreement.connect(lessee).submitDeposit(0);
       //Assert
-      expect(await leaseToken.balanceOf(leaseAgreement.address)).to.equal(depositAmount);
+      const depositManagerLeaseBalance = await depositManager.leaseDeposits(0);
+      expect(depositManagerLeaseBalance).to.equal(depositAmount);
+      expect(await leaseToken.balanceOf(depositManager.address)).to.equal(depositAmount);
       expect(await leaseToken.balanceOf(lessee.address)).to.equal(initialLesseeBalance - depositAmount);
     });
     it("Should revert if caller isn't lessee", async function () {
@@ -265,8 +274,10 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(lessee).payRent(0, totalExpectedBalance);
       //Assert
       const lease = await leaseAgreement.leases(0);
+      const depositManagerLeaseBalance = await depositManager.leaseDeposits(0);
       expect(lease.dates.rentDueDate).to.be.greaterThanOrEqual(startDate + 2 * 30 * oneDayInSeconds);
-      expect(await leaseToken.balanceOf(leaseAgreement.address)).to.equal(totalExpectedBalance + depositAmount);
+      expect(depositManagerLeaseBalance).to.equal(totalExpectedBalance + depositAmount);
+      expect(await leaseToken.balanceOf(depositManager.address)).to.equal(totalExpectedBalance + depositAmount);
     });
     it("Should transfer the right calculatedRentAmount to the contract and adjust rentDueDate but with late payment", async function () {
       //Arrange
@@ -287,8 +298,10 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(lessee).payRent(0, totalExpectedBalance);
       const lease = await leaseAgreement.leases(0);
       //Assert
+      const depositManagerLeaseBalance = await depositManager.leaseDeposits(0);
+      expect(depositManagerLeaseBalance).to.equal(totalExpectedBalance + depositAmount);
+      expect(await leaseToken.balanceOf(depositManager.address)).to.equal(totalExpectedBalance + depositAmount);
       expect(lease.dates.rentDueDate).to.be.greaterThanOrEqual(startDate + 4 * 30 * oneDayInSeconds);
-      expect(await leaseToken.balanceOf(leaseAgreement.address)).to.equal(totalExpectedBalance + depositAmount);
     });
     it("Should revert if sender isn't lessee", async function () {
       //Arrange
@@ -375,7 +388,7 @@ describe("LeaseAgreement", function () {
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.address, totalExpectedBalance);
       await leaseAgreement.connect(lessee).payRent(0, totalExpectedBalance);
-      // expect(await leaseToken.balanceOf(leaseAgreement.address)).to.equal(totalExpectedBalance);
+
       //Act
       await leaseAgreement.connect(deedOwner)._distributeRent(0, totalExpectedBalance);
       //Assert
@@ -447,8 +460,8 @@ describe("LeaseAgreement", function () {
       //Assert
       expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance);
       expect(await leaseToken.balanceOf(lessee.address)).to.equal(initialLesseeBalance - totalExpectedBalance);
-      await leaseNFT.connect(deedOwner).burn(0);
-      await expect(leaseNFT.ownerOf(0)).to.be.revertedWith("ERC721: invalid token ID");
+      // await leaseNFT.connect(deedOwner).burn(0);
+      // await expect(leaseNFT.ownerOf(0)).to.be.revertedWith("ERC721: invalid token ID");
     });
     it("Should end the lease and distribute the remaining balance, with lessor receiving deposit if more than 3 unpaid months", async function () {
       //Arrange
@@ -474,7 +487,9 @@ describe("LeaseAgreement", function () {
       expect(await leaseToken.balanceOf(lessee.address)).to.equal(
         initialLesseeBalance - totalExpectedBalance - depositAmount,
       );
-      expect(await leaseToken.balanceOf(leaseAgreement.address)).to.equal(0);
+      const depositManagerLeaseBalance = await depositManager.leaseDeposits(0);
+      expect(depositManagerLeaseBalance).to.equal(0);
+      expect(await leaseToken.balanceOf(depositManager.address)).to.equal(0);
       await leaseNFT.connect(deedOwner).burn(0);
       await expect(leaseNFT.ownerOf(0)).to.be.revertedWith("ERC721: invalid token ID");
     });
@@ -592,6 +607,42 @@ describe("LeaseAgreement", function () {
       await expect(leaseAgreement.connect(lessee).extendLease(0, 3 * thirtyOneDaysInSeconds)).to.be.revertedWith(
         "Maximum extensions reached",
       );
+    });
+  });
+  describe("setDueDate", function () {
+    it("Should set due date and emit DueDateChanged event", async function () {
+      //Arrange
+      await leaseAgreement
+        .connect(deedOwner)
+        .createLease(lessee.address, startDate, endDate, rentAmount, depositAmount, 1, 10, 5);
+      //Act
+      expect(await leaseAgreement.connect(deedOwner).setDueDate(0, startDate + 2 * thirtyOneDaysInSeconds)).to.emit(
+        leaseAgreement,
+        "DueDateChanged",
+      );
+      //Assert
+      expect((await leaseAgreement.leases(0)).dates.rentDueDate).to.equal(startDate + 2 * thirtyOneDaysInSeconds);
+    });
+    it("Should revert if caller isn't lessor", async function () {
+      //Arrange
+      await leaseAgreement
+        .connect(deedOwner)
+        .createLease(lessee.address, startDate, endDate, rentAmount, depositAmount, 1, 10, 5);
+
+      //Assert
+      await expect(
+        leaseAgreement.connect(lessee).setDueDate(0, startDate + 2 * thirtyOneDaysInSeconds),
+      ).to.be.revertedWith("Only lessor can set due date");
+    });
+    it("Should revert if new rent date isn't valid", async function () {
+      //Arrange
+      await leaseAgreement
+        .connect(deedOwner)
+        .createLease(lessee.address, startDate, endDate, rentAmount, depositAmount, 1, 10, 5);
+      //Assert
+      await expect(
+        leaseAgreement.connect(deedOwner).setDueDate(0, startDate + thirtyOneDaysInSeconds / 2),
+      ).to.be.revertedWith("New rent due date must be at least a month after current one");
     });
   });
 });

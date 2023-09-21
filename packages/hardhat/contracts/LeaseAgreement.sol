@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
-
+import "./DepositManager.sol";
 
 interface ILeaseNFT {
     function mintToken(address to, uint256 tokenId) external;
@@ -43,7 +43,6 @@ contract LeaseAgreement {
         uint32 unpaidMonths;
         uint256 rentDueDate;
     }
-
     mapping(uint256 => Lease) public leases;
     uint256 public leaseCounter;
     ILeaseNFT public leaseNFT;
@@ -51,12 +50,14 @@ contract LeaseAgreement {
     IERC20 public paymentToken;
     DeedNFT public deedNFT;
     SubdivisionNFT public subdivisionNFT;
+    DepositManager public depositManager;
 
     event LeaseCreated(uint256 leaseId);
     event LeaseTerminated(uint256 leaseId);
+    event PaymentMade(uint256 leaseId, uint32 amount);
     event AgentSet(uint256 leaseId, address agent, uint256 percentage);
     event AgentRemoved(uint256 leaseId);
-    
+    event DueDateChanged(uint256 leaseId, uint256 newDueDate);
     constructor(address _leaseNFT, address _paymentToken, address _deedNFT, address _subdivisionNFT) {
         require(_leaseNFT != address(0), "Invalid LeaseNFT address");
         require(_paymentToken != address(0), "Invalid xDai token address");
@@ -69,7 +70,9 @@ contract LeaseAgreement {
         subdivisionNFT = SubdivisionNFT(_subdivisionNFT);
         leaseCounter = 0;
     }
-
+    function setDepositManager(address _depositManager)public {
+        depositManager=DepositManager(_depositManager);
+    }
     function createLease(
         address _lessee,
         uint256 _startDate,
@@ -91,7 +94,6 @@ contract LeaseAgreement {
         require(isDeedOwner || isSubdivisionOwner, "LeaseAgreement: Lessor must own the property NFT");
         uint256 leaseId = leaseCounter;
         leaseCounter++;
-
         Lease storage lease = leases[leaseId];
         lease.lessor = msg.sender;
         lease.lessee = _lessee;
@@ -145,13 +147,21 @@ contract LeaseAgreement {
             allowance >= lease.securityDeposit,
             "ERROR : Insufficient security allowance"
         );
-        paymentToken.transferFrom(msg.sender,address(this),lease.securityDeposit);
+        paymentToken.transferFrom(msg.sender,address(depositManager),lease.securityDeposit);
+        depositManager.addLeaseBalance(leaseId,lease.securityDeposit);
         // paymentToken.safeTransferFrom(msg.sender, address(this), lease.securityDeposit);
         lease.depositPaid = true;
     }
+    function setDueDate(uint256 _leaseId, uint256 _newDueDate) public{
+        Lease storage lease = leases[_leaseId];
+        require(msg.sender == lease.lessor,"Only lessor can set due date");
+        require(_newDueDate>= (lease.dates.rentDueDate + 30 days),"New rent due date must be at least a month after current one");
+        lease.dates.rentDueDate = _newDueDate;
+        emit DueDateChanged(_leaseId,_newDueDate);
+    }
 
-    function payRent(uint256 leaseId, uint256 _amount) external {
-        Lease storage lease = leases[leaseId];
+    function payRent(uint256 _leaseId, uint32 _amount) external {
+        Lease storage lease = leases[_leaseId];
         require(msg.sender == lease.lessee, "Only the lessee can pay rent");
         require(lease.depositPaid, "Security deposit must be paid first");
         require(
@@ -159,10 +169,11 @@ contract LeaseAgreement {
             "Outside of lease duration"
         );
 
-        RentPaymentInfo memory rentInfo = _calculateRentPaymentInfo(leaseId);
+        RentPaymentInfo memory rentInfo = _calculateRentPaymentInfo(_leaseId);
 
         require(_amount >= rentInfo.totalBalance, "Insufficient amount for rent balance payment");
-        paymentToken.transferFrom(msg.sender, address(this), _amount);
+        paymentToken.transferFrom(msg.sender, address(depositManager), _amount);
+        depositManager.addLeaseBalance(_leaseId,_amount);
         if(rentInfo.unpaidMonths==0){
         lease.dates.rentDueDate += 30 days;
         // lease.paidMonths += 1;    
@@ -171,6 +182,8 @@ contract LeaseAgreement {
         lease.dates.rentDueDate += (rentInfo.unpaidMonths)*(30 days);
         // lease.paidMonths += rentInfo.unpaidMonths;
         }
+        emit DueDateChanged(_leaseId,lease.dates.rentDueDate);
+        emit PaymentMade(_leaseId,_amount);
     }
 
     function extendLease(uint256 leaseId, uint256 extensionPeriod) external {
@@ -198,16 +211,18 @@ contract LeaseAgreement {
         // Check if lease termination is due to unpaid rent or early termination
         bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); 
             // (msg.sender == lease.lessor && block.timestamp < lease.dates.endDate);
-
+        
         if (shouldSendDepositToLessor) {
-            paymentToken.transfer(lease.lessor, lease.securityDeposit);
+            depositManager.withdrawFromDeposit(leaseId,uint32(lease.securityDeposit),lease.lessor);
+
         } else {
-            paymentToken.transfer(lease.lessee, lease.securityDeposit);
+            depositManager.withdrawFromDeposit(leaseId,uint32(lease.securityDeposit),lease.lessee);
         }
 
-        uint256 remainingBalance = paymentToken.balanceOf(address(this));
+        uint256 remainingBalance = depositManager.leaseDeposits(leaseId);
         if (remainingBalance > 0) {
-            paymentToken.transfer(lease.lessor, remainingBalance);
+            depositManager.withdrawFromDeposit(leaseId,uint32(remainingBalance),lease.lessor);
+            // paymentToken.transfer(lease.lessor, remainingBalance);
         }
         delete leases[leaseId];
         emit LeaseTerminated(leaseId);
@@ -238,7 +253,7 @@ contract LeaseAgreement {
     function _distributeRent(uint256 leaseId, uint256 _amount) public {
         Lease storage lease = leases[leaseId];
         require(msg.sender == lease.lessor || msg.sender == lease.agent,"Error: sender must be lessor or agent");
-        require(paymentToken.balanceOf(address(this))>_amount,"Error: amount to distribute greater than contract balance");
+        require(paymentToken.balanceOf(address(depositManager))>_amount,"Error: amount to distribute greater than contract balance");
         //TODO add check for taking the right amount of the contract's balance to protect
         //lessee's money. Check number of months since rentDueDate to estimate amount  
         // uint256 distributableMonths = (block.timestamp - lease.dates.startDate)/30 days; 
@@ -248,11 +263,13 @@ contract LeaseAgreement {
 
         if (lease.agent != address(0) ) {
             agentAmount = (_amount * lease.agentPercentage) / 100;
-            paymentToken.transfer(lease.agent, agentAmount);
+            depositManager.withdrawFromDeposit(leaseId,uint32(agentAmount),lease.agent);
+            // paymentToken.transferFrom(address(depositManager),lease.agent, agentAmount);
         }
 
         uint256 lessorAmount = _amount - agentAmount;
-        paymentToken.transfer(lease.lessor, lessorAmount);
+        depositManager.withdrawFromDeposit(leaseId,uint32(lessorAmount),lease.lessor);
+        // paymentToken.transferFrom(address(depositManager),lease.lessor, lessorAmount);
     }
 
     function _verifyDeedOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
