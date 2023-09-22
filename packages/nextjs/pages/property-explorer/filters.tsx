@@ -1,11 +1,10 @@
-// Filters component
 import React from "react";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import Map from "~~/components/map/Map";
 
-export const Filters = () => {
+const Filters = () => {
   const [mapOpened, setMapOpened] = React.useState(false);
 
   return (
@@ -56,3 +55,4 @@ export const Filters = () => {
     </>
   );
 };
+export default Filters;

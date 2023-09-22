@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import { Filters } from "./filters";
+import Filters from "./filters";
 import { NextPage } from "next";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { Property } from "~~/models/property";
