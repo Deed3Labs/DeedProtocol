@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import Filters from "./filters";
 import { NextPage } from "next";
@@ -45,6 +44,7 @@ const PropertyExplorer: NextPage = () => {
             className="card bg-base-100 shadow-xl p-2 bg-secondary border border-white border-opacity-10"
             key={property.id}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={property.photos[0]} alt="Picture" />
             <div className="m-4">
               <span className="flex flex-h w-fit gap-2">
@@ -69,7 +69,6 @@ const PropertyExplorer: NextPage = () => {
             </div>
           </figure>
         ))}
-        f
       </div>
     </div>
   );
