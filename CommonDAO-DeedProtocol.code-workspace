@@ -12,11 +12,12 @@
       "name": "Root",
       "path": "."
     },
+    {
+      "path": "packages/nextjs/public/assets"
+    }
   ],
-
   "settings": {
     "editor.tabSize": 2,
-    
     "prettier.tabWidth": 4,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[solidity]": {

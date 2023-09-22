@@ -30,3 +30,20 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+.container {
+  max-width: 95% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.dynamic-shadow-dom {
+  --dynamic-border-radius: 0;
+  --dynamic-connect-button-radius: 0;
+}
+
+#map {
+  height: 180px;
+}

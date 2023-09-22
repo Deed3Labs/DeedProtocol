@@ -4,7 +4,6 @@ import {
   coinbaseWallet,
   ledgerWallet,
   metaMaskWallet,
-  rainbowWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains } from "wagmi";
@@ -51,7 +50,6 @@ const wallets = [
   ledgerWallet({ chains: appChains.chains }),
   braveWallet({ chains: appChains.chains }),
   coinbaseWallet({ appName: "scaffold-eth-2", chains: appChains.chains }),
-  rainbowWallet({ chains: appChains.chains }),
 ];
 
 /**
