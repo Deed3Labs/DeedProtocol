@@ -1,1 +1,1 @@
-// export { default } from "./Map";
+export { MapContainer } from "./MapComponents";

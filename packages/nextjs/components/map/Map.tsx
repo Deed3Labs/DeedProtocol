@@ -1,30 +1,20 @@
-// import dynamic from "next/dynamic";
+import { useRef } from "react";
+import { MapContainer, TileLayer, ZoomControl } from "./MapComponents";
 
-// const DynamicMap = dynamic(() => import("./DynamicMap"), {
-//   ssr: false,
-// });
+const Map = () => {
+  const mapRef = useRef(null);
+  return (
+    <div style={{ height: "400px", zIndex: "0!important" }}>
+      <MapContainer ref={mapRef} touchZoom={false} zoomControl={false}>
+        <div style={{ zIndex: "0!important" }}>
+          <TileLayer url="..." attribution="..." className="custom-tile-layer" />
+        </div>
+        <div style={{ zIndex: "10!important" }}>
+          <ZoomControl position="topright" />
+        </div>
+      </MapContainer>
+    </div>
+  );
+};
 
-// // Set default sizing to control aspect ratio which will scale responsively
-// // but also help avoid layout shift
-
-// const DEFAULT_WIDTH = 600;
-// const DEFAULT_HEIGHT = 600;
-
-// const Map = (
-//   props: JSX.IntrinsicAttributes & {
-//     [x: string]: any;
-//     children?: (ReactLeaflet: any, Leaflet: any) => React.ReactNode;
-//     className?: string;
-//     width?: number;
-//     height: number;
-//   },
-// ) => {
-//   const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = props;
-//   return (
-//     <div style={{ aspectRatio: width / height }}>
-//       <DynamicMap {...props} />
-//     </div>
-//   );
-// };
-
-// export default Map;
+export default Map;

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Filters } from "./filters";
 import { NextPage } from "next";
-import { AdjustmentsHorizontalIcon, CheckBadgeIcon } from "@heroicons/react/24/solid";
+import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { Property } from "~~/models/property";
 
 const PropertyExplorer: NextPage = () => {
