@@ -29,6 +29,9 @@
     ],
     "@typescript-eslint/no-non-null-assertion": [
       "off"
+    ],
+    "exhaustive-deps": [
+      "off"
     ]
   }
 }
