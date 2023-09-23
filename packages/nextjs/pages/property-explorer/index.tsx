@@ -1,21 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Filters from "./filters";
+import { debounce } from "lodash";
 import { NextPage } from "next";
-import { CheckBadgeIcon } from "@heroicons/react/24/solid";
+import PropertyCard from "~~/components/PropertyCard";
 import { Property } from "~~/models/property";
 
 const PropertyExplorer: NextPage = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [currentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(20);
+  const [isLast, setIsLast] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadProperties(currentPage, pageSize);
-  }, [currentPage, pageSize]);
+    loadMoreProperties();
+  }, []);
 
-  const loadProperties = (pageIndex: number, pageSize: number) => {
-    const nextPageContent: Property[] = [];
-    for (let index = pageIndex * pageSize; index < pageIndex * pageSize + pageSize; index++) {
+  useEffect(() => {
+    const handleDebouncedScroll = debounce(() => !isLast && handleScroll(), 200);
+    window.addEventListener("scroll", handleDebouncedScroll);
+    return () => {
+      window.removeEventListener("scroll", handleDebouncedScroll);
+    };
+  }, [isLast]);
+
+  const handleScroll = () => {
+    if (containerRef.current && typeof window !== "undefined") {
+      const container = containerRef.current;
+      const { bottom } = container.getBoundingClientRect();
+      const { innerHeight } = window;
+      if (bottom <= innerHeight) {
+        loadMoreProperties();
+      }
+    }
+  };
+
+  const loadMoreProperties = () => {
+    setCurrentPage(prev => prev + 1);
+    const nextPageContent: Property[] = [...properties];
+    const radius = 10;
+    const center = { lat: 51.505, lng: -0.09 };
+    for (let index = currentPage * pageSize; index < currentPage * pageSize + pageSize; index++) {
       nextPageContent.push({
         id: index,
         name: `Property ${index}`,
@@ -27,47 +53,23 @@ const PropertyExplorer: NextPage = () => {
         ],
         address: `${Math.round(Math.random() * 1000)} Fake Street, US 92401`,
         price: Math.round(Math.random() * 1000000),
-        latitude: 0,
-        longitude: 0,
+        latitude: center.lat + (Math.random() - 0.5) * (radius * 2),
+        longitude: (center.lng + Math.random() - 0.5) * (radius * 2),
         type: "House",
       });
     }
+    if (currentPage === 5) {
+      // Fake 5 pages
+      setIsLast(true);
+    }
     setProperties(nextPageContent);
   };
-
   return (
-    <div className="container">
-      <Filters />
+    <div className="container" ref={containerRef}>
+      <Filters properties={properties} />
       <div className="flex flex-wrap gap-8 items-center justify-center">
         {properties.map(property => (
-          <figure
-            className="card bg-base-100 shadow-xl p-2 bg-secondary border border-white border-opacity-10"
-            key={property.id}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={property.photos[0]} alt="Picture" />
-            <div className="m-4">
-              <span className="flex flex-h w-fit gap-2">
-                <span className="text-secondary-content">Username.eth</span>
-                <CheckBadgeIcon className="w-4" />
-              </span>
-              <h2 className="text-2xl font-bold">{property.address}</h2>
-            </div>
-            <div className="bg-neutral p-4 flex flex-row justify-evenly">
-              <div className="flex flex-col">
-                <span className="text-secondary-content">PRICE</span>
-                <span>{property.price.toLocaleString("en-US", { style: "currency", currency: "USD" })}</span>
-              </div>
-              <div className="flex flex-col">
-                <div className="text-secondary-content">TYPE</div>
-                <div>{property.type}</div>
-              </div>
-              <div className="flex flex-col">
-                <div className="text-secondary-content">ZONING</div>
-                <div>Residential</div>
-              </div>
-            </div>
-          </figure>
+          <PropertyCard key={property.id} property={property} />
         ))}
       </div>
     </div>

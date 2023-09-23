@@ -1,10 +1,16 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import { useKeyboardShortcut } from "~~/hooks/utils/useKeyboardShortcut";
+import { Property } from "~~/models/property";
 
-const Filters = () => {
+type Props = {
+  properties: Property[];
+};
+
+const Filters = ({ properties }: Props) => {
   const [mapOpened, setMapOpened] = React.useState(false);
   const Map = useMemo(
     () =>
@@ -15,10 +21,16 @@ const Filters = () => {
           ssr: false, // This line is important. It's what prevents server-side render
         },
       ),
-    [
-      /* list variables which should trigger a re-render here */
-    ],
+    [],
   );
+
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useKeyboardShortcut(["/"], ev => {
+    if (ev.target === searchRef.current) return;
+    searchRef.current?.focus();
+    ev.preventDefault();
+  });
 
   return (
     <>
@@ -35,15 +47,14 @@ const Filters = () => {
         </div>
         <div className="flex-grow flex items-center">
           <input
+            ref={searchRef}
             className="input input-lg input-bordered border-1 w-full"
             placeholder="Enter a city, state, address or ZIP code"
           />
           <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">/</kbd>
         </div>
-        <select className="select select-lg select-bordered">
-          <option disabled selected>
-            Property type
-          </option>
+        <select className="select select-lg select-bordered" defaultValue={0}>
+          <option disabled>Property type</option>
           <option>House</option>
           <option>Appartement</option>
           <option>Bachelor</option>
@@ -64,7 +75,7 @@ const Filters = () => {
           </button>
         </div>
       </div>
-      {mapOpened && <Map />}
+      {mapOpened && <Map properties={properties} />}
     </>
   );
 };

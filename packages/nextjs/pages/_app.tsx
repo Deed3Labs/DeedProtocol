@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
@@ -11,7 +13,9 @@ import { Header } from "~~/components/Header";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
 import scaffoldConfig from "~~/scaffold.config";
 import { useGlobalState } from "~~/services/store/store";
-import "~~/styles/globals.css";
+import "~~/styles/globals.scss";
+
+config.autoAddCss = false;
 
 const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   const price = useNativeCurrencyPrice();

@@ -1,0 +1,88 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root,
+[data-theme] {
+  background: hsl(var(--b2));
+}
+
+body {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+p {
+  margin: 1rem 0;
+}
+
+.btn {
+  @apply shadow-md;
+}
+
+.btn.btn-ghost {
+  @apply shadow-none;
+}
+
+.container {
+  max-width: 95% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.dynamic-shadow-dom {
+  --dynamic-border-radius: 0;
+  --dynamic-connect-button-radius: 0;
+}
+
+.property-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  .leaflet-popup-content {
+    margin: 0;
+    color: #fafcff;
+  }
+}
+
+.property-icon {
+  .marker-pin {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: #000000;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+  }
+  // to draw white circle
+  .marker-pin::after {
+    content: "";
+    width: 24px;
+    height: 24px;
+    margin: 3px 0 0 3px;
+    background: #fff;
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  // to align icon
+  .custom-div-icon i {
+    position: absolute;
+    width: 22px;
+    font-size: 22px;
+    left: 0;
+    right: 0;
+    margin: 10px auto;
+    text-align: center;
+  }
+}
