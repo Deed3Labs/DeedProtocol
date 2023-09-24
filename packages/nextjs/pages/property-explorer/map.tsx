@@ -20,15 +20,7 @@ const propertyIcon = L.divIcon({
 
 const Map = ({ properties }: Props) => {
   return (
-    <MapContainer
-      center={[51.505, -0.09]}
-      zoom={5}
-      style={{ height: 750, width: "100%", margin: "16px" }}
-      id="map"
-      whenCreated={(_map: any) => {
-        (window as any).map = _map;
-      }}
-    >
+    <MapContainer center={[51.505, -0.09]} zoom={5} style={{ height: 750, width: "100%", margin: "16px" }} id="map">
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {properties.map(property => (
         <Marker key={property.id} position={[property.latitude, property.longitude]} icon={propertyIcon}>
