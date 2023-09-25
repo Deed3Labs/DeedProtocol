@@ -25,7 +25,7 @@ const FilterBar = () => {
             <input
               ref={searchRef}
               className="input input-lg input-bordered border-1 w-full"
-              placeholder="Enter a city, state, address or ZIP code"
+              placeholder="Agent name or username"
             />
             <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">/</kbd>
           </div>

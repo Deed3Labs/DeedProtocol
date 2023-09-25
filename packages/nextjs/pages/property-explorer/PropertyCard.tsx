@@ -8,7 +8,7 @@ type Props = {
 
 export default function PropertyCard({ property }: Props) {
   return (
-    <figure className="card bg-base-100 shadow-xl p-2 bg-secondary border border-white border-opacity-10 font-['Montserrat']">
+    <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat']">
       <Image src={property.photos[0]} alt="Picture" height={400} width={350} />
       <div className="m-4">
         <span className="flex flex-h w-fit gap-2">
