@@ -10,11 +10,12 @@ type Props = {
 
 export default function AgentCard({ agent }: Props) {
   const followers = useMemo(() => {
+    if (!agent) return undefined;
     if (agent.followers >= 1000) {
       return (agent.followers / 1000).toFixed(1) + "K";
     }
     return agent.followers.toString();
-  }, [agent.followers]);
+  }, [agent?.followers]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
