@@ -3,11 +3,12 @@ import dynamic from "next/dynamic";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import PropertyCard from "~~/components/PropertyCard";
 import { useKeyboardShortcut } from "~~/hooks/utils/useKeyboardShortcut";
-import { Property } from "~~/models/property";
+import { PropertyModel } from "~~/models/property.model";
 
 type Props = {
-  properties: Property[];
+  properties: PropertyModel[];
 };
 
 const Filters = ({ properties }: Props) => {
@@ -15,13 +16,13 @@ const Filters = ({ properties }: Props) => {
   const Map = useMemo(
     () =>
       dynamic(
-        () => import("./map"), // replace '@components/map' with your component's location
+        () => import("./Map"), // replace '@components/map' with your component's location
         {
           loading: () => <p>A map is loading</p>,
           ssr: false, // This line is important. It's what prevents server-side render
         },
       ),
-    [],
+    [properties],
   );
 
   const searchRef = useRef<HTMLInputElement>(null);
@@ -75,7 +76,9 @@ const Filters = ({ properties }: Props) => {
           </button>
         </div>
       </div>
-      {mapOpened && <Map properties={properties} />}
+      {mapOpened && (
+        <Map markers={properties} drawPopup={property => <PropertyCard property={property as PropertyModel} />} />
+      )}
     </>
   );
 };

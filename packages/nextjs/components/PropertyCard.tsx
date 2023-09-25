@@ -1,20 +1,15 @@
-import L from "leaflet";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
-import { Property } from "~~/models/property";
+import { PropertyModel } from "~~/models/property.model";
 
 type Props = {
-  property: Property;
+  property: PropertyModel;
 };
 
 export default function PropertyCard({ property }: Props) {
-  const onCardClick = () => {
-    L.map("map").setView([property.latitude, property.longitude], 13);
-  };
   return (
     <figure
       className="card bg-base-100 shadow-xl p-2 bg-secondary border border-white border-opacity-10"
       key={property.id}
-      onClick={onCardClick}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={property.photos[0]} alt="Picture" />

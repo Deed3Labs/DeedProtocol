@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import Filters from "./filters";
+import Filters from "./Filters";
 import { debounce } from "lodash";
 import { NextPage } from "next";
 import PropertyCard from "~~/components/PropertyCard";
-import { Property } from "~~/models/property";
+import { PropertyModel } from "~~/models/property.model";
 
 const PropertyExplorer: NextPage = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [properties, setProperties] = useState<PropertyModel[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(20);
   const [isLast, setIsLast] = useState(false);
@@ -38,9 +38,9 @@ const PropertyExplorer: NextPage = () => {
 
   const loadMoreProperties = () => {
     setCurrentPage(prev => prev + 1);
-    const nextPageContent: Property[] = [...properties];
+    const nextPageContent: PropertyModel[] = [...properties];
     const radius = 10;
-    const center = { lat: 51.505, lng: -0.09 };
+    const center = { lat: 40, lng: -100 };
     for (let index = currentPage * pageSize; index < currentPage * pageSize + pageSize; index++) {
       nextPageContent.push({
         id: index,
@@ -54,7 +54,7 @@ const PropertyExplorer: NextPage = () => {
         address: `${Math.round(Math.random() * 1000)} Fake Street, US 92401`,
         price: Math.round(Math.random() * 1000000),
         latitude: center.lat + (Math.random() - 0.5) * (radius * 2),
-        longitude: (center.lng + Math.random() - 0.5) * (radius * 2),
+        longitude: center.lng + (Math.random() - 0.5) * (radius * 2),
         type: "House",
       });
     }
