@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Filters from "./Filters";
+import FilterBar from "./FilterBar";
 import { debounce } from "lodash";
 import { NextPage } from "next";
 import PropertyCard from "~~/components/PropertyCard";
@@ -66,7 +66,7 @@ const PropertyExplorer: NextPage = () => {
   };
   return (
     <div className="container" ref={containerRef}>
-      <Filters properties={properties} />
+      <FilterBar properties={properties} />
       <div className="flex flex-wrap gap-8 items-center justify-center">
         {properties.map(property => (
           <PropertyCard key={property.id} property={property} />

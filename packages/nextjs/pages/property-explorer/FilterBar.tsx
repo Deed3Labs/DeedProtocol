@@ -11,7 +11,7 @@ type Props = {
   properties: PropertyModel[];
 };
 
-const Filters = ({ properties }: Props) => {
+const FilterBar = ({ properties }: Props) => {
   const [mapOpened, setMapOpened] = React.useState(false);
   const Map = useMemo(
     () =>
@@ -79,4 +79,4 @@ const Filters = ({ properties }: Props) => {
     </>
   );
 };
-export default Filters;
+export default FilterBar;
