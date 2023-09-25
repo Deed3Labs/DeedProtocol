@@ -19,10 +19,16 @@ export default function PropertyCard({ property }: Props) {
             </span>
             <h2 className="text-2xl font-bold">{property.address}</h2>
           </div>
-          <div className="bg-neutral p-4 flex flex-row justify-evenly border-solid border-2 border-opacity-25">
+          <div className="bg-neutral p-4 flex flex-row justify-evenly border border-white border-opacity-25">
             <div className="flex flex-col">
               <span className="text-secondary-content">PRICE</span>
-              <span>{property.price.toLocaleString("en-US", { style: "currency", currency: "USD" })}</span>
+              <span>
+                {property.price.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                  maximumFractionDigits: 0,
+                })}
+              </span>
             </div>
             <div className="flex flex-col">
               <div className="text-secondary-content">TYPE</div>

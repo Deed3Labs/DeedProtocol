@@ -1,27 +1,60 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import Navbar from "~~/components/Navbar";
-import { useKeyboardShortcut } from "~~/hooks/utils/useKeyboardShortcut";
-import { PropertyModel } from "~~/models/property.model";
+import useDebouncer from "~~/hooks/useDebouncer";
+import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
+import { PropertiesFilterModel } from "~~/models/properties-filter.model";
+import { ListingType, PropertyModel, PropertyType } from "~~/models/property.model";
 import PropertyCard from "~~/pages/property-explorer/PropertyCard";
 
 type Props = {
   properties: PropertyModel[];
+  onFilter: (filter?: PropertiesFilterModel) => void;
 };
 
-const FilterBar = ({ properties }: Props) => {
-  const [mapOpened, setMapOpened] = React.useState(false);
+const PropertyFilters = ({ properties, onFilter }: Props) => {
+  const [mapOpened, setMapOpened] = useState(false);
+  const [search, setSearch] = useState<string | undefined>();
+  const searchParams = useSearchParams();
+  const listingType = searchParams.get("listingType");
+  const [filter, setFilter] = useState<PropertiesFilterModel>({
+    listingType: listingType ? (listingType as ListingType) : "All",
+  });
+
+  const debouncedSearch = useDebouncer(search, 500);
+
   const Map = useMemo(
     () =>
       dynamic(() => import("~~/components/Map"), {
-        loading: () => <p>A map is loading</p>,
+        loading: () => (
+          <div className="w-full flex flex-row justify-center">
+            <span className="loading loading-bars loading-lg my-8 "></span>
+          </div>
+        ),
         ssr: false,
       }),
     [properties],
   );
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      applyFilter({ search: debouncedSearch });
+    }
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    onFilter(filter);
+  }, [listingType]);
+
+  const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
+    const newFilter = { ...filter, ...partialFilter };
+    setFilter(newFilter);
+    onFilter(filter);
+  };
 
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -31,18 +64,28 @@ const FilterBar = ({ properties }: Props) => {
     ev.preventDefault();
   });
 
+  useKeyboardShortcut(["Enter"], () => {
+    onFilter(filter);
+  });
+
   return (
     <div className="Wrapper flex flex-col w-full my-8">
       <Navbar />
       <div className="filters">
         <div className="flex flex-wrap justify-evenly items-center my-10 gap-8 w-full ">
-          <label className="btn btn-lg btn-outline drawer-button" htmlFor="my-drawer">
+          <button className="btn btn-lg btn-outline">
             <AdjustmentsHorizontalIcon className="w-4" />
             More filters
-          </label>
+          </button>
           <div className="form-control">
             <label className="cursor-pointer label">
-              <input type="checkbox" className="toggle toggle-primary" />
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                onChange={ev => {
+                  return applyFilter({ featured: ev.target.checked });
+                }}
+              />
               <span className="label-text mx-4">Featured?</span>
             </label>
           </div>
@@ -51,14 +94,23 @@ const FilterBar = ({ properties }: Props) => {
               ref={searchRef}
               className="input input-lg input-bordered border-1 w-full"
               placeholder="Enter a city, state, address or ZIP code"
+              onChange={() => setSearch(searchRef.current?.value)}
             />
             <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">/</kbd>
           </div>
-          <select className="select select-lg select-bordered" defaultValue={0}>
-            <option disabled>Property type</option>
-            <option>House</option>
-            <option>Appartement</option>
-            <option>Bachelor</option>
+          <select
+            className="select select-lg select-bordered"
+            defaultValue={0}
+            onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
+          >
+            <option disabled value={0}>
+              Property type
+            </option>
+            <option value="House">House</option>
+            <option value="Appartement">Appartement</option>
+            <option value="Bachelor">Bachelor</option>
+            <option value="Condo">Condo</option>
+            <option value="Land">Land</option>
           </select>
           <div className="join">
             <button className="join-item btn btn-square btn-outline">
@@ -83,4 +135,4 @@ const FilterBar = ({ properties }: Props) => {
     </div>
   );
 };
-export default FilterBar;
+export default PropertyFilters;

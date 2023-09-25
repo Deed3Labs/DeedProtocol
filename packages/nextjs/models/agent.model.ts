@@ -1,6 +1,7 @@
 export type AgentModel = {
   id: string;
   name: string;
+  address: string;
   profile: string;
   cover: string;
   phone: string;
