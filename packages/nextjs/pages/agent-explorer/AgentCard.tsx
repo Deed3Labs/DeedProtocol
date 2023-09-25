@@ -8,7 +8,7 @@ type Props = {
   agent: AgentModel;
 };
 
-export default function PropertyCard({ agent }: Props) {
+export default function AgentCard({ agent }: Props) {
   const followers = useMemo(() => {
     if (agent.followers >= 1000) {
       return (agent.followers / 1000).toFixed(1) + "K";
