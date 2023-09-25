@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import AgentCard from "./AgentCard";
 import FilterBar from "./FilterBar";
 import { debounce } from "lodash";
 import { uniqueId } from "lodash";
 import { NextPage } from "next";
-import { PropertyModel } from "~~/models/property.model";
-import PropertyCard from "~~/pages/property-explorer/PropertyCard";
+import { AgentModel } from "~~/models/agent.model";
 
-const PropertyExplorer: NextPage = () => {
-  const [properties, setProperties] = useState<PropertyModel[]>([]);
+const AgentExplorer: NextPage = () => {
+  const [agents, setAgents] = useState<AgentModel[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(20);
   const [isLast, setIsLast] = useState(false);
@@ -15,7 +15,7 @@ const PropertyExplorer: NextPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadMoreProperties();
+    loadMoreAgents();
   }, []);
 
   useEffect(() => {
@@ -32,48 +32,45 @@ const PropertyExplorer: NextPage = () => {
       const { bottom } = container.getBoundingClientRect();
       const { innerHeight } = window;
       if (bottom <= innerHeight) {
-        loadMoreProperties();
+        loadMoreAgents();
       }
     }
   };
 
-  const loadMoreProperties = () => {
+  const loadMoreAgents = () => {
     setCurrentPage(prev => prev + 1);
-    const radius = 10;
-    const center = { lat: 40, lng: -100 };
     for (let index = currentPage * pageSize; index < currentPage * pageSize + pageSize; index++) {
-      properties.push({
-        id: uniqueId("property-"),
-        name: `Property ${index}`,
-        description: `This is the description for property ${index}`,
-        photos: [
-          `https://picsum.photos/seed/${Math.random() * 1000}/350/400`,
-          `https://picsum.photos/seed/${Math.random() * 1000}/350/400`,
-          `https://picsum.photos/seed/${Math.random() * 1000}/350/400`,
-        ],
-        address: `${Math.round(Math.random() * 1000)} Fake Street, US 92401`,
-        price: Math.round(Math.random() * 1000000),
-        latitude: center.lat + (Math.random() - 0.5) * (radius * 2),
-        longitude: center.lng + (Math.random() - 0.5) * (radius * 2),
-        type: "House",
+      agents.push({
+        id: uniqueId("agent-"),
+        name: `Agent ${index}`,
+        followers: Math.round(Math.random() * 1000000),
+        // Random between image 0 to 78
+        profile: `https://randomuser.me/api/portraits/${Math.random() === 1 ? "men" : "women"}/${Math.floor(
+          Math.random() * 79,
+        )}.jpg`,
+        cover: `https://picsum.photos/seed/${Math.random() * 1000}/500/300`,
+        email: "random@gmail.com",
+        phone: "1234567890",
       });
     }
     if (currentPage === 5) {
       // Fake 5 pages
       setIsLast(true);
     }
-    setProperties([...properties]);
+    setAgents([...agents]);
   };
+
   return (
     <div className="container" ref={containerRef}>
-      <FilterBar properties={properties} />
+      <FilterBar />
       <div className="flex flex-wrap gap-8 items-center justify-center">
-        {properties.map(property => (
-          <PropertyCard key={property.id} property={property} />
+        {agents.map(agent => (
+          <AgentCard key={agent.id} agent={agent} />
         ))}
+        F
       </div>
     </div>
   );
 };
 
-export default PropertyExplorer;
+export default AgentExplorer;

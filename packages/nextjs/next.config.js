@@ -10,7 +10,7 @@ const nextConfig = {
     ignoreDuringBuilds: process.env.NEXT_PUBLIC_IGNORE_BUILD_ERROR === "true",
   },
   images: {
-    domains: ["picsum.photos", "www.figma.com", "unpkg.com"],
+    domains: ["picsum.photos", "www.figma.com", "unpkg.com", "xsgames.co", "randomuser.me"],
   },
 };
 

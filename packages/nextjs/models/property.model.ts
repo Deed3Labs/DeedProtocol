@@ -1,5 +1,5 @@
 export interface PropertyModel {
-  id: number;
+  id: string;
   name: string;
   price: number;
   type: string;
