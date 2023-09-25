@@ -15,13 +15,10 @@ const Filters = ({ properties }: Props) => {
   const [mapOpened, setMapOpened] = React.useState(false);
   const Map = useMemo(
     () =>
-      dynamic(
-        () => import("./Map"), // replace '@components/map' with your component's location
-        {
-          loading: () => <p>A map is loading</p>,
-          ssr: false, // This line is important. It's what prevents server-side render
-        },
-      ),
+      dynamic(() => import("~~/components/Map"), {
+        loading: () => <p>A map is loading</p>,
+        ssr: false,
+      }),
     [properties],
   );
 
