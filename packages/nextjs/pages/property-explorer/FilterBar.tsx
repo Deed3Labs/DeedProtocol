@@ -1,11 +1,10 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import Navbar from "~~/components/Navbar";
 import { useKeyboardShortcut } from "~~/hooks/utils/useKeyboardShortcut";
-import { FilterModel, ListingType } from "~~/models/filter.model";
 import { PropertyModel } from "~~/models/property.model";
 import PropertyCard from "~~/pages/property-explorer/PropertyCard";
 
@@ -15,7 +14,6 @@ type Props = {
 
 const FilterBar = ({ properties }: Props) => {
   const [mapOpened, setMapOpened] = React.useState(false);
-  const [filter, setFilter] = useState<FilterModel>();
   const Map = useMemo(
     () =>
       dynamic(() => import("~~/components/Map"), {

@@ -1,21 +1,20 @@
 import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { DynamicWidget } from "@dynamic-labs/sdk-react";
-import { Bars3Icon, HomeModernIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FaucetButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  const router = useRouter();
-  const isActive = router.pathname === href;
-  return (
-    <Link href={href} passHref className={`${isActive ? "bg-neutral" : ""} `}>
-      {children}
-    </Link>
-  );
-};
+// const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
+//   const router = useRouter();
+//   const isActive = router.pathname === href;
+//   return (
+//     <Link href={href} passHref className={`${isActive ? "bg-neutral" : ""} `}>
+//       {children}
+//     </Link>
+//   );
+// };
 
 /**
  * Site header
