@@ -26,7 +26,12 @@ const propertyIcon = L.divIcon({
 const Map = ({ markers, drawPopup }: Props) => {
   return (
     <>
-      <MapContainer center={[40, -100]} zoom={5} style={{ height: 750, width: "calc(100%-32px)", margin: "16px" }} id="map">
+      <MapContainer
+        center={[40, -100]}
+        zoom={5}
+        style={{ height: 750, width: "calc(100%-32px)", margin: "16px" }}
+        id="map"
+      >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" noWrap={true} />
         {markers.map(marker => (
           <Marker key={"marker-" + marker.id} position={[marker.latitude, marker.longitude]} icon={propertyIcon}>
