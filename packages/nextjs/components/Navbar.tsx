@@ -8,7 +8,7 @@ const Navbar = () => {
   const type = searchParams.get("type");
 
   return (
-    <div className="MainFilterOptions justify-start items-center gap-6 inline-flex font-['Krona_One'] text-2xl">
+    <div className="MainFilterOptions justify-start items-center gap-6 inline-flex font-['KronaOne'] text-2xl">
       <Link
         className={(type !== "all" && type) || pathname === "/agent-explorer" ? "opacity-40" : ""}
         href="/property-explorer?type=all"

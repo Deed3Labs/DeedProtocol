@@ -1,8 +1,20 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-@import url("./fonts/KronaOne-Regular.ttf");
-@import url("./fonts/Montserrat-Regular.ttf");
+
+@font-face {
+  font-family: "KronaOne";
+  src: url("./fonts/Krona_One/Krona_One-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("./fonts/Montserrat/Montserrat-VariableFont_wght.ttf");
+  font-weight: normal;
+  font-style: italic;
+}
 
 :root,
 [data-theme] {

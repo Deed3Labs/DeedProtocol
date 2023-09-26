@@ -435,6 +435,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^6.4.2
     "@fortawesome/react-fontawesome": ^0.2.0
     "@heroicons/react": ^2.0.11
+    "@next/font": ^13.5.3
     "@rainbow-me/rainbowkit": ^0.11.0
     "@trivago/prettier-plugin-sort-imports": ^4.1.1
     "@types/leaflet": ^1.9.4
@@ -1842,6 +1843,13 @@ __metadata:
   dependencies:
     glob: 7.1.7
   checksum: 15d3b5913a56d40c7ad33c77f5285a2388a3a4b4da2eb80a3899ac4b871c7bfca74fd45f98fcac3d6a91c8dce738da2661cf71e7e3116a14d5da0d5b68939e8d
+  languageName: node
+  linkType: hard
+
+"@next/font@npm:^13.5.3":
+  version: 13.5.3
+  resolution: "@next/font@npm:13.5.3"
+  checksum: cadd3f3d0d6016388090daa677e2eac5b5522a0c197fa3d11cb674cf2ca221e1d0c47786bcdc9486ce32dfd9c29fede2ca36789fffee78f130fbda9c91fdb1b5
   languageName: node
   linkType: hard
 
