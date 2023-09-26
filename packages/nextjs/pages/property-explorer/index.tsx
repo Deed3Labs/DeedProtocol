@@ -75,7 +75,7 @@ const PropertyExplorer: NextPage = () => {
     <div className="container" ref={containerRef}>
       <PropertyFilters properties={properties} onFilter={onFilter} />
 
-      <div className="flex flex-wrap gap-8 items-center justify-center">
+      <div className="flex flex-wrap gap-8 items-center justify-center max-w-full">
         {properties.map(property => (
           <PropertyCard key={property.id} property={property} />
         ))}

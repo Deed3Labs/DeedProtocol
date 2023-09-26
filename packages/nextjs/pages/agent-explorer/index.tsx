@@ -17,6 +17,10 @@ const AgentExplorer: NextPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    loadMoreAgents();
+  }, []);
+
+  useEffect(() => {
     const handleDebouncedScroll = debounce(() => !isLast && handleScroll(), 100);
     window.addEventListener("scroll", handleDebouncedScroll);
     return () => {
@@ -71,7 +75,7 @@ const AgentExplorer: NextPage = () => {
   return (
     <div className="container" ref={containerRef}>
       <AgentFilters onFilter={onFilter} />
-      <div className="flex flex-wrap gap-8 items-center justify-center">
+      <div className="flex flex-wrap gap-2 lg:gap-8 items-center justify-center max-w-full">
         {agents.map(agent => (
           <AgentCard key={agent.id} agent={agent} />
         ))}

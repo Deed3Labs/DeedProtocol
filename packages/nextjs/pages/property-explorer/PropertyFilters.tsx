@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
-import Navbar from "~~/components/Navbar";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
@@ -32,7 +31,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
       dynamic(() => import("~~/components/Map"), {
         loading: () => (
           <div className="w-full flex flex-row justify-center">
-            <span className="loading loading-bars loading-lg my-8 "></span>
+            <span className="loading loading-bars loading-lg"></span>
           </div>
         ),
         ssr: false,
@@ -69,10 +68,9 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   });
 
   return (
-    <div className="Wrapper flex flex-col w-full my-8">
-      <Navbar />
+    <div className="Wrapper flex flex-col w-full mb-8">
       <div className="filters">
-        <div className="flex flex-wrap justify-evenly items-center my-10 gap-8 w-full ">
+        <div className="flex flex-wrap justify-evenly items-center gap-8 w-full ">
           <button className="btn btn-lg btn-outline">
             <AdjustmentsHorizontalIcon className="w-4" />
             More filters

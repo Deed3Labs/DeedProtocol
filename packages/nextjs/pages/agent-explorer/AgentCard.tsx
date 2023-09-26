@@ -25,18 +25,19 @@ export default function AgentCard({ agent }: Props) {
     <>
       {agent && (
         <figure
-          className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] w-[500px]"
+          className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] w-[500px] max-w-full"
           key={agent.id}
         >
           <div
-            className="flex flex-col justify-end"
+            className="flex flex-col justify-end max-w-full"
             style={{
               backgroundImage: `url(${agent.cover})`,
               height: "200px",
               width: "480px",
+              maxWidth: "100%",
             }}
           >
-            <div className="m-2 w-fit border-2 border-double border-black border-opacity-50">
+            <div className="m-2 w-fit border-2 border-double border-black border-opacity-50 max-w-full">
               <Image
                 src={agent.profile}
                 alt="Picture"

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
-import Navbar from "~~/components/Navbar";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 
@@ -39,10 +38,9 @@ const AgentFilters = ({ onFilter }: Props) => {
   });
 
   return (
-    <div className="Wrapper flex flex-col w-full my-8">
-      <Navbar />
+    <div className="Wrapper flex flex-col w-full mb-8">
       <div className="filters">
-        <div className="flex flex-wrap justify-evenly items-center my-10 gap-8 w-full ">
+        <div className="flex flex-wrap justify-evenly items-center gap-8 w-full ">
           <button className="btn btn-lg btn-outline">
             <AdjustmentsHorizontalIcon className="w-4" />
             More filters

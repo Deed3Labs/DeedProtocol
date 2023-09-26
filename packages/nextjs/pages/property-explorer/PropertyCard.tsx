@@ -10,8 +10,16 @@ export default function PropertyCard({ property }: Props) {
   return (
     <>
       {property && (
-        <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat']">
-          <Image src={property.photos[0]} alt="Picture" height={400} width={350} />
+        <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] max-w-full">
+          <Image
+            src={property.photos[0]}
+            alt="Picture"
+            height={400}
+            width={350}
+            style={{
+              maxWidth: "100%",
+            }}
+          />
           <div className="m-4">
             <span className="flex flex-h w-fit gap-2">
               <span className="text-secondary-content">Username.eth</span>
@@ -19,7 +27,7 @@ export default function PropertyCard({ property }: Props) {
             </span>
             <h2 className="text-2xl font-bold">{property.address}</h2>
           </div>
-          <div className="bg-neutral p-4 flex flex-row justify-evenly border border-white border-opacity-25">
+          <div className="bg-neutral p-4 flex flex-row justify-evenly border border-white border-opacity-25 flex-wrap">
             <div className="flex flex-col">
               <span className="text-secondary-content">PRICE</span>
               <span>
