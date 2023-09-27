@@ -50,15 +50,28 @@ p {
   --dynamic-connect-button-radius: 0;
 }
 
-.property-popup .leaflet-popup-content-wrapper {
-  padding: 0;
-  .leaflet-popup-content {
-    margin: 0;
-    color: #fafcff;
+/* Leaflet override */
+
+.marker-popup {
+  .leaflet-popup-content-wrapper {
+    padding: 0;
+    .leaflet-popup-content {
+      margin: 0;
+      color: #fafcff;
+      width: fit-content !important;
+    }
+  }
+
+  .leaflet-popup-close-button > span {
+    border-radius: 2px;
+    padding: 0 4px;
+    background: hsl(var(--b1));
+    color: hsl(var(--bc));
   }
 }
 
-.property-icon {
+.property-icon,
+.agent-icon {
   .marker-pin {
     width: 30px;
     height: 30px;

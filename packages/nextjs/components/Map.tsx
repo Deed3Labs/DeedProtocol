@@ -1,41 +1,48 @@
 "use client";
 
-import * as L from "leaflet";
+import { useEffect } from "react";
+import { DivIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { MarkerModel } from "~~/models/marker.model";
+import { IMarker } from "~~/models/marker.model";
 
 type Props = {
-  markers: MarkerModel[];
-  drawPopup?: (property: MarkerModel) => JSX.Element;
+  markers: IMarker[];
 };
 
-const propertyIcon = L.divIcon({
-  iconUrl: "assets/property-icon.svg",
+const defaultIcon = new DivIcon({
   className: "property-icon",
-  html: `<div class="marker-pin"></div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
-  <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z" clip-rule="evenodd" />
-</svg>
-
-`,
+  html: `<div class="marker-pin"></div>`,
   iconSize: [30, 42],
   iconAnchor: [15, 42],
   popupAnchor: [-3, -76],
 });
 
-const Map = ({ markers, drawPopup }: Props) => {
+const Map = ({ markers }: Props) => {
+  useEffect(() => {
+    console.log(window);
+    const map = document.getElementById("map");
+    // Scroll only if needed
+    if (map && window.scrollY + map.offsetTop + map.offsetHeight >= window.screen.height) {
+      window.scrollTo({ top: map.offsetTop, behavior: "smooth" });
+    }
+  }, []);
   return (
     <>
       <MapContainer
         center={[40, -100]}
         zoom={5}
-        style={{ height: 750, width: "calc(100%-32px)", margin: "16px" }}
+        style={{ height: 750, width: "calc(100%-32px)", maxHeight: "calc(100vh - 130px)", margin: "16px" }}
         id="map"
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" noWrap={true} />
         {markers.map(marker => (
-          <Marker key={"marker-" + marker.id} position={[marker.latitude, marker.longitude]} icon={propertyIcon}>
-            {drawPopup && <Popup className="property-popup">{drawPopup(marker)}</Popup>}
+          <Marker
+            key={"marker-" + marker.id}
+            position={[marker.latitude, marker.longitude]}
+            icon={new DivIcon(marker.icon) ?? defaultIcon}
+          >
+            {marker.popupContent && <Popup className="marker-popup">{marker.popupContent}</Popup>}
           </Marker>
         ))}
       </MapContainer>

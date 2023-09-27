@@ -39,6 +39,7 @@
     "react-fast-marquee": "^1.3.5",
     "react-hot-toast": "^2.4.0",
     "react-leaflet": "^4.2.1",
+    "react-leaflet-div-icon": "^1.1.0",
     "sass": "^1.68.0",
     "use-debounce": "^8.0.4",
     "usehooks-ts": "^2.7.2",

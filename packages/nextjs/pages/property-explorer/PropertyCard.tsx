@@ -10,7 +10,7 @@ export default function PropertyCard({ property }: Props) {
   return (
     <>
       {property && (
-        <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] max-w-full">
+        <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] max-w-full w-[350px]">
           <Image
             src={property.photos[0]}
             alt="Picture"

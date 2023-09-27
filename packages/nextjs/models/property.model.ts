@@ -1,4 +1,6 @@
-export interface PropertyModel {
+import { IMarker } from "./marker.model";
+
+export interface PropertyModel extends IMarker {
   id: string;
   name: string;
   price: number;
@@ -6,8 +8,6 @@ export interface PropertyModel {
   photos: string[];
   description: string;
   address: string;
-  latitude: number;
-  longitude: number;
 }
 
 export type ListingType = "Sale" | "Lease";

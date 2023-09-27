@@ -466,6 +466,7 @@ __metadata:
     react-fast-marquee: ^1.3.5
     react-hot-toast: ^2.4.0
     react-leaflet: ^4.2.1
+    react-leaflet-div-icon: ^1.1.0
     sass: ^1.68.0
     tailwindcss: ^3.1.8
     typescript: ^5.2.2
@@ -13566,6 +13567,20 @@ __metadata:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
+  languageName: node
+  linkType: hard
+
+"react-leaflet-div-icon@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "react-leaflet-div-icon@npm:1.1.0"
+  dependencies:
+    prop-types: ^15.5.10
+  peerDependencies:
+    leaflet: ^0.7.0
+    react: ^0.14.0 || ^15.0.0 || ^16.0.0-rc
+    react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0-rc
+    react-leaflet: ^0.11.5
+  checksum: b94894d27df1805c4bcd955dbe5d189f6f8fc204fae95ad400cadadfe88ed7d014b548e7e6338f667d98bff526d7272ab01fb6104239b0f882b94f805d4b18da
   languageName: node
   linkType: hard
 

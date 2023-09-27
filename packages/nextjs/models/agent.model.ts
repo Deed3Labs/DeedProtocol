@@ -1,4 +1,6 @@
-export type AgentModel = {
+import { IMarker } from "./marker.model";
+
+export interface AgentModel extends IMarker {
   id: string;
   name: string;
   address: string;
@@ -7,4 +9,4 @@ export type AgentModel = {
   phone: string;
   email: string;
   followers: number;
-};
+}

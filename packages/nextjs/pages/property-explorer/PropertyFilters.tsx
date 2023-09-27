@@ -8,7 +8,6 @@ import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { ListingType, PropertyModel, PropertyType } from "~~/models/property.model";
-import PropertyCard from "~~/pages/property-explorer/PropertyCard";
 
 type Props = {
   properties: PropertyModel[];
@@ -127,9 +126,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
           </div>
         </div>
       </div>
-      {mapOpened && (
-        <Map markers={properties} drawPopup={property => <PropertyCard property={property as PropertyModel} />} />
-      )}
+      {mapOpened && <Map markers={properties} />}
     </div>
   );
 };
