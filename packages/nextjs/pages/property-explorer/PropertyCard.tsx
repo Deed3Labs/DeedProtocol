@@ -25,7 +25,9 @@ export default function PropertyCard({ property }: Props) {
               <span className="text-secondary-content">Username.eth</span>
               <CheckBadgeIcon className="w-4" />
             </span>
-            <h2 className="text-2xl font-bold">{property.address}</h2>
+            <h2 className="text-2xl font-bold truncate" title={property.address}>
+              {property.address}
+            </h2>
           </div>
           <div className="bg-neutral p-4 flex flex-row justify-evenly border border-white border-opacity-25 flex-wrap">
             <div className="flex flex-col">
