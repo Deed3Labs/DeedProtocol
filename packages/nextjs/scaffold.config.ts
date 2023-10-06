@@ -9,6 +9,8 @@ export type ScaffoldConfig = {
     onlyLocal: boolean;
   };
   walletAutoConnect: boolean;
+  dynamicEnvironementId: string | undefined;
+  appName: string;
 };
 
 const scaffoldConfig = {
@@ -39,6 +41,9 @@ const scaffoldConfig = {
    * 2. If user is not connected to any wallet:  On reload, connect to burner wallet if burnerWallet.enabled is true && burnerWallet.onlyLocal is false
    */
   walletAutoConnect: true,
+
+  dynamicEnvironementId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID,
+  appName: "Deed3.io",
 } satisfies ScaffoldConfig;
 
 export default scaffoldConfig;

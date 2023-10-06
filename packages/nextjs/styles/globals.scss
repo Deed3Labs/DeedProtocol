@@ -1,0 +1,98 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@font-face {
+  font-family: "KronaOne";
+  src: url("./fonts/Krona_One/Krona_One-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("./fonts/Montserrat/Montserrat-VariableFont_wght.ttf");
+  font-weight: normal;
+  font-style: italic;
+}
+
+:root,
+[data-theme] {
+  background: hsl(var(--b2));
+}
+
+body {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+p {
+  margin: 1rem 0;
+}
+
+.container {
+  max-width: 95% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.dynamic-shadow-dom {
+  --dynamic-border-radius: 0;
+  --dynamic-connect-button-radius: 0;
+}
+
+/* Leaflet override */
+
+.marker-popup {
+  .leaflet-popup-content-wrapper {
+    padding: 0;
+    .leaflet-popup-content {
+      margin: 0;
+      color: #fafcff;
+      width: fit-content !important;
+    }
+  }
+
+  .leaflet-popup-close-button > span {
+    border-radius: 2px;
+    padding: 0 4px;
+    background: hsl(var(--b1));
+    color: hsl(var(--bc));
+  }
+}
+
+.property-icon,
+.agent-icon {
+  .marker-pin {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: #000000;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+  }
+
+  // to align icon
+  svg {
+    position: absolute;
+    width: 22px;
+    font-size: 22px;
+    left: 0;
+    right: 0;
+    margin: 10px auto;
+    text-align: center;
+    color: white;
+  }
+}

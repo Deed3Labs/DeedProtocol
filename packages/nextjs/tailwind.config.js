@@ -7,6 +7,43 @@ module.exports = {
   daisyui: {
     themes: [
       {
+        scaffoldEthDark: {
+          primary: "#F9FBFF",
+          "primary-content": "#ffffff",
+          secondary: "#141414",
+          "secondary-content": "#9f9f9f",
+          accent: "#4969A6",
+          "accent-content": "#252525",
+          neutral: "#171717",
+          "neutral-content": "#385183",
+          "neutral-focus": "#242424",
+          "base-100": "#171717",
+          "base-200": "#0e0e0e",
+          "base-300": "#212638",
+          "base-content": "#F9FBFF",
+          info: "#385183",
+          success: "#34EEB6",
+          warning: "#FFCF72",
+          error: "#FF8863",
+
+          "--rounded-box": "0", // border radius rounded-box utility class, used in card and other large boxes
+          "--rounded-btn": "0", // border radius rounded-btn utility class, used in buttons and similar element
+          "--rounded-badge": "0", // border radius rounded-badge utility class, used in badges and similar
+          "--animation-btn": "0.25s", // duration of animation when you click on button
+          "--animation-input": "0.2s", // duration of animation for inputs like checkbox, toggle, radio, etc
+          "--btn-text-case": "uppercase", // set default text transform for buttons
+          "--btn-focus-scale": "0.95", // scale transform of button when you focus on it
+          "--border-btn": "1px", // border width of buttons
+          "--tab-border": "1px", // border width of tabs
+          "--tab-radius": "0", // border radius of tabs
+
+          ".tooltip": {
+            "--tooltip-tail": "6px",
+            "--tooltip-color": "hsl(var(--p))",
+          },
+        },
+      },
+      {
         scaffoldEth: {
           primary: "#93BBFB",
           "primary-content": "#212638",
@@ -25,60 +62,16 @@ module.exports = {
           warning: "#FFCF72",
           error: "#FF8863",
 
-          "--rounded-btn": "9999rem",
-
-          ".tooltip": {
-            "--tooltip-tail": "6px",
-          },
-        },
-      },
-      {
-        scaffoldEthDark: {
-          primary: "#212638",
-          "primary-content": "#F9FBFF",
-          secondary: "#2A3655",
-          "secondary-content": "#F9FBFF",
-          accent: "#4969A6",
-          "accent-content": "#F9FBFF",
-          neutral: "#F9FBFF",
-          "neutral-content": "#385183",
-          "base-100": "#385183",
-          "base-200": "#2A3655",
-          "base-300": "#212638",
-          "base-content": "#F9FBFF",
-          info: "#385183",
-          success: "#34EEB6",
-          warning: "#FFCF72",
-          error: "#FF8863",
-
-          "--rounded-btn": "9999rem",
-
-          ".tooltip": {
-            "--tooltip-tail": "6px",
-            "--tooltip-color": "hsl(var(--p))",
-          },
-        },
-      },
-      {
-        exampleUi: {
-          primary: "#000000",
-          "primary-content": "#ffffff",
-          secondary: "#FF6644",
-          "secondary-content": "#212638",
-          accent: "#93BBFB",
-          "accent-content": "#212638",
-          neutral: "#f3f3f3",
-          "neutral-content": "#212638",
-          "base-100": "#ffffff",
-          "base-200": "#f1f1f1",
-          "base-300": "#d0d0d0",
-          "base-content": "#212638",
-          info: "#93BBFB",
-          success: "#34EEB6",
-          warning: "#FFCF72",
-          error: "#FF8863",
-
-          "--rounded-btn": "9999rem",
+          "--rounded-box": "0", // border radius rounded-box utility class, used in card and other large boxes
+          "--rounded-btn": "0", // border radius rounded-btn utility class, used in buttons and similar element
+          "--rounded-badge": "0", // border radius rounded-badge utility class, used in badges and similar
+          "--animation-btn": "0.25s", // duration of animation when you click on button
+          "--animation-input": "0.2s", // duration of animation for inputs like checkbox, toggle, radio, etc
+          "--btn-text-case": "uppercase", // set default text transform for buttons
+          "--btn-focus-scale": "0.95", // scale transform of button when you focus on it
+          "--border-btn": "1px", // border width of buttons
+          "--tab-border": "1px", // border width of tabs
+          "--tab-radius": "0", // border radius of tabs
 
           ".tooltip": {
             "--tooltip-tail": "6px",
