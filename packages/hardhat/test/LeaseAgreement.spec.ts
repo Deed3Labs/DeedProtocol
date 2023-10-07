@@ -51,6 +51,7 @@ describe("LeaseAgreement", function () {
       .connect(contractOwner)
       .deploy(leaseNFT.address, leaseToken.address, deedNFT.address, subNFT.address)) as LeaseAgreement;
     await leaseAgreement.deployed();
+    await leaseNFT.connect(contractOwner).setLeaseAgreementAddress(leaseAgreement.address);
     //This deed id will be 1
     await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "House", 0);
     await subNFT.connect(deedOwner).mintSubdivision(subOwner.address, 1, 1);
@@ -390,7 +391,10 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(lessee).payRent(0, totalExpectedBalance);
 
       //Act
-      await leaseAgreement.connect(deedOwner)._distributeRent(0, totalExpectedBalance);
+      expect(await leaseAgreement.connect(deedOwner)._distributeRent(0, totalExpectedBalance)).to.emit(
+        leaseAgreement,
+        "RentDistributed",
+      );
       //Assert
       const agentAmount = 0.1 * totalExpectedBalance;
       expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance - agentAmount);
@@ -490,7 +494,7 @@ describe("LeaseAgreement", function () {
       const depositManagerLeaseBalance = await depositManager.leaseDeposits(0);
       expect(depositManagerLeaseBalance).to.equal(0);
       expect(await leaseToken.balanceOf(depositManager.address)).to.equal(0);
-      await leaseNFT.connect(deedOwner).burn(0);
+
       await expect(leaseNFT.ownerOf(0)).to.be.revertedWith("ERC721: invalid token ID");
     });
     it("Should revert if sender isn't lessor", async function () {

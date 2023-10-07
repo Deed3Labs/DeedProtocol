@@ -25,9 +25,14 @@ contract DepositManager{
     leaseDeposits[_leaseId] -= _amount; 
   }
   function withdrawFromDeposit(uint _leaseId,uint32 _amount,address _to) external{
-  require(msg.sender==leaseAgreementAddress,"Sender must be leaseAgreement");
-  require(_amount<= leaseDeposits[_leaseId],"Withdraw amount exceeds lease balance");
+  require(msg.sender == leaseAgreementAddress,"Sender must be leaseAgreement");
+  require(_amount<= leaseDeposits[_leaseId],"Withdraw amount exceeds lease balance");  
   paymentToken.transfer(_to,_amount);
   removeLeaseBalance(_leaseId,_amount);
+  }
+
+  function removeLeaseBalance(uint256 _leaseid) external{
+    require(msg.sender == leaseAgreementAddress);
+    delete leaseDeposits[_leaseid];
   }
 }   
