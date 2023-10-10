@@ -89,7 +89,7 @@ contract LeaseAgreement is ReentrancyGuard{
         require(_gracePeriod>= 3);
         require(_latePaymentFee>=0 && _latePaymentFee<=15);
         bool isDeedOwner = _verifyDeedOwnership(msg.sender, _propertyTokenId);
-        bool isSubdivisionOwner = _verifySubdivisionOwnership(/*msg.sender, */ _propertyTokenId);
+        bool isSubdivisionOwner = _verifySubdivisionOwnership(msg.sender,  _propertyTokenId);
         require(isDeedOwner || isSubdivisionOwner, "LeaseAgreement: Lessor must own the property NFT");
         uint256 leaseId = leaseCounter;
         leaseCounter++;
@@ -166,10 +166,10 @@ contract LeaseAgreement is ReentrancyGuard{
         RentPaymentInfo memory rentInfo = _calculateRentPaymentInfo(_leaseId);
         require(_amount >= rentInfo.totalBalance, "Insufficient amount for rent balance payment");
         if(rentInfo.unpaidMonths==0){
-        lease.dates.rentDueDate += 30 days;
+        lease.dates.rentDueDate += 30.5 days;
         }
         else{
-        lease.dates.rentDueDate += (rentInfo.unpaidMonths)*(30 days);
+        lease.dates.rentDueDate += (rentInfo.unpaidMonths)*(30.5 days);
         }
         paymentToken.transferFrom(msg.sender, address(depositManager), _amount);
         depositManager.addLeaseBalance(_leaseId,_amount);
@@ -262,7 +262,7 @@ contract LeaseAgreement is ReentrancyGuard{
         }
     }
 
-    function _verifySubdivisionOwnership(uint256 _propertyTokenId) internal view returns (bool) {
-        return subdivisionNFT.isOwnerOfSubdivision(_propertyTokenId);
+    function _verifySubdivisionOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
+        return subdivisionNFT.isOwnerOfSubdivision(_owner,_propertyTokenId);
     }
 }

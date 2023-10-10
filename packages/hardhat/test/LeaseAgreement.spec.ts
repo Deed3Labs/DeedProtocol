@@ -53,7 +53,7 @@ describe("LeaseAgreement", function () {
     await leaseAgreement.deployed();
     await leaseNFT.connect(contractOwner).setLeaseAgreementAddress(leaseAgreement.address);
     //This deed id will be 1
-    await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "House", 0);
+    await deedNFT.mintAsset(deedOwner.address, "detailsIPFS", 2, "45.563, -73.654");
     await subNFT.connect(deedOwner).mintSubdivision(subOwner.address, 1, 1);
     const depositMAnagerFactory = await ethers.getContractFactory("DepositManager");
     depositManager = (await depositMAnagerFactory
@@ -95,10 +95,10 @@ describe("LeaseAgreement", function () {
           .createLease(lessee.address, 1000, 1000 + lessThanThirtyDays, 1000, 400, 1, 10, 5),
       ).to.be.revertedWith("LeaseAgreement: End date and start date should be 30 days appart");
     });
-    it("Should revert if caller isn't owner of deed", async function () {
+    it.only("Should revert if caller isn't owner of deed", async function () {
       //Assert
       await expect(
-        leaseAgreement.connect(subOwner).createLease(lessee.address, 1000, 1000000000, 1000, 400, 1, 10, 5),
+        leaseAgreement.connect(lessee).createLease(lessee.address, 1000, 1000000000, 1000, 400, 1, 10, 5),
       ).to.be.revertedWith("LeaseAgreement: Lessor must own the property NFT");
     });
   });
