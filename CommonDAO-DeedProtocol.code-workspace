@@ -9,6 +9,10 @@
       "path": "./packages/hardhat"
     },
     {
+      "name": "Subgraph",
+      "path": "./packages/subgraph"
+    },
+    {
       "name": "Root",
       "path": "."
     },
