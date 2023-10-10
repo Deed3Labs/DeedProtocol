@@ -21,6 +21,7 @@ contract DeedNFT is ERC721, AccessControl {
         CommercialEquipment
     }
     event DeedMinted(DeedInfo _deedInfo);
+
     constructor() ERC721("DeedNFT", "DEED") {
         _nextTokenId = 1;
         _setupRole(VALIDATOR_ROLE, msg.sender);
@@ -36,16 +37,17 @@ contract DeedNFT is ERC721, AccessControl {
         // require(_to != address(0), "invalid address");
         _mint(_to, _nextTokenId);
         DeedInfo storage deedInfo = deedInfoMap[_nextTokenId];
-        deedInfo.ipfsDetailsHash=_ipfsDetailsHash;
-        deedInfo.assetType=_assetType;
-        deedInfo.latLong= latLong;
+        deedInfo.ipfsDetailsHash = _ipfsDetailsHash;
+        deedInfo.assetType = _assetType;
+        deedInfo.latLong = latLong;
         _nextTokenId = _nextTokenId + 1;
         emit DeedMinted(deedInfo);
     }
+
     function setPrice(uint256 _deedId, uint32 _newPrice) public {
-        require(msg.sender == ownerOf(_deedId),"ERC721: Must be owner of deedNFT to set price");
+        require(msg.sender == ownerOf(_deedId), "ERC721: Must be owner of deedNFT to set price");
         DeedInfo storage deedInfo = deedInfoMap[_deedId];
-        deedInfo.price=_newPrice;
+        deedInfo.price = _newPrice;
     }
 
     function setIpfsDetailsHash(uint256 _tokenId, string memory _ipfsDetailsHash) internal virtual {
@@ -60,7 +62,7 @@ contract DeedNFT is ERC721, AccessControl {
         deedInfo.assetType = _assetType;
     }
 
-    function getDeedInfo(uint256 _tokenId) public view  returns (DeedInfo memory) {
+    function getDeedInfo(uint256 _tokenId) public view returns (DeedInfo memory) {
         require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent token");
         return deedInfoMap[_tokenId];
     }

@@ -14,6 +14,7 @@ contract SubdivisionNFT is ERC1155, AccessControl {
     DeedNFT public deedNFT;
 
     event subdivisionMinted(uint256 _subdivisionId, uint256 _deedId);
+
     constructor(string memory _uri, address _deedNFT) ERC1155(_uri) {
         require(_deedNFT != address(0), "Invalid DeedNFT address");
         _nextsubTokenID = 1;
@@ -52,14 +53,14 @@ contract SubdivisionNFT is ERC1155, AccessControl {
         return _parentDeeds[subTokenID];
     }
 
-    function isOwnerOfSubdivision(address _owner,uint256 subTokenID) public view returns (bool) {
+    function isOwnerOfSubdivision(address _owner, uint256 subTokenID) public view returns (bool) {
         return balanceOf(_owner, subTokenID) > 0;
     }
 
     //Create ownerOfSubdivision(subDivID,address user);
     // function burn()require(msg.sender==ownerOf(Deed) && msg.sender == ownerOf(sub))
     function burnSubdivision(address account, uint256 subTokenID, uint256 amount) public {
-        require(isOwnerOfSubdivision(msg.sender,subTokenID) == true, "Must own this subNFT to burn it");
+        require(isOwnerOfSubdivision(msg.sender, subTokenID) == true, "Must own this subNFT to burn it");
         require(msg.sender == account, "Sender must be owner of specified account");
         _burn(account, subTokenID, amount);
     }
