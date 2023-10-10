@@ -8,7 +8,7 @@ import {
   RoleGranted,
   RoleRevoked,
   Transfer
-} from "../generated/Contract/Contract"
+} from "../generated/DeedNFT/DeedNFT"
 
 export function createApprovalEvent(
   owner: Address,

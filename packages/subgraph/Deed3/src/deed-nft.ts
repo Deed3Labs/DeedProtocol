@@ -6,7 +6,7 @@ import {
   RoleGranted as RoleGrantedEvent,
   RoleRevoked as RoleRevokedEvent,
   Transfer as TransferEvent
-} from "../generated/Contract/Contract"
+} from "../generated/DeedNFT/DeedNFT"
 import {
   Approval,
   ApprovalForAll,
