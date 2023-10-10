@@ -93,11 +93,11 @@ contract LeaseAgreement is ReentrancyGuard {
     ) external {
         require(_lessee != address(0), "LeaseAgreement: Invalid lessee address");
         require(_startDate < _endDate, "LeaseAgreement: Invalid start and end dates");
-        require(_endDate - _startDate > 1 * MONTH, "LeaseAgreement: End date and start date should be 1 month appart");
-        require(_gracePeriod >= 3);
-        require(_latePaymentFee >= 0 && _latePaymentFee <= 15);
-        bool isDeedOwner = verifyDeedOwnership(msg.sender, _propertyTokenId);
-        bool isSubdivisionOwner = verifySubdivisionOwnership(/*msg.sender, */ _propertyTokenId);
+        require(_endDate - _startDate > 1 * MONTH, "LeaseAgreement: End date and start date should be 30 days appart");
+        require(_gracePeriod>= 3);
+        require(_latePaymentFee>=0 && _latePaymentFee<=15);
+        bool isDeedOwner = _verifyDeedOwnership(msg.sender, _propertyTokenId);
+        bool isSubdivisionOwner = _verifySubdivisionOwnership(msg.sender,  _propertyTokenId);
         require(isDeedOwner || isSubdivisionOwner, "LeaseAgreement: Lessor must own the property NFT");
         uint256 leaseId = leaseCounter;
         leaseCounter++;
@@ -251,7 +251,7 @@ contract LeaseAgreement is ReentrancyGuard {
         }
     }
 
-    function verifySubdivisionOwnership(uint256 _propertyTokenId) internal view returns (bool) {
-        return subdivisionNFT.isOwnerOfSubdivision(_propertyTokenId);
+    function verifySubdivisionOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
+        return subdivisionNFT.isOwnerOfSubdivision(_owner,_propertyTokenId);
     }
 }
