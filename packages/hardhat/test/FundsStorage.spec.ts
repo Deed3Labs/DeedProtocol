@@ -1,18 +1,15 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Signer } from "ethers";
-import { FundStorage } from "../typechain/FundStorage";
-import { ERC20 } from "../typechain/ERC20"; // Import your ERC20 contract type here
+import { ERC20, FundStorage } from "../typechain-types";
 
 describe("FundStorage", function () {
   let fundStorage: FundStorage;
   let token: ERC20;
-  let owner: Signer;
   let addr1: Signer;
-  let addr2: Signer;
 
   beforeEach(async function () {
-    [owner, addr1, addr2] = await ethers.getSigners();
+    [addr1] = await ethers.getSigners();
 
     const TokenFactory = await ethers.getContractFactory("YourERC20Token"); // Replace with the actual ERC20 token contract name
     token = (await TokenFactory.deploy()) as ERC20;

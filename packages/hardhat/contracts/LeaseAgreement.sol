@@ -25,11 +25,16 @@ contract LeaseAgreement is ReentrancyGuard {
         uint256 distributableDate;
     }
 
+    struct Deposit {
+        uint256 amount;
+        bool paid;
+    }
+
     struct Lease {
         address lessor;
         address lessee;
         uint256 rentAmount;
-        uint256 securityDeposit;
+        Deposit securityDeposit;
         uint256 latePaymentFee;
         uint32 gracePeriod;
         LeaseDates dates;
@@ -37,7 +42,6 @@ contract LeaseAgreement is ReentrancyGuard {
         uint256 propertyTokenId;
         address agent;
         uint8 agentPercentage;
-        bool depositPaid;
         uint256 unclaimedRentAmount;
     }
 
@@ -86,7 +90,7 @@ contract LeaseAgreement is ReentrancyGuard {
         uint256 _startDate,
         uint256 _endDate,
         uint256 _rentAmount,
-        uint256 _securityDeposit,
+        uint256 _securityDepositAmount,
         uint256 _propertyTokenId,
         uint256 _latePaymentFee,
         uint32 _gracePeriod
@@ -107,11 +111,11 @@ contract LeaseAgreement is ReentrancyGuard {
         lease.dates.startDate = _startDate;
         lease.dates.endDate = _endDate;
         lease.rentAmount = _rentAmount;
-        lease.securityDeposit = _securityDeposit;
+        lease.securityDeposit.amount = _securityDepositAmount;
         lease.dates.rentDueDate = _startDate + 1 * MONTH;
         lease.extensionCount = 0;
         lease.propertyTokenId = _propertyTokenId;
-        lease.depositPaid = _securityDeposit == 0;
+        lease.securityDeposit.paid = _securityDepositAmount == 0;
         lease.latePaymentFee = _latePaymentFee;
         lease.gracePeriod = _gracePeriod;
         leaseNFT.mintToken(msg.sender, leaseId);
@@ -141,10 +145,10 @@ contract LeaseAgreement is ReentrancyGuard {
     function submitDeposit(uint256 leaseId) external nonReentrant {
         Lease storage lease = leases[leaseId];
         require(msg.sender == lease.lessee, "Only the lessee can submit the deposit");
-        require(!lease.depositPaid, "Security deposit already paid");
+        require(!lease.securityDeposit.paid, "Security deposit already paid");
 
-        fundsStorage.store(leaseId, paymentToken, lease.securityDeposit, msg.sender);
-        lease.depositPaid = true;
+        fundsStorage.store(leaseId, paymentToken, lease.securityDeposit.amount, msg.sender);
+        lease.securityDeposit.paid = true;
     }
 
     function setDueDate(uint256 _leaseId, uint256 _newDueDate) public {
@@ -161,7 +165,7 @@ contract LeaseAgreement is ReentrancyGuard {
     function payRent(uint256 _leaseId) external nonReentrant {
         Lease storage lease = leases[_leaseId];
         require(msg.sender == lease.lessee, "Only the lessee can pay rent");
-        require(lease.depositPaid, "Security deposit must be paid first");
+        require(lease.securityDeposit.paid, "Security deposit must be paid first");
 
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
         lease.unclaimedRentAmount += rentInfo.totalBalance;
@@ -215,7 +219,7 @@ contract LeaseAgreement is ReentrancyGuard {
         bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
 
         address recipient = shouldSendDepositToLessor ? lease.lessor : lease.lessee;
-        fundsStorage.widthdraw(leaseId, paymentToken, lease.securityDeposit, recipient);
+        fundsStorage.widthdraw(leaseId, paymentToken, lease.securityDeposit.amount, recipient);
 
         uint256 remainingBalance = fundsStorage.accountBalance(leaseId, paymentToken);
         if (remainingBalance > 0) {
