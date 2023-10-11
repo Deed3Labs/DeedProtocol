@@ -90,7 +90,7 @@ describe.only("LeaseAgreement", function () {
       expect(lease.lessor).to.equal(deedOwner.address);
       expect(lease.lessee).to.equal(lessee.address);
       expect(lease.rentAmount).to.equal(rentAmount);
-      expect(lease.propertyTokenId).to.equal(1);
+      expect(lease.propertyTokenId).to.equal(propertyTokenId);
       //TODO: Test dates
     });
 
@@ -190,6 +190,7 @@ describe.only("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -205,14 +206,14 @@ describe.only("LeaseAgreement", function () {
       expect((await leaseAgreement.leases(leaseId)).agent).to.equal(ethers.constants.AddressZero);
 
       // Act
-      expect(await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5)).to.emit(
+      expect(await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage)).to.emit(
         leaseAgreement,
         "AgentSet",
       );
 
       // Assert
       expect((await leaseAgreement.leases(leaseId)).agent).to.equal(agent.address);
-      expect((await leaseAgreement.leases(leaseId)).agentPercentage).to.equal(5);
+      expect((await leaseAgreement.leases(leaseId)).agentPercentage).to.equal(agentPercentage);
     });
 
     it("Should revert if caller isn't lessor", async function () {
@@ -248,6 +249,7 @@ describe.only("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const agentPercentage = 101;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -262,7 +264,7 @@ describe.only("LeaseAgreement", function () {
         );
 
       // Act
-      const act = () => leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 101);
+      const act = () => leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
 
       // Assert
       await expect(act()).to.be.rejectedWith("[Lease Agreement] Invalid agent percentage");
@@ -276,6 +278,7 @@ describe.only("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -288,10 +291,10 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       // Assert
       expect((await leaseAgreement.leases(leaseId)).agent).to.equal(agent.address);
-      expect((await leaseAgreement.leases(leaseId)).agentPercentage).to.equal(5);
+      expect((await leaseAgreement.leases(leaseId)).agentPercentage).to.equal(agentPercentage);
 
       // Act
       await expect(leaseAgreement.connect(deedOwner).removeAgent(leaseId)).to.emit(leaseAgreement, "AgentRemoved");
@@ -306,6 +309,7 @@ describe.only("LeaseAgreement", function () {
       const latePayementFee = 10;
       const gracePeriod = 5;
       const leaseId = 0;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -318,7 +322,7 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
 
       // Act
       const act = () => leaseAgreement.connect(subOwner).removeAgent(leaseId);
@@ -335,6 +339,7 @@ describe.only("LeaseAgreement", function () {
       const latePayementFee = 10;
       const gracePeriod = 5;
       const leaseId = 0;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -347,7 +352,7 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), depositAmount);
 
       // Act
@@ -368,6 +373,7 @@ describe.only("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -380,7 +386,7 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
 
       // Act
       const act = () => leaseAgreement.connect(subOwner).submitDeposit(leaseId);
@@ -395,6 +401,7 @@ describe.only("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -407,7 +414,7 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
 
@@ -426,6 +433,7 @@ describe.only("LeaseAgreement", function () {
       const gracePeriod = 5;
       const rentAmount = 1000;
       const securityDepositAmount = 400000;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -438,7 +446,7 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
 
       // Act
       const act = () => leaseAgreement.connect(lessee).submitDeposit(leaseId);
@@ -453,9 +461,11 @@ describe.only("LeaseAgreement", function () {
   describe("calculateRentPaymentInfo", function () {
     it("Should return the right calculatedRentAmount with extra fee if late", async function () {
       // Arrange
+      const leaseId = 0;
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const agentPercentage = 5;
       //This creates a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
       //to deed tokenID1 that belongs to deedOwner
       await leaseAgreement
@@ -470,15 +480,15 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(0, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), depositAmount);
-      await leaseAgreement.connect(lessee).submitDeposit(0);
+      await leaseAgreement.connect(lessee).submitDeposit(leaseId);
 
       //Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 3);
 
       // Act
-      const info = await leaseAgreement.connect(lessee).calculateRentPaymentInfo(0);
+      const info = await leaseAgreement.connect(lessee).calculateRentPaymentInfo(leaseId);
 
       // Assert
       expect(info.rentAmount).to.equal(1650);
@@ -495,6 +505,7 @@ describe.only("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const agentPercentage = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -507,7 +518,7 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, 5);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
 
@@ -527,8 +538,8 @@ describe.only("LeaseAgreement", function () {
   describe("payRent", function () {
     it("Should transfer the right calculatedRentAmount to the contract and adjust rentDueDate", async function () {
       // Arrange
-      const agentPercentage = 10;
       const leaseId = 0;
+      const agentPercentage = 10;
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
@@ -569,6 +580,7 @@ describe.only("LeaseAgreement", function () {
 
     it("Should transfer the right calculatedRentAmount to the contract and adjust rentDueDate but with late payment", async function () {
       // Arrange
+      const leaseId = 0;
       const agentPercentage = 10;
       const propertyTokenId = 1;
       const latePayementFee = 10;
@@ -587,14 +599,13 @@ describe.only("LeaseAgreement", function () {
           latePayementFee,
           gracePeriod,
         );
-      await leaseAgreement.connect(deedOwner).setAgent(0, agent.address, agentPercentage);
+      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), depositAmount);
-      await leaseAgreement.connect(lessee).submitDeposit(0);
+      await leaseAgreement.connect(lessee).submitDeposit(leaseId);
       //Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 3);
       const totalExpectedBalance = 1650 * 3;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), totalExpectedBalance);
-      const leaseId = 0;
 
       // Act
       await leaseAgreement.connect(lessee).payRent(leaseId);
@@ -683,9 +694,19 @@ describe.only("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
+      const noDeposit = 0;
       await leaseAgreement
         .connect(deedOwner)
-        .createLease(lessee.address, startDate, endDate, rentAmount, 0, propertyTokenId, latePayementFee, gracePeriod);
+        .createLease(
+          lessee.address,
+          startDate,
+          endDate,
+          rentAmount,
+          noDeposit,
+          propertyTokenId,
+          latePayementFee,
+          gracePeriod,
+        );
       await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await time.increase(thirtyOneDaysInSeconds * 13);
       const totalExpectedBalance = 6150;
@@ -880,7 +901,10 @@ describe.only("LeaseAgreement", function () {
       );
 
       // Act
-      expect(await leaseAgreement.connect(deedOwner).terminateLease(0)).to.emit(leaseAgreement, "LeaseTerminated");
+      expect(await leaseAgreement.connect(deedOwner).terminateLease(leaseId)).to.emit(
+        leaseAgreement,
+        "LeaseTerminated",
+      );
 
       // Assert
       expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance);
@@ -921,7 +945,10 @@ describe.only("LeaseAgreement", function () {
       expect(await leaseNFT.ownerOf(0)).to.equal(deedOwner.address);
 
       // Act
-      expect(await leaseAgreement.connect(deedOwner).terminateLease(0)).to.emit(leaseAgreement, "LeaseTerminated");
+      expect(await leaseAgreement.connect(deedOwner).terminateLease(leaseId)).to.emit(
+        leaseAgreement,
+        "LeaseTerminated",
+      );
 
       // Assert
       expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance + depositAmount);
@@ -964,16 +991,21 @@ describe.only("LeaseAgreement", function () {
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), totalExpectedBalance);
       await leaseAgreement.connect(lessee).payRent(leaseId);
+
+      // Act
+      const act = () => leaseAgreement.connect(lessee).terminateLease(leaseId);
+
       // Assert
-      await expect(leaseAgreement.connect(lessee).terminateLease(0)).to.be.revertedWith(
-        "[Lease Agreement] Only the Lessor can terminate the lease",
-      );
+      await expect(act()).to.be.revertedWith("[Lease Agreement] Only the Lessor can terminate the lease");
     });
 
     it("Should revert if timestamp is before startDate", async function () {
       // Arrange
       const leaseId = 0;
       const agentPercentage = 10;
+      const propertyTokenId = 1;
+      const latePaymentFee = 10;
+      const gracePeriod = 5;
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -982,15 +1014,16 @@ describe.only("LeaseAgreement", function () {
           endDate,
           rentAmount,
           depositAmount,
-          1,
-          10,
-          5,
+          propertyTokenId,
+          latePaymentFee,
+          gracePeriod,
         );
       await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
       //Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds);
+
       // Act
       const act = () => leaseAgreement.connect(deedOwner).terminateLease(leaseId);
 
