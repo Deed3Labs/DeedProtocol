@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./DeedNFT.sol";
@@ -16,7 +16,7 @@ contract SubdivisionNFT is ERC1155, AccessControl {
     event subdivisionMinted(uint256 _subdivisionId, uint256 _deedId);
 
     constructor(string memory _uri, address _deedNFT) ERC1155(_uri) {
-        require(_deedNFT != address(0), "Invalid DeedNFT address");
+        require(_deedNFT != address(0), "[Lease Agreement] Invalid DeedNFT address");
         _nextsubTokenID = 1;
         _setupRole(MINTER_ROLE, _msgSender());
         deedNFT = DeedNFT(_deedNFT);

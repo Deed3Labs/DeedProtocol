@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 import { DeedNFT } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-describe.only("DeedNFT", function () {
+describe("DeedNFT", function () {
   // We define a fixture to reuse the same setup in every test.
   let contractOwner: SignerWithAddress;
   let deedOwner: SignerWithAddress;

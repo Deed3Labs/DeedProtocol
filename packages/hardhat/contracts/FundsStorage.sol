@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "hardhat/console.sol";
 
 contract FundStorage {
     event FundsStored(uint256 id, IERC20 token, uint256 amount, address sender, address caller, uint256 newBalance);
@@ -24,7 +26,7 @@ contract FundStorage {
      * @param _token TokenAddress
      * @return Balance
      */
-    function accountBalance(uint256 _id, IERC20 _token) external view returns (uint256) {
+    function balanceOf(uint256 _id, IERC20 _token) external view returns (uint256) {
         return accountsMapping[msg.sender][_id][address(_token)];
     }
 
@@ -36,8 +38,19 @@ contract FundStorage {
      * @param _sender Witch address to pull tokens from
      */
     function store(uint256 _id, IERC20 _token, uint256 _amount, address _sender) external {
+        require(
+            _token.allowance(_sender, address(this)) >= _amount,
+            string.concat(
+                "Funds Storage [store]: Not enough allowance for account ",
+                Strings.toString(_id),
+                " and amount ",
+                Strings.toString(_amount)
+            )
+        );
+
         _token.transferFrom(_sender, address(this), _amount);
         accountsMapping[msg.sender][_id][address(_token)] += _amount;
+
         emit FundsStored(_id, _token, _amount, _sender, msg.sender, accountsMapping[msg.sender][_id][address(_token)]);
     }
 
@@ -49,8 +62,19 @@ contract FundStorage {
      * @param _recipient Witch address to send tokens to
      */
     function widthdraw(uint256 _id, IERC20 _token, uint256 _amount, address _recipient) external {
+        require(
+            accountsMapping[msg.sender][_id][address(_token)] >= _amount,
+            string.concat(
+                "Funds Storage [widthdraw]: Not enough funds for account ",
+                Strings.toString(_id),
+                " and amount ",
+                Strings.toString(_amount)
+            )
+        );
+
         accountsMapping[msg.sender][_id][address(_token)] -= _amount;
         _token.transfer(_recipient, _amount);
+
         emit FundsWithdrawn(
             _id,
             _token,

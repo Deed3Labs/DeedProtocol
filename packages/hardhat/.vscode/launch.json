@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Hardhat individual test",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "test"
+      ]
+    }
+  ]
+}
