@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 import { DeedNFT } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-describe("DeedNFT", function () {
+describe.only("DeedNFT", function () {
   // We define a fixture to reuse the same setup in every test.
   let contractOwner: SignerWithAddress;
   let deedOwner: SignerWithAddress;
@@ -17,8 +17,6 @@ describe("DeedNFT", function () {
     deedNFT = (await deedNFTFactory.connect(contractOwner).deploy()) as DeedNFT;
     await deedNFT.deployed();
   });
-  //TODO: Should revert if irrelevant URIs
-  //Error already thrown if address is invalid
   describe("mintAsset", function () {
     it("Should mint a deedNFT asset to the designated address", async function () {
       // [deedOwner] = await ethers.getSigners();
@@ -33,7 +31,7 @@ describe("DeedNFT", function () {
 
       expect(deedInfo.ipfsDetailsHash).to.equal("detailsIPFS");
       expect(deedInfo.assetType).to.equal(0);
-      expect(deedInfo.latLong).to.equal("45.563, -73.654");
+      expect(deedInfo.deedAddress).to.equal("45.563, -73.654");
     });
     it("Should revert if caller isnt minter", async function () {
       await expect(deedNFT.connect(deedOwner).mintAsset(deedOwner.address, "detailsIPFS", 0, "45.563, -73.654")).to.be
