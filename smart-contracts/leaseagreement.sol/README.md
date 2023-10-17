@@ -1,2 +1,0 @@
-# LeaseAgreement.sol
-

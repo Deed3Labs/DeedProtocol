@@ -1,2 +1,0 @@
-# SellerNFT.sol
-

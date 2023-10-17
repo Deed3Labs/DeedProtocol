@@ -1,2 +1,0 @@
-# BuyerNFT.sol
-

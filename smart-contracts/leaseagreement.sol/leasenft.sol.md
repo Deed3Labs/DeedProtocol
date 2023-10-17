@@ -1,2 +1,0 @@
-# LeaseNFT.sol
-

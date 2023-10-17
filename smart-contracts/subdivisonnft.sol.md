@@ -1,2 +1,0 @@
-# SubdivisonNFT.sol
-

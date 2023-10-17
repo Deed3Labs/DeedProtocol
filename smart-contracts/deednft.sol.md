@@ -1,2 +1,0 @@
-# DeedNFT.sol
-

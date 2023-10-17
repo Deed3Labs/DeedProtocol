@@ -1,2 +1,0 @@
-# ShortTermRental.sol
-

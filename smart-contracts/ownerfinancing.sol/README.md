@@ -1,2 +1,0 @@
-# OwnerFinancing.sol
-
