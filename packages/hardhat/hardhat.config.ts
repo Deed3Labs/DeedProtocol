@@ -56,7 +56,12 @@ const config: HardhatUserConfig = {
       gasPrice: 1000000000,
       accounts: [deployerPrivateKey],
     },
-
+    holesky: {
+      url: "https://ethereum-holesky.publicnode.com",
+      gasPrice: 1000000000,
+      chainId: 17000,
+      accounts: [deployerPrivateKey],
+    },
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
