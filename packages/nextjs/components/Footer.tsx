@@ -32,7 +32,7 @@ export const Footer = () => {
         <ul className="menu menu-horizontal w-full">
           <div className="flex justify-center items-center gap-2 text-sm w-full">
             <div>
-              <a
+              {/* <a
                 //Change support link
                 href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA"
                 target="_blank"
@@ -40,7 +40,7 @@ export const Footer = () => {
                 className="underline underline-offset-2"
               >
                 Support
-              </a>
+              </a> */}
             </div>
           </div>
         </ul>

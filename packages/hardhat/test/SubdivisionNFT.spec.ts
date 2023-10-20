@@ -22,8 +22,8 @@ describe("SubdivisionNFT", function () {
     subNFT = (await subNFTFactory.deploy("uri", deedNFT.address)) as SubdivisionNFT;
     await subNFT.deployed();
     //This deed id will be 1
-    await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "House", 0);
-    await deedNFT.connect(contractOwner).mintAsset(subOwner.address, "uri", "House", 0);
+    await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "House", "0");
+    await deedNFT.connect(contractOwner).mintAsset(subOwner.address, "uri", "House", "0");
   });
   describe("mintSubdivision", function () {
     it("Should mint a subdivisionNFT to the designated address", async function () {
@@ -45,9 +45,9 @@ describe("SubdivisionNFT", function () {
       //0 and 2 should work (land or estate)
       //1 and 3 should revert (commercial equipment and vehicle)
       //token id will be 3
-      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Vehicle", 1);
+      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Vehicle", "1");
       //token id will be 4
-      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Equipment", 3);
+      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Equipment", "3");
       //SubNFT minted with tokenID 1
       await expect(subNFT.connect(deedOwner).mintSubdivision(subOwner.address, 3, 5)).to.be.revertedWith(
         "Parent deed must be land or estate",
@@ -74,9 +74,9 @@ describe("SubdivisionNFT", function () {
       //0 and 2 should work (land or estate)
       //1 and 3 should revert (commercial equipment and vehicle)
       //token id will be 3
-      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Vehicle", 1);
+      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Vehicle", "1");
       //token id will be 4
-      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Equipment", 3);
+      await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "uri", "Equipment", "3");
       //SubNFT minted with tokenID 1
       await expect(subNFT.connect(deedOwner).batchMint([deedOwner.address, subOwner.address], 3, 5)).to.be.revertedWith(
         "Parent deed must be land or estate",

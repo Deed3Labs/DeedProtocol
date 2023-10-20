@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
+import "./FundsStorage.sol";
 
 interface ILeaseNFT {
     function mintToken(address to, uint256 tokenId) external;
@@ -11,30 +14,41 @@ interface ILeaseNFT {
     function burn(uint256 tokenId) external;
 }
 
-contract LeaseAgreement {
+contract LeaseAgreement is ReentrancyGuard {
+    // CONSTANTS
+    uint256 private constant MONTH = 30.5 days;
+
     struct LeaseDates {
         uint256 startDate;
         uint256 endDate;
         uint256 rentDueDate;
+        uint256 distributableDate;
+    }
+
+    struct Deposit {
+        uint256 amount;
+        bool paid;
     }
 
     struct Lease {
         address lessor;
         address lessee;
-        uint32 rentAmount;
-        uint32 securityDeposit;
-        uint8 unpaidMonths;
+        uint256 rentAmount;
+        Deposit securityDeposit;
+        uint256 latePaymentFee;
+        uint32 gracePeriod;
+        LeaseDates dates;
         uint256 extensionCount;
         uint256 propertyTokenId;
         address agent;
         uint8 agentPercentage;
-        bool depositPaid;
-        LeaseDates dates;
+        uint256 unclaimedRentAmount;
     }
 
     struct RentPaymentInfo {
-        uint256 amount;
-        uint256 unpaidMonths;
+        uint256 rentAmount;
+        uint256 totalBalance;
+        uint32 unpaidMonths;
         uint256 rentDueDate;
     }
 
@@ -44,16 +58,21 @@ contract LeaseAgreement {
     IERC20 public paymentToken;
     DeedNFT public deedNFT;
     SubdivisionNFT public subdivisionNFT;
+    FundStorage public fundsStorage;
 
     event LeaseCreated(uint256 leaseId);
+    event LeaseTerminated(uint256 leaseId);
+    event PaymentMade(uint256 leaseId, uint256 amount);
+    event RentDistributed(uint256 leaseId, uint256 lessorAmount, uint256 agentAmount, uint256 timestamp);
     event AgentSet(uint256 leaseId, address agent, uint256 percentage);
     event AgentRemoved(uint256 leaseId);
+    event DueDateChanged(uint256 leaseId, uint256 newDueDate);
 
     constructor(address _leaseNFT, address _paymentToken, address _deedNFT, address _subdivisionNFT) {
-        require(_leaseNFT != address(0), "Invalid LeaseNFT address");
-        require(_paymentToken != address(0), "Invalid xDai token address");
-        require(_deedNFT != address(0), "Invalid DeedNFT address");
-        require(_subdivisionNFT != address(0), "Invalid SubdivisionNFT address");
+        require(_leaseNFT != address(0), "[Lease Agreement] Invalid LeaseNFT address");
+        require(_paymentToken != address(0), "[Lease Agreement] Invalid xDai token address");
+        require(_deedNFT != address(0), "[Lease Agreement] Invalid DeedNFT address");
+        require(_subdivisionNFT != address(0), "[Lease Agreement] Invalid SubdivisionNFT address");
 
         leaseNFT = ILeaseNFT(_leaseNFT);
         paymentToken = IERC20(_paymentToken);
@@ -62,162 +81,194 @@ contract LeaseAgreement {
         leaseCounter = 0;
     }
 
+    function setFundsStorage(address _fundsStorage) public {
+        fundsStorage = FundStorage(_fundsStorage);
+    }
+
     function createLease(
         address _lessee,
         uint256 _startDate,
         uint256 _endDate,
-        uint32 _rentAmount,
-        uint32 _securityDeposit,
-        uint256 _propertyTokenId
+        uint256 _rentAmount,
+        uint256 _securityDepositAmount,
+        uint256 _propertyTokenId,
+        uint256 _latePaymentFee,
+        uint32 _gracePeriod
     ) external {
-        require(_lessee != address(0), "LeaseAgreement: Invalid lessee address");
-        require(_startDate < _endDate, "LeaseAgreement: Invalid start and end dates");
-        require(_endDate - _startDate > 30 days, "LeaseAgreement: End date and start date should be 30 days appart");
-        bool isDeedOwner = _verifyDeedOwnership(msg.sender, _propertyTokenId);
-        bool isSubdivisionOwner = _verifySubdivisionOwnership(/*msg.sender, */ _propertyTokenId);
-        require(isDeedOwner || isSubdivisionOwner, "LeaseAgreement: Lessor must own the property NFT");
+        require(_lessee != address(0), "[Lease Agreement] Invalid lessee address");
+        require(_startDate < _endDate, "[Lease Agreement] Invalid start and end dates");
+        require(
+            _endDate - _startDate > 1 * MONTH,
+            "[Lease Agreement] End date and start date should be 1 month appart"
+        );
+        require(_gracePeriod >= 3);
+        require(_latePaymentFee >= 0 && _latePaymentFee <= 15);
+        bool isDeedOwner = verifyDeedOwnership(msg.sender, _propertyTokenId);
+        bool isSubdivisionOwner = verifySubdivisionOwnership(msg.sender, _propertyTokenId);
+        require(isDeedOwner || isSubdivisionOwner, "[Lease Agreement] Lessor must own the property NFT");
         uint256 leaseId = leaseCounter;
         leaseCounter++;
-
         Lease storage lease = leases[leaseId];
         lease.lessor = msg.sender;
         lease.lessee = _lessee;
         lease.dates.startDate = _startDate;
         lease.dates.endDate = _endDate;
         lease.rentAmount = _rentAmount;
-        lease.securityDeposit = _securityDeposit;
-        lease.dates.rentDueDate = _startDate + 30 days;
-        lease.unpaidMonths = 0;
+        lease.securityDeposit.amount = _securityDepositAmount;
+        lease.dates.rentDueDate = _startDate + 1 * MONTH;
         lease.extensionCount = 0;
         lease.propertyTokenId = _propertyTokenId;
-        lease.depositPaid = false;
-
+        lease.securityDeposit.paid = _securityDepositAmount == 0;
+        lease.latePaymentFee = _latePaymentFee;
+        lease.gracePeriod = _gracePeriod;
         leaseNFT.mintToken(msg.sender, leaseId);
+        lease.dates.distributableDate = lease.dates.rentDueDate;
+
         emit LeaseCreated(leaseId);
     }
 
     function setAgent(uint256 leaseId, address _agent, uint8 _percentage) external {
         Lease storage lease = leases[leaseId];
-        require(msg.sender == lease.lessor, "Only lessor can set the agent");
-        require(_percentage >= 0 && _percentage <= 100, "Invalid agent percentage");
+        require(msg.sender == lease.lessor, "[Lease Agreement] Only the Lessor can set the Agent");
+        require(_percentage >= 0 && _percentage <= 100, "[Lease Agreement] Invalid agent percentage");
 
         lease.agent = _agent;
         lease.agentPercentage = _percentage;
+
         emit AgentSet(leaseId, _agent, _percentage);
     }
-   
+
     function removeAgent(uint256 leaseId) external {
         Lease storage lease = leases[leaseId];
-        require(msg.sender == lease.lessor || msg.sender == lease.agent, "Only lessor or agent can remove the agent");
+        require(
+            msg.sender == lease.lessor || msg.sender == lease.agent,
+            "[Lease Agreement] only the Lessor or the Agent can remove the Agent"
+        );
 
         lease.agent = address(0);
         lease.agentPercentage = 0;
+
         emit AgentRemoved(leaseId);
     }
 
-    function submitDeposit(uint256 leaseId) external {
+    function submitDeposit(uint256 leaseId) external nonReentrant {
         Lease storage lease = leases[leaseId];
-        require(msg.sender == lease.lessee, "Only the lessee can submit the deposit");
-        require(!lease.depositPaid, "Security deposit already paid");
+        require(msg.sender == lease.lessee, "[Lease Agreement] Only the Lessee can submit the deposit");
+        require(!lease.securityDeposit.paid, "[Lease Agreement] Security deposit already paid");
 
-        paymentToken.transferFrom(msg.sender, address(this), lease.securityDeposit);
-        lease.depositPaid = true;
+        fundsStorage.store(leaseId, paymentToken, lease.securityDeposit.amount, msg.sender);
+        lease.securityDeposit.paid = true;
     }
 
-    function payRent(uint256 leaseId, uint256 _amount) external {
-        Lease storage lease = leases[leaseId];
-        require(msg.sender == lease.lessee, "Only the lessee can pay rent");
-        require(lease.depositPaid, "Security deposit must be paid first");
+    function setDueDate(uint256 _leaseId, uint256 _newDueDate) public {
+        Lease storage lease = leases[_leaseId];
+        require(msg.sender == lease.lessor, "[Lease Agreement] Only the Lessor can set due date");
+        require(
+            _newDueDate >= (lease.dates.rentDueDate + 1 * MONTH),
+            "[Lease Agreement] New rent due date must be at least a month after current one"
+        );
+        lease.dates.rentDueDate = _newDueDate;
+        emit DueDateChanged(_leaseId, _newDueDate);
+    }
+
+    function payRent(uint256 _leaseId) external nonReentrant {
+        Lease storage lease = leases[_leaseId];
+        require(msg.sender == lease.lessee, "[Lease Agreement] Only the Lessee can pay rent");
+        require(lease.securityDeposit.paid, "[Lease Agreement] Security deposit must be paid first");
         require(
             block.timestamp >= lease.dates.startDate && block.timestamp <= lease.dates.endDate,
-            "Outside of lease duration"
+            "[Lease Agreement] Outside of lease duration"
         );
 
-        RentPaymentInfo memory rentInfo = _calculateRentPaymentInfo(leaseId);
+        RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
+        lease.unclaimedRentAmount += rentInfo.totalBalance;
+        lease.dates.rentDueDate += (rentInfo.unpaidMonths) * (1 * MONTH);
+        fundsStorage.store(_leaseId, paymentToken, rentInfo.totalBalance, msg.sender);
 
-        paymentToken.transferFrom(msg.sender, address(this), _amount);
-        require(_amount >= rentInfo.amount, "Insufficient amount for rent payment");
+        emit DueDateChanged(_leaseId, lease.dates.rentDueDate);
+        emit PaymentMade(_leaseId, rentInfo.totalBalance);
+    }
 
-        if (rentInfo.unpaidMonths >= 3) {
-            if (block.timestamp <= rentInfo.rentDueDate + (3 * 30 days) + 15 days) {
-                _distributeRent(leaseId, rentInfo.amount);
-                lease.unpaidMonths = 0;
-            } else {
-                terminateLease(leaseId);
-            }
-        } else {
-            _distributeRent(leaseId, rentInfo.amount);
-            lease.dates.rentDueDate += 30 days;
+    function distributeRent(uint256 leaseId) public nonReentrant {
+        Lease storage lease = leases[leaseId];
+        require(
+            msg.sender == lease.lessor || msg.sender == lease.agent,
+            "[Lease Agreement] Caller must be the Lessor or the Agent"
+        );
+        require(lease.unclaimedRentAmount > 0, "[Lease Agreement] No rent to distribute");
+        uint256 nbMonthSinceLastDistribute = (block.timestamp - lease.dates.distributableDate) / (1 * MONTH);
+        require(
+            nbMonthSinceLastDistribute > 0,
+            "[Lease Agreement] Rent can only be distributed past the rent due date"
+        );
+        uint256 totalToClaim = lease.unclaimedRentAmount;
+        uint256 agentAmount = 0;
+
+        if (lease.agent != address(0)) {
+            agentAmount = (totalToClaim * lease.agentPercentage) / 100;
+            fundsStorage.widthdraw(leaseId, paymentToken, uint32(agentAmount), lease.agent);
         }
+
+        uint256 lessorAmount = totalToClaim - agentAmount;
+        fundsStorage.widthdraw(leaseId, paymentToken, uint32(lessorAmount), lease.lessor);
+        lease.unclaimedRentAmount = 0;
+        lease.dates.distributableDate += nbMonthSinceLastDistribute * (1 * MONTH);
+
+        emit RentDistributed(leaseId, uint32(lessorAmount), uint32(agentAmount), block.timestamp);
     }
 
     function extendLease(uint256 leaseId, uint256 extensionPeriod) external {
         Lease storage lease = leases[leaseId];
-        require(msg.sender == lease.lessee, "Only the lessee can extend the lease");
+        require(msg.sender == lease.lessee, "[Lease Agreement] Only the Lessee can extend the lease");
         require(
-            block.timestamp >= lease.dates.endDate - 45 days,
-            "Extension can only be requested in the last 45 days"
+            block.timestamp >= lease.dates.endDate - 45 days, // TODO: Configurable
+            "[Lease Agreement] Extension can only be requested in the last 45 days"
         );
-        require(lease.extensionCount < 2, "Maximum extensions reached");
+        require(lease.extensionCount < 2, "[Lease Agreement] Maximum extensions reached");
 
         lease.dates.endDate += extensionPeriod;
         lease.rentAmount += (lease.rentAmount * 3) / 100;
         lease.extensionCount++;
     }
 
-    function terminateLease(uint256 leaseId) public {
+    function terminateLease(uint256 leaseId) public nonReentrant {
         Lease storage lease = leases[leaseId];
-        require(
-            msg.sender == lease.lessor || msg.sender == lease.lessee,
-            "Only lessor or lessee can terminate the lease"
-        );
-        require(block.timestamp >= lease.dates.startDate, "Lease has not started yet");
+        require(msg.sender == lease.lessor, "[Lease Agreement] Only the Lessor can terminate the lease");
+        require(block.timestamp >= lease.dates.startDate, "[Lease Agreement] Lease has not started yet");
+        RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(leaseId);
+        bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
 
-        // Check if lease termination is due to unpaid rent or early termination
-        bool shouldSendDepositToLessor = (lease.unpaidMonths >= 3) ||
-            (msg.sender == lease.lessor && block.timestamp < lease.dates.endDate);
+        address recipient = shouldSendDepositToLessor ? lease.lessor : lease.lessee;
+        fundsStorage.widthdraw(leaseId, paymentToken, lease.securityDeposit.amount, recipient);
 
-        if (shouldSendDepositToLessor) {
-            paymentToken.transfer(lease.lessor, lease.securityDeposit);
-        } else {
-            paymentToken.transfer(lease.lessee, lease.securityDeposit);
-        }
-
-        uint256 remainingBalance = paymentToken.balanceOf(address(this));
+        uint256 remainingBalance = fundsStorage.balanceOf(leaseId, paymentToken);
         if (remainingBalance > 0) {
-            paymentToken.transfer(lease.lessor, remainingBalance);
+            fundsStorage.widthdraw(leaseId, paymentToken, remainingBalance, lease.lessor);
         }
 
         leaseNFT.burn(leaseId);
+        delete leases[leaseId];
+
+        emit LeaseTerminated(leaseId);
     }
 
-    function _calculateRentPaymentInfo(uint256 leaseId) internal view returns (RentPaymentInfo memory rentInfo) {
+    function calculateRentPaymentInfo(uint256 leaseId) public view returns (RentPaymentInfo memory rentInfo) {
         Lease storage lease = leases[leaseId];
-        rentInfo.amount = lease.rentAmount;
-        if (block.timestamp > lease.dates.rentDueDate + 15 days) {
-            rentInfo.amount += (lease.rentAmount * 10) / 100;
-            rentInfo.unpaidMonths = lease.unpaidMonths + 1;
+        rentInfo.rentAmount = lease.rentAmount;
+        //sidenote: rent due date is incremented by 1 month each time the rent is paid.(function payRent)
+        if (block.timestamp > lease.dates.rentDueDate + (lease.gracePeriod * 1 days)) {
+            //Function to calculate rentAmountIncrease increase
+            rentInfo.rentAmount += (lease.rentAmount * lease.latePaymentFee) / 100;
+            rentInfo.unpaidMonths = uint32((block.timestamp - lease.dates.rentDueDate) / (1 * MONTH) + 1);
+            rentInfo.totalBalance = (rentInfo.unpaidMonths) * rentInfo.rentAmount;
         } else {
-            rentInfo.unpaidMonths = lease.unpaidMonths;
+            rentInfo.unpaidMonths = 1;
+            rentInfo.totalBalance = rentInfo.rentAmount;
         }
-        rentInfo.rentDueDate = lease.dates.rentDueDate;
         return rentInfo;
     }
 
-    function _distributeRent(uint256 leaseId, uint256 _amount) internal {
-        Lease storage lease = leases[leaseId];
-        uint256 agentAmount = 0;
-
-        if (lease.agent != address(0)) {
-            agentAmount = (_amount * lease.agentPercentage) / 100;
-            paymentToken.transfer(lease.agent, agentAmount);
-        }
-
-        uint256 lessorAmount = _amount - agentAmount;
-        paymentToken.transfer(lease.lessor, lessorAmount);
-    }
-
-    function _verifyDeedOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
+    function verifyDeedOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
         try deedNFT.ownerOf(_propertyTokenId) returns (address owner) {
             return owner == _owner;
         } catch {
@@ -225,7 +276,7 @@ contract LeaseAgreement {
         }
     }
 
-    function _verifySubdivisionOwnership(/*address _owner, */ uint256 _propertyTokenId) internal view returns (bool) {
-        return subdivisionNFT.isOwnerOfSubdivision(_propertyTokenId);
+    function verifySubdivisionOwnership(address _owner, uint256 _propertyTokenId) internal view returns (bool) {
+        return subdivisionNFT.isOwnerOfSubdivision(_owner, _propertyTokenId);
     }
 }

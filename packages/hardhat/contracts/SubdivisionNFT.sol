@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
+pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./DeedNFT.sol";
@@ -14,21 +13,23 @@ contract SubdivisionNFT is ERC1155, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     DeedNFT public deedNFT;
 
-    // event subdivisionMinted
+    event subdivisionMinted(uint256 _subdivisionId, uint256 _deedId);
+
     constructor(string memory _uri, address _deedNFT) ERC1155(_uri) {
-        require(_deedNFT != address(0), "Invalid DeedNFT address");
+        require(_deedNFT != address(0), "[Lease Agreement] Invalid DeedNFT address");
         _nextsubTokenID = 1;
         _setupRole(MINTER_ROLE, _msgSender());
         deedNFT = DeedNFT(_deedNFT);
     }
 
     //Took out onlyRole(MINTER_ROLE) because we only want owner to be able to mint and not the contract deployer
-    function mintSubdivision(address to, uint256 parentDeedId, uint256 amount) public {
-        require(msg.sender == deedNFT.ownerOf(parentDeedId), "Must be the owner of the parent deed");
-        require(deedNFT.canSubdivide(parentDeedId), "Parent deed must be land or estate");
+    function mintSubdivision(address _to, uint256 _parentDeedId, uint256 _amount) public {
+        require(msg.sender == deedNFT.ownerOf(_parentDeedId), "Must be the owner of the parent deed");
+        require(deedNFT.canSubdivide(_parentDeedId), "Parent deed must be land or estate");
 
-        _mint(to, _nextsubTokenID, amount, "");
-        _setParentDeed(_nextsubTokenID, parentDeedId);
+        _mint(_to, _nextsubTokenID, _amount, "");
+        _setParentDeed(_nextsubTokenID, _parentDeedId);
+        emit subdivisionMinted(_nextsubTokenID, _parentDeedId);
         _nextsubTokenID = _nextsubTokenID + 1;
     }
 
@@ -52,14 +53,14 @@ contract SubdivisionNFT is ERC1155, AccessControl {
         return _parentDeeds[subTokenID];
     }
 
-    function isOwnerOfSubdivision(uint256 subTokenID) public view returns (bool) {
-        return balanceOf(msg.sender, subTokenID) > 0;
+    function isOwnerOfSubdivision(address _owner, uint256 subTokenID) public view returns (bool) {
+        return balanceOf(_owner, subTokenID) > 0;
     }
 
     //Create ownerOfSubdivision(subDivID,address user);
     // function burn()require(msg.sender==ownerOf(Deed) && msg.sender == ownerOf(sub))
     function burnSubdivision(address account, uint256 subTokenID, uint256 amount) public {
-        require(isOwnerOfSubdivision(subTokenID) == true, "Must own this subNFT to burn it");
+        require(isOwnerOfSubdivision(msg.sender, subTokenID) == true, "Must own this subNFT to burn it");
         require(msg.sender == account, "Sender must be owner of specified account");
         _burn(account, subTokenID, amount);
     }
