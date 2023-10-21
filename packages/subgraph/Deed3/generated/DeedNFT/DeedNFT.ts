@@ -95,7 +95,7 @@ export class DeedMinted_deedInfoStruct extends ethereum.Tuple {
     return this[2].toBigInt();
   }
 
-  get latLong(): string {
+  get deedAddress(): string {
     return this[3].toString();
   }
 }
@@ -217,7 +217,7 @@ export class DeedNFT__getDeedInfoResultValue0Struct extends ethereum.Tuple {
     return this[2].toBigInt();
   }
 
-  get latLong(): string {
+  get deedAddress(): string {
     return this[3].toString();
   }
 }
@@ -670,7 +670,7 @@ export class MintAssetCall__Inputs {
     return this._call.inputValues[2].value.toI32();
   }
 
-  get latLong(): string {
+  get _deedAddress(): string {
     return this._call.inputValues[3].value.toString();
   }
 }

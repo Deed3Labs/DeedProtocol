@@ -54,7 +54,7 @@ export function handleDeedMinted(event: DeedMintedEvent): void {
   entity._deedInfo_ipfsDetailsHash = event.params._deedInfo.ipfsDetailsHash
   entity._deedInfo_assetType = event.params._deedInfo.assetType
   entity._deedInfo_price = event.params._deedInfo.price
-  entity._deedInfo_latLong = event.params._deedInfo.latLong
+  entity._deedInfo_address = event.params._deedInfo.deedAddress
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

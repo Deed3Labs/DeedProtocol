@@ -76,7 +76,7 @@
           },
           {
             "internalType": "string",
-            "name": "latLong",
+            "name": "deedAddress",
             "type": "string"
           }
         ],
@@ -332,7 +332,7 @@
           },
           {
             "internalType": "string",
-            "name": "latLong",
+            "name": "deedAddress",
             "type": "string"
           }
         ],
@@ -448,7 +448,7 @@
       },
       {
         "internalType": "string",
-        "name": "latLong",
+        "name": "_deedAddress",
         "type": "string"
       }
     ],

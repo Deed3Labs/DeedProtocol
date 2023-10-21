@@ -23,7 +23,7 @@ type DeedMinted @entity(immutable: true) {
   _deedInfo_ipfsDetailsHash: String! # string
   _deedInfo_assetType: Int! # uint8
   _deedInfo_price: BigInt! # uint256
-  _deedInfo_latLong: String! # string
+  _deedInfo_address: String! # string
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

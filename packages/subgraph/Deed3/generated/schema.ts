@@ -335,8 +335,8 @@ export class DeedMinted extends Entity {
     this.set("_deedInfo_price", Value.fromBigInt(value));
   }
 
-  get _deedInfo_latLong(): string {
-    let value = this.get("_deedInfo_latLong");
+  get _deedInfo_address(): string {
+    let value = this.get("_deedInfo_address");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -344,8 +344,8 @@ export class DeedMinted extends Entity {
     }
   }
 
-  set _deedInfo_latLong(value: string) {
-    this.set("_deedInfo_latLong", Value.fromString(value));
+  set _deedInfo_address(value: string) {
+    this.set("_deedInfo_address", Value.fromString(value));
   }
 
   get blockNumber(): BigInt {
