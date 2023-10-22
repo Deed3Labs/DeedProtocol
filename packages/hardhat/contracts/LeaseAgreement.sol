@@ -196,11 +196,12 @@ contract LeaseAgreement is ReentrancyGuard {
             "[Lease Agreement] Caller must be the Lessor or the Agent"
         );
         require(lease.unclaimedRentAmount > 0, "[Lease Agreement] No rent to distribute");
-        uint256 nbMonthSinceLastDistribute = (block.timestamp - lease.dates.distributableDate) / (1 * MONTH);
+        uint256 nbMonthSinceLastDistribute=0;
         require(
-            nbMonthSinceLastDistribute > 0,
-            "[Lease Agreement] Rent can only be distributed past the rent due date"
+           block.timestamp > lease.dates.distributableDate,
+            "[Lease Agreement] Rent can only be distributed past the distributable date"
         );
+        nbMonthSinceLastDistribute = (block.timestamp - lease.dates.distributableDate) / (1 * MONTH) + 1;
         uint256 totalToClaim = lease.unclaimedRentAmount;
         uint256 agentAmount = 0;
 

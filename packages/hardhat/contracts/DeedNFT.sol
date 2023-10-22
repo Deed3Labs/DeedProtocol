@@ -5,10 +5,11 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract DeedNFT is ERC721, AccessControl {
     struct DeedInfo {
-        string ipfsDetailsHash;
+        bytes ipfsDetailsHash;
         AssetType assetType;
         uint256 price;
         string deedAddress;
+        bool isValidated;
     }
     uint256 private _nextTokenId;
     mapping(uint256 => DeedInfo) private deedInfoMap;
@@ -20,7 +21,8 @@ contract DeedNFT is ERC721, AccessControl {
         Estate,
         CommercialEquipment
     }
-    event DeedMinted(DeedInfo _deedInfo);
+    event DeedMinted(DeedInfo deedInfo);
+    event AssetValidation(uint256 deedId, bool isValid);
     constructor() ERC721("DeedNFT", "DEED") {
         _nextTokenId = 1;
         _setupRole(VALIDATOR_ROLE, msg.sender);
@@ -29,18 +31,27 @@ contract DeedNFT is ERC721, AccessControl {
 
     function mintAsset(
         address _to,
-        string memory _ipfsDetailsHash,
+        bytes memory _ipfsDetailsHash,
         AssetType _assetType,
         string memory _deedAddress
-    ) public onlyRole(VALIDATOR_ROLE) {
+    ) public {
         _mint(_to, _nextTokenId);
         DeedInfo storage deedInfo = deedInfoMap[_nextTokenId];
-        deedInfo.ipfsDetailsHash=_ipfsDetailsHash;
-        deedInfo.assetType=_assetType;
-        deedInfo.deedAddress= _deedAddress;
+        deedInfo.ipfsDetailsHash =_ipfsDetailsHash;
+        deedInfo.assetType =_assetType;
+        deedInfo.deedAddress = _deedAddress;
+        deedInfo.isValidated = false;
         _nextTokenId = _nextTokenId + 1;
         emit DeedMinted(deedInfo);
     }
+
+    function setAssetValidation(uint256 _deedId, bool _isValid) public onlyRole(VALIDATOR_ROLE){
+        DeedInfo storage deedInfo = deedInfoMap[_deedId];
+        deedInfo.isValidated = _isValid;
+        emit AssetValidation(_deedId,_isValid);
+    }
+
+    
     function setPrice(uint256 _deedId, uint32 _newPrice) public {
         require(_exists(_deedId), "ERC721Metadata: Price set of nonexistent token");
         require(msg.sender == ownerOf(_deedId),"ERC721: Must be owner of deedNFT to set price");
@@ -48,7 +59,7 @@ contract DeedNFT is ERC721, AccessControl {
         deedInfo.price=_newPrice;
     }
 
-    function setIpfsDetailsHash(uint256 _tokenId, string memory _ipfsDetailsHash) internal virtual {
+    function setIpfsDetailsHash(uint256 _tokenId, bytes memory _ipfsDetailsHash) public virtual {
         require(_exists(_tokenId), "ERC721Metadata: URI set of nonexistent token");
         require(msg.sender == ownerOf(_tokenId),"ERC721: Must be owner of deedNFT to set IPFS hash");
         DeedInfo storage deedInfo = deedInfoMap[_tokenId];

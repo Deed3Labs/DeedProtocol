@@ -6,9 +6,9 @@ dataSources:
     name: DeedNFT
     network: goerli
     source:
-      address: "0xea05766a8EB2C02c92A7094606850a210d668864"
+      address: "0xec996C7792Bc3123b376B4fdA3A6b057f6247824"
       abi: DeedNFT
-      startBlock: 9839682
+      startBlock: 9844311
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

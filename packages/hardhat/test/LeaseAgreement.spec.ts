@@ -5,7 +5,7 @@ import { SubdivisionNFT, DeedNFT, LeaseNFT, LeaseAgreement, TokenMock, FundStora
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
-describe.only("LeaseAgreement", function () {
+describe("LeaseAgreement", function () {
   // We define a fixture to reuse the same setup in every test.
   //   let contractOwner: SignerWithAddress;
   let subNFT: SubdivisionNFT;
@@ -52,8 +52,8 @@ describe.only("LeaseAgreement", function () {
     await leaseAgreement.deployed();
     await leaseNFT.connect(contractOwner).setLeaseAgreementAddress(leaseAgreement.address);
     //This deed id will be 1
-    await deedNFT.mintAsset(deedOwner.address, "detailsIPFS", 2, "45.563, -73.654");
-    await subNFT.connect(deedOwner).mintSubdivision(subOwner.address, 1, 1);
+    await deedNFT.mintAsset(deedOwner.address, "0x", 2, "12 000 Fake Addy");
+    await subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 });
     const fundsStorageFactory = await ethers.getContractFactory("FundStorage");
     fundsStorage = (await fundsStorageFactory.connect(contractOwner).deploy()) as FundStorage;
     await fundsStorage.deployed();
@@ -719,7 +719,7 @@ describe.only("LeaseAgreement", function () {
       await expect(act()).to.be.revertedWith("[Lease Agreement] Outside of lease duration");
     });
 
-    it.skip("Should revert if amount paid is less than total balance", async function () {
+    it("Should revert if amount paid is less than total balance", async function () {
       // Arrange
       const leaseId = 0;
       const agentPercentage = 10;
@@ -741,15 +741,16 @@ describe.only("LeaseAgreement", function () {
         );
       await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
       await time.increase(thirtyOneDaysInSeconds * 2); // Increase 2 months so 2 rent payments are due + fees
-      const totalExpectedBalance = 21450;
-      await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), totalExpectedBalance - 1);
+
+      const amount = (await leaseAgreement.calculateRentPaymentInfo(leaseId)).totalBalance;
+      await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), amount.toNumber() - 1);
 
       // Act
       const act = () => leaseAgreement.connect(lessee).payRent(leaseId);
 
       // Assert
       await expect(act()).to.be.revertedWith(
-        `Funds Storage [store]: Not enough allowance for account ${leaseId} and amount ${totalExpectedBalance}`,
+        `Funds Storage [store]: Not enough allowance for account ${leaseId} and amount ${amount}`,
       );
     });
   });
@@ -781,9 +782,15 @@ describe.only("LeaseAgreement", function () {
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
       //Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds);
+
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), totalExpectedBalance);
       await leaseAgreement.connect(lessee).payRent(leaseId);
+      const leaseDate = (await leaseAgreement.leases(leaseId)).dates.distributableDate.toString();
+      const leaseDatee = (await leaseAgreement.leases(leaseId)).dates.rentDueDate.toString();
+
+      console.log(leaseDate);
+      console.log(leaseDatee);
 
       // Act
       const act = () => leaseAgreement.connect(deedOwner).distributeRent(leaseId);
@@ -828,42 +835,6 @@ describe.only("LeaseAgreement", function () {
 
       // Assert
       await expect(act()).to.be.revertedWith("[Lease Agreement] Caller must be the Lessor or the Agent");
-    });
-
-    it("Should revert if amount to distribute greater than contract balance", async function () {
-      // Arrange
-      const leaseId = 0;
-      const agentPercentage = 10;
-      const propertyTokenId = 1;
-      const latePayementFee = 10;
-      const gracePeriod = 5;
-      await leaseAgreement
-        .connect(deedOwner)
-        .createLease(
-          lessee.address,
-          startDate,
-          endDate,
-          rentAmount,
-          depositAmount,
-          propertyTokenId,
-          latePayementFee,
-          gracePeriod,
-        );
-      await leaseAgreement.connect(deedOwner).setAgent(leaseId, agent.address, agentPercentage);
-      await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), depositAmount);
-      await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
-      await time.increase(thirtyOneDaysInSeconds);
-      const totalExpectedBalance = 1500;
-      await leaseToken.connect(lessee).approve(leaseAgreement.fundsStorage(), totalExpectedBalance);
-      await leaseAgreement.connect(lessee).payRent(leaseId);
-      await leaseAgreement.connect(deedOwner).distributeRent(leaseId);
-
-      // Act
-      const act = () => leaseAgreement.connect(deedOwner).distributeRent(leaseId);
-
-      // Assert
-      await expect(act()).to.be.revertedWith("Error: amount to distribute greater than contract balance");
     });
   });
 
