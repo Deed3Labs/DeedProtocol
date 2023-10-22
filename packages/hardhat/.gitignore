@@ -13,5 +13,3 @@ artifacts
 #zkSync files
 artifacts-zk
 cache-zk
-
-deployments

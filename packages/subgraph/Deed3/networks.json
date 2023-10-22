@@ -2,7 +2,9 @@
   "goerli": {
     "DeedNFT": {
       "address": "0xec996C7792Bc3123b376B4fdA3A6b057f6247824",
-      "startBlock": 9844311
+      "startBlock": 9844311,
+      "abi": "DeedNFT",
+      "template": "DeedNFT.template.yaml"
     }
   }
 }

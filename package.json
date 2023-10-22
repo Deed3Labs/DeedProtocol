@@ -6,7 +6,7 @@
     "packages": [
       "packages/hardhat",
       "packages/nextjs",
-      "packages/subgraph/*"
+      "packages/subgraph/Deed3"
     ]
   },
   "scripts": {
