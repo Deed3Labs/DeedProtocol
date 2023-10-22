@@ -7,7 +7,7 @@ import { DeployFunction } from "hardhat-deploy/types";
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deploySubdivisionNFT: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployLeaseAgreement: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
@@ -21,10 +21,14 @@ const deploySubdivisionNFT: DeployFunction = async function (hre: HardhatRuntime
   const { deployer } = await hre.getNamedAccounts();
   const { deploy, get } = hre.deployments;
   const deedNFTAddress = (await get("DeedNFT")).address;
-  await deploy("SubdivisionNFT", {
+  const subdivisionNFTAddress = (await get("SubdivisionNFT")).address;
+  const leaseNFTAddress = (await get("LeaseNFT")).address;
+  const hnytAddress = "0x2d467a24095B262787f58ce97d9B130ce7232B57";
+  const fundsManagerAddress = (await get("FundsManager")).address;
+  await deploy("LeaseAgreement", {
     from: deployer,
     // Contract constructor arguments
-    args: ["", deedNFTAddress],
+    args: [leaseNFTAddress, hnytAddress, deedNFTAddress, subdivisionNFTAddress, fundsManagerAddress],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -35,9 +39,9 @@ const deploySubdivisionNFT: DeployFunction = async function (hre: HardhatRuntime
   // const yourContract = await hre.ethers.getContract("YourContract", deployer);
 };
 
-export default deploySubdivisionNFT;
+export default deployLeaseAgreement;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deploySubdivisionNFT.tags = ["SubdivisionNFT"];
-deploySubdivisionNFT.dependencies = ["DeedNFT"];
+deployLeaseAgreement.tags = ["LeaseAgreement"];
+deployLeaseAgreement.dependencies = ["DeedNFT", "SubdivisionNFT", "LeaseNFT"];

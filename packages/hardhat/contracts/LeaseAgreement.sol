@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
-import "./FundsStorage.sol";
+import "./FundsManager.sol";
 
 interface ILeaseNFT {
     function mintToken(address to, uint256 tokenId) external;
@@ -58,7 +58,7 @@ contract LeaseAgreement is ReentrancyGuard {
     IERC20 public paymentToken;
     DeedNFT public deedNFT;
     SubdivisionNFT public subdivisionNFT;
-    FundStorage public fundsStorage;
+    FundsManager public fundsManager;
 
     event LeaseCreated(uint256 leaseId);
     event LeaseTerminated(uint256 leaseId);
@@ -67,8 +67,9 @@ contract LeaseAgreement is ReentrancyGuard {
     event AgentSet(uint256 leaseId, address agent, uint256 percentage);
     event AgentRemoved(uint256 leaseId);
     event DueDateChanged(uint256 leaseId, uint256 newDueDate);
+    event FundsManagerSet(address fundsManager);
 
-    constructor(address _leaseNFT, address _paymentToken, address _deedNFT, address _subdivisionNFT) {
+    constructor(address _leaseNFT, address _paymentToken, address _deedNFT, address _subdivisionNFT, address _fundsManager) {
         require(_leaseNFT != address(0), "[Lease Agreement] Invalid LeaseNFT address");
         require(_paymentToken != address(0), "[Lease Agreement] Invalid xDai token address");
         require(_deedNFT != address(0), "[Lease Agreement] Invalid DeedNFT address");
@@ -78,11 +79,13 @@ contract LeaseAgreement is ReentrancyGuard {
         paymentToken = IERC20(_paymentToken);
         deedNFT = DeedNFT(_deedNFT);
         subdivisionNFT = SubdivisionNFT(_subdivisionNFT);
+        setFundsManager(_fundsManager);
         leaseCounter = 0;
     }
 
-    function setFundsStorage(address _fundsStorage) public {
-        fundsStorage = FundStorage(_fundsStorage);
+    function setFundsManager(address _fundsManager) public {
+        fundsManager = FundsManager(_fundsManager);
+        emit FundsManagerSet(_fundsManager);
     }
 
     function createLease(
@@ -156,7 +159,7 @@ contract LeaseAgreement is ReentrancyGuard {
         require(msg.sender == lease.lessee, "[Lease Agreement] Only the Lessee can submit the deposit");
         require(!lease.securityDeposit.paid, "[Lease Agreement] Security deposit already paid");
 
-        fundsStorage.store(leaseId, paymentToken, lease.securityDeposit.amount, msg.sender);
+        fundsManager.store(leaseId, paymentToken, lease.securityDeposit.amount, msg.sender);
         lease.securityDeposit.paid = true;
     }
 
@@ -183,7 +186,7 @@ contract LeaseAgreement is ReentrancyGuard {
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
         lease.unclaimedRentAmount += rentInfo.totalBalance;
         lease.dates.rentDueDate += (rentInfo.unpaidMonths) * (1 * MONTH);
-        fundsStorage.store(_leaseId, paymentToken, rentInfo.totalBalance, msg.sender);
+        fundsManager.store(_leaseId, paymentToken, rentInfo.totalBalance, msg.sender);
 
         emit DueDateChanged(_leaseId, lease.dates.rentDueDate);
         emit PaymentMade(_leaseId, rentInfo.totalBalance);
@@ -207,11 +210,11 @@ contract LeaseAgreement is ReentrancyGuard {
 
         if (lease.agent != address(0)) {
             agentAmount = (totalToClaim * lease.agentPercentage) / 100;
-            fundsStorage.widthdraw(leaseId, paymentToken, uint32(agentAmount), lease.agent);
+            fundsManager.widthdraw(leaseId, paymentToken, uint32(agentAmount), lease.agent);
         }
 
         uint256 lessorAmount = totalToClaim - agentAmount;
-        fundsStorage.widthdraw(leaseId, paymentToken, uint32(lessorAmount), lease.lessor);
+        fundsManager.widthdraw(leaseId, paymentToken, uint32(lessorAmount), lease.lessor);
         lease.unclaimedRentAmount = 0;
         lease.dates.distributableDate += nbMonthSinceLastDistribute * (1 * MONTH);
 
@@ -240,11 +243,11 @@ contract LeaseAgreement is ReentrancyGuard {
         bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
 
         address recipient = shouldSendDepositToLessor ? lease.lessor : lease.lessee;
-        fundsStorage.widthdraw(leaseId, paymentToken, lease.securityDeposit.amount, recipient);
+        fundsManager.widthdraw(leaseId, paymentToken, lease.securityDeposit.amount, recipient);
 
-        uint256 remainingBalance = fundsStorage.balanceOf(leaseId, paymentToken);
+        uint256 remainingBalance = fundsManager.balanceOf(leaseId, paymentToken);
         if (remainingBalance > 0) {
-            fundsStorage.widthdraw(leaseId, paymentToken, remainingBalance, lease.lessor);
+            fundsManager.widthdraw(leaseId, paymentToken, remainingBalance, lease.lessor);
         }
 
         leaseNFT.burn(leaseId);
