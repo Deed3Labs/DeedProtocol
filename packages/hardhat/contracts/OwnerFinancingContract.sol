@@ -207,8 +207,6 @@ contract OwnerFinancing is ERC721("FinancingNFT", "FINT"), Ownable, ReentrancyGu
         emit MonthlyPaymentMade(deedNftTokenId, financingNfts[deedNftTokenId], msg.sender, msg.value, f.remainingAmount);
     }
 
-        // ...Continued from the previous part
-
     // Decline an offer made for a DeedNFT
     function declineOffer(uint256 deedNftTokenId, uint256 offerIndex)
         external
