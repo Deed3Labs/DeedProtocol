@@ -1,37 +1,34 @@
 [
   {
     "inputs": [
-      { "internalType": "address", "name": "_leaseNFT", "type": "address" },
-      { "internalType": "address", "name": "_paymentToken", "type": "address" },
-      { "internalType": "address", "name": "_deedNFT", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_leaseNFT",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_paymentToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_deedNFT",
+        "type": "address"
+      },
       {
         "internalType": "address",
         "name": "_subdivisionNFT",
         "type": "address"
       },
-      { "internalType": "address", "name": "_fundsManager", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_fundsManager",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "leaseId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "LeaseAgentRemoved",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -53,15 +50,22 @@
         "internalType": "uint256",
         "name": "percentage",
         "type": "uint256"
-      },
+      }
+    ],
+    "name": "LeaseAgentAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "timestamp",
+        "name": "leaseId",
         "type": "uint256"
       }
     ],
-    "name": "LeaseAgentSet",
+    "name": "LeaseAgentRemoved",
     "type": "event"
   },
   {
@@ -75,8 +79,16 @@
       },
       {
         "components": [
-          { "internalType": "address", "name": "lessor", "type": "address" },
-          { "internalType": "address", "name": "lessee", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "lessor",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "lessee",
+            "type": "address"
+          },
           {
             "internalType": "uint256",
             "name": "rentAmount",
@@ -89,7 +101,11 @@
                 "name": "amount",
                 "type": "uint256"
               },
-              { "internalType": "bool", "name": "paid", "type": "bool" }
+              {
+                "internalType": "bool",
+                "name": "paid",
+                "type": "bool"
+              }
             ],
             "internalType": "struct LeaseAgreement.Deposit",
             "name": "securityDeposit",
@@ -100,7 +116,11 @@
             "name": "latePaymentFee",
             "type": "uint256"
           },
-          { "internalType": "uint32", "name": "gracePeriod", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "gracePeriod",
+            "type": "uint32"
+          },
           {
             "components": [
               {
@@ -138,7 +158,11 @@
             "name": "propertyTokenId",
             "type": "uint256"
           },
-          { "internalType": "address", "name": "agent", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "agent",
+            "type": "address"
+          },
           {
             "internalType": "uint8",
             "name": "agentPercentage",
@@ -154,12 +178,6 @@
         "internalType": "struct LeaseAgreement.Lease",
         "name": "lease",
         "type": "tuple"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "LeaseCreated",
@@ -179,12 +197,6 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "LeaseDepositSubmited",
@@ -203,12 +215,6 @@
         "indexed": false,
         "internalType": "uint256",
         "name": "newDueDate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
         "type": "uint256"
       }
     ],
@@ -241,12 +247,6 @@
         "internalType": "uint256",
         "name": "extensionCount",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "LeaseExtended",
@@ -260,12 +260,6 @@
         "internalType": "address",
         "name": "fundsManager",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "LeaseFundsManagerSet",
@@ -291,12 +285,6 @@
         "internalType": "uint256",
         "name": "unclaimedRentAmount",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "LeasePaymentMade",
@@ -310,12 +298,6 @@
         "internalType": "address",
         "name": "paymentToken",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "LeasePaymentTokenSet",
@@ -366,12 +348,6 @@
         "internalType": "uint256",
         "name": "leaseId",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "name": "LeaseTerminated",
@@ -379,9 +355,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "leaseId", "type": "uint256" },
-      { "internalType": "address", "name": "_agent", "type": "address" },
-      { "internalType": "uint8", "name": "_percentage", "type": "uint8" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_agent",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_percentage",
+        "type": "uint8"
+      }
     ],
     "name": "addAgent",
     "outputs": [],
@@ -390,7 +378,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      }
     ],
     "name": "calculateRentPaymentInfo",
     "outputs": [
@@ -427,10 +419,26 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_lessee", "type": "address" },
-      { "internalType": "uint256", "name": "_startDate", "type": "uint256" },
-      { "internalType": "uint256", "name": "_endDate", "type": "uint256" },
-      { "internalType": "uint256", "name": "_rentAmount", "type": "uint256" },
+      {
+        "internalType": "address",
+        "name": "_lessee",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_startDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_endDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rentAmount",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "_securityDepositAmount",
@@ -446,7 +454,11 @@
         "name": "_latePaymentFee",
         "type": "uint256"
       },
-      { "internalType": "uint32", "name": "_gracePeriod", "type": "uint32" }
+      {
+        "internalType": "uint32",
+        "name": "_gracePeriod",
+        "type": "uint32"
+      }
     ],
     "name": "createLease",
     "outputs": [],
@@ -457,14 +469,22 @@
     "inputs": [],
     "name": "deedNFT",
     "outputs": [
-      { "internalType": "contract DeedNFT", "name": "", "type": "address" }
+      {
+        "internalType": "contract DeedNFT",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      }
     ],
     "name": "distributeRent",
     "outputs": [],
@@ -473,10 +493,14 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "leaseId", "type": "uint256" },
       {
         "internalType": "uint256",
-        "name": "extensionPeriod",
+        "name": "_leaseId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_extensionPeriod",
         "type": "uint256"
       }
     ],
@@ -489,7 +513,11 @@
     "inputs": [],
     "name": "fundsManager",
     "outputs": [
-      { "internalType": "contract FundsManager", "name": "", "type": "address" }
+      {
+        "internalType": "contract FundsManager",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -497,7 +525,13 @@
   {
     "inputs": [],
     "name": "leaseCounter",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -505,22 +539,52 @@
     "inputs": [],
     "name": "leaseNFT",
     "outputs": [
-      { "internalType": "contract ILeaseNFT", "name": "", "type": "address" }
+      {
+        "internalType": "contract ILeaseNFT",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "leases",
     "outputs": [
-      { "internalType": "address", "name": "lessor", "type": "address" },
-      { "internalType": "address", "name": "lessee", "type": "address" },
-      { "internalType": "uint256", "name": "rentAmount", "type": "uint256" },
+      {
+        "internalType": "address",
+        "name": "lessor",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "lessee",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rentAmount",
+        "type": "uint256"
+      },
       {
         "components": [
-          { "internalType": "uint256", "name": "amount", "type": "uint256" },
-          { "internalType": "bool", "name": "paid", "type": "bool" }
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "paid",
+            "type": "bool"
+          }
         ],
         "internalType": "struct LeaseAgreement.Deposit",
         "name": "securityDeposit",
@@ -531,11 +595,23 @@
         "name": "latePaymentFee",
         "type": "uint256"
       },
-      { "internalType": "uint32", "name": "gracePeriod", "type": "uint32" },
+      {
+        "internalType": "uint32",
+        "name": "gracePeriod",
+        "type": "uint32"
+      },
       {
         "components": [
-          { "internalType": "uint256", "name": "startDate", "type": "uint256" },
-          { "internalType": "uint256", "name": "endDate", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "startDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endDate",
+            "type": "uint256"
+          },
           {
             "internalType": "uint256",
             "name": "rentDueDate",
@@ -561,8 +637,16 @@
         "name": "propertyTokenId",
         "type": "uint256"
       },
-      { "internalType": "address", "name": "agent", "type": "address" },
-      { "internalType": "uint8", "name": "agentPercentage", "type": "uint8" },
+      {
+        "internalType": "address",
+        "name": "agent",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "agentPercentage",
+        "type": "uint8"
+      },
       {
         "internalType": "uint256",
         "name": "unclaimedRentAmount",
@@ -574,7 +658,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_leaseId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      }
     ],
     "name": "payRent",
     "outputs": [],
@@ -585,14 +673,22 @@
     "inputs": [],
     "name": "paymentToken",
     "outputs": [
-      { "internalType": "contract IERC20", "name": "", "type": "address" }
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      }
     ],
     "name": "removeAgent",
     "outputs": [],
@@ -601,8 +697,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_leaseId", "type": "uint256" },
-      { "internalType": "uint256", "name": "_newDueDate", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_newDueDate",
+        "type": "uint256"
+      }
     ],
     "name": "setDueDate",
     "outputs": [],
@@ -611,7 +715,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_fundsManager", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_fundsManager",
+        "type": "address"
+      }
     ],
     "name": "setFundsManager",
     "outputs": [],
@@ -620,7 +728,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_paymentToken", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_paymentToken",
+        "type": "address"
+      }
     ],
     "name": "setPaymentToken",
     "outputs": [],
@@ -642,7 +754,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      }
     ],
     "name": "submitDeposit",
     "outputs": [],
@@ -651,7 +767,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_leaseId",
+        "type": "uint256"
+      }
     ],
     "name": "terminateLease",
     "outputs": [],

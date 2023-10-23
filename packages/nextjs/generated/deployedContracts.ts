@@ -5,7 +5,7 @@ const contracts = {
       name: "goerli",
       contracts: {
         DeedNFT: {
-          address: "0x4E0325c42449b7457A7124264Ab8a2Bc13964B5C",
+          address: "0x9e4885D1399375870bBc3775F324B1AF9F653AAF",
           abi: [
             {
               inputs: [],
@@ -111,6 +111,25 @@ const contracts = {
                 },
                 {
                   indexed: false,
+                  internalType: "address",
+                  name: "burner",
+                  type: "address",
+                },
+              ],
+              name: "DeedNFTBurned",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "deedId",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
                   internalType: "bytes",
                   name: "newIpfsDetailsHash",
                   type: "bytes",
@@ -160,6 +179,12 @@ const contracts = {
                   internalType: "struct DeedNFT.DeedInfo",
                   name: "deedInfo",
                   type: "tuple",
+                },
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "minter",
+                  type: "address",
                 },
               ],
               name: "DeedNFTMinted",
@@ -314,7 +339,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "address",
-                  name: "minter",
+                  name: "_validator",
                   type: "address",
                 },
               ],
@@ -364,7 +389,20 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "tokenId",
+                  name: "_deedId",
+                  type: "uint256",
+                },
+              ],
+              name: "burn",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "_deedId",
                   type: "uint256",
                 },
               ],
@@ -593,7 +631,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "address",
-                  name: "minter",
+                  name: "_validator",
                   type: "address",
                 },
               ],
@@ -765,7 +803,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "bytes4",
-                  name: "interfaceId",
+                  name: "_interfaceId",
                   type: "bytes4",
                 },
               ],
@@ -1038,7 +1076,7 @@ const contracts = {
           ],
         },
         LeaseAgreement: {
-          address: "0xcCaC3b5B0284Ba2ECa48Eb1943D0625C5Dac0b79",
+          address: "0xdd8dc0245d846d0f04350af055951396846c73ab",
           abi: [
             {
               inputs: [
@@ -1082,12 +1120,18 @@ const contracts = {
                 },
                 {
                   indexed: false,
+                  internalType: "address",
+                  name: "agent",
+                  type: "address",
+                },
+                {
+                  indexed: false,
                   internalType: "uint256",
-                  name: "timestamp",
+                  name: "percentage",
                   type: "uint256",
                 },
               ],
-              name: "LeaseAgentRemoved",
+              name: "LeaseAgentAdded",
               type: "event",
             },
             {
@@ -1099,26 +1143,8 @@ const contracts = {
                   name: "leaseId",
                   type: "uint256",
                 },
-                {
-                  indexed: false,
-                  internalType: "address",
-                  name: "agent",
-                  type: "address",
-                },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "percentage",
-                  type: "uint256",
-                },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
               ],
-              name: "LeaseAgentSet",
+              name: "LeaseAgentRemoved",
               type: "event",
             },
             {
@@ -1232,12 +1258,6 @@ const contracts = {
                   name: "lease",
                   type: "tuple",
                 },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
               ],
               name: "LeaseCreated",
               type: "event",
@@ -1257,12 +1277,6 @@ const contracts = {
                   name: "amount",
                   type: "uint256",
                 },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
               ],
               name: "LeaseDepositSubmited",
               type: "event",
@@ -1280,12 +1294,6 @@ const contracts = {
                   indexed: false,
                   internalType: "uint256",
                   name: "newDueDate",
-                  type: "uint256",
-                },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
                   type: "uint256",
                 },
               ],
@@ -1319,12 +1327,6 @@ const contracts = {
                   name: "extensionCount",
                   type: "uint256",
                 },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
               ],
               name: "LeaseExtended",
               type: "event",
@@ -1337,12 +1339,6 @@ const contracts = {
                   internalType: "address",
                   name: "fundsManager",
                   type: "address",
-                },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
                 },
               ],
               name: "LeaseFundsManagerSet",
@@ -1369,12 +1365,6 @@ const contracts = {
                   name: "unclaimedRentAmount",
                   type: "uint256",
                 },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
               ],
               name: "LeasePaymentMade",
               type: "event",
@@ -1387,12 +1377,6 @@ const contracts = {
                   internalType: "address",
                   name: "paymentToken",
                   type: "address",
-                },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
                 },
               ],
               name: "LeasePaymentTokenSet",
@@ -1444,12 +1428,6 @@ const contracts = {
                   name: "leaseId",
                   type: "uint256",
                 },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
               ],
               name: "LeaseTerminated",
               type: "event",
@@ -1458,7 +1436,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "leaseId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
                 {
@@ -1481,7 +1459,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "leaseId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
               ],
@@ -1583,7 +1561,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "leaseId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
               ],
@@ -1596,12 +1574,12 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "leaseId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
                 {
                   internalType: "uint256",
-                  name: "extensionPeriod",
+                  name: "_extensionPeriod",
                   type: "uint256",
                 },
               ],
@@ -1787,7 +1765,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "leaseId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
               ],
@@ -1857,7 +1835,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "leaseId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
               ],
@@ -1870,7 +1848,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "leaseId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
               ],
@@ -1882,7 +1860,7 @@ const contracts = {
           ],
         },
         LeaseNFT: {
-          address: "0x11A03C3E32e119E05fe9663a7aB445BF3e3Cb679",
+          address: "0x1323E965Da92a8FF36cF308e02b078F9023F3C8b",
           abi: [
             {
               inputs: [],
@@ -1937,6 +1915,50 @@ const contracts = {
                 },
               ],
               name: "ApprovalForAll",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "leaseId",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "burner",
+                  type: "address",
+                },
+              ],
+              name: "LeaseNFTBurned",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "leaseOwner",
+                  type: "address",
+                },
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "leaseId",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "minter",
+                  type: "address",
+                },
+              ],
+              name: "LeaseNFTMinted",
               type: "event",
             },
             {
@@ -2024,7 +2046,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "tokenId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
               ],
@@ -2080,16 +2102,16 @@ const contracts = {
               inputs: [
                 {
                   internalType: "address",
-                  name: "to",
+                  name: "_to",
                   type: "address",
                 },
                 {
                   internalType: "uint256",
-                  name: "tokenId",
+                  name: "_leaseId",
                   type: "uint256",
                 },
               ],
-              name: "mintToken",
+              name: "mint",
               outputs: [],
               stateMutability: "nonpayable",
               type: "function",
@@ -2318,7 +2340,7 @@ const contracts = {
           ],
         },
         SubdivisionNFT: {
-          address: "0x434B8Ee84eaF2327d0e327125BAaE416Ed0c2fF3",
+          address: "0x8B5df1697E3d99F3d41ffd7B97CD2E8555Cf3D59",
           abi: [
             {
               inputs: [
@@ -2359,25 +2381,6 @@ const contracts = {
                 },
               ],
               name: "ApprovalForAll",
-              type: "event",
-            },
-            {
-              anonymous: false,
-              inputs: [
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "tokenId",
-                  type: "uint256",
-                },
-                {
-                  indexed: false,
-                  internalType: "bytes",
-                  name: "ipfsDetailsHash",
-                  type: "bytes",
-                },
-              ],
-              name: "IpfsDetailsSet",
               type: "event",
             },
             {
@@ -2527,8 +2530,27 @@ const contracts = {
               inputs: [
                 {
                   indexed: false,
+                  internalType: "uint256",
+                  name: "tokenId",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "bytes",
+                  name: "ipfsDetailsHash",
+                  type: "bytes",
+                },
+              ],
+              name: "SubdivisionIpfsDetailsSet",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
                   internalType: "address",
-                  name: "owner",
+                  name: "subdivisionOwner",
                   type: "address",
                 },
                 {
@@ -2548,6 +2570,12 @@ const contracts = {
                   internalType: "bytes",
                   name: "ipfsDetailsHash",
                   type: "bytes",
+                },
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "minter",
+                  type: "address",
                 },
               ],
               name: "SubdivisionMinted",
@@ -2752,11 +2780,6 @@ const contracts = {
             },
             {
               inputs: [
-                {
-                  internalType: "address",
-                  name: "account",
-                  type: "address",
-                },
                 {
                   internalType: "uint256",
                   name: "_subTokenId",

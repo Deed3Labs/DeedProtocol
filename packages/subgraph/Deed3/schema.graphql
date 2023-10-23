@@ -1,51 +1,6 @@
-type Approval @entity(immutable: true) {
-    id: Bytes!
-    owner: Bytes! # address
-    approved: Bytes! # address
-    tokenId: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
+# DeedNFT.sol
 
-type ApprovalForAll @entity(immutable: true) {
-    id: Bytes!
-    owner: Bytes! # address
-    operator: Bytes! # address
-    approved: Boolean! # bool
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type DeedNFTAssetTypeSet @entity(immutable: true) {
-    id: Bytes!
-    deedId: BigInt! # uint256
-    newAssetType: Int! # uint8
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type DeedNFTAssetValidationSet @entity(immutable: true) {
-    id: Bytes!
-    deedId: BigInt! # uint256
-    isValid: Boolean! # bool
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type DeedNFTIpfsDetailsSet @entity(immutable: true) {
-    id: Bytes!
-    deedId: BigInt! # uint256
-    newIpfsDetailsHash: Bytes! # bytes
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type DeedNFTMinted @entity(immutable: true) {
+type DeedNFTEntity @entity(immutable: false) {
     id: Bytes!
     deedId: BigInt! # uint256
     deedInfo_ipfsDetailsHash: Bytes! # bytes
@@ -53,15 +8,6 @@ type DeedNFTMinted @entity(immutable: true) {
     deedInfo_price: BigInt! # uint256
     deedInfo_deedAddress: String! # string
     deedInfo_isValidated: Boolean! # bool
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type DeedNFTPriceUpdated @entity(immutable: true) {
-    id: Bytes!
-    deedId: BigInt! # uint256
-    newPrice: BigInt! # uint256
     blockNumber: BigInt!
     blockTimestamp: BigInt!
     transactionHash: Bytes!
@@ -106,9 +52,34 @@ type Transfer @entity(immutable: true) {
     blockTimestamp: BigInt!
     transactionHash: Bytes!
 }
-type IpfsDetailsSet @entity(immutable: true) {
+
+type Approval @entity(immutable: true) {
     id: Bytes!
+    owner: Bytes! # address
+    approved: Bytes! # address
     tokenId: BigInt! # uint256
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+}
+
+type ApprovalForAll @entity(immutable: true) {
+    id: Bytes!
+    owner: Bytes! # address
+    operator: Bytes! # address
+    approved: Boolean! # bool
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+}
+
+# SubdivisionNFT.sol
+
+type SubdivisionEntity @entity(immutable: false) {
+    id: Bytes!
+    owner: Bytes! # address
+    subdivisionId: BigInt! # uint256
+    deedId: BigInt! # uint256
     ipfsDetailsHash: Bytes! # bytes
     blockNumber: BigInt!
     blockTimestamp: BigInt!
@@ -126,23 +97,10 @@ type SubdivisionBurned @entity(immutable: true) {
     transactionHash: Bytes!
 }
 
-type SubdivisionInfoSet @entity(immutable: true) {
+type URI @entity(immutable: true) {
     id: Bytes!
-    tokenId: BigInt! # uint256
-    info_ipfsDetailsHash: Bytes! # bytes
-    info_owner: Bytes! # address
-    info_parentDeed: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type SubdivisionMinted @entity(immutable: true) {
-    id: Bytes!
-    owner: Bytes! # address
-    subdivisionId: BigInt! # uint256
-    deedId: BigInt! # uint256
-    ipfsDetailsHash: Bytes! # bytes
+    value: String! # string
+    SubdivisionNFT_id: BigInt! # uint256
     blockNumber: BigInt!
     blockTimestamp: BigInt!
     transactionHash: Bytes!
@@ -172,14 +130,8 @@ type TransferSingle @entity(immutable: true) {
     transactionHash: Bytes!
 }
 
-type URI @entity(immutable: true) {
-    id: Bytes!
-    value: String! # string
-    SubdivisionNFT_id: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
+# LeaseNFT.sol
+
 type OwnershipTransferred @entity(immutable: true) {
     id: Bytes!
     previousOwner: Bytes! # address
@@ -188,6 +140,9 @@ type OwnershipTransferred @entity(immutable: true) {
     blockTimestamp: BigInt!
     transactionHash: Bytes!
 }
+
+# FundsManager.sol
+
 type FundsStored @entity(immutable: true) {
     id: Bytes!
     FundsManager_id: BigInt! # uint256
@@ -213,25 +168,8 @@ type FundsWithdrawn @entity(immutable: true) {
     blockTimestamp: BigInt!
     transactionHash: Bytes!
 }
-type LeaseAgentRemoved @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
 
-type LeaseAgentSet @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    agent: Bytes! # address
-    percentage: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
+# LeaseAgreement.sol
 
 type LeaseCreated @entity(immutable: true) {
     id: Bytes!
@@ -252,6 +190,26 @@ type LeaseCreated @entity(immutable: true) {
     lease_agent: Bytes! # address
     lease_agentPercentage: Int! # uint8
     lease_unclaimedRentAmount: BigInt! # uint256
+    timestamp: BigInt! # uint256
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+}
+
+type LeaseAgentRemoved @entity(immutable: true) {
+    id: Bytes!
+    leaseId: BigInt! # uint256
+    timestamp: BigInt! # uint256
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+}
+
+type LeaseAgentSet @entity(immutable: true) {
+    id: Bytes!
+    leaseId: BigInt! # uint256
+    agent: Bytes! # address
+    percentage: BigInt! # uint256
     timestamp: BigInt! # uint256
     blockNumber: BigInt!
     blockTimestamp: BigInt!

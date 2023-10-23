@@ -11,21 +11,28 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 contract LeaseNFT is ERC721, Ownable {
     address private leaseAgreementAddress;
 
+    event LeaseNFTMinted(address leaseOwner, uint256 leaseId, address minter);
+    event LeaseNFTBurned(uint256 leaseId, address burner);
+    event LeaseNFTAgreementSet(uint256 leaseId, address burner);
+
     constructor() ERC721("LeaseNFT", "LEASE") {}
 
     function setLeaseAgreementAddress(address _leaseAgreementAddress) public onlyOwner {
         leaseAgreementAddress = _leaseAgreementAddress;
+
     }
 
-    function mintToken(address to, uint256 tokenId) external {
-        _mint(to, tokenId);
+    function mint(address _to, uint256 _leaseId) external {
+        _mint(_to, _leaseId);
+        emit LeaseNFTMinted(_to, _leaseId, _msgSender());
     }
 
-    function burn(uint256 tokenId) external {
+    function burn(uint256 _leaseId) external {
         require(
-            _msgSender() == this.ownerOf(tokenId) || _msgSender() == leaseAgreementAddress,
-            "Only token owner can burn the leaseNFT"
+            _msgSender() == this.ownerOf(_leaseId) || _msgSender() == leaseAgreementAddress,
+            "[LeaseNFT] Only LeaseNFT owner can burn the lease"
         );
-        _burn(tokenId);
+        _burn(_leaseId);
+        emit LeaseNFTBurned(_leaseId, _msgSender());
     }
 }

@@ -1,50 +1,50 @@
-  - kind: ethereum
-    name: LeaseAgreement
-    network: {{network}}
-    source:
+- kind: ethereum
+  name: LeaseAgreement
+  network: {{network}}
+  source:
       address: "{{address}}"
       abi: LeaseAgreement
       startBlock: {{startBlock}}
-    mapping:
+  mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - LeaseAgentRemoved
-        - LeaseAgentSet
-        - LeaseCreated
-        - LeaseDepositSubmited
-        - LeaseDueDateChanged
-        - LeaseExtended
-        - LeaseFundsManagerSet
-        - LeasePaymentMade
-        - LeasePaymentTokenSet
-        - LeaseRentDistributed
-        - LeaseTerminated
+          - LeaseAgentRemoved
+          - LeaseAgentAdded
+          - LeaseCreated
+          - LeaseDepositSubmited
+          - LeaseDueDateChanged
+          - LeaseExtended
+          - LeaseFundsManagerSet
+          - LeasePaymentMade
+          - LeasePaymentTokenSet
+          - LeaseRentDistributed
+          - LeaseTerminated
       abis:
-        - name: LeaseAgreement
-          file: ./abis/LeaseAgreement.json
+          - name: LeaseAgreement
+            file: ./abis/LeaseAgreement.json
       eventHandlers:
-        - event: LeaseAgentRemoved(uint256,uint256)
-          handler: handleLeaseAgentRemoved
-        - event: LeaseAgentSet(uint256,address,uint256,uint256)
-          handler: handleLeaseAgentSet
-        - event: LeaseCreated(uint256,(address,address,uint256,(uint256,bool),uint256,uint32,(uint256,uint256,uint256,uint256),uint256,uint256,address,uint8,uint256),uint256)
-          handler: handleLeaseCreated
-        - event: LeaseDepositSubmited(uint256,uint256,uint256)
-          handler: handleLeaseDepositSubmited
-        - event: LeaseDueDateChanged(uint256,uint256,uint256)
-          handler: handleLeaseDueDateChanged
-        - event: LeaseExtended(uint256,uint256,uint256,uint256,uint256)
-          handler: handleLeaseExtended
-        - event: LeaseFundsManagerSet(address,uint256)
-          handler: handleLeaseFundsManagerSet
-        - event: LeasePaymentMade(uint256,uint256,uint256,uint256)
-          handler: handleLeasePaymentMade
-        - event: LeasePaymentTokenSet(address,uint256)
-          handler: handleLeasePaymentTokenSet
-        - event: LeaseRentDistributed(uint256,uint256,uint256,uint256,uint256)
-          handler: handleLeaseRentDistributed
-        - event: LeaseTerminated(uint256,uint256)
-          handler: handleLeaseTerminated
+          - event: LeaseAgentRemoved(uint256,uint256)
+            handler: handleLeaseAgentRemoved
+          - event: LeaseAgentAdded(uint256,address,uint256,uint256)
+            handler: handleLeaseAgentAdded
+          - event: LeaseCreated(uint256,(address,address,uint256,(uint256,bool),uint256,uint32,(uint256,uint256,uint256,uint256),uint256,uint256,address,uint8,uint256),uint256)
+            handler: handleLeaseCreated
+          - event: LeaseDepositSubmited(uint256,uint256,uint256)
+            handler: handleLeaseDepositSubmited
+          - event: LeaseDueDateChanged(uint256,uint256,uint256)
+            handler: handleLeaseDueDateChanged
+          - event: LeaseExtended(uint256,uint256,uint256,uint256,uint256)
+            handler: handleLeaseExtended
+          - event: LeaseFundsManagerSet(address,uint256)
+            handler: handleLeaseFundsManagerSet
+          - event: LeasePaymentMade(uint256,uint256,uint256,uint256)
+            handler: handleLeasePaymentMade
+          - event: LeasePaymentTokenSet(address,uint256)
+            handler: handleLeasePaymentTokenSet
+          - event: LeaseRentDistributed(uint256,uint256,uint256,uint256,uint256)
+            handler: handleLeaseRentDistributed
+          - event: LeaseTerminated(uint256,uint256)
+            handler: handleLeaseTerminated
       file: ./src/lease-agreement.ts

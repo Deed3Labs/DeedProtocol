@@ -1,7 +1,7 @@
 // How to handle enums insolidity testing?
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { SubdivisionNFT, DeedNFT, LeaseNFT, LeaseAgreement, TokenMock, FundStorage } from "../typechain-types";
+import { SubdivisionNFT, DeedNFT, LeaseNFT, LeaseAgreement, TokenMock, FundsManager } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
@@ -11,7 +11,7 @@ describe("LeaseAgreement", function () {
   let subNFT: SubdivisionNFT;
   let deedNFT: DeedNFT;
   let leaseNFT: LeaseNFT;
-  let fundsManager: FundStorage;
+  let fundsManager: FundsManager;
   let leaseAgreement: LeaseAgreement;
   let contractOwner: SignerWithAddress;
   let lessee: SignerWithAddress;
@@ -55,7 +55,7 @@ describe("LeaseAgreement", function () {
     await deedNFT.mintAsset(deedOwner.address, "0x", 2, "12 000 Fake Addy");
     await subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 });
     const fundsManagerFactory = await ethers.getContractFactory("FundStorage");
-    fundsManager = (await fundsManagerFactory.connect(contractOwner).deploy()) as FundStorage;
+    fundsManager = (await fundsManagerFactory.connect(contractOwner).deploy()) as FundsManager;
     await fundsManager.deployed();
     await leaseAgreement.connect(contractOwner).setFundsManager(fundsManager.address);
   });

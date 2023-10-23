@@ -1,12 +1,12 @@
 import { ethers } from "hardhat";
 import { Signer, BigNumber } from "ethers";
 import { expect } from "chai";
-import { FundStorage, TokenMock } from "../typechain-types";
+import { FundsManager, TokenMock } from "../typechain-types";
 
-describe("FundStorage", function () {
+describe("FundsManager", function () {
   let addr1: Signer;
 
-  let fundStorage: FundStorage;
+  let fundsManager: FundsManager;
   let token: TokenMock;
 
   beforeEach(async function () {
@@ -19,10 +19,10 @@ describe("FundStorage", function () {
 
     // Deploy FundStorage contract
     const FundStorageFactory = await ethers.getContractFactory("FundsManager");
-    fundStorage = (await FundStorageFactory.deploy()) as FundStorage;
+    fundsManager = (await FundStorageFactory.deploy()) as FundsManager;
 
     await token.deployed();
-    await fundStorage.deployed();
+    await fundsManager.deployed();
   });
 
   describe("store", () => {
@@ -31,16 +31,16 @@ describe("FundStorage", function () {
       const amountToStore = BigNumber.from(100);
       await token.mint(addr1.getAddress(), amountToStore);
       const initialSenderBalance = await token.balanceOf(addr1.getAddress());
-      const initialContractBalance = await token.balanceOf(fundStorage.address);
+      const initialContractBalance = await token.balanceOf(fundsManager.address);
       const accountId = BigNumber.from(1);
 
       // Act
-      await token.connect(addr1).approve(fundStorage.address, amountToStore);
-      const act = () => fundStorage.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      await token.connect(addr1).approve(fundsManager.address, amountToStore);
+      const act = () => fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
 
       // Assert
       await expect(act())
-        .to.emit(fundStorage, "FundsStored")
+        .to.emit(fundsManager, "FundsStored")
         .withArgs(
           accountId,
           token.address,
@@ -50,11 +50,11 @@ describe("FundStorage", function () {
           amountToStore,
         );
 
-      const storedBalance = await fundStorage.connect(addr1).balanceOf(accountId, token.address);
+      const storedBalance = await fundsManager.connect(addr1).balanceOf(accountId, token.address);
       expect(storedBalance).to.equal(amountToStore);
 
       const finalSenderBalance = await token.balanceOf(addr1.getAddress());
-      const finalContractBalance = await token.balanceOf(fundStorage.address);
+      const finalContractBalance = await token.balanceOf(fundsManager.address);
 
       expect(finalSenderBalance).to.equal(initialSenderBalance.sub(amountToStore));
       expect(finalContractBalance).to.equal(initialContractBalance.add(amountToStore));
@@ -66,7 +66,7 @@ describe("FundStorage", function () {
       const accountId = 1;
 
       // Act
-      const act = () => fundStorage.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      const act = () => fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
       await expect(act()).to.be.revertedWith(
         `[FundsManager] Not enough allowance for account ${accountId} and amount ${amountToStore}`,
       );
@@ -79,21 +79,21 @@ describe("FundStorage", function () {
       const accountId = BigNumber.from(1);
       const amountToStore = BigNumber.from(100);
       await token.mint(addr1.getAddress(), amountToStore);
-      await token.connect(addr1).approve(fundStorage.address, amountToStore);
-      await fundStorage.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      await token.connect(addr1).approve(fundsManager.address, amountToStore);
+      await fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
 
       const initialSenderBalance = await token.balanceOf(addr1.getAddress());
-      const initialContractBalance = await token.balanceOf(fundStorage.address);
+      const initialContractBalance = await token.balanceOf(fundsManager.address);
 
       const amountToWithdraw = BigNumber.from(50);
 
       // Act
       const act = () =>
-        fundStorage.connect(addr1).widthdraw(accountId, token.address, amountToWithdraw, addr1.getAddress());
+        fundsManager.connect(addr1).widthdraw(accountId, token.address, amountToWithdraw, addr1.getAddress());
 
       // Assert
       await expect(act())
-        .to.emit(fundStorage, "FundsWithdrawn")
+        .to.emit(fundsManager, "FundsWithdrawn")
         .withArgs(
           accountId,
           token.address,
@@ -104,7 +104,7 @@ describe("FundStorage", function () {
         );
 
       const finalSenderBalance = await token.balanceOf(addr1.getAddress());
-      const finalContractBalance = await token.balanceOf(fundStorage.address);
+      const finalContractBalance = await token.balanceOf(fundsManager.address);
 
       expect(finalSenderBalance).to.equal(initialSenderBalance.add(amountToWithdraw));
       expect(finalContractBalance).to.equal(initialContractBalance.sub(amountToWithdraw));
@@ -115,14 +115,14 @@ describe("FundStorage", function () {
       const accountId = BigNumber.from(1);
       const amountToStore = BigNumber.from(100);
       await token.mint(addr1.getAddress(), amountToStore);
-      await token.connect(addr1).approve(fundStorage.address, amountToStore);
-      await fundStorage.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      await token.connect(addr1).approve(fundsManager.address, amountToStore);
+      await fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
 
       const amountToWithdraw = amountToStore.add(1); // Attempting to withdraw one more token than stored
 
       // Act
       const act = () =>
-        fundStorage.connect(addr1).widthdraw(accountId, token.address, amountToWithdraw, addr1.getAddress());
+        fundsManager.connect(addr1).widthdraw(accountId, token.address, amountToWithdraw, addr1.getAddress());
 
       // Arrange
       await expect(act()).to.be.revertedWith(
