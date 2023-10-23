@@ -1,0 +1,661 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_leaseNFT", "type": "address" },
+      { "internalType": "address", "name": "_paymentToken", "type": "address" },
+      { "internalType": "address", "name": "_deedNFT", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_subdivisionNFT",
+        "type": "address"
+      },
+      { "internalType": "address", "name": "_fundsManager", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseAgentRemoved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "agent",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "percentage",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseAgentSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          { "internalType": "address", "name": "lessor", "type": "address" },
+          { "internalType": "address", "name": "lessee", "type": "address" },
+          {
+            "internalType": "uint256",
+            "name": "rentAmount",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+              },
+              { "internalType": "bool", "name": "paid", "type": "bool" }
+            ],
+            "internalType": "struct LeaseAgreement.Deposit",
+            "name": "securityDeposit",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "latePaymentFee",
+            "type": "uint256"
+          },
+          { "internalType": "uint32", "name": "gracePeriod", "type": "uint32" },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "startDate",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "endDate",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "rentDueDate",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "distributableDate",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct LeaseAgreement.LeaseDates",
+            "name": "dates",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "extensionCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "propertyTokenId",
+            "type": "uint256"
+          },
+          { "internalType": "address", "name": "agent", "type": "address" },
+          {
+            "internalType": "uint8",
+            "name": "agentPercentage",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "unclaimedRentAmount",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct LeaseAgreement.Lease",
+        "name": "lease",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseDepositSubmited",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newDueDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseDueDateChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rentAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "extensionCount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseExtended",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "fundsManager",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseFundsManagerSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "unclaimedRentAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeasePaymentMade",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "paymentToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeasePaymentTokenSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lessorAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "agentAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "distributableDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseRentDistributed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leaseId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeaseTerminated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "leaseId", "type": "uint256" },
+      { "internalType": "address", "name": "_agent", "type": "address" },
+      { "internalType": "uint8", "name": "_percentage", "type": "uint8" }
+    ],
+    "name": "addAgent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+    ],
+    "name": "calculateRentPaymentInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "rentAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalBalance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint32",
+            "name": "unpaidMonths",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rentDueDate",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct LeaseAgreement.RentPaymentInfo",
+        "name": "rentInfo",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_lessee", "type": "address" },
+      { "internalType": "uint256", "name": "_startDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "_endDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "_rentAmount", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "_securityDepositAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_propertyTokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_latePaymentFee",
+        "type": "uint256"
+      },
+      { "internalType": "uint32", "name": "_gracePeriod", "type": "uint32" }
+    ],
+    "name": "createLease",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "deedNFT",
+    "outputs": [
+      { "internalType": "contract DeedNFT", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+    ],
+    "name": "distributeRent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "leaseId", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "extensionPeriod",
+        "type": "uint256"
+      }
+    ],
+    "name": "extendLease",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fundsManager",
+    "outputs": [
+      { "internalType": "contract FundsManager", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "leaseCounter",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "leaseNFT",
+    "outputs": [
+      { "internalType": "contract ILeaseNFT", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "leases",
+    "outputs": [
+      { "internalType": "address", "name": "lessor", "type": "address" },
+      { "internalType": "address", "name": "lessee", "type": "address" },
+      { "internalType": "uint256", "name": "rentAmount", "type": "uint256" },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "bool", "name": "paid", "type": "bool" }
+        ],
+        "internalType": "struct LeaseAgreement.Deposit",
+        "name": "securityDeposit",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "latePaymentFee",
+        "type": "uint256"
+      },
+      { "internalType": "uint32", "name": "gracePeriod", "type": "uint32" },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "startDate", "type": "uint256" },
+          { "internalType": "uint256", "name": "endDate", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "rentDueDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "distributableDate",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct LeaseAgreement.LeaseDates",
+        "name": "dates",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "extensionCount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "propertyTokenId",
+        "type": "uint256"
+      },
+      { "internalType": "address", "name": "agent", "type": "address" },
+      { "internalType": "uint8", "name": "agentPercentage", "type": "uint8" },
+      {
+        "internalType": "uint256",
+        "name": "unclaimedRentAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_leaseId", "type": "uint256" }
+    ],
+    "name": "payRent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paymentToken",
+    "outputs": [
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+    ],
+    "name": "removeAgent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_leaseId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_newDueDate", "type": "uint256" }
+    ],
+    "name": "setDueDate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_fundsManager", "type": "address" }
+    ],
+    "name": "setFundsManager",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_paymentToken", "type": "address" }
+    ],
+    "name": "setPaymentToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "subdivisionNFT",
+    "outputs": [
+      {
+        "internalType": "contract SubdivisionNFT",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+    ],
+    "name": "submitDeposit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "leaseId", "type": "uint256" }
+    ],
+    "name": "terminateLease",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

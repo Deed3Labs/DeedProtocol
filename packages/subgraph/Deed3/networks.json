@@ -1,3 +1,29 @@
 {
-  "goerli": {}
+  "goerli": {
+    "DeedNFT": {
+      "address": "0x4E0325c42449b7457A7124264Ab8a2Bc13964B5C",
+      "startBlock": 9915285,
+      "template": "DeedNFT.template.yaml"
+    },
+    "SubdivisionNFT": {
+      "address": "0x434B8Ee84eaF2327d0e327125BAaE416Ed0c2fF3",
+      "startBlock": 9915285,
+      "template": "SubdivisionNFT.template.yaml"
+    },
+    "LeaseNFT": {
+      "address": "0x11A03C3E32e119E05fe9663a7aB445BF3e3Cb679",
+      "startBlock": 9915285,
+      "template": "LeaseNFT.template.yaml"
+    },
+    "FundsManager": {
+      "address": "0xC71F7B1cb487dC5518655C3874DC206E9F0D35E7",
+      "startBlock": 9915285,
+      "template": "FundsManager.template.yaml"
+    },
+    "LeaseAgreement": {
+      "address": "0xcCaC3b5B0284Ba2ECa48Eb1943D0625C5Dac0b79",
+      "startBlock": 9915285,
+      "template": "LeaseAgreement.template.yaml"
+    }
+  }
 }
