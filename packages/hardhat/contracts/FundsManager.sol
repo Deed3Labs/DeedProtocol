@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "hardhat/console.sol";
 
-contract FundsManager {
+contract FundsManager is Context {
     event FundsStored(uint256 id, IERC20 token, uint256 amount, address sender, address caller, uint256 newBalance);
     event FundsWithdrawn(
         uint256 id,
@@ -27,7 +27,7 @@ contract FundsManager {
      * @return Balance
      */
     function balanceOf(uint256 _id, IERC20 _token) external view returns (uint256) {
-        return accountsMapping[msg.sender][_id][address(_token)];
+        return accountsMapping[_msgSender()][_id][address(_token)];
     }
 
     /**
@@ -41,7 +41,7 @@ contract FundsManager {
         require(
             _token.allowance(_sender, address(this)) >= _amount,
             string.concat(
-                "Funds Storage [store]: Not enough allowance for account ",
+                "[FundsManager] Not enough allowance for account ",
                 Strings.toString(_id),
                 " and amount ",
                 Strings.toString(_amount)
@@ -49,9 +49,16 @@ contract FundsManager {
         );
 
         _token.transferFrom(_sender, address(this), _amount);
-        accountsMapping[msg.sender][_id][address(_token)] += _amount;
+        accountsMapping[_msgSender()][_id][address(_token)] += _amount;
 
-        emit FundsStored(_id, _token, _amount, _sender, msg.sender, accountsMapping[msg.sender][_id][address(_token)]);
+        emit FundsStored(
+            _id,
+            _token,
+            _amount,
+            _sender,
+            _msgSender(),
+            accountsMapping[_msgSender()][_id][address(_token)]
+        );
     }
 
     /**
@@ -63,16 +70,16 @@ contract FundsManager {
      */
     function widthdraw(uint256 _id, IERC20 _token, uint256 _amount, address _recipient) external {
         require(
-            accountsMapping[msg.sender][_id][address(_token)] >= _amount,
+            accountsMapping[_msgSender()][_id][address(_token)] >= _amount,
             string.concat(
-                "Funds Storage [widthdraw]: Not enough funds for account ",
+                "[FundsManager] Not enough funds for account ",
                 Strings.toString(_id),
                 " and amount ",
                 Strings.toString(_amount)
             )
         );
 
-        accountsMapping[msg.sender][_id][address(_token)] -= _amount;
+        accountsMapping[_msgSender()][_id][address(_token)] -= _amount;
         _token.transfer(_recipient, _amount);
 
         emit FundsWithdrawn(
@@ -80,8 +87,8 @@ contract FundsManager {
             _token,
             _amount,
             _recipient,
-            msg.sender,
-            accountsMapping[msg.sender][_id][address(_token)]
+            _msgSender(),
+            accountsMapping[_msgSender()][_id][address(_token)]
         );
     }
 }

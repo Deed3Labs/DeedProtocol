@@ -18,7 +18,7 @@ describe("FundStorage", function () {
     token = (await TokenFactory.deploy("PaymentToken", "PTKN")) as TokenMock;
 
     // Deploy FundStorage contract
-    const FundStorageFactory = await ethers.getContractFactory("FundStorage");
+    const FundStorageFactory = await ethers.getContractFactory("FundsManager");
     fundStorage = (await FundStorageFactory.deploy()) as FundStorage;
 
     await token.deployed();
@@ -68,7 +68,7 @@ describe("FundStorage", function () {
       // Act
       const act = () => fundStorage.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
       await expect(act()).to.be.revertedWith(
-        `Funds Storage [store]: Not enough allowance for account ${accountId} and amount ${amountToStore}`,
+        `[FundsManager] Not enough allowance for account ${accountId} and amount ${amountToStore}`,
       );
     });
   });
@@ -126,7 +126,7 @@ describe("FundStorage", function () {
 
       // Arrange
       await expect(act()).to.be.revertedWith(
-        `Funds Storage [widthdraw]: Not enough funds for account ${accountId} and amount ${amountToWithdraw}`,
+        `[FundsManager] Not enough funds for account ${accountId} and amount ${amountToWithdraw}`,
       );
     });
   });

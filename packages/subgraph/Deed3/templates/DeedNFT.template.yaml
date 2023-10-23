@@ -1,38 +1,38 @@
 - kind: ethereum
-    name: DeedNFT
-    network: {{network}}
-    source:
-      address: "{{address}}"
-      abi: DeedNFT
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Approval
-        - ApprovalForAll
-        - DeedMinted
-        - RoleAdminChanged
-        - RoleGranted
-        - RoleRevoked
-        - Transfer
-      abis:
-        - name: DeedNFT
-          file: ./abis/DeedNFT.json
-      eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: DeedMinted((string,uint8,uint256,string))
-          handler: handleDeedMinted
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-          handler: handleRoleAdminChanged
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleRevoked
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: ./src/deed-nft.ts
+  name: DeedNFT
+  network: {{network}}
+  source:
+    address: "{{address}}"
+    abi: DeedNFT
+    startBlock: {{startBlock}}
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.7
+    language: wasm/assemblyscript
+    entities:
+      - Approval
+      - ApprovalForAll
+      - DeedMinted
+      - RoleAdminChanged
+      - RoleGranted
+      - RoleRevoked
+      - Transfer
+    abis:
+      - name: DeedNFT
+        file: ./abis/DeedNFT.json
+    eventHandlers:
+      - event: Approval(indexed address,indexed address,indexed uint256)
+        handler: handleApproval
+      - event: ApprovalForAll(indexed address,indexed address,bool)
+        handler: handleApprovalForAll
+      - event: DeedMinted((string,uint8,uint256,string))
+        handler: handleDeedMinted
+      - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
+        handler: handleRoleAdminChanged
+      - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+        handler: handleRoleGranted
+      - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+        handler: handleRoleRevoked
+      - event: Transfer(indexed address,indexed address,indexed uint256)
+        handler: handleTransfer
+    file: ./src/deed-nft.ts

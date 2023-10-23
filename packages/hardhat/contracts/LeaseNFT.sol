@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -23,7 +23,7 @@ contract LeaseNFT is ERC721, Ownable {
 
     function burn(uint256 tokenId) external {
         require(
-            msg.sender == this.ownerOf(tokenId) || msg.sender == leaseAgreementAddress,
+            _msgSender() == this.ownerOf(tokenId) || _msgSender() == leaseAgreementAddress,
             "Only token owner can burn the leaseNFT"
         );
         _burn(tokenId);
