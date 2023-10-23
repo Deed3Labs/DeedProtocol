@@ -68,3 +68,169 @@ type Transfer @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+type IpfsDetailsSet @entity(immutable: true) {
+  id: Bytes!
+  tokenId: BigInt! # uint256
+  ipfsDetailsHash: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SubdivisionInfoSet @entity(immutable: true) {
+  id: Bytes!
+  tokenId: BigInt! # uint256
+  info_ipfsDetailsHash: Bytes! # bytes
+  info_owner: Bytes! # address
+  info_parentDeed: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SubdivisionMinted @entity(immutable: true) {
+  id: Bytes!
+  to: Bytes! # address
+  subdivisionId: BigInt! # uint256
+  deedId: BigInt! # uint256
+  ipfsDetailsHash: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TransferBatch @entity(immutable: true) {
+  id: Bytes!
+  operator: Bytes! # address
+  from: Bytes! # address
+  to: Bytes! # address
+  ids: [BigInt!]! # uint256[]
+  values: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TransferSingle @entity(immutable: true) {
+  id: Bytes!
+  operator: Bytes! # address
+  from: Bytes! # address
+  to: Bytes! # address
+  SubdivisionNFT_id: BigInt! # uint256
+  value: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type URI @entity(immutable: true) {
+  id: Bytes!
+  value: String! # string
+  SubdivisionNFT_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type FundsStored @entity(immutable: true) {
+  id: Bytes!
+  FundsManager_id: BigInt! # uint256
+  token: Bytes! # address
+  amount: BigInt! # uint256
+  sender: Bytes! # address
+  caller: Bytes! # address
+  newBalance: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FundsWithdrawn @entity(immutable: true) {
+  id: Bytes!
+  FundsManager_id: BigInt! # uint256
+  token: Bytes! # address
+  amount: BigInt! # uint256
+  destination: Bytes! # address
+  caller: Bytes! # address
+  newBalance: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type AgentRemoved @entity(immutable: true) {
+  id: Bytes!
+  leaseId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AgentSet @entity(immutable: true) {
+  id: Bytes!
+  leaseId: BigInt! # uint256
+  agent: Bytes! # address
+  percentage: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DueDateChanged @entity(immutable: true) {
+  id: Bytes!
+  leaseId: BigInt! # uint256
+  newDueDate: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FundsManagerSet @entity(immutable: true) {
+  id: Bytes!
+  fundsManager: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LeaseCreated @entity(immutable: true) {
+  id: Bytes!
+  leaseId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LeaseTerminated @entity(immutable: true) {
+  id: Bytes!
+  leaseId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PaymentMade @entity(immutable: true) {
+  id: Bytes!
+  leaseId: BigInt! # uint256
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RentDistributed @entity(immutable: true) {
+  id: Bytes!
+  leaseId: BigInt! # uint256
+  lessorAmount: BigInt! # uint256
+  agentAmount: BigInt! # uint256
+  timestamp: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
