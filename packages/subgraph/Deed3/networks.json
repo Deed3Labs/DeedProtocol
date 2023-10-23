@@ -8,7 +8,7 @@
     },
     "SubdivisionNFT": {
       "address": "0x1654FAaD6D9E8457fE578ad1EC7d7a92d43751ad",
-      "startBlock": 9913655,
+      "startBlock": 9913658,
       "abi": "SubdivisionNFT",
       "template": "SubdivisionNFT.template.yaml"
     },

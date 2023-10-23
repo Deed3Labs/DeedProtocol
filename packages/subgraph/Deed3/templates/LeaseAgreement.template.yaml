@@ -1,41 +1,41 @@
-  - kind: ethereum
-    name: LeaseAgreement
-    network: {{network}}
-    source:
+- kind: ethereum
+  name: LeaseAgreement
+  network: {{network}}
+  source:
       address: "{{address}}"
       abi: LeaseAgreement
       startBlock: {{startBlock}}
-    mapping:
+  mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - AgentRemoved
-        - AgentSet
-        - DueDateChanged
-        - FundsManagerSet
-        - LeaseCreated
-        - LeaseTerminated
-        - PaymentMade
-        - RentDistributed
+          - AgentRemoved
+          - AgentSet
+          - DueDateChanged
+          - FundsManagerSet
+          - LeaseCreated
+          - LeaseTerminated
+          - PaymentMade
+          - RentDistributed
       abis:
-        - name: LeaseAgreement
-          file: ./abis/LeaseAgreement.json
+          - name: LeaseAgreement
+            file: ./abis/LeaseAgreement.json
       eventHandlers:
-        - event: AgentRemoved(uint256)
-          handler: handleAgentRemoved
-        - event: AgentSet(uint256,address,uint256)
-          handler: handleAgentSet
-        - event: DueDateChanged(uint256,uint256)
-          handler: handleDueDateChanged
-        - event: FundsManagerSet(address)
-          handler: handleFundsManagerSet
-        - event: LeaseCreated(uint256)
-          handler: handleLeaseCreated
-        - event: LeaseTerminated(uint256)
-          handler: handleLeaseTerminated
-        - event: PaymentMade(uint256,uint256)
-          handler: handlePaymentMade
-        - event: RentDistributed(uint256,uint256,uint256,uint256)
-          handler: handleRentDistributed
+          - event: AgentRemoved(uint256)
+            handler: handleAgentRemoved
+          - event: AgentSet(uint256,address,uint256)
+            handler: handleAgentSet
+          - event: DueDateChanged(uint256,uint256)
+            handler: handleDueDateChanged
+          - event: FundsManagerSet(address)
+            handler: handleFundsManagerSet
+          - event: LeaseCreated(uint256)
+            handler: handleLeaseCreated
+          - event: LeaseTerminated(uint256)
+            handler: handleLeaseTerminated
+          - event: PaymentMade(uint256,uint256)
+            handler: handlePaymentMade
+          - event: RentDistributed(uint256,uint256,uint256,uint256)
+            handler: handleRentDistributed
       file: ./src/lease-agreement.ts
