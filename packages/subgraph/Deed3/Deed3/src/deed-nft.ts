@@ -1,7 +1,11 @@
 import {
   Approval as ApprovalEvent,
   ApprovalForAll as ApprovalForAllEvent,
-  DeedMinted as DeedMintedEvent,
+  DeedNFTAssetTypeSet as DeedNFTAssetTypeSetEvent,
+  DeedNFTAssetValidationSet as DeedNFTAssetValidationSetEvent,
+  DeedNFTIpfsDetailsSet as DeedNFTIpfsDetailsSetEvent,
+  DeedNFTMinted as DeedNFTMintedEvent,
+  DeedNFTPriceUpdated as DeedNFTPriceUpdatedEvent,
   RoleAdminChanged as RoleAdminChangedEvent,
   RoleGranted as RoleGrantedEvent,
   RoleRevoked as RoleRevokedEvent,
@@ -10,7 +14,11 @@ import {
 import {
   Approval,
   ApprovalForAll,
-  DeedMinted,
+  DeedNFTAssetTypeSet,
+  DeedNFTAssetValidationSet,
+  DeedNFTIpfsDetailsSet,
+  DeedNFTMinted,
+  DeedNFTPriceUpdated,
   RoleAdminChanged,
   RoleGranted,
   RoleRevoked,
@@ -47,14 +55,80 @@ export function handleApprovalForAll(event: ApprovalForAllEvent): void {
   entity.save()
 }
 
-export function handleDeedMinted(event: DeedMintedEvent): void {
-  let entity = new DeedMinted(
+export function handleDeedNFTAssetTypeSet(
+  event: DeedNFTAssetTypeSetEvent
+): void {
+  let entity = new DeedNFTAssetTypeSet(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity._deedInfo_ipfsDetailsHash = event.params._deedInfo.ipfsDetailsHash
-  entity._deedInfo_assetType = event.params._deedInfo.assetType
-  entity._deedInfo_price = event.params._deedInfo.price
-  entity._deedInfo_address = event.params._deedInfo.deedAddress
+  entity.deedId = event.params.deedId
+  entity.newAssetType = event.params.newAssetType
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleDeedNFTAssetValidationSet(
+  event: DeedNFTAssetValidationSetEvent
+): void {
+  let entity = new DeedNFTAssetValidationSet(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.deedId = event.params.deedId
+  entity.isValid = event.params.isValid
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleDeedNFTIpfsDetailsSet(
+  event: DeedNFTIpfsDetailsSetEvent
+): void {
+  let entity = new DeedNFTIpfsDetailsSet(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.deedId = event.params.deedId
+  entity.newIpfsDetailsHash = event.params.newIpfsDetailsHash
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleDeedNFTMinted(event: DeedNFTMintedEvent): void {
+  let entity = new DeedNFTMinted(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.deedId = event.params.deedId
+  entity.deedInfo_ipfsDetailsHash = event.params.deedInfo.ipfsDetailsHash
+  entity.deedInfo_assetType = event.params.deedInfo.assetType
+  entity.deedInfo_price = event.params.deedInfo.price
+  entity.deedInfo_deedAddress = event.params.deedInfo.deedAddress
+  entity.deedInfo_isValidated = event.params.deedInfo.isValidated
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleDeedNFTPriceUpdated(
+  event: DeedNFTPriceUpdatedEvent
+): void {
+  let entity = new DeedNFTPriceUpdated(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.deedId = event.params.deedId
+  entity.newPrice = event.params.newPrice
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

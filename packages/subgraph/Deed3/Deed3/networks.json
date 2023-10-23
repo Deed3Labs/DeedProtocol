@@ -1,0 +1,8 @@
+{
+  "goerli": {
+    "DeedNFT": {
+      "address": "0x4E0325c42449b7457A7124264Ab8a2Bc13964B5C",
+      "startBlock": 9915285
+    }
+  }
+}
