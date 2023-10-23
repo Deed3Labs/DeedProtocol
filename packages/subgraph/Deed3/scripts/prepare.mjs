@@ -26,6 +26,11 @@ for (const dataSourceKey in config) {
   
   // Append the rendered subtemplate to the main template
   output += dataSourceRendered;
+
+  // Add a new line if no new line exists
+  if (output[output.length - 1] != '\n') {
+    output += '\n';
+  }
 }
 
 // Write the output to the subgraph.yaml file

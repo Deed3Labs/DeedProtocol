@@ -1,20 +1,20 @@
-- kind: ethereum
-  name: LeaseNFT
-  network: {{network}}
-  source:
+  - kind: ethereum
+    name: LeaseNFT
+    network: {{network}}
+    source:
       address: "{{address}}"
       abi: LeaseNFT
       startBlock: {{startBlock}}
-  mapping:
+    mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-          - OwnershipTransferred
+        - OwnershipTransferred
       abis:
-          - name: LeaseNFT
-            file: ./abis/LeaseNFT.json
+        - name: LeaseNFT
+          file: ./abis/LeaseNFT.json
       eventHandlers:
-          - event: OwnershipTransferred(indexed address,indexed address)
-            handler: handleOwnershipTransferred
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
       file: ./src/lease-nft.ts
