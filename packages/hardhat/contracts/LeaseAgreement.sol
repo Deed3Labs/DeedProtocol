@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
+import "./LeaseNFT.sol"; 
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
 import "./FundsManager.sol";
 import "./AccessManager.sol";
@@ -32,8 +33,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     }
 
     struct Lease {
-        address lessor;
-        address lessee;
+        address [] lessee;
         uint256 rentAmount;
         Deposit securityDeposit;
         uint256 latePaymentFee;
@@ -53,9 +53,14 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         uint256 rentDueDate;
     }
 
+    modifier onlyLeaseOwner (uint256 _leaseId){
+        require(_msgSender() == leaseNFT.ownerOf(_leaseId), "[Lease Agreement] Only the Lessor can set the Manager");
+        _;
+    }
+
     mapping(uint256 => Lease) public leases;
     uint256 public leaseCounter;
-    ILeaseNFT public leaseNFT;
+    LeaseNFT public leaseNFT;
     IERC20 public paymentToken;
     DeedNFT public deedNFT;
     SubdivisionNFT public subdivisionNFT;
@@ -86,7 +91,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         require(_deedNFT != address(0), "[Lease Agreement] Invalid DeedNFT address");
         require(_subdivisionNFT != address(0), "[Lease Agreement] Invalid SubdivisionNFT address");
 
-        leaseNFT = ILeaseNFT(_leaseNFT);
+        leaseNFT = LeaseNFT(_leaseNFT); 
         deedNFT = DeedNFT(_deedNFT);
         subdivisionNFT = SubdivisionNFT(_subdivisionNFT);
 
@@ -107,7 +112,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     }
 
     function createLease(
-        address _lessee,
+        address [] memory _lessee ,
         uint256 _startDate,
         uint256 _endDate,
         uint256 _rentAmount,
@@ -116,7 +121,8 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         uint256 _latePaymentFee,
         uint32 _gracePeriod
     ) external {
-        require(_lessee != address(0), "[Lease Agreement] Invalid lessee address");
+        
+        require(validateAddresses(_lessee), "[Lease Agreement] One or more invalid lessee address");
         require(_startDate < _endDate, "[Lease Agreement] Invalid start and end dates");
         require(
             _endDate - _startDate > 1 * MONTH,
@@ -130,8 +136,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
 
         uint256 leaseId = leaseCounter;
         leaseCounter++;
-        Lease storage lease = leases[leaseId];
-        lease.lessor = _msgSender();
+        Lease storage lease = leases[leaseId]; 
         lease.lessee = _lessee;
         lease.dates.startDate = _startDate;
         lease.dates.endDate = _endDate;
@@ -149,9 +154,37 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseCreated(leaseId, lease);
     }
 
-    function setManager(uint256 _leaseId, address _manager, uint8 _percentage) public {
+    function validateAddresses(address [] memory _addresses) internal returns (bool) {
+        bool allValid = true;
+        for (uint i=0; i<_addresses.length; i++) {
+            if(_addresses[i]==address(0)){
+                allValid = false;
+                return allValid;
+            }
+        return allValid;
+        }
+    } 
+
+    function containsAddress(address [] memory _addresses, address _address) internal returns(bool){
+        
+        bool contains = false;
+        for (uint i=0; i<_addresses.length; i++){
+            if (_addresses[i] == _address){
+                contains = true;
+                break;
+                }
+        }
+        return contains;
+    }
+
+    function transferLease(uint256 _leaseId,address [] memory  _newLesseeList) public {
         Lease storage lease = leases[_leaseId];
-        require(_msgSender() == lease.lessor, "[Lease Agreement] Only the Lessor can set the Manager");
+        lease.lessee = _newLesseeList;
+
+    }
+
+    function setManager(uint256 _leaseId, address _manager, uint8 _percentage) public onlyLeaseOwner(_leaseId){
+        Lease storage lease = leases[_leaseId];
         require(_percentage >= 0 && _percentage <= 100, "[Lease Agreement] Invalid Manager percentage");
 
         lease.manager = _manager;
@@ -163,7 +196,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     function unsetManager(uint256 _leaseId) external {
         Lease storage lease = leases[_leaseId];
         require(
-            _msgSender() == lease.lessor || _msgSender() == lease.manager,
+            _msgSender() == leaseNFT.ownerOf(_leaseId) || _msgSender() == lease.manager,
             "[Lease Agreement] Only the Lessor or the Manager can remove the Manager"
         );
 
@@ -172,10 +205,10 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
 
         emit LeaseManagerUnset(_leaseId);
     }
-
-    function submitDeposit(uint256 _leaseId) external nonReentrant {
+    
+    function submitDeposit(uint256 _leaseId) external nonReentrant { 
         Lease storage lease = leases[_leaseId];
-        require(_msgSender() == lease.lessee, "[Lease Agreement] Only the Lessee can submit the deposit");
+        require(containsAddress(lease.lessee,_msgSender()), "[Lease Agreement] Only the Lessee can submit the deposit");
         require(!lease.securityDeposit.paid, "[Lease Agreement] Security deposit already paid");
 
         fundsManager.store(_leaseId, paymentToken, lease.securityDeposit.amount, _msgSender());
@@ -184,9 +217,8 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseDepositSubmited(_leaseId, lease.securityDeposit.amount);
     }
 
-    function setDueDate(uint256 _leaseId, uint256 _newDueDate) public {
+    function setDueDate(uint256 _leaseId, uint256 _newDueDate) public onlyLeaseOwner(_leaseId){
         Lease storage lease = leases[_leaseId];
-        require(_msgSender() == lease.lessor, "[Lease Agreement] Only the Lessor can set due date");
         require(
             _newDueDate >= (lease.dates.rentDueDate + 1 * MONTH),
             "[Lease Agreement] New rent due date must be at least a month after current one"
@@ -199,7 +231,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
 
     function payRent(uint256 _leaseId) external nonReentrant {
         Lease storage lease = leases[_leaseId];
-        require(_msgSender() == lease.lessee, "[Lease Agreement] Only the Lessee can pay rent");
+        require(containsAddress(lease.lessee,_msgSender()), "[Lease Agreement] Only the Lessee can pay rent");
         require(lease.securityDeposit.paid, "[Lease Agreement] Security deposit must be paid first");
         require(
             block.timestamp >= lease.dates.startDate && block.timestamp <= lease.dates.endDate,
@@ -218,8 +250,8 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     function distributeRent(uint256 _leaseId) public nonReentrant {
         Lease storage lease = leases[_leaseId];
         require(
-            _msgSender() == lease.lessor || _msgSender() == lease.manager,
-            "[Lease Agreement] Caller must be the Lessor or the Manager"
+            _msgSender() == leaseNFT.ownerOf(_leaseId)  || _msgSender() == lease.manager,
+            "[Lease Agreement] Caller must be the Lessor or the Agent"
         );
         require(lease.unclaimedRentAmount > 0, "[Lease Agreement] No rent to distribute");
         uint256 nbMonthSinceLastDistribute = 0;
@@ -238,7 +270,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         }
 
         uint256 lessorAmount = totalToClaim - managerAmount;
-        fundsManager.widthdraw(_leaseId, paymentToken, uint32(lessorAmount), lease.lessor);
+        fundsManager.widthdraw(_leaseId, paymentToken, uint32(lessorAmount), leaseNFT.ownerOf(_leaseId));
         lease.unclaimedRentAmount = 0;
         lease.dates.distributableDate += nbMonthSinceLastDistribute * (1 * MONTH);
 
@@ -247,7 +279,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
 
     function extendLease(uint256 _leaseId, uint256 _extensionPeriod) external {
         Lease storage lease = leases[_leaseId];
-        require(_msgSender() == lease.lessee, "[Lease Agreement] Only the Lessee can extend the lease");
+        require(containsAddress(lease.lessee,_msgSender()), "[Lease Agreement] Only the Lessee can extend the lease");
         require(
             block.timestamp >= lease.dates.endDate - 45 days, // TODO: Configurable
             "[Lease Agreement] Extension can only be requested in the last 45 days"
@@ -261,21 +293,20 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseExtended(_leaseId, lease.dates.endDate, lease.rentAmount, lease.extensionCount);
     }
 
-    function terminateLease(uint256 _leaseId) public nonReentrant {
+    function terminateLease(uint256 _leaseId) public nonReentrant onlyLeaseOwner(_leaseId){
         Lease storage lease = leases[_leaseId];
-        require(_msgSender() == lease.lessor, "[Lease Agreement] Only the Lessor can terminate the lease");
         require(block.timestamp >= lease.dates.startDate, "[Lease Agreement] Lease has not started yet");
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
         bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
 
         // Send security deposit to the lessor or the lessee
-        address recipient = shouldSendDepositToLessor ? lease.lessor : lease.lessee;
+        address recipient = shouldSendDepositToLessor ? leaseNFT.ownerOf(_leaseId) : lease.lessee[0];
         fundsManager.widthdraw(_leaseId, paymentToken, lease.securityDeposit.amount, recipient);
 
         // Send remaining rent to the lessor
         uint256 remainingBalance = fundsManager.balanceOf(_leaseId, paymentToken);
         if (remainingBalance > 0) {
-            fundsManager.widthdraw(_leaseId, paymentToken, remainingBalance, lease.lessor);
+            fundsManager.widthdraw(_leaseId, paymentToken, remainingBalance, leaseNFT.ownerOf(_leaseId));
         }
 
         leaseNFT.burn(_leaseId);
