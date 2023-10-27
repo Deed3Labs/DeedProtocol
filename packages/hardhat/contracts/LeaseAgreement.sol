@@ -67,8 +67,8 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     event LeaseTerminated(uint256 leaseId);
     event LeasePaymentMade(uint256 leaseId, uint256 amount, uint256 unclaimedRentAmount);
     event LeaseRentDistributed(uint256 leaseId, uint256 lessorAmount, uint256 managerAmount, uint256 distributableDate);
-    event LeaseManagerAdded(uint256 leaseId, address manager, uint256 percentage);
-    event LeaseManagerRemoved(uint256 leaseId);
+    event LeaseManagerSet(uint256 leaseId, address manager, uint256 percentage);
+    event LeaseManagerUnset(uint256 leaseId);
     event LeaseDueDateChanged(uint256 leaseId, uint256 newDueDate);
     event LeaseDepositSubmited(uint256 leaseId, uint256 amount);
     event LeaseExtended(uint256 leaseId, uint256 endDate, uint256 rentAmount, uint256 extensionCount);
@@ -149,7 +149,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseCreated(leaseId, lease);
     }
 
-    function addManager(uint256 _leaseId, address _manager, uint8 _percentage) public {
+    function setManager(uint256 _leaseId, address _manager, uint8 _percentage) public {
         Lease storage lease = leases[_leaseId];
         require(_msgSender() == lease.lessor, "[Lease Agreement] Only the Lessor can set the Manager");
         require(_percentage >= 0 && _percentage <= 100, "[Lease Agreement] Invalid Manager percentage");
@@ -157,10 +157,10 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         lease.manager = _manager;
         lease.managerPercentage = _percentage;
 
-        emit LeaseManagerAdded(_leaseId, _manager, _percentage);
+        emit LeaseManagerSet(_leaseId, _manager, _percentage);
     }
 
-    function removeManager(uint256 _leaseId) external {
+    function unsetManager(uint256 _leaseId) external {
         Lease storage lease = leases[_leaseId];
         require(
             _msgSender() == lease.lessor || _msgSender() == lease.manager,
@@ -170,7 +170,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         lease.manager = address(0);
         lease.managerPercentage = 0;
 
-        emit LeaseManagerRemoved(_leaseId);
+        emit LeaseManagerUnset(_leaseId);
     }
 
     function submitDeposit(uint256 _leaseId) external nonReentrant {
