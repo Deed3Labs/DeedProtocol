@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract AccessManager is AccessControl {
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
+    bytes32 public constant AGENT_ROLE = keccak256("AGENT_ROLE");
 
     constructor(address admin) {
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
@@ -68,6 +69,17 @@ contract AccessManagerBase is Context {
         require(
             accessManager.hasRole(accessManager.VALIDATOR_ROLE(), _msgSender()),
             "[AccessManagement] Only the validator can interact"
+        );
+        _;
+    }
+
+    /**
+     * Use this modifier to restrict to validator only
+     */
+    modifier onlyAgent() {
+        require(
+            accessManager.hasRole(accessManager.AGENT_ROLE(), _msgSender()),
+            "[AccessManagement] Only the agent can interact"
         );
         _;
     }

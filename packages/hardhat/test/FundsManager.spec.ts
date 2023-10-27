@@ -1,7 +1,13 @@
 import { ethers } from "hardhat";
 import { Signer, BigNumber } from "ethers";
 import { expect } from "chai";
-import { FundsManager, TokenMock } from "../typechain-types";
+import {
+  AccessManager__factory,
+  FundsManager,
+  FundsManager__factory,
+  TokenMock,
+  TokenMock__factory,
+} from "../typechain-types";
 
 describe("FundsManager", function () {
   let addr1: Signer;
@@ -14,12 +20,13 @@ describe("FundsManager", function () {
 
     // Deploy ERC20 token (you should deploy your ERC20 contract here)
 
-    const TokenFactory = await ethers.getContractFactory("TokenMock");
-    token = (await TokenFactory.deploy("PaymentToken", "PTKN")) as TokenMock;
+    const tokenFactory = new TokenMock__factory();
+    const accessManagerFactory = new AccessManager__factory();
+    const accessManager = await accessManagerFactory.deploy(addr1.getAddress());
+    const fundStorageFactory = new FundsManager__factory();
 
-    // Deploy FundStorage contract
-    const FundStorageFactory = await ethers.getContractFactory("FundsManager");
-    fundsManager = (await FundStorageFactory.deploy()) as FundsManager;
+    token = await tokenFactory.deploy("PaymentToken", "PTKN");
+    fundsManager = await fundStorageFactory.deploy(accessManager.address);
 
     await token.deployed();
     await fundsManager.deployed();
@@ -68,7 +75,7 @@ describe("FundsManager", function () {
       // Act
       const act = () => fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
       await expect(act()).to.be.revertedWith(
-        `[FundsManager] Not enough allowance for account ${accountId} and amount ${amountToStore}`,
+        `[Funds Manager] Not enough allowance for account ${accountId} and amount ${amountToStore}`,
       );
     });
   });
@@ -126,7 +133,7 @@ describe("FundsManager", function () {
 
       // Arrange
       await expect(act()).to.be.revertedWith(
-        `[FundsManager] Not enough funds for account ${accountId} and amount ${amountToWithdraw}`,
+        `[Funds Manager] Not enough funds for account ${accountId} and amount ${amountToWithdraw}`,
       );
     });
   });

@@ -44,7 +44,7 @@ contract FundsManager is Context, AccessManagerBase {
         require(
             _token.allowance(_sender, address(this)) >= _amount,
             string.concat(
-                "[FundsManager] Not enough allowance for account ",
+                "[Funds Manager] Not enough allowance for account ",
                 Strings.toString(_id),
                 " and amount ",
                 Strings.toString(_amount)
@@ -75,7 +75,7 @@ contract FundsManager is Context, AccessManagerBase {
         require(
             accountsMapping[_msgSender()][_id][address(_token)] >= _amount,
             string.concat(
-                "[FundsManager] Not enough funds for account ",
+                "[Funds Manager] Not enough funds for account ",
                 Strings.toString(_id),
                 " and amount ",
                 Strings.toString(_amount)

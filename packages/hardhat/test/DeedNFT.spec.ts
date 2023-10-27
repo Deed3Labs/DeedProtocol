@@ -1,7 +1,7 @@
 // How to handle enums insolidity testing?
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { DeedNFT } from "../typechain-types";
+import { AccessManager, AccessManager__factory, DeedNFT, DeedNFT__factory } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("DeedNFT", function () {
@@ -10,13 +10,20 @@ describe("DeedNFT", function () {
   let deedOwner: SignerWithAddress;
   let newMinter: SignerWithAddress;
   let deedNFT: DeedNFT;
+  let accessManager: AccessManager;
 
   beforeEach(async () => {
     [contractOwner, deedOwner, newMinter] = await ethers.getSigners();
-    const deedNFTFactory = await ethers.getContractFactory("DeedNFT");
-    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy(contractOwner.address)) as DeedNFT;
+
+    const deedNFTFactory = new DeedNFT__factory(contractOwner);
+    const accessManagerFactory = new AccessManager__factory(contractOwner);
+
+    accessManager = await accessManagerFactory.deploy(contractOwner.address);
+    deedNFT = await deedNFTFactory.connect(contractOwner).deploy(accessManager.address);
+
     await deedNFT.deployed();
   });
+
   describe("mintAsset", function () {
     it("Should mint a deedNFT asset to the designated address", async function () {
       // [deedOwner] = await ethers.getSigners();
@@ -31,9 +38,10 @@ describe("DeedNFT", function () {
       expect(deedInfo.deedAddress).to.equal("12 000 fake addy");
     });
   });
+
   describe("addValidator", function () {
     it("Should grant validator role to designated address", async function () {
-      await deedNFT.connect(contractOwner).addValidator(newMinter.address);
+      await accessManager.connect(contractOwner).addValidator(newMinter.address);
       await deedNFT.mintAsset(deedOwner.address, "0x", 0, "12 000 fake addy");
       //Contract owner should still be able to mint since we only added a minter
       await deedNFT.mintAsset(deedOwner.address, "0x", 0, "12 000 fake addy");
@@ -41,18 +49,19 @@ describe("DeedNFT", function () {
       expect(await deedNFT.balanceOf(deedOwner.address)).to.equal(2);
     });
     it("Should revert if caller doesn't have admin role", async function () {
-      await expect(deedNFT.connect(deedOwner).addValidator(newMinter.address)).to.be.reverted;
+      await expect(accessManager.connect(deedOwner).addValidator(newMinter.address)).to.be.reverted;
     });
   });
+
   describe("removeMinter", function () {
     it("Should remove minter role from designated address", async function () {
-      await deedNFT.connect(contractOwner).removeValidator(contractOwner.address);
+      await accessManager.connect(contractOwner).removeValidator(contractOwner.address);
       expect(deedNFT.mintAsset(deedOwner.address, "0x", 0, "12 000 fake addy")).to.be.revertedWith(
         "AccessControl: account 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6",
       );
 
       it("Should revert if caller doesn't have admin role", async function () {
-        await expect(deedNFT.connect(deedOwner).addValidator(newMinter.address)).to.be.reverted;
+        await expect(accessManager.connect(deedOwner).addValidator(newMinter.address)).to.be.reverted;
       });
     });
   });

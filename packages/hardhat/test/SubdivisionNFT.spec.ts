@@ -1,7 +1,13 @@
 // How to handle enums insolidity testing?
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { SubdivisionNFT, DeedNFT } from "../typechain-types";
+import {
+  SubdivisionNFT,
+  DeedNFT,
+  SubdivisionNFT__factory,
+  DeedNFT__factory,
+  AccessManager__factory,
+} from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("SubdivisionNFT", function () {
@@ -15,16 +21,22 @@ describe("SubdivisionNFT", function () {
 
   beforeEach(async () => {
     [contractOwner, deedOwner, subOwner] = await ethers.getSigners();
-    const subNFTFactory = await ethers.getContractFactory("SubdivisionNFT");
-    const deedNFTFactory = await ethers.getContractFactory("DeedNFT");
-    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy(contractOwner)) as DeedNFT;
+    const subNFTFactory = new SubdivisionNFT__factory();
+    const deedNFTFactory = new DeedNFT__factory();
+    const accessManagerFactory = new AccessManager__factory();
+
+    const accessManager = await accessManagerFactory.deploy(contractOwner.address);
+
+    deedNFT = await deedNFTFactory.connect(contractOwner).deploy(accessManager.address);
     await deedNFT.deployed();
-    subNFT = (await subNFTFactory.deploy("uri", deedNFT.address, contractOwner)) as SubdivisionNFT;
+
+    subNFT = await subNFTFactory.deploy("uri", deedNFT.address, accessManager.address);
     await subNFT.deployed();
-    //This deed id will be 1
+
     await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "0x", 2, "10 211 fake Addy");
     await deedNFT.connect(contractOwner).mintAsset(subOwner.address, "0x", 2, "10 211 fake Addy");
   });
+
   describe("mintSubdivision", function () {
     it("Should mint a subdivisionNFT to the designated address", async function () {
       //SubNFT minted with tokenID 1
@@ -39,12 +51,14 @@ describe("SubdivisionNFT", function () {
       expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(1);
       expect(await subNFT.balanceOf(deedOwner.address, 2)).to.equal(1);
     });
+
     it("Should revert if caller isn't owner", async function () {
       //SubNFT minted with tokenID 1
       await expect(
         subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 }),
       ).to.be.revertedWith("Must be the owner of the parent deed");
     });
+
     it("Should revert if asset type isn't land(0) or estate(2)", async function () {
       //0 and 2 should work (land or estate)
       //1 and 3 should revert (commercial equipment and vehicle)
@@ -61,6 +75,7 @@ describe("SubdivisionNFT", function () {
       ).to.be.revertedWith("Parent deed must be land or estate");
     });
   });
+
   describe("mintBatch", function () {
     it("Should mint a subdivisionNFT to all the designated addresses", async function () {
       //SubNFT minted with tokenID 1
@@ -71,6 +86,7 @@ describe("SubdivisionNFT", function () {
       expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(1);
       expect(await subNFT.balanceOf(deedOwner.address, 2)).to.equal(1);
     });
+
     it("Should revert if caller isn't owner", async function () {
       //SubNFT DeedNFT with token 2 owned by subOwner but called by deedOwner, should revert
       await expect(
@@ -80,6 +96,7 @@ describe("SubdivisionNFT", function () {
         ]),
       ).to.be.revertedWith("Must be the owner of the parent deed");
     });
+
     it("Should revert if asset type isn't land(0) or estate(2)", async function () {
       //0 and 2 should work (land or estate)
       //1 and 3 should revert (commercial equipment and vehicle)
@@ -104,6 +121,7 @@ describe("SubdivisionNFT", function () {
         .to.be.revertedWith("Parent deed must be land or estate");
     });
   });
+
   describe("getParentDeed", function () {
     it("Should return the right parentDeedID for a specific subToken id", async function () {
       //SubNFT minted with tokenID 1
@@ -111,6 +129,7 @@ describe("SubdivisionNFT", function () {
       expect(await subNFT.getParentDeed(1)).to.equal(2);
     });
   });
+
   describe("burnSubdivision", function () {
     it("Should burn the right subdivision NFT of the right account", async function () {
       //SubNFT minted with tokenID 1
@@ -119,6 +138,7 @@ describe("SubdivisionNFT", function () {
       await subNFT.connect(subOwner).burnSubdivision(subOwner.address);
       expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(0);
     });
+
     it("Should burn the right amount of subdivision NFTs", async function () {
       //SubNFT minted with tokenID 1
       await subNFT.connect(subOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 });
@@ -126,6 +146,7 @@ describe("SubdivisionNFT", function () {
         "Must own this subNFT to burn it",
       );
     });
+
     it("Should revert if sender isn't owner of subNFT,even if his balance of this tokenID > 0", async function () {
       await subNFT.connect(deedOwner).batchMint([
         { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 },
