@@ -287,9 +287,9 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     function calculateRentPaymentInfo(uint256 _leaseId) public view returns (RentPaymentInfo memory rentInfo) {
         Lease storage lease = leases[_leaseId];
         rentInfo.rentAmount = lease.rentAmount;
-        //sidenote: rent due date is incremented by 1 month each time the rent is paid.(function payRent)
+        // sidenote: rent due date is incremented by 1 month each time the rent is paid.(function payRent)
         if (block.timestamp > lease.dates.rentDueDate + (lease.gracePeriod * 1 days)) {
-            //Function to calculate rentAmountIncrease increase
+            // Function to calculate rentAmountIncrease increase
             rentInfo.rentAmount += (lease.rentAmount * lease.latePaymentFee) / 100;
             rentInfo.unpaidMonths = uint32((block.timestamp - lease.dates.rentDueDate) / (1 * MONTH) + 1);
             rentInfo.totalBalance = (rentInfo.unpaidMonths) * rentInfo.rentAmount;

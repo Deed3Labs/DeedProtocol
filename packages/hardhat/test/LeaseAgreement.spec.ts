@@ -27,16 +27,18 @@ describe("LeaseAgreement", function () {
   let leaseNFT: LeaseNFT;
   let fundsManager: FundsManager;
   let leaseAgreement: LeaseAgreement;
-  let contractOwner: SignerWithAddress;
+  let leaseToken: TokenMock;
+
+  let deployer: SignerWithAddress;
   let lessee: SignerWithAddress;
   let manager: SignerWithAddress;
   let deedOwner: SignerWithAddress;
   let subOwner: SignerWithAddress;
-  let leaseToken: TokenMock;
+
   const initialLesseeBalance = 100000;
-  //August 18 2023 timestamp
+  // August 18 2023 timestamp
   let startDate: number;
-  //August 18 2024 timestamp
+  // August 18 2024 timestamp
   let endDate: number;
   const rentAmount = 1500;
   const depositAmount = 400;
@@ -44,38 +46,38 @@ describe("LeaseAgreement", function () {
   const oneDayInSeconds = 86400;
 
   beforeEach(async () => {
-    [contractOwner, deedOwner, manager, subOwner, lessee] = await ethers.getSigners();
+    [deployer, deedOwner, manager, subOwner, lessee] = await ethers.getSigners();
 
-    const accessManagerFactory = new AccessManager__factory();
-    const subNFTFactory = new SubdivisionNFT__factory();
-    const deedNFTFactory = new DeedNFT__factory();
-    const tokenMockFactory = new TokenMock__factory();
-    const leaseNftFactory = new LeaseNFT__factory();
-    const leaseAgreementFactory = new LeaseAgreement__factory();
-    const fundsManagerFactory = new FundsManager__factory();
-
-    const accessManager = await accessManagerFactory.connect(contractOwner).deploy(contractOwner.address);
+    const tokenMockFactory = new TokenMock__factory(deployer);
+    const accessManagerFactory = new AccessManager__factory(deployer);
+    const subNFTFactory = new SubdivisionNFT__factory(deployer);
+    const deedNFTFactory = new DeedNFT__factory(deployer);
+    const leaseNftFactory = new LeaseNFT__factory(deployer);
+    const fundsManagerFactory = new FundsManager__factory(deployer);
+    const leaseAgreementFactory = new LeaseAgreement__factory(deployer);
 
     startDate = await time.latest();
     endDate = startDate + 12 * thirtyOneDaysInSeconds;
 
-    deedNFT = await deedNFTFactory.connect(contractOwner).deploy(accessManager.address);
-    await deedNFT.deployed();
-
-    leaseToken = await tokenMockFactory.connect(contractOwner).deploy("PaymentToken", "PTKN");
+    leaseToken = await tokenMockFactory.connect(deployer).deploy("PaymentToken", "PTKN");
     await leaseToken.mint(lessee.address, initialLesseeBalance);
 
-    subNFT = await subNFTFactory.connect(contractOwner).deploy("uri", deedNFT.address, accessManager.address);
+    const accessManager = await accessManagerFactory.connect(deployer).deploy(deployer.address);
+
+    subNFT = await subNFTFactory.connect(deployer).deploy("uri", deedNFT.address, accessManager.address);
     await subNFT.deployed();
 
-    leaseNFT = await leaseNftFactory.connect(contractOwner).deploy(accessManager.address);
+    deedNFT = await deedNFTFactory.connect(deployer).deploy(accessManager.address);
+    await deedNFT.deployed();
+
+    leaseNFT = await leaseNftFactory.connect(deployer).deploy(accessManager.address);
     await leaseNFT.deployed();
 
-    fundsManager = await fundsManagerFactory.connect(contractOwner).deploy(accessManager.address);
+    fundsManager = await fundsManagerFactory.connect(deployer).deploy(accessManager.address);
     await fundsManager.deployed();
 
     leaseAgreement = await leaseAgreementFactory
-      .connect(contractOwner)
+      .connect(deployer)
       .deploy(
         leaseNFT.address,
         leaseToken.address,
@@ -86,9 +88,9 @@ describe("LeaseAgreement", function () {
       );
     await leaseAgreement.deployed();
 
-    await leaseNFT.connect(contractOwner).setLeaseAgreementAddress(leaseAgreement.address);
+    await leaseNFT.connect(deployer).setLeaseAgreementAddress(leaseAgreement.address);
 
-    //This deed id will be 1
+    // This deed id will be 1
     await deedNFT.mintAsset(deedOwner.address, "0x", 2, "12 000 Fake Addy");
     await subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 });
   });
@@ -102,8 +104,8 @@ describe("LeaseAgreement", function () {
       const gracePeriod = 5;
 
       // Act
-      //This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
-      //to deed tokenID1 that belongs to deedOwner
+      // This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
+      // to deed tokenID1 that belongs to deedOwner
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -124,7 +126,7 @@ describe("LeaseAgreement", function () {
       expect(lease.lessee).to.equal(lessee.address);
       expect(lease.rentAmount).to.equal(rentAmount);
       expect(lease.deedId).to.equal(deedId);
-      //TODO: Test dates
+      // TODO: Test dates
     });
 
     it("Should revert if end date before start date", async function () {
@@ -499,8 +501,8 @@ describe("LeaseAgreement", function () {
       const latePayementFee = 10;
       const gracePeriod = 5;
       const managerPercentage = 5;
-      //This creates a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
-      //to deed tokenID1 that belongs to deedOwner
+      // This creates a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
+      // to deed tokenID1 that belongs to deedOwner
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -517,7 +519,7 @@ describe("LeaseAgreement", function () {
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
 
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 3);
 
       // Act
@@ -526,12 +528,12 @@ describe("LeaseAgreement", function () {
       // Assert
       expect(info.rentAmount).to.equal(1650);
       expect(info.unpaidMonths).to.equal(3);
-      //2 months unpaid * 1500 + one late month fee 1650 (fee 10% of 1500) = 4650
+      // 2 months unpaid * 1500 + one late month fee 1650 (fee 10% of 1500) = 4650
       expect(info.totalBalance).to.equal(1650 * 3);
     });
 
-    //Note: For each test that changes the time value, the next test will have a startDate equal to the latest timestamp in the previous test
-    //Because beforeEach hook is called and startDate and endDate are set at this moment;
+    // Note: For each test that changes the time value, the next test will have a startDate equal to the latest timestamp in the previous test
+    // Because beforeEach hook is called and startDate and endDate are set at this moment;
     it("Should return the right calculatedRentAmount without any fee if on time", async function () {
       // Arrange
       const leaseId = 0;
@@ -555,7 +557,7 @@ describe("LeaseAgreement", function () {
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
 
-      //Mines new block with timestamp increased, in this case 15 days
+      // Mines new block with timestamp increased, in this case 15 days
       await time.increase(thirtyOneDaysInSeconds / 2);
 
       // Act
@@ -576,8 +578,8 @@ describe("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
-      //This creates a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
-      //to deed tokenID1 that belongs to deedOwner
+      // This creates a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
+      // to deed tokenID1 that belongs to deedOwner
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -593,7 +595,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds / 15);
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), totalExpectedBalance);
@@ -618,8 +620,8 @@ describe("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
-      //This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
-      //to deed tokenID1 that belongs to deedOwner
+      // This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
+      // to deed tokenID1 that belongs to deedOwner
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -635,7 +637,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 3);
       const totalExpectedBalance = 1650 * 3;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), totalExpectedBalance);
@@ -660,8 +662,8 @@ describe("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
-      //This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
-      //to deed tokenID1 that belongs to deedOwner
+      // This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
+      // to deed tokenID1 that belongs to deedOwner
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -677,7 +679,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 4 + 15 * oneDayInSeconds);
       const totalExpectedBalance = 6150;
       await leaseToken.connect(deedOwner).approve(leaseAgreement.fundsManager(), totalExpectedBalance);
@@ -796,8 +798,8 @@ describe("LeaseAgreement", function () {
       const propertyTokenId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
-      //This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
-      //to deed tokenID1 that belongs to deedOwner
+      // This create a lease with leaseID 0,to lessee,1000 rent amount and 400 security deposit, related
+      // to deed tokenID1 that belongs to deedOwner
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
@@ -813,7 +815,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds);
 
       const totalExpectedBalance = 1500;
@@ -894,7 +896,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds);
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), totalExpectedBalance);
@@ -939,7 +941,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds);
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), totalExpectedBalance);
@@ -990,7 +992,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds);
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), totalExpectedBalance);
@@ -1025,7 +1027,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds);
 
       // Act
@@ -1059,7 +1061,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 11);
 
       // Act
@@ -1094,7 +1096,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 11);
 
       // Act
@@ -1126,7 +1128,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 4);
 
       // Act
@@ -1158,7 +1160,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
       await leaseAgreement.connect(lessee).submitDeposit(leaseId);
-      //Mines new block with timestamp increased, in this case 3 months
+      // Mines new block with timestamp increased, in this case 3 months
       await time.increase(thirtyOneDaysInSeconds * 11);
       await leaseAgreement.connect(lessee).extendLease(leaseId, thirtyOneDaysInSeconds);
       await time.increase(thirtyOneDaysInSeconds * 2);

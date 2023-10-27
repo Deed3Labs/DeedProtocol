@@ -10,22 +10,20 @@ import {
 } from "../typechain-types";
 
 describe("FundsManager", function () {
-  let addr1: Signer;
+  let deployer: Signer;
 
   let fundsManager: FundsManager;
   let token: TokenMock;
 
   beforeEach(async function () {
-    [addr1] = await ethers.getSigners();
+    [deployer] = await ethers.getSigners();
 
-    // Deploy ERC20 token (you should deploy your ERC20 contract here)
-
-    const tokenFactory = new TokenMock__factory();
-    const accessManagerFactory = new AccessManager__factory();
-    const accessManager = await accessManagerFactory.deploy(addr1.getAddress());
-    const fundStorageFactory = new FundsManager__factory();
+    const tokenFactory = new TokenMock__factory(deployer);
+    const accessManagerFactory = new AccessManager__factory(deployer);
+    const fundStorageFactory = new FundsManager__factory(deployer);
 
     token = await tokenFactory.deploy("PaymentToken", "PTKN");
+    const accessManager = await accessManagerFactory.deploy(deployer.getAddress());
     fundsManager = await fundStorageFactory.deploy(accessManager.address);
 
     await token.deployed();
@@ -36,14 +34,15 @@ describe("FundsManager", function () {
     it("Should store funds correctly", async function () {
       // Arrange
       const amountToStore = BigNumber.from(100);
-      await token.mint(addr1.getAddress(), amountToStore);
-      const initialSenderBalance = await token.balanceOf(addr1.getAddress());
+      await token.mint(deployer.getAddress(), amountToStore);
+      const initialSenderBalance = await token.balanceOf(deployer.getAddress());
       const initialContractBalance = await token.balanceOf(fundsManager.address);
       const accountId = BigNumber.from(1);
 
       // Act
-      await token.connect(addr1).approve(fundsManager.address, amountToStore);
-      const act = () => fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      await token.connect(deployer).approve(fundsManager.address, amountToStore);
+      const act = () =>
+        fundsManager.connect(deployer).store(accountId, token.address, amountToStore, deployer.getAddress());
 
       // Assert
       await expect(act())
@@ -52,15 +51,15 @@ describe("FundsManager", function () {
           accountId,
           token.address,
           amountToStore,
-          await addr1.getAddress(),
-          await addr1.getAddress(),
+          await deployer.getAddress(),
+          await deployer.getAddress(),
           amountToStore,
         );
 
-      const storedBalance = await fundsManager.connect(addr1).balanceOf(accountId, token.address);
+      const storedBalance = await fundsManager.connect(deployer).balanceOf(accountId, token.address);
       expect(storedBalance).to.equal(amountToStore);
 
-      const finalSenderBalance = await token.balanceOf(addr1.getAddress());
+      const finalSenderBalance = await token.balanceOf(deployer.getAddress());
       const finalContractBalance = await token.balanceOf(fundsManager.address);
 
       expect(finalSenderBalance).to.equal(initialSenderBalance.sub(amountToStore));
@@ -73,7 +72,8 @@ describe("FundsManager", function () {
       const accountId = 1;
 
       // Act
-      const act = () => fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      const act = () =>
+        fundsManager.connect(deployer).store(accountId, token.address, amountToStore, deployer.getAddress());
       await expect(act()).to.be.revertedWith(
         `[Funds Manager] Not enough allowance for account ${accountId} and amount ${amountToStore}`,
       );
@@ -85,18 +85,18 @@ describe("FundsManager", function () {
       // Arrange
       const accountId = BigNumber.from(1);
       const amountToStore = BigNumber.from(100);
-      await token.mint(addr1.getAddress(), amountToStore);
-      await token.connect(addr1).approve(fundsManager.address, amountToStore);
-      await fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      await token.mint(deployer.getAddress(), amountToStore);
+      await token.connect(deployer).approve(fundsManager.address, amountToStore);
+      await fundsManager.connect(deployer).store(accountId, token.address, amountToStore, deployer.getAddress());
 
-      const initialSenderBalance = await token.balanceOf(addr1.getAddress());
+      const initialSenderBalance = await token.balanceOf(deployer.getAddress());
       const initialContractBalance = await token.balanceOf(fundsManager.address);
 
       const amountToWithdraw = BigNumber.from(50);
 
       // Act
       const act = () =>
-        fundsManager.connect(addr1).widthdraw(accountId, token.address, amountToWithdraw, addr1.getAddress());
+        fundsManager.connect(deployer).widthdraw(accountId, token.address, amountToWithdraw, deployer.getAddress());
 
       // Assert
       await expect(act())
@@ -105,12 +105,12 @@ describe("FundsManager", function () {
           accountId,
           token.address,
           amountToWithdraw,
-          await addr1.getAddress(),
-          await addr1.getAddress(),
+          await deployer.getAddress(),
+          await deployer.getAddress(),
           amountToStore.sub(amountToWithdraw),
         );
 
-      const finalSenderBalance = await token.balanceOf(addr1.getAddress());
+      const finalSenderBalance = await token.balanceOf(deployer.getAddress());
       const finalContractBalance = await token.balanceOf(fundsManager.address);
 
       expect(finalSenderBalance).to.equal(initialSenderBalance.add(amountToWithdraw));
@@ -121,15 +121,15 @@ describe("FundsManager", function () {
       // Arrange
       const accountId = BigNumber.from(1);
       const amountToStore = BigNumber.from(100);
-      await token.mint(addr1.getAddress(), amountToStore);
-      await token.connect(addr1).approve(fundsManager.address, amountToStore);
-      await fundsManager.connect(addr1).store(accountId, token.address, amountToStore, addr1.getAddress());
+      await token.mint(deployer.getAddress(), amountToStore);
+      await token.connect(deployer).approve(fundsManager.address, amountToStore);
+      await fundsManager.connect(deployer).store(accountId, token.address, amountToStore, deployer.getAddress());
 
       const amountToWithdraw = amountToStore.add(1); // Attempting to withdraw one more token than stored
 
       // Act
       const act = () =>
-        fundsManager.connect(addr1).widthdraw(accountId, token.address, amountToWithdraw, addr1.getAddress());
+        fundsManager.connect(deployer).widthdraw(accountId, token.address, amountToWithdraw, deployer.getAddress());
 
       // Arrange
       await expect(act()).to.be.revertedWith(

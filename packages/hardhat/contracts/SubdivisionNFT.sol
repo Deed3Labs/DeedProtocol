@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./DeedNFT.sol";
 import "./AccessManager.sol";
 
-//was erc1155, multiple ownership? because cant call ownerof
+// was erc1155, multiple ownership? because cant call ownerof
 contract SubdivisionNFT is ERC1155, AccessManagerBase {
     struct SubdivisionInfo {
         bytes ipfsDetailsHash;
