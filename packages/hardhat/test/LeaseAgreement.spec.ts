@@ -218,8 +218,8 @@ describe("LeaseAgreement", function () {
     });
   });
 
-  describe("addAgent", function () {
-    it("Should set agent and emit AgentSet event", async function () {
+  describe("addManager", function () {
+    it("Should set manager and emit LeaseManagerAdded event", async function () {
       // Arrange
       const leaseId = 0;
       const propertyTokenId = 1;
@@ -243,7 +243,7 @@ describe("LeaseAgreement", function () {
       // Act
       expect(await leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage)).to.emit(
         leaseAgreement,
-        "AgentSet",
+        "LeaseManagerAdded",
       );
 
       // Assert
@@ -275,7 +275,7 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(subOwner).addManager(leaseId, manager.address, managerPercentage);
 
       // Assert
-      await expect(act()).to.be.rejectedWith("[Lease Agreement] Only the Lessor can set the Agent");
+      await expect(act()).to.be.rejectedWith("[Lease Agreement] Only the Lessor can set the Manager");
     });
 
     it("Should revert if percentage isn't valid", async function () {
@@ -302,12 +302,12 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(deedOwner).addManager(leaseId, manager.address, managerPercentage);
 
       // Assert
-      await expect(act()).to.be.rejectedWith("[Lease Agreement] Invalid agent percentage");
+      await expect(act()).to.be.rejectedWith("[Lease Agreement] Invalid Manager percentage");
     });
   });
 
-  describe("removeAgent", function () {
-    it("Should set agent address to 0 and emit ManagerRemoved event", async function () {
+  describe("removeManager", function () {
+    it("Should set manager address to 0 and emit ManagerRemoved event", async function () {
       // Arrange
       const leaseId = 0;
       const propertyTokenId = 1;
@@ -832,12 +832,12 @@ describe("LeaseAgreement", function () {
 
       // Assert
       await expect(act()).to.emit(leaseAgreement, "LeaseRentDistributed");
-      const agentAmount = 0.1 * totalExpectedBalance;
-      expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance - agentAmount);
-      expect(await leaseToken.balanceOf(manager.address)).to.equal(agentAmount);
+      const managerAmount = 0.1 * totalExpectedBalance;
+      expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance - managerAmount);
+      expect(await leaseToken.balanceOf(manager.address)).to.equal(managerAmount);
     });
 
-    it("Should revert if sender not lessor or agent", async function () {
+    it("Should revert if sender not lessor or manager", async function () {
       // Arrange
       const leaseId = 0;
       const managerPercentage = 10;
@@ -869,7 +869,7 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(lessee).distributeRent(leaseId);
 
       // Assert
-      await expect(act()).to.be.revertedWith("[Lease Agreement] Caller must be the Lessor or the Agent");
+      await expect(act()).to.be.revertedWith("[Lease Agreement] Caller must be the Lessor or the Manager");
     });
   });
 
