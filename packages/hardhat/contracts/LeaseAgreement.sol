@@ -154,7 +154,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseCreated(leaseId, lease);
     }
 
-    function validateAddresses(address [] memory _addresses) internal returns (bool) {
+    function validateAddresses(address [] memory _addresses) internal pure returns (bool) {
         bool allValid = true;
         for (uint i=0; i<_addresses.length; i++) {
             if(_addresses[i]==address(0)){
@@ -165,8 +165,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         }
     } 
 
-    function containsAddress(address [] memory _addresses, address _address) internal returns(bool){
-        
+    function containsAddress(address [] memory _addresses, address _address) internal pure returns(bool){
         bool contains = false;
         for (uint i=0; i<_addresses.length; i++){
             if (_addresses[i] == _address){
