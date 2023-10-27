@@ -26,7 +26,6 @@ describe("DeedNFT", function () {
 
   describe("mintAsset", function () {
     it("Should mint a deedNFT asset to the designated address", async function () {
-      // [deedOwner] = await ethers.getSigners();
       //Here, 0 is the value for first type of asset(Land) AssetType{Land,Vehicle,Estate}
       expect(await deedNFT.mintAsset(deedOwner.address, "0x", 0, "12 000 fake addy")).to.emit(deedNFT, "DeedMinted");
       // subNFT =await subNFTFactory.connect(user).deploy("uri", "0"))
@@ -48,6 +47,7 @@ describe("DeedNFT", function () {
       expect(await deedNFT.ownerOf(1)).to.equal(deedOwner.address);
       expect(await deedNFT.balanceOf(deedOwner.address)).to.equal(2);
     });
+
     it("Should revert if caller doesn't have admin role", async function () {
       await expect(accessManager.connect(deedOwner).addValidator(newMinter.address)).to.be.reverted;
     });
