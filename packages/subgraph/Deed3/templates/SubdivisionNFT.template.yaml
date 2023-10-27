@@ -12,8 +12,7 @@
       entities:
           - IpfsDetailsSet
           - SubdivisionBurned
-          - SubdivisionInfoSet
-          - SubdivisionMinted
+          - Subdivision
           - TransferBatch
           - TransferSingle
           - URI
@@ -27,7 +26,7 @@
             handler: handleSubdivisionBurned
           - event: SubdivisionInfoSet(uint256,(bytes,address,uint256))
             handler: handleSubdivisionInfoSet
-          - event: SubdivisionMinted(address,uint256,uint256,bytes)
+          - event: SubdivisionMinted(address,uint256,uint256,bytes,address)
             handler: handleSubdivisionMinted
           - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
             handler: handleTransferBatch
@@ -35,4 +34,4 @@
             handler: handleTransferSingle
           - event: URI(string,indexed uint256)
             handler: handleURI
-      file: ./src/subdivision-nft.ts
+      file: ./src/subdivision.ts

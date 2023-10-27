@@ -17,9 +17,9 @@ describe("SubdivisionNFT", function () {
     [contractOwner, deedOwner, subOwner] = await ethers.getSigners();
     const subNFTFactory = await ethers.getContractFactory("SubdivisionNFT");
     const deedNFTFactory = await ethers.getContractFactory("DeedNFT");
-    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy()) as DeedNFT;
+    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy(contractOwner)) as DeedNFT;
     await deedNFT.deployed();
-    subNFT = (await subNFTFactory.deploy("uri", deedNFT.address)) as SubdivisionNFT;
+    subNFT = (await subNFTFactory.deploy("uri", deedNFT.address, contractOwner)) as SubdivisionNFT;
     await subNFT.deployed();
     //This deed id will be 1
     await deedNFT.connect(contractOwner).mintAsset(deedOwner.address, "0x", 2, "10 211 fake Addy");
@@ -116,13 +116,13 @@ describe("SubdivisionNFT", function () {
       //SubNFT minted with tokenID 1
       await subNFT.connect(subOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 });
       expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(1);
-      await subNFT.connect(subOwner).burnSubdivision(subOwner.address, 1);
+      await subNFT.connect(subOwner).burnSubdivision(subOwner.address);
       expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(0);
     });
     it("Should burn the right amount of subdivision NFTs", async function () {
       //SubNFT minted with tokenID 1
       await subNFT.connect(subOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 });
-      await expect(subNFT.connect(deedOwner).burnSubdivision(subOwner.address, 1)).to.be.revertedWith(
+      await expect(subNFT.connect(deedOwner).burnSubdivision(subOwner.address)).to.be.revertedWith(
         "Must own this subNFT to burn it",
       );
     });
@@ -133,7 +133,7 @@ describe("SubdivisionNFT", function () {
       ]);
       expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(1);
       expect(await subNFT.balanceOf(deedOwner.address, 2)).to.equal(1);
-      await expect(subNFT.connect(subOwner).burnSubdivision(deedOwner.address, 1)).to.be.revertedWith(
+      await expect(subNFT.connect(subOwner).burnSubdivision(deedOwner.address)).to.be.revertedWith(
         "Sender must be owner of specified account",
       );
     });

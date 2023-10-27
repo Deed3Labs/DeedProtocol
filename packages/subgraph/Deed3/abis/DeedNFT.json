@@ -100,12 +100,6 @@
         "internalType": "uint256",
         "name": "deedId",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "burner",
-        "type": "address"
       }
     ],
     "name": "DeedNFTBurned",

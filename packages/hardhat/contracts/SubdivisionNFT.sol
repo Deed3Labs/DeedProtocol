@@ -3,9 +3,10 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./DeedNFT.sol";
+import "./AccessManager.sol";
 
 //was erc1155, multiple ownership? because cant call ownerof
-contract SubdivisionNFT is ERC1155, AccessControl {
+contract SubdivisionNFT is ERC1155, AccessManagerBase {
     struct SubdivisionInfo {
         bytes ipfsDetailsHash;
         address owner;
@@ -29,11 +30,14 @@ contract SubdivisionNFT is ERC1155, AccessControl {
     event SubdivisionBurned(address account, uint256 subdivisionId, uint256 deedId, bytes ipfsDetailsHash);
     event SubdivisionInfoSet(uint256 tokenId, SubdivisionInfo info);
 
-    constructor(string memory _uri, address _deedNFT) ERC1155(_uri) {
+    constructor(
+        string memory _uri,
+        address _deedNFT,
+        address _accessManager
+    ) ERC1155(_uri) AccessManagerBase(_accessManager) {
         require(_deedNFT != address(0), "[SubdivisionNFT] Invalid DeedNFT address");
 
         _nextsubTokenID = 1;
-        _setupRole(MINTER_ROLE, _msgSender());
         deedNFT = DeedNFT(_deedNFT);
     }
 
@@ -97,9 +101,7 @@ contract SubdivisionNFT is ERC1155, AccessControl {
         return balanceOf(_owner, _subTokenId) > 0;
     }
 
-    function supportsInterface(
-        bytes4 _interfaceId
-    ) public view virtual override(ERC1155, AccessControl) returns (bool) {
+    function supportsInterface(bytes4 _interfaceId) public view virtual override(ERC1155) returns (bool) {
         return super.supportsInterface(_interfaceId);
     }
 }

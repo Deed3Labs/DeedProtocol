@@ -14,7 +14,7 @@ describe("DeedNFT", function () {
   beforeEach(async () => {
     [contractOwner, deedOwner, newMinter] = await ethers.getSigners();
     const deedNFTFactory = await ethers.getContractFactory("DeedNFT");
-    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy()) as DeedNFT;
+    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy(contractOwner.address)) as DeedNFT;
     await deedNFT.deployed();
   });
   describe("mintAsset", function () {

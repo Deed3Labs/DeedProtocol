@@ -35,12 +35,14 @@ describe("LeaseAgreement", function () {
     const deedNFTFactory = await ethers.getContractFactory("DeedNFT");
     startDate = await time.latest();
     endDate = startDate + 12 * thirtyOneDaysInSeconds;
-    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy()) as DeedNFT;
+    deedNFT = (await deedNFTFactory.connect(contractOwner).deploy(contractOwner)) as DeedNFT;
     await deedNFT.deployed();
     const tokenMockFactory = ethers.getContractFactory("TokenMock");
     leaseToken = (await (await tokenMockFactory).connect(contractOwner).deploy("PaymentToken", "PTKN")) as TokenMock;
     await leaseToken.mint(lessee.address, initialLesseeBalance);
-    subNFT = (await subNFTFactory.connect(contractOwner).deploy("uri", deedNFT.address)) as SubdivisionNFT;
+    subNFT = (await subNFTFactory
+      .connect(contractOwner)
+      .deploy("uri", deedNFT.address, contractOwner)) as SubdivisionNFT;
     await subNFT.deployed();
     const leaseNftFactory = await ethers.getContractFactory("LeaseNFT");
     const leaseAgreementFactory = await ethers.getContractFactory("LeaseAgreement");
@@ -64,7 +66,7 @@ describe("LeaseAgreement", function () {
     it("Should create a new lease with the right values", async function () {
       // Arrange
       const leaseId = 0;
-      const propertyTokenId = 1;
+      const deedId = 1;
       const latePayementFee = 10;
       const gracePeriod = 5;
 
@@ -79,7 +81,7 @@ describe("LeaseAgreement", function () {
           endDate,
           rentAmount,
           depositAmount,
-          propertyTokenId,
+          deedId,
           latePayementFee,
           gracePeriod,
         );
@@ -90,7 +92,7 @@ describe("LeaseAgreement", function () {
       expect(lease.lessor).to.equal(deedOwner.address);
       expect(lease.lessee).to.equal(lessee.address);
       expect(lease.rentAmount).to.equal(rentAmount);
-      expect(lease.propertyTokenId).to.equal(propertyTokenId);
+      expect(lease.deedId).to.equal(deedId);
       //TODO: Test dates
     });
 

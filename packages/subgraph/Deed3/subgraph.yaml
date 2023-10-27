@@ -6,7 +6,7 @@ dataSources:
   name: DeedNFT
   network: goerli
   source:
-      address: "0x9e4885D1399375870bBc3775F324B1AF9F653AAF"
+      address: "0x72D760c1a000EfA3156C361AB30FBB7772cC0Cfd"
       abi: DeedNFT
       startBlock: 9915285
   mapping:
@@ -16,11 +16,7 @@ dataSources:
       entities:
           - Approval
           - ApprovalForAll
-          - DeedNFTAssetTypeSet
-          - DeedNFTAssetValidationSet
-          - DeedNFTIpfsDetailsSet
-          - DeedNFTMinted
-          - DeedNFTPriceUpdated
+          - DeedNFT
           - RoleAdminChanged
           - RoleGranted
           - RoleRevoked
@@ -39,7 +35,7 @@ dataSources:
             handler: handleDeedNFTAssetValidationSet
           - event: DeedNFTIpfsDetailsSet(uint256,bytes)
             handler: handleDeedNFTIpfsDetailsSet
-          - event: DeedNFTMinted(uint256,(bytes,uint8,uint256,string,bool))
+          - event: DeedNFTMinted(uint256,(bytes,uint8,uint256,string,bool),address)
             handler: handleDeedNFTMinted
           - event: DeedNFTPriceUpdated(uint256,uint256)
             handler: handleDeedNFTPriceUpdated
@@ -66,8 +62,7 @@ dataSources:
       entities:
           - IpfsDetailsSet
           - SubdivisionBurned
-          - SubdivisionInfoSet
-          - SubdivisionMinted
+          - Subdivision
           - TransferBatch
           - TransferSingle
           - URI
@@ -81,7 +76,7 @@ dataSources:
             handler: handleSubdivisionBurned
           - event: SubdivisionInfoSet(uint256,(bytes,address,uint256))
             handler: handleSubdivisionInfoSet
-          - event: SubdivisionMinted(address,uint256,uint256,bytes)
+          - event: SubdivisionMinted(address,uint256,uint256,bytes,address)
             handler: handleSubdivisionMinted
           - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
             handler: handleTransferBatch
@@ -94,7 +89,7 @@ dataSources:
   name: LeaseNFT
   network: goerli
   source:
-      address: "0x1323E965Da92a8FF36cF308e02b078F9023F3C8b"
+      address: "0x0F3B280e30563865F9E0536Bb07E01d0fceAfbc1"
       abi: LeaseNFT
       startBlock: 9915285
   mapping:
@@ -107,6 +102,12 @@ dataSources:
           - name: LeaseNFT
             file: ./abis/LeaseNFT.json
       eventHandlers:
+          - event: LeaseNFTMinted(address,uint256,address)
+            handler: handleLeaseNFTMinted
+          - event: LeaseNFTBurned(uint256,address)
+            handler: handleLeaseNFTBurned
+          - event: LeaseNFTAgreementSet(uint256,address)
+            handler: handleLeaseNFTAgreementSet
           - event: OwnershipTransferred(indexed address,indexed address)
             handler: handleOwnershipTransferred
       file: ./src/lease-nft.ts
@@ -137,7 +138,7 @@ dataSources:
   name: LeaseAgreement
   network: goerli
   source:
-      address: "0xdd8dc0245d846d0f04350af055951396846c73ab"
+      address: "0xF07A4e2b8F1b2B3Df77Ba9808b474E50750AbBAb"
       abi: LeaseAgreement
       startBlock: 9915285
   mapping:
@@ -145,8 +146,7 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-          - LeaseAgentRemoved
-          - LeaseAgentAdded
+          - LeaseAgent
           - LeaseCreated
           - LeaseDepositSubmited
           - LeaseDueDateChanged
@@ -160,26 +160,26 @@ dataSources:
           - name: LeaseAgreement
             file: ./abis/LeaseAgreement.json
       eventHandlers:
-          - event: LeaseAgentRemoved(uint256,uint256)
+          - event: LeaseAgentRemoved(uint256)
             handler: handleLeaseAgentRemoved
-          - event: LeaseAgentAdded(uint256,address,uint256,uint256)
+          - event: LeaseAgentAdded(uint256,address,uint256)
             handler: handleLeaseAgentAdded
-          - event: LeaseCreated(uint256,(address,address,uint256,(uint256,bool),uint256,uint32,(uint256,uint256,uint256,uint256),uint256,uint256,address,uint8,uint256),uint256)
+          - event: LeaseCreated(uint256,(address,address,uint256,(uint256,bool),uint256,uint32,(uint256,uint256,uint256,uint256),uint256,uint256,address,uint8,uint256))
             handler: handleLeaseCreated
-          - event: LeaseDepositSubmited(uint256,uint256,uint256)
+          - event: LeaseDepositSubmited(uint256,uint256)
             handler: handleLeaseDepositSubmited
-          - event: LeaseDueDateChanged(uint256,uint256,uint256)
+          - event: LeaseDueDateChanged(uint256,uint256)
             handler: handleLeaseDueDateChanged
-          - event: LeaseExtended(uint256,uint256,uint256,uint256,uint256)
+          - event: LeaseExtended(uint256,uint256,uint256,uint256)
             handler: handleLeaseExtended
-          - event: LeaseFundsManagerSet(address,uint256)
+          - event: LeaseFundsManagerSet(address)
             handler: handleLeaseFundsManagerSet
-          - event: LeasePaymentMade(uint256,uint256,uint256,uint256)
+          - event: LeasePaymentMade(uint256,uint256,uint256)
             handler: handleLeasePaymentMade
-          - event: LeasePaymentTokenSet(address,uint256)
+          - event: LeasePaymentTokenSet(address)
             handler: handleLeasePaymentTokenSet
-          - event: LeaseRentDistributed(uint256,uint256,uint256,uint256,uint256)
+          - event: LeaseRentDistributed(uint256,uint256,uint256,uint256)
             handler: handleLeaseRentDistributed
-          - event: LeaseTerminated(uint256,uint256)
+          - event: LeaseTerminated(uint256)
             handler: handleLeaseTerminated
       file: ./src/lease-agreement.ts

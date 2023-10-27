@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
 import "./FundsManager.sol";
+import "./AccessManager.sol";
 
 interface ILeaseNFT {
     function mint(address leaseOwner, uint256 leaseId) external;
@@ -14,7 +15,7 @@ interface ILeaseNFT {
     function burn(uint256 leaseId) external;
 }
 
-contract LeaseAgreement is Context, ReentrancyGuard {
+contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     // CONSTANTS
     uint256 private constant MONTH = 30.5 days;
 
@@ -40,8 +41,8 @@ contract LeaseAgreement is Context, ReentrancyGuard {
         LeaseDates dates;
         uint256 extensionCount;
         uint256 deedId;
-        address agent;
-        uint8 agentPercentage;
+        address manager;
+        uint8 managerPercentage;
         uint256 unclaimedRentAmount;
     }
 
@@ -65,9 +66,9 @@ contract LeaseAgreement is Context, ReentrancyGuard {
     event LeaseCreated(uint256 leaseId, Lease lease);
     event LeaseTerminated(uint256 leaseId);
     event LeasePaymentMade(uint256 leaseId, uint256 amount, uint256 unclaimedRentAmount);
-    event LeaseRentDistributed(uint256 leaseId, uint256 lessorAmount, uint256 agentAmount, uint256 distributableDate);
-    event LeaseAgentAdded(uint256 leaseId, address agent, uint256 percentage);
-    event LeaseAgentRemoved(uint256 leaseId);
+    event LeaseRentDistributed(uint256 leaseId, uint256 lessorAmount, uint256 managerAmount, uint256 distributableDate);
+    event LeaseManagerAdded(uint256 leaseId, address manager, uint256 percentage);
+    event LeaseManagerRemoved(uint256 leaseId);
     event LeaseDueDateChanged(uint256 leaseId, uint256 newDueDate);
     event LeaseDepositSubmited(uint256 leaseId, uint256 amount);
     event LeaseExtended(uint256 leaseId, uint256 endDate, uint256 rentAmount, uint256 extensionCount);
@@ -77,8 +78,9 @@ contract LeaseAgreement is Context, ReentrancyGuard {
         address _paymentToken,
         address _deedNFT,
         address _subdivisionNFT,
-        address _fundsManager
-    ) {
+        address _fundsManager,
+        address _accessManager
+    ) AccessManagerBase(_accessManager) {
         require(_leaseNFT != address(0), "[Lease Agreement] Invalid LeaseNFT address");
         require(_paymentToken != address(0), "[Lease Agreement] Invalid token address");
         require(_deedNFT != address(0), "[Lease Agreement] Invalid DeedNFT address");
@@ -94,38 +96,14 @@ contract LeaseAgreement is Context, ReentrancyGuard {
         leaseCounter = 0;
     }
 
-    function setFundsManager(address _fundsManager) public {
+    function setFundsManager(address _fundsManager) public functionRoleOrAdmin(this.setFundsManager.selector) {
         fundsManager = FundsManager(_fundsManager);
         emit LeaseFundsManagerSet(_fundsManager);
     }
 
-    function setPaymentToken(address _paymentToken) public {
+    function setPaymentToken(address _paymentToken) public functionRoleOrAdmin(this.setPaymentToken.selector) {
         paymentToken = IERC20(_paymentToken);
         emit LeasePaymentTokenSet(_paymentToken);
-    }
-
-    function addAgent(uint256 _leaseId, address _agent, uint8 _percentage) external {
-        Lease storage lease = leases[_leaseId];
-        require(_msgSender() == lease.lessor, "[Lease Agreement] Only the Lessor can set the Agent");
-        require(_percentage >= 0 && _percentage <= 100, "[Lease Agreement] Invalid agent percentage");
-
-        lease.agent = _agent;
-        lease.agentPercentage = _percentage;
-
-        emit LeaseAgentAdded(_leaseId, _agent, _percentage);
-    }
-
-    function removeAgent(uint256 _leaseId) external {
-        Lease storage lease = leases[_leaseId];
-        require(
-            _msgSender() == lease.lessor || _msgSender() == lease.agent,
-            "[Lease Agreement] only the Lessor or the Agent can remove the Agent"
-        );
-
-        lease.agent = address(0);
-        lease.agentPercentage = 0;
-
-        emit LeaseAgentRemoved(_leaseId);
     }
 
     function createLease(
@@ -169,6 +147,30 @@ contract LeaseAgreement is Context, ReentrancyGuard {
         lease.dates.distributableDate = lease.dates.rentDueDate;
 
         emit LeaseCreated(leaseId, lease);
+    }
+
+    function addManager(uint256 _leaseId, address _manager, uint8 _percentage) public {
+        Lease storage lease = leases[_leaseId];
+        require(_msgSender() == lease.lessor, "[Lease Agreement] Only the Lessor can set the Manager");
+        require(_percentage >= 0 && _percentage <= 100, "[Lease Agreement] Invalid Manager percentage");
+
+        lease.manager = _manager;
+        lease.managerPercentage = _percentage;
+
+        emit LeaseManagerAdded(_leaseId, _manager, _percentage);
+    }
+
+    function removeManager(uint256 _leaseId) external {
+        Lease storage lease = leases[_leaseId];
+        require(
+            _msgSender() == lease.lessor || _msgSender() == lease.manager,
+            "[Lease Agreement] Only the Lessor or the Manager can remove the Manager"
+        );
+
+        lease.manager = address(0);
+        lease.managerPercentage = 0;
+
+        emit LeaseManagerRemoved(_leaseId);
     }
 
     function submitDeposit(uint256 _leaseId) external nonReentrant {
@@ -216,8 +218,8 @@ contract LeaseAgreement is Context, ReentrancyGuard {
     function distributeRent(uint256 _leaseId) public nonReentrant {
         Lease storage lease = leases[_leaseId];
         require(
-            _msgSender() == lease.lessor || _msgSender() == lease.agent,
-            "[Lease Agreement] Caller must be the Lessor or the Agent"
+            _msgSender() == lease.lessor || _msgSender() == lease.manager,
+            "[Lease Agreement] Caller must be the Lessor or the Manager"
         );
         require(lease.unclaimedRentAmount > 0, "[Lease Agreement] No rent to distribute");
         uint256 nbMonthSinceLastDistribute = 0;
@@ -228,19 +230,19 @@ contract LeaseAgreement is Context, ReentrancyGuard {
 
         nbMonthSinceLastDistribute = (block.timestamp - lease.dates.distributableDate) / (1 * MONTH) + 1;
         uint256 totalToClaim = lease.unclaimedRentAmount;
-        uint256 agentAmount = 0;
+        uint256 managerAmount = 0;
 
-        if (lease.agent != address(0)) {
-            agentAmount = (totalToClaim * lease.agentPercentage) / 100;
-            fundsManager.widthdraw(_leaseId, paymentToken, uint32(agentAmount), lease.agent);
+        if (lease.manager != address(0)) {
+            managerAmount = (totalToClaim * lease.managerPercentage) / 100;
+            fundsManager.widthdraw(_leaseId, paymentToken, uint32(managerAmount), lease.manager);
         }
 
-        uint256 lessorAmount = totalToClaim - agentAmount;
+        uint256 lessorAmount = totalToClaim - managerAmount;
         fundsManager.widthdraw(_leaseId, paymentToken, uint32(lessorAmount), lease.lessor);
         lease.unclaimedRentAmount = 0;
         lease.dates.distributableDate += nbMonthSinceLastDistribute * (1 * MONTH);
 
-        emit LeaseRentDistributed(_leaseId, uint32(lessorAmount), uint32(agentAmount), lease.dates.distributableDate);
+        emit LeaseRentDistributed(_leaseId, uint32(lessorAmount), uint32(managerAmount), lease.dates.distributableDate);
     }
 
     function extendLease(uint256 _leaseId, uint256 _extensionPeriod) external {

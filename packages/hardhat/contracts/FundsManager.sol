@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "hardhat/console.sol";
+import "./AccessManager.sol";
 
-contract FundsManager is Context {
+contract FundsManager is Context, AccessManagerBase {
     event FundsStored(uint256 id, IERC20 token, uint256 amount, address sender, address caller, uint256 newBalance);
     event FundsWithdrawn(
         uint256 id,
@@ -19,6 +20,8 @@ contract FundsManager is Context {
 
     // AccountOwner     ->    AccountId   ->  TokenAddress -> Amount
     mapping(address => mapping(uint256 => mapping(address => uint256))) public accountsMapping;
+
+    constructor(address _accessManager) AccessManagerBase(_accessManager) {}
 
     /**
      * Get the balance of an account

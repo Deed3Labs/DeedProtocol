@@ -15,6 +15,12 @@
           - name: LeaseNFT
             file: ./abis/LeaseNFT.json
       eventHandlers:
+          - event: LeaseNFTMinted(address,uint256,address)
+            handler: handleLeaseNFTMinted
+          - event: LeaseNFTBurned(uint256,address)
+            handler: handleLeaseNFTBurned
+          - event: LeaseNFTAgreementSet(uint256,address)
+            handler: handleLeaseNFTAgreementSet
           - event: OwnershipTransferred(indexed address,indexed address)
             handler: handleOwnershipTransferred
-      file: ./src/lease-nft.ts
+      file: ./src/lease.ts

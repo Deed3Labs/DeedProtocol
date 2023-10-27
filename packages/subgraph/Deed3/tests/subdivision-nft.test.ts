@@ -7,7 +7,7 @@ import {
     afterAll,
 } from "matchstick-as/assembly/index";
 import { BigInt, Bytes, Address } from "@graphprotocol/graph-ts";
-import { handleSubdivisionIpfsDetailsSet } from "../src/subdivision-nft";
+import { handleSubdivisionIpfsDetailsSet } from "../src/subdivision";
 import { createIpfsDetailsSetEvent } from "./subdivision-nft-utils";
 
 // Tests structure (matchstick-as >=0.5.0)

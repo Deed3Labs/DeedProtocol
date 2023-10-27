@@ -11,7 +11,7 @@
       "template": "SubdivisionNFT.template.yaml"
     },
     "LeaseNFT": {
-      "address": "0x1323E965Da92a8FF36cF308e02b078F9023F3C8b",
+      "address": "0x0F3B280e30563865F9E0536Bb07E01d0fceAfbc1",
       "startBlock": 9915285,
       "template": "LeaseNFT.template.yaml"
     },
@@ -21,7 +21,7 @@
       "template": "FundsManager.template.yaml"
     },
     "LeaseAgreement": {
-      "address": "0xdd8dc0245d846d0f04350af055951396846c73ab",
+      "address": "0xF07A4e2b8F1b2B3Df77Ba9808b474E50750AbBAb",
       "startBlock": 9915285,
       "template": "LeaseAgreement.template.yaml"
     }

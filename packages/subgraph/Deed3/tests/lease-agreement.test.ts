@@ -6,10 +6,8 @@ import {
     beforeAll,
     afterAll,
 } from "matchstick-as/assembly/index";
-import { BigInt, Address } from "@graphprotocol/graph-ts";
-import { LeaseAgentRemoved } from "../generated/schema";
-import { LeaseAgentRemoved as LeaseAgentRemovedEvent } from "../generated/LeaseAgreement/LeaseAgreement";
-import { handleLeaseAgentRemoved } from "../src/lease-agreement";
+import { BigInt } from "@graphprotocol/graph-ts";
+import { handleLeaseAgentRemoved } from "../src/lease";
 import { createLeaseAgentRemovedEvent } from "./lease-agreement-utils";
 
 // Tests structure (matchstick-as >=0.5.0)

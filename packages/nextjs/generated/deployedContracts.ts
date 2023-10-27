@@ -5,7 +5,7 @@ const contracts = {
       name: "goerli",
       contracts: {
         DeedNFT: {
-          address: "0x9e4885D1399375870bBc3775F324B1AF9F653AAF",
+          address: "0x72D760c1a000EfA3156C361AB30FBB7772cC0Cfd",
           abi: [
             {
               inputs: [],
@@ -108,12 +108,6 @@ const contracts = {
                   internalType: "uint256",
                   name: "deedId",
                   type: "uint256",
-                },
-                {
-                  indexed: false,
-                  internalType: "address",
-                  name: "burner",
-                  type: "address",
                 },
               ],
               name: "DeedNFTBurned",
@@ -1076,7 +1070,7 @@ const contracts = {
           ],
         },
         LeaseAgreement: {
-          address: "0xdd8dc0245d846d0f04350af055951396846c73ab",
+          address: "0xF07A4e2b8F1b2B3Df77Ba9808b474E50750AbBAb",
           abi: [
             {
               inputs: [
@@ -1234,7 +1228,7 @@ const contracts = {
                     },
                     {
                       internalType: "uint256",
-                      name: "propertyTokenId",
+                      name: "deedId",
                       type: "uint256",
                     },
                     {
@@ -1409,12 +1403,6 @@ const contracts = {
                   name: "distributableDate",
                   type: "uint256",
                 },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "timestamp",
-                  type: "uint256",
-                },
               ],
               name: "LeaseRentDistributed",
               type: "event",
@@ -1525,7 +1513,7 @@ const contracts = {
                 },
                 {
                   internalType: "uint256",
-                  name: "_propertyTokenId",
+                  name: "_deedId",
                   type: "uint256",
                 },
                 {
@@ -1713,7 +1701,7 @@ const contracts = {
                 },
                 {
                   internalType: "uint256",
-                  name: "propertyTokenId",
+                  name: "deedId",
                   type: "uint256",
                 },
                 {
@@ -1860,7 +1848,7 @@ const contracts = {
           ],
         },
         LeaseNFT: {
-          address: "0x1323E965Da92a8FF36cF308e02b078F9023F3C8b",
+          address: "0x0F3B280e30563865F9E0536Bb07E01d0fceAfbc1",
           abi: [
             {
               inputs: [],
@@ -1915,6 +1903,25 @@ const contracts = {
                 },
               ],
               name: "ApprovalForAll",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "leaseId",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "burner",
+                  type: "address",
+                },
+              ],
+              name: "LeaseNFTAgreementSet",
               type: "event",
             },
             {
@@ -2340,7 +2347,7 @@ const contracts = {
           ],
         },
         SubdivisionNFT: {
-          address: "0x8B5df1697E3d99F3d41ffd7B97CD2E8555Cf3D59",
+          address: "0x415f0b76ACa44EA545Db667Cc22fc61C4106C302",
           abi: [
             {
               inputs: [
@@ -2523,25 +2530,6 @@ const contracts = {
                 },
               ],
               name: "SubdivisionInfoSet",
-              type: "event",
-            },
-            {
-              anonymous: false,
-              inputs: [
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "tokenId",
-                  type: "uint256",
-                },
-                {
-                  indexed: false,
-                  internalType: "bytes",
-                  name: "ipfsDetailsHash",
-                  type: "bytes",
-                },
-              ],
-              name: "SubdivisionIpfsDetailsSet",
               type: "event",
             },
             {
@@ -3090,12 +3078,29 @@ const contracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "bytes",
-                  name: "_ipfsDetailsHash",
-                  type: "bytes",
+                  components: [
+                    {
+                      internalType: "bytes",
+                      name: "ipfsDetailsHash",
+                      type: "bytes",
+                    },
+                    {
+                      internalType: "address",
+                      name: "owner",
+                      type: "address",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "parentDeed",
+                      type: "uint256",
+                    },
+                  ],
+                  internalType: "struct SubdivisionNFT.SubdivisionInfo",
+                  name: "_newInfo",
+                  type: "tuple",
                 },
               ],
-              name: "setIpfsDetailsHash",
+              name: "setInfo",
               outputs: [],
               stateMutability: "nonpayable",
               type: "function",
@@ -3104,7 +3109,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "bytes4",
-                  name: "interfaceId",
+                  name: "_interfaceId",
                   type: "bytes4",
                 },
               ],

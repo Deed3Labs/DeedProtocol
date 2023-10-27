@@ -12,11 +12,7 @@
       entities:
           - Approval
           - ApprovalForAll
-          - DeedNFTAssetTypeSet
-          - DeedNFTAssetValidationSet
-          - DeedNFTIpfsDetailsSet
-          - DeedNFTMinted
-          - DeedNFTPriceUpdated
+          - DeedNFT
           - RoleAdminChanged
           - RoleGranted
           - RoleRevoked
@@ -35,8 +31,10 @@
             handler: handleDeedNFTAssetValidationSet
           - event: DeedNFTIpfsDetailsSet(uint256,bytes)
             handler: handleDeedNFTIpfsDetailsSet
-          - event: DeedNFTMinted(uint256,(bytes,uint8,uint256,string,bool))
+          - event: DeedNFTMinted(uint256,(bytes,uint8,uint256,string,bool),address)
             handler: handleDeedNFTMinted
+          - event: DeedNFTBurned(uint256)
+            handler: handleDeedNFTBurned
           - event: DeedNFTPriceUpdated(uint256,uint256)
             handler: handleDeedNFTPriceUpdated
           - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
@@ -47,4 +45,4 @@
             handler: handleRoleRevoked
           - event: Transfer(indexed address,indexed address,indexed uint256)
             handler: handleTransfer
-      file: ./src/deed-nft.ts
+      file: ./src/deed.ts

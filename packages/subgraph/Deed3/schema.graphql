@@ -1,7 +1,7 @@
 # DeedNFT.sol
 
-type DeedNFTEntity @entity(immutable: false) {
-    id: Bytes!
+type DeedEntity @entity(immutable: false) {
+    id: String!
     deedId: BigInt! # uint256
     deedInfo_ipfsDetailsHash: Bytes! # bytes
     deedInfo_assetType: Int! # uint8
@@ -11,6 +11,7 @@ type DeedNFTEntity @entity(immutable: false) {
     blockNumber: BigInt!
     blockTimestamp: BigInt!
     transactionHash: Bytes!
+    archived: Boolean
 }
 
 type RoleAdminChanged @entity(immutable: true) {
@@ -76,7 +77,7 @@ type ApprovalForAll @entity(immutable: true) {
 # SubdivisionNFT.sol
 
 type SubdivisionEntity @entity(immutable: false) {
-    id: Bytes!
+    id: String!
     owner: Bytes! # address
     subdivisionId: BigInt! # uint256
     deedId: BigInt! # uint256
@@ -84,17 +85,7 @@ type SubdivisionEntity @entity(immutable: false) {
     blockNumber: BigInt!
     blockTimestamp: BigInt!
     transactionHash: Bytes!
-}
-
-type SubdivisionBurned @entity(immutable: true) {
-    id: Bytes!
-    account: Bytes! # address
-    subdivisionId: BigInt! # uint256
-    deedId: BigInt! # uint256
-    ipfsDetailsHash: Bytes! # bytes
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
+    archived: Boolean
 }
 
 type URI @entity(immutable: true) {
@@ -130,17 +121,6 @@ type TransferSingle @entity(immutable: true) {
     transactionHash: Bytes!
 }
 
-# LeaseNFT.sol
-
-type OwnershipTransferred @entity(immutable: true) {
-    id: Bytes!
-    previousOwner: Bytes! # address
-    newOwner: Bytes! # address
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
 # FundsManager.sol
 
 type FundsStored @entity(immutable: true) {
@@ -171,8 +151,8 @@ type FundsWithdrawn @entity(immutable: true) {
 
 # LeaseAgreement.sol
 
-type LeaseCreated @entity(immutable: true) {
-    id: Bytes!
+type LeaseEntity @entity(immutable: true) {
+    id: String!
     leaseId: BigInt! # uint256
     lease_lessor: Bytes! # address
     lease_lessee: Bytes! # address
@@ -186,83 +166,19 @@ type LeaseCreated @entity(immutable: true) {
     lease_dates_rentDueDate: BigInt! # uint256
     lease_dates_distributableDate: BigInt! # uint256
     lease_extensionCount: BigInt! # uint256
-    lease_propertyTokenId: BigInt! # uint256
-    lease_agent: Bytes! # address
+    lease_deedId: BigInt! # uint256
+    lease_agent: Bytes # address
     lease_agentPercentage: Int! # uint8
     lease_unclaimedRentAmount: BigInt! # uint256
-    timestamp: BigInt! # uint256
     blockNumber: BigInt!
     blockTimestamp: BigInt!
     transactionHash: Bytes!
-}
-
-type LeaseAgentRemoved @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type LeaseAgentSet @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    agent: Bytes! # address
-    percentage: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type LeaseDepositSubmited @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    amount: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type LeaseDueDateChanged @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    newDueDate: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type LeaseExtended @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    endDate: BigInt! # uint256
-    rentAmount: BigInt! # uint256
-    extensionCount: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
+    archived: Boolean
 }
 
 type LeaseFundsManagerSet @entity(immutable: true) {
     id: Bytes!
     fundsManager: Bytes! # address
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type LeasePaymentMade @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    amount: BigInt! # uint256
-    unclaimedRentAmount: BigInt! # uint256
-    timestamp: BigInt! # uint256
     blockNumber: BigInt!
     blockTimestamp: BigInt!
     transactionHash: Bytes!
@@ -271,28 +187,6 @@ type LeasePaymentMade @entity(immutable: true) {
 type LeasePaymentTokenSet @entity(immutable: true) {
     id: Bytes!
     paymentToken: Bytes! # address
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type LeaseRentDistributed @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    lessorAmount: BigInt! # uint256
-    agentAmount: BigInt! # uint256
-    distributableDate: BigInt! # uint256
-    timestamp: BigInt! # uint256
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
-    transactionHash: Bytes!
-}
-
-type LeaseTerminated @entity(immutable: true) {
-    id: Bytes!
-    leaseId: BigInt! # uint256
-    timestamp: BigInt! # uint256
     blockNumber: BigInt!
     blockTimestamp: BigInt!
     transactionHash: Bytes!

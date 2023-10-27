@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "./AccessManager.sol";
 
-contract DeedNFT is ERC721, AccessControl {
+contract DeedNFT is ERC721, AccessManagerBase {
     struct DeedInfo {
         bytes ipfsDetailsHash;
         AssetType assetType;
@@ -11,9 +11,9 @@ contract DeedNFT is ERC721, AccessControl {
         string deedAddress;
         bool isValidated;
     }
-    uint256 private _nextDeedId;
+
+    uint256 private nextDeedId;
     mapping(uint256 => DeedInfo) private deedInfoMap;
-    bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
 
     enum AssetType {
         Land,
@@ -29,10 +29,8 @@ contract DeedNFT is ERC721, AccessControl {
     event DeedNFTPriceUpdated(uint256 deedId, uint256 newPrice);
     event DeedNFTAssetTypeSet(uint256 deedId, AssetType newAssetType);
 
-    constructor() ERC721("DeedNFT", "DEED") {
-        _nextDeedId = 1;
-        _setupRole(VALIDATOR_ROLE, _msgSender());
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    constructor(address _accessManager) ERC721("DeedNFT", "DEED") AccessManagerBase(_accessManager) {
+        nextDeedId = 1;
     }
 
     modifier deedExists(uint256 _deedId) {
@@ -54,14 +52,14 @@ contract DeedNFT is ERC721, AccessControl {
         AssetType _assetType,
         string memory _deedAddress
     ) public {
-        _mint(_owner, _nextDeedId);
-        DeedInfo storage deedInfo = deedInfoMap[_nextDeedId];
+        _mint(_owner, nextDeedId);
+        DeedInfo storage deedInfo = deedInfoMap[nextDeedId];
         deedInfo.ipfsDetailsHash = _ipfsDetailsHash;
         deedInfo.assetType = _assetType;
         deedInfo.deedAddress = _deedAddress;
         deedInfo.isValidated = false;
-        emit DeedNFTMinted(_nextDeedId, deedInfo, _msgSender());
-        _nextDeedId = _nextDeedId + 1;
+        emit DeedNFTMinted(nextDeedId, deedInfo, _msgSender());
+        nextDeedId = nextDeedId + 1;
     }
 
     function burn(uint256 _deedId) public onlyOwner(_deedId) {
@@ -69,7 +67,7 @@ contract DeedNFT is ERC721, AccessControl {
         emit DeedNFTBurned(_deedId);
     }
 
-    function setAssetValidation(uint256 _deedId, bool _isValid) public onlyRole(VALIDATOR_ROLE) {
+    function setAssetValidation(uint256 _deedId, bool _isValid) public onlyValidator {
         DeedInfo storage deedInfo = deedInfoMap[_deedId];
         deedInfo.isValidated = _isValid;
         emit DeedNFTAssetValidationSet(_deedId, _isValid);
@@ -103,20 +101,12 @@ contract DeedNFT is ERC721, AccessControl {
         return deedInfoMap[_deedId];
     }
 
-    function addValidator(address _validator) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        grantRole(VALIDATOR_ROLE, _validator);
-    }
-
-    function removeValidator(address _validator) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        revokeRole(VALIDATOR_ROLE, _validator);
-    }
-
     function canSubdivide(uint256 _deedId) external view returns (bool) {
         AssetType assetType = getDeedInfo(_deedId).assetType;
         return assetType == AssetType.Land || assetType == AssetType.Estate;
     }
 
-    function supportsInterface(bytes4 _interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
+    function supportsInterface(bytes4 _interfaceId) public view virtual override(ERC721) returns (bool) {
         return super.supportsInterface(_interfaceId);
     }
 }
