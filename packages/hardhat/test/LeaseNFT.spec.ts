@@ -18,37 +18,46 @@ describe("LeaseNFT", function () {
 
     leaseNFT = await leaseNftFactory.deploy(accessManager.address);
     await leaseNFT.deployed();
+
+    // Fake lease agreement address
+    await leaseNFT.connect(deployer).setLeaseAgreementAddress(deployer.address);
   });
 
   describe("mintToken()", function () {
     it("Should be in the balance of designated address", async function () {
-      await leaseNFT.mint(deployer.address, 0);
+      const leaseId = 1;
+      await leaseNFT.connect(deployer).mint(deployer.address, leaseId);
       expect(await leaseNFT.balanceOf(deployer.address)).to.equal(1);
-      expect(await leaseNFT.ownerOf(0)).to.equal(deployer.address);
+      expect(await leaseNFT.ownerOf(leaseId)).to.equal(deployer.address);
     });
 
-    // it("Should revert if caller isn't contractOwner", async function () {
-    //   [contractOwner, tokenOwner] = await ethers.getSigners();
-    //   //await before expect here because we are expecting the revert with "Ownable: caller is not the owner"
-    //   await expect(leaseNFT.connect(tokenOwner).mintToken(contractOwner.address, 2)).to.be.revertedWith(
-    //     "Ownable: caller is not the owner",
-    //   );
-    // });
+    it("Should revert if caller isn't contractOwner", async function () {
+      // Arrange
+      const leaseId = 2;
+
+      // Act
+      const act = () => leaseNFT.connect(tokenOwner).mint(tokenOwner.address, leaseId);
+
+      // Assert
+      await expect(act()).to.be.revertedWith("[LeaseNFT] Only LeaseAgreement contract can mint the lease");
+    });
   });
 
   describe("burnToken()", function () {
     it("should burn token", async () => {
-      await leaseNFT.mint(tokenOwner.address, 2);
+      const leaseId = 2;
+      await leaseNFT.connect(deployer).mint(tokenOwner.address, leaseId);
       expect(await leaseNFT.balanceOf(tokenOwner.address)).to.equal(1);
-      await leaseNFT.connect(tokenOwner).burn(2);
-      expect(await leaseNFT.balanceOf(deployer.address)).to.equal(0);
+      await leaseNFT.connect(deployer).burn(leaseId);
+      expect(await leaseNFT.balanceOf(tokenOwner.address)).to.equal(0);
     });
 
     it("Should revert if caller isn't owner", async function () {
-      await leaseNFT.mint(tokenOwner.address, 2);
+      const leaseId = 2;
+      await leaseNFT.connect(deployer).mint(tokenOwner.address, leaseId);
       expect(await leaseNFT.balanceOf(tokenOwner.address)).to.equal(1);
-      await expect(leaseNFT.connect(deployer).burn(2)).to.be.revertedWith(
-        "Only token owner can burn the leaseNFT",
+      await expect(leaseNFT.connect(tokenOwner).burn(leaseId)).to.be.revertedWith(
+        "[LeaseNFT] Only LeaseAgreement can burn the lease",
       );
     });
   });

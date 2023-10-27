@@ -23,8 +23,8 @@ contract LeaseNFT is ERC721, AccessManagerBase {
 
     function mint(address _to, uint256 _leaseId) external {
         require(
-            _msgSender() == this.ownerOf(_leaseId) || _msgSender() == leaseAgreementAddress,
-            "[LeaseNFT] Only LeaseNFT owner can burn the lease"
+            hasAdminRole() || _msgSender() == leaseAgreementAddress,
+            "[LeaseNFT] Only LeaseAgreement contract can mint the lease"
         );
         _mint(_to, _leaseId);
         emit LeaseNFTMinted(_to, _leaseId, _msgSender());
@@ -32,8 +32,8 @@ contract LeaseNFT is ERC721, AccessManagerBase {
 
     function burn(uint256 _leaseId) external {
         require(
-            _msgSender() == this.ownerOf(_leaseId) || _msgSender() == leaseAgreementAddress,
-            "[LeaseNFT] Only LeaseNFT owner can burn the lease"
+            hasAdminRole() || _msgSender() == leaseAgreementAddress,
+            "[LeaseNFT] Only LeaseAgreement can burn the lease"
         );
         _burn(_leaseId);
         emit LeaseNFTBurned(_leaseId, _msgSender());

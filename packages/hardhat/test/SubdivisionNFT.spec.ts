@@ -131,12 +131,15 @@ describe("SubdivisionNFT", function () {
   });
 
   describe("burnSubdivision", function () {
-    it.only("Should burn the right subdivision NFT of the right account", async function () {
+    it("Should burn the right subdivision NFT of the right account", async function () {
+      const subdivisionId = 1;
+
       // SubNFT minted with tokenID 1
       await subNFT.connect(subOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 });
-      expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(1);
-      await subNFT.connect(subOwner).burnSubdivision(subOwner.address);
-      expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(0);
+      expect(await subNFT.balanceOf(subOwner.address, subdivisionId)).to.equal(1);
+
+      await subNFT.connect(subOwner).burnSubdivision(subdivisionId);
+      expect(await subNFT.balanceOf(subOwner.address, subdivisionId)).to.equal(0);
     });
 
     it("Should burn the right amount of subdivision NFTs", async function () {

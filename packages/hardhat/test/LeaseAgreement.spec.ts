@@ -64,11 +64,11 @@ describe("LeaseAgreement", function () {
 
     const accessManager = await accessManagerFactory.connect(deployer).deploy(deployer.address);
 
-    subNFT = await subNFTFactory.connect(deployer).deploy("uri", deedNFT.address, accessManager.address);
-    await subNFT.deployed();
-
     deedNFT = await deedNFTFactory.connect(deployer).deploy(accessManager.address);
     await deedNFT.deployed();
+
+    subNFT = await subNFTFactory.connect(deployer).deploy("uri", deedNFT.address, accessManager.address);
+    await subNFT.deployed();
 
     leaseNFT = await leaseNftFactory.connect(deployer).deploy(accessManager.address);
     await leaseNFT.deployed();
@@ -332,7 +332,10 @@ describe("LeaseAgreement", function () {
       expect((await leaseAgreement.leases(leaseId)).managerPercentage).to.equal(managerPercentage);
 
       // Act
-      await expect(leaseAgreement.connect(deedOwner).removeManager(leaseId)).to.emit(leaseAgreement, "ManagerRemoved");
+      await expect(leaseAgreement.connect(deedOwner).removeManager(leaseId)).to.emit(
+        leaseAgreement,
+        "LeaseManagerRemoved",
+      );
 
       // Assert
       expect((await leaseAgreement.leases(leaseId)).manager).to.equal(ethers.constants.AddressZero);
@@ -821,17 +824,14 @@ describe("LeaseAgreement", function () {
       const totalExpectedBalance = 1500;
       await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), totalExpectedBalance);
       await leaseAgreement.connect(lessee).payRent(leaseId);
-      const leaseDate = (await leaseAgreement.leases(leaseId)).dates.distributableDate.toString();
-      const leaseDatee = (await leaseAgreement.leases(leaseId)).dates.rentDueDate.toString();
-
-      console.log(leaseDate);
-      console.log(leaseDatee);
+      (await leaseAgreement.leases(leaseId)).dates.distributableDate.toString();
+      (await leaseAgreement.leases(leaseId)).dates.rentDueDate.toString();
 
       // Act
       const act = () => leaseAgreement.connect(deedOwner).distributeRent(leaseId);
 
       // Assert
-      await expect(act()).to.emit(leaseAgreement, "RentDistributed");
+      await expect(act()).to.emit(leaseAgreement, "LeaseRentDistributed");
       const agentAmount = 0.1 * totalExpectedBalance;
       expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance - agentAmount);
       expect(await leaseToken.balanceOf(manager.address)).to.equal(agentAmount);
@@ -1176,7 +1176,7 @@ describe("LeaseAgreement", function () {
   });
 
   describe("setDueDate", function () {
-    it("Should set due date and emit DueDateChanged event", async function () {
+    it("Should set due date and emit LeaseDueDateChanged event", async function () {
       // Arrange
       const leaseId = 0;
       const propertyTokenId = 1;
@@ -1199,7 +1199,7 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(deedOwner).setDueDate(leaseId, startDate + 2 * thirtyOneDaysInSeconds);
 
       // Assert
-      await expect(act()).to.emit(leaseAgreement, "DueDateChanged");
+      await expect(act()).to.emit(leaseAgreement, "LeaseDueDateChanged");
       expect((await leaseAgreement.leases(0)).dates.rentDueDate).to.equal(startDate + 2 * thirtyOneDaysInSeconds);
     });
 
