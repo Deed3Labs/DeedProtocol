@@ -33,7 +33,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     }
 
     struct Lease {
-        address [] lessee;
+        address [] lesseeList; 
         uint256 rentAmount;
         Deposit securityDeposit;
         uint256 latePaymentFee;
@@ -58,7 +58,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         _;
     }
 
-    mapping(uint256 => Lease) public leases;
+    mapping(uint256 => Lease) public leases; 
     uint256 public leaseCounter;
     LeaseNFT public leaseNFT;
     IERC20 public paymentToken;
@@ -112,7 +112,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     }
 
     function createLease(
-        address [] memory _lessee ,
+        address [] memory _lesseeList , 
         uint256 _startDate,
         uint256 _endDate,
         uint256 _rentAmount,
@@ -121,8 +121,6 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         uint256 _latePaymentFee,
         uint32 _gracePeriod
     ) external {
-        
-        require(validateAddresses(_lessee), "[Lease Agreement] One or more invalid lessee address");
         require(_startDate < _endDate, "[Lease Agreement] Invalid start and end dates");
         require(
             _endDate - _startDate > 1 * MONTH,
@@ -137,7 +135,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         uint256 leaseId = leaseCounter;
         leaseCounter++;
         Lease storage lease = leases[leaseId]; 
-        lease.lessee = _lessee;
+        lease.lesseeList =  _lesseeList; 
         lease.dates.startDate = _startDate;
         lease.dates.endDate = _endDate;
         lease.rentAmount = _rentAmount;
@@ -154,17 +152,6 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseCreated(leaseId, lease);
     }
 
-    function validateAddresses(address [] memory _addresses) internal pure returns (bool) {
-        bool allValid = true;
-        for (uint i=0; i<_addresses.length; i++) {
-            if(_addresses[i]==address(0)){
-                allValid = false;
-                return allValid;
-            }
-        return allValid;
-        }
-    } 
-
     function containsAddress(address [] memory _addresses, address _address) internal pure returns(bool){
         bool contains = false;
         for (uint i=0; i<_addresses.length; i++){
@@ -176,9 +163,9 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         return contains;
     }
 
-    function transferLease(uint256 _leaseId,address [] memory  _newLesseeList) public {
+    function transferLease(uint256 _leaseId,address [] memory  _newLesseeList ) public {
         Lease storage lease = leases[_leaseId];
-        lease.lessee = _newLesseeList;
+        lease.lesseeList =  _newLesseeList ;
 
     }
 
@@ -207,7 +194,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     
     function submitDeposit(uint256 _leaseId) external nonReentrant { 
         Lease storage lease = leases[_leaseId];
-        require(containsAddress(lease.lessee,_msgSender()), "[Lease Agreement] Only the Lessee can submit the deposit");
+        require(containsAddress(lease.lesseeList,_msgSender ()), "[Lease Agreement] Only the lesseeList can  submit the deposit");
         require(!lease.securityDeposit.paid, "[Lease Agreement] Security deposit already paid");
 
         fundsManager.store(_leaseId, paymentToken, lease.securityDeposit.amount, _msgSender());
@@ -230,7 +217,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
 
     function payRent(uint256 _leaseId) external nonReentrant {
         Lease storage lease = leases[_leaseId];
-        require(containsAddress(lease.lessee,_msgSender()), "[Lease Agreement] Only the Lessee can pay rent");
+        require(containsAddress(lease.lesseeList,_msgSender ()), "[Lease Agreement] Only the lesseeList can  pay rent");
         require(lease.securityDeposit.paid, "[Lease Agreement] Security deposit must be paid first");
         require(
             block.timestamp >= lease.dates.startDate && block.timestamp <= lease.dates.endDate,
@@ -278,7 +265,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
 
     function extendLease(uint256 _leaseId, uint256 _extensionPeriod) external {
         Lease storage lease = leases[_leaseId];
-        require(containsAddress(lease.lessee,_msgSender()), "[Lease Agreement] Only the Lessee can extend the lease");
+        require(containsAddress(lease.lesseeList,_msgSender ()), "[Lease Agreement] Only the lesseeList can  extend the lease");
         require(
             block.timestamp >= lease.dates.endDate - 45 days, // TODO: Configurable
             "[Lease Agreement] Extension can only be requested in the last 45 days"
@@ -298,8 +285,8 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
         bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
 
-        // Send security deposit to the lessor or the lessee
-        address recipient = shouldSendDepositToLessor ? leaseNFT.ownerOf(_leaseId) : lease.lessee[0];
+        // Send security deposit to the lessor or the lesseeList
+        address  recipient = shouldSendDepositToLessor ? leaseNFT.ownerOf(_leaseId) : lease.lesseeList[0];
         fundsManager.widthdraw(_leaseId, paymentToken, lease.securityDeposit.amount, recipient);
 
         // Send remaining rent to the lessor

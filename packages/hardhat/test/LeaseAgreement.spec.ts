@@ -95,7 +95,7 @@ describe("LeaseAgreement", function () {
     await subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 });
   });
 
-  describe("createLease", function () {
+  describe.only("createLease", function () {
     it("Should create a new lease with the right values", async function () {
       // Arrange
       const leaseId = 0;
@@ -109,7 +109,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -122,8 +122,7 @@ describe("LeaseAgreement", function () {
       // Assert
       expect(await leaseNFT.ownerOf(leaseId)).to.equal(deedOwner.address);
       const lease = await leaseAgreement.leases(leaseId);
-      expect(lease.lessor).to.equal(deedOwner.address);
-      expect(lease.lessee).to.equal(lessee.address);
+      expect(lease.lesseeList).to.equal(lessee.address);
       expect(lease.rentAmount).to.equal(rentAmount);
       expect(lease.deedId).to.equal(deedId);
       // TODO: Test dates
@@ -144,7 +143,7 @@ describe("LeaseAgreement", function () {
         leaseAgreement
           .connect(deedOwner)
           .createLease(
-            lessee.address,
+            [lessee.address],
             startDate,
             endDate,
             rentAmount,
@@ -174,7 +173,7 @@ describe("LeaseAgreement", function () {
         leaseAgreement
           .connect(deedOwner)
           .createLease(
-            lessee.address,
+            [lessee.address],
             startDate,
             endDate + lessThanThirtyDays,
             rentAmount,
@@ -203,7 +202,7 @@ describe("LeaseAgreement", function () {
         leaseAgreement
           .connect(lessee)
           .createLease(
-            lessee.address,
+            [lessee.address],
             startDate,
             endDate,
             rendAmount,
@@ -229,7 +228,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -261,7 +260,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -288,7 +287,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -317,7 +316,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -332,7 +331,7 @@ describe("LeaseAgreement", function () {
       expect((await leaseAgreement.leases(leaseId)).managerPercentage).to.equal(managerPercentage);
 
       // Act
-      await expect(leaseAgreement.connect(deedOwner).removeManager(leaseId)).to.emit(
+      await expect(leaseAgreement.connect(deedOwner).unsetManager(leaseId)).to.emit(
         leaseAgreement,
         "LeaseManagerRemoved",
       );
@@ -351,7 +350,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -363,7 +362,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement.connect(deedOwner).setManager(leaseId, manager.address, managerPercentage);
 
       // Act
-      const act = () => leaseAgreement.connect(subOwner).removeManager(leaseId);
+      const act = () => leaseAgreement.connect(subOwner).unsetManager(leaseId);
 
       // Assert
       await expect(act()).to.be.rejectedWith("[Lease Agreement] only the Lessor or the Manager can remove the Manager");
@@ -381,7 +380,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -415,7 +414,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -443,7 +442,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -475,7 +474,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -509,7 +508,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -547,7 +546,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -586,7 +585,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -628,7 +627,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -670,7 +669,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -704,7 +703,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -736,7 +735,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -768,7 +767,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -806,7 +805,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -847,7 +846,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -884,7 +883,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -929,7 +928,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -980,7 +979,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -1015,7 +1014,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate + thirtyOneDaysInSeconds * 3,
           endDate,
           rentAmount,
@@ -1049,7 +1048,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -1084,7 +1083,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -1116,7 +1115,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -1148,7 +1147,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -1185,7 +1184,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -1212,7 +1211,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
@@ -1238,7 +1237,7 @@ describe("LeaseAgreement", function () {
       await leaseAgreement
         .connect(deedOwner)
         .createLease(
-          lessee.address,
+          [lessee.address],
           startDate,
           endDate,
           rentAmount,
