@@ -95,7 +95,7 @@ describe("LeaseAgreement", function () {
     await subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 });
   });
 
-  describe.only("createLease", function () {
+  describe("createLease", function () {
     it("Should create a new lease with the right values", async function () {
       // Arrange
       const leaseId = 0;
@@ -122,7 +122,8 @@ describe("LeaseAgreement", function () {
       // Assert
       expect(await leaseNFT.ownerOf(leaseId)).to.equal(deedOwner.address);
       const lease = await leaseAgreement.leases(leaseId);
-      expect(lease.lesseeList).to.equal(lessee.address);
+      const lesseeList = await leaseAgreement.getLesseeList(leaseId);
+      expect(lesseeList[0]).to.equal(lessee.address);
       expect(lease.rentAmount).to.equal(rentAmount);
       expect(lease.deedId).to.equal(deedId);
       // TODO: Test dates
@@ -274,7 +275,7 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(subOwner).setManager(leaseId, manager.address, managerPercentage);
 
       // Assert
-      await expect(act()).to.be.rejectedWith("[Lease Agreement] Only the Lessor can set the Manager");
+      await expect(act()).to.be.rejectedWith("[Lease Agreement] Sender must be Lessor");
     });
 
     it("Should revert if percentage isn't valid", async function () {
@@ -305,8 +306,8 @@ describe("LeaseAgreement", function () {
     });
   });
 
-  describe("removeManager", function () {
-    it("Should set manager address to 0 and emit ManagerRemoved event", async function () {
+  describe("unsetManager", function () {
+    it("Should set manager address to 0 and emit LeaseManagerUnset event", async function () {
       // Arrange
       const leaseId = 0;
       const propertyTokenId = 1;
@@ -333,7 +334,7 @@ describe("LeaseAgreement", function () {
       // Act
       await expect(leaseAgreement.connect(deedOwner).unsetManager(leaseId)).to.emit(
         leaseAgreement,
-        "LeaseManagerRemoved",
+        "LeaseManagerUnset",
       );
 
       // Assert
@@ -365,7 +366,7 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(subOwner).unsetManager(leaseId);
 
       // Assert
-      await expect(act()).to.be.rejectedWith("[Lease Agreement] only the Lessor or the Manager can remove the Manager");
+      await expect(act()).to.be.revertedWith("[Lease Agreement] Only the Lessor or the Manager can remove the Manager");
     });
   });
 
@@ -490,7 +491,7 @@ describe("LeaseAgreement", function () {
 
       // Assert
       await expect(act()).to.be.rejectedWith(
-        `Funds Storage [store]: Not enough allowance for account ${leaseId} and amount ${depositAmount}`,
+        `[Funds Manager] Not enough allowance for account ${leaseId} and amount ${depositAmount}`,
       );
     });
   });
@@ -913,7 +914,9 @@ describe("LeaseAgreement", function () {
 
       // Assert
       expect(await leaseToken.balanceOf(deedOwner.address)).to.equal(totalExpectedBalance);
-      expect(await leaseToken.balanceOf(lessee.address)).to.equal(initialLesseeBalance - totalExpectedBalance);
+      expect(await leaseToken.balanceOf(lessee.address)).to.equal(
+        initialLesseeBalance - totalExpectedBalance - depositAmount,
+      );
       // await leaseNFT.connect(deedOwner).burn(0);
       // await expect(leaseNFT.ownerOf(0)).to.be.revertedWith("ERC721: invalid token ID");
     });
@@ -1001,7 +1004,7 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(lessee).terminateLease(leaseId);
 
       // Assert
-      await expect(act()).to.be.revertedWith("[Lease Agreement] Only the Lessor can terminate the lease");
+      await expect(act()).to.be.revertedWith("[Lease Agreement] Sender must be Lessor");
     });
 
     it("Should revert if timestamp is before startDate", async function () {
@@ -1225,7 +1228,7 @@ describe("LeaseAgreement", function () {
       const act = () => leaseAgreement.connect(lessee).setDueDate(leaseId, startDate + 2 * thirtyOneDaysInSeconds);
 
       // Assert
-      await expect(act()).to.be.revertedWith("[Lease Agreement] Only the Lessor can set due date");
+      await expect(act()).to.be.revertedWith("[Lease Agreement] Sender must be Lessor");
     });
 
     it("Should revert if new rent date isn't valid", async function () {
