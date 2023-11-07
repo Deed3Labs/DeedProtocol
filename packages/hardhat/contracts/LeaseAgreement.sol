@@ -289,8 +289,8 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
 
     function withdrawDeposit(uint256 _leaseId) public nonReentrant {
         Lease storage lease = leases[_leaseId];
-        require(!leaseNFT.exists(_leaseId) || block.timestamp > lease.dates.endDate,"[Lease Agreement] Cannot withdraw deposit if Lease still active");
-        require(containsAddress(lease.lesseeList,_msgSender()) || _msgSender() == leaseNFT.ownerOf((_leaseId)), "[Lease Agreement] Caller must be one of the lessees or lessor");
+        require(lease.isArchived || block.timestamp > lease.dates.endDate,"[Lease Agreement] Cannot withdraw deposit if Lease still active");
+        require(containsAddress(lease.lesseeList,_msgSender()), "[Lease Agreement] Caller must be one of the lessees");
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
         bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
         // Send security deposit to the sender of the lessee list
@@ -303,7 +303,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     function burnLease(uint256 _leaseId) public {
         Lease storage lease = leases[_leaseId];
         require(_msgSender() == leaseNFT.ownerOf(_leaseId) || _msgSender() == lease.manager,"[Lease Agreement] Sender must be manager or lessor");
-        require(lease.isArchived,"[Lease Agreement] Lease must be");
+        require(lease.isArchived,"[Lease Agreement] Lease has been archived");
         leaseNFT.burn(_leaseId);
     }
 
