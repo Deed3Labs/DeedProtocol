@@ -71,7 +71,7 @@ contract FundsManager is Context, AccessManagerBase {
      * @param _amount Amount
      * @param _recipient Witch address to send tokens to
      */
-    function widthdraw(uint256 _id, IERC20 _token, uint256 _amount, address _recipient) external {
+    function withdraw(uint256 _id, IERC20 _token, uint256 _amount, address _recipient) external {
         require(
             accountsMapping[_msgSender()][_id][address(_token)] >= _amount,
             string.concat(

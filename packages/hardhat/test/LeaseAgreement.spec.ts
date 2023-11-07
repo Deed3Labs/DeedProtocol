@@ -495,7 +495,87 @@ describe("LeaseAgreement", function () {
       );
     });
   });
+  describe("withdrawDeposit", function () {
+    it("Should withdraw the deposit to caller if it's one of the lessees", async function () {
+      // Arrange
+      const propertyTokenId = 1;
+      const latePayementFee = 10;
+      const gracePeriod = 5;
+      const leaseId = 0;
+      const managerPercentage = 5;
+      await leaseAgreement
+        .connect(deedOwner)
+        .createLease(
+          [lessee.address],
+          startDate,
+          endDate,
+          rentAmount,
+          depositAmount,
+          propertyTokenId,
+          latePayementFee,
+          gracePeriod,
+        );
+      await leaseAgreement.connect(deedOwner).setManager(leaseId, manager.address, managerPercentage);
+      await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
 
+      // Act
+      await leaseAgreement.connect(lessee).submitDeposit(leaseId);
+      await time.increase(thirtyOneDaysInSeconds * 1);
+      await leaseAgreement.connect(deedOwner).terminateLease(leaseId);
+      const lease = await leaseAgreement.getLesseeList(leaseId);
+      console.log(lease[0]);
+      console.log(lessee.address);
+      await leaseAgreement.connect(lessee).withdrawDeposit(leaseId);
+      //Assert
+      const fundStorageLeaseBalance = await fundsManager
+        .connect(leaseAgreement.address)
+        .balanceOf(leaseId, leaseToken.address);
+      expect(fundStorageLeaseBalance).to.equal(0);
+      expect(await leaseToken.balanceOf(fundsManager.address)).to.equal(0);
+      expect(await leaseToken.balanceOf(lessee.address)).to.equal(initialLesseeBalance);
+    });
+    it.only("Should withdraw the deposit to caller if lessee and burn the leaseNFT if needed", async function () {
+      // Arrange
+      const propertyTokenId = 1;
+      const latePayementFee = 10;
+      const gracePeriod = 5;
+      const leaseId = 0;
+      const managerPercentage = 5;
+      await leaseAgreement
+        .connect(deedOwner)
+        .createLease(
+          [lessee.address],
+          startDate,
+          endDate,
+          rentAmount,
+          depositAmount,
+          propertyTokenId,
+          latePayementFee,
+          gracePeriod,
+        );
+      await leaseAgreement.connect(deedOwner).setManager(leaseId, manager.address, managerPercentage);
+      await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), depositAmount);
+      await leaseAgreement.connect(lessee).submitDeposit(leaseId);
+      await time.increase(oneDayInSeconds * 3);
+      for (let i = 0; i < 12; i++) {
+        await leaseToken.connect(lessee).approve(leaseAgreement.fundsManager(), rentAmount);
+        await leaseAgreement.connect(lessee).payRent(leaseId);
+        await time.increase(thirtyOneDaysInSeconds * 1);
+      }
+      //Act
+      await leaseAgreement.connect(deedOwner).distributeRent(leaseId);
+      await leaseAgreement.connect(lessee).withdrawDeposit(leaseId);
+      //Assert
+      const fundStorageLeaseBalance = await fundsManager
+        .connect(leaseAgreement.address)
+        .balanceOf(leaseId, leaseToken.address);
+      expect(fundStorageLeaseBalance).to.equal(0);
+      expect(await leaseToken.balanceOf(fundsManager.address)).to.equal(0);
+      expect(fundStorageLeaseBalance).to.equal(0);
+      expect(await leaseToken.balanceOf(lessee.address)).to.equal(initialLesseeBalance - rentAmount * 12);
+      expect(leaseNFT.ownerOf(leaseId)).to.be.revertedWith("");
+    });
+  });
   describe("calculateRentPaymentInfo", function () {
     it("Should return the right calculatedRentAmount with extra fee if late", async function () {
       // Arrange
@@ -917,8 +997,7 @@ describe("LeaseAgreement", function () {
       expect(await leaseToken.balanceOf(lessee.address)).to.equal(
         initialLesseeBalance - totalExpectedBalance - depositAmount,
       );
-      // await leaseNFT.connect(deedOwner).burn(0);
-      // await expect(leaseNFT.ownerOf(0)).to.be.revertedWith("ERC721: invalid token ID");
+      await expect(leaseNFT.ownerOf(0)).to.be.revertedWith("ERC721: invalid token ID");
     });
 
     it("Should end the lease and distribute the remaining balance, with lessor receiving deposit if more than 3 unpaid months", async function () {

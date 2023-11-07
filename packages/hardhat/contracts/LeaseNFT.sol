@@ -29,6 +29,9 @@ contract LeaseNFT is ERC721, AccessManagerBase {
         _mint(_to, _leaseId);
         emit LeaseNFTMinted(_to, _leaseId, _msgSender());
     }
+    function exists(uint256 _leaseId) public view returns(bool) {
+        return _exists(_leaseId);
+    }
 
     function burn(uint256 _leaseId) external {
         require(

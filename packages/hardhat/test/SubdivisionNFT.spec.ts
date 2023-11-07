@@ -56,29 +56,29 @@ describe("SubdivisionNFT", function () {
       // ubNFT minted with tokenID 1
       await expect(
         subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 }),
-      ).to.be.revertedWith("Must be the owner of the parent deed");
+      ).to.be.revertedWith("[SubdivisionNFT] Sender must be the owner of the parent deed");
     });
 
     it("Should revert if asset type isn't land(0) or estate(2)", async function () {
       // and 2 should work (land or estate)
       // and 3 should revert (commercial equipment and vehicle)
-      // oken id will be 3
+      // token id will be 3
       await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 1, "10 211 fake Addy");
-      // oken id will be 4
+      // token id will be 4
       await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 3, "10 211 fake Addy");
-      // ubNFT minted with tokenID 1
+      // subNFT minted with tokenID 1
       await expect(
         subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 3 }),
-      ).to.be.revertedWith("Parent deed must be land or estate");
+      ).to.be.revertedWith("[SubdivisionNFT] Parent deed must be land or estate");
       await expect(
         subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 4 }),
-      ).to.be.revertedWith("Parent deed must be land or estate");
+      ).to.be.revertedWith("[SubdivisionNFT] Parent deed must be land or estate");
     });
   });
 
   describe("mintBatch", function () {
     it("Should mint a subdivisionNFT to all the designated addresses", async function () {
-      // ubNFT minted with tokenID 1
+      // subNFT minted with tokenID 1
       await subNFT.connect(deedOwner).batchMint([
         { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 },
         { ipfsDetailsHash: "0x", owner: deedOwner.address, parentDeed: 1 },
@@ -88,13 +88,13 @@ describe("SubdivisionNFT", function () {
     });
 
     it("Should revert if caller isn't owner", async function () {
-      // ubNFT DeedNFT with token 2 owned by subOwner but called by deedOwner, should revert
+      // subNFT DeedNFT with token 2 owned by subOwner but called by deedOwner, should revert
       await expect(
         subNFT.connect(deedOwner).batchMint([
           { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 },
           { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 },
         ]),
-      ).to.be.revertedWith("Must be the owner of the parent deed");
+      ).to.be.revertedWith("[SubdivisionNFT] Sender must be the owner of the parent deed");
     });
 
     it("Should revert if asset type isn't land(0) or estate(2)", async function () {
@@ -110,15 +110,15 @@ describe("SubdivisionNFT", function () {
           { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 3 },
           { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 3 },
         ]),
-      ).to.be.revertedWith("Parent deed must be land or estate");
+      ).to.be.revertedWith("[SubdivisionNFT] Parent deed must be land or estate");
       await expect(
         subNFT.connect(deedOwner).batchMint([
           { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 4 },
           { ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 4 },
         ]),
       )
-        .to.be.revertedWith("Parent deed must be land or estate")
-        .to.be.revertedWith("Parent deed must be land or estate");
+        .to.be.revertedWith("[SubdivisionNFT] Parent deed must be land or estate")
+        .to.be.revertedWith("[SubdivisionNFT] Parent deed must be land or estate");
     });
   });
 
@@ -146,7 +146,7 @@ describe("SubdivisionNFT", function () {
       // SubNFT minted with tokenID 1
       await subNFT.connect(subOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 2 });
       await expect(subNFT.connect(deedOwner).burnSubdivision(subOwner.address)).to.be.revertedWith(
-        "Must own this subNFT to burn it",
+        "[SubdivisionNFT] Sender must be owner of the subdivision to burn it",
       );
     });
 
@@ -158,7 +158,7 @@ describe("SubdivisionNFT", function () {
       expect(await subNFT.balanceOf(subOwner.address, 1)).to.equal(1);
       expect(await subNFT.balanceOf(deedOwner.address, 2)).to.equal(1);
       await expect(subNFT.connect(subOwner).burnSubdivision(deedOwner.address)).to.be.revertedWith(
-        "Sender must be owner of specified account",
+        "[SubdivisionNFT] Sender must be owner of the subdivision to burn it",
       );
     });
   });

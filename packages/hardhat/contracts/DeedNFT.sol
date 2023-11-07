@@ -91,7 +91,7 @@ contract DeedNFT is ERC721, AccessManagerBase {
     function setAssetType(
         uint256 _deedId,
         AssetType _assetType
-    ) internal virtual deedExists(_deedId) onlyOwner(_deedId) {
+    ) public deedExists(_deedId) onlyOwner(_deedId) {
         DeedInfo storage deedInfo = deedInfoMap[_deedId];
         deedInfo.assetType = _assetType;
         emit DeedNFTAssetTypeSet(_deedId, _assetType);
