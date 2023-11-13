@@ -92,7 +92,9 @@ export const isValidInteger = (dataType: IntegerVariant, value: BigNumberish, st
     if (!value || typeof value !== "string") {
       return true;
     }
-    return isSigned ? SIGNED_NUMBER_REGEX.test(value) || value === "-" : UNSIGNED_NUMBER_REGEX.test(value);
+    return isSigned
+      ? SIGNED_NUMBER_REGEX.test(value) || value === "-"
+      : UNSIGNED_NUMBER_REGEX.test(value);
   } else if (!isSigned && valueAsBigNumber.isNegative()) {
     return false;
   }
@@ -100,7 +102,9 @@ export const isValidInteger = (dataType: IntegerVariant, value: BigNumberish, st
   const significantHexDigits = hexString.match(/.*x0*(.*)$/)?.[1] ?? "";
   if (
     significantHexDigits.length * 4 > bitcount ||
-    (isSigned && significantHexDigits.length * 4 === bitcount && parseInt(significantHexDigits.slice(-1)?.[0], 16) < 8)
+    (isSigned &&
+      significantHexDigits.length * 4 === bitcount &&
+      parseInt(significantHexDigits.slice(-1)?.[0], 16) < 8)
   ) {
     return false;
   }

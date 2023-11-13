@@ -4,7 +4,11 @@ import { Address } from "~~/components/scaffold-eth";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { TransactionsTableProps } from "~~/utils/scaffold-eth/";
 
-export const TransactionsTable = ({ blocks, transactionReceipts, isLoading }: TransactionsTableProps) => {
+export const TransactionsTable = ({
+  blocks,
+  transactionReceipts,
+  isLoading,
+}: TransactionsTableProps) => {
   const targetNetwork = getTargetNetwork();
 
   return (
@@ -24,7 +28,10 @@ export const TransactionsTable = ({ blocks, transactionReceipts, isLoading }: Tr
         {isLoading ? (
           <tbody>
             {[...Array(20)].map((_, rowIndex) => (
-              <tr key={rowIndex} className="bg-base-200 hover:bg-base-300 transition-colors duration-200 h-12">
+              <tr
+                key={rowIndex}
+                className="bg-base-200 hover:bg-base-300 transition-colors duration-200 h-12"
+              >
                 {[...Array(7)].map((_, colIndex) => (
                   <td className="w-1/12" key={colIndex}>
                     <div className="h-2 bg-gray-200 rounded-full animate-pulse"></div>
@@ -47,9 +54,15 @@ export const TransactionsTable = ({ blocks, transactionReceipts, isLoading }: Tr
                       <TransactionHash hash={tx.hash} />
                     </td>
                     <td className="w-2/12">
-                      {tx.functionName === "0x" ? "" : <span className="mr-1">{tx.functionName}</span>}
+                      {tx.functionName === "0x" ? (
+                        ""
+                      ) : (
+                        <span className="mr-1">{tx.functionName}</span>
+                      )}
                       {functionCalled !== "0x" && (
-                        <span className="badge badge-primary font-bold text-xs">{functionCalled}</span>
+                        <span className="badge badge-primary font-bold text-xs">
+                          {functionCalled}
+                        </span>
                       )}
                     </td>
                     <td className="w-1/12">{block.number}</td>

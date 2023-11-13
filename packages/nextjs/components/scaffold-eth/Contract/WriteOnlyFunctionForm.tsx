@@ -24,18 +24,20 @@ const getInitialFormState = (functionFragment: FunctionFragment) => {
   return initialForm;
 };
 
-type TWriteOnlyFunctionFormProps = {
+interface TWriteOnlyFunctionFormProps {
   functionFragment: FunctionFragment;
   contractAddress: string;
   setRefreshDisplayVariables: Dispatch<SetStateAction<boolean>>;
-};
+}
 
 export const WriteOnlyFunctionForm = ({
   functionFragment,
   contractAddress,
   setRefreshDisplayVariables,
 }: TWriteOnlyFunctionFormProps) => {
-  const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(functionFragment));
+  const [form, setForm] = useState<Record<string, any>>(() =>
+    getInitialFormState(functionFragment),
+  );
   const [txValue, setTxValue] = useState<string | BigNumber>("");
   const { chain } = useNetwork();
   const writeTxn = useTransactor();
@@ -100,7 +102,11 @@ export const WriteOnlyFunctionForm = ({
 
   return (
     <div className="py-5 space-y-3 first:pt-0 last:pb-1">
-      <div className={`flex gap-3 ${zeroInputs ? "flex-row justify-between items-center" : "flex-col"}`}>
+      <div
+        className={`flex gap-3 ${
+          zeroInputs ? "flex-row justify-between items-center" : "flex-col"
+        }`}
+      >
         <p className="font-medium my-0 break-words">{functionFragment.name}</p>
         {inputs}
         {functionFragment.payable ? (

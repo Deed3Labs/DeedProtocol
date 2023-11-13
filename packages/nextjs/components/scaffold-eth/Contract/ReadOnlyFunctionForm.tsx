@@ -18,13 +18,18 @@ const getInitialFormState = (functionFragment: FunctionFragment) => {
   return initialForm;
 };
 
-type TReadOnlyFunctionFormProps = {
+interface TReadOnlyFunctionFormProps {
   functionFragment: FunctionFragment;
   contractAddress: string;
-};
+}
 
-export const ReadOnlyFunctionForm = ({ functionFragment, contractAddress }: TReadOnlyFunctionFormProps) => {
-  const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(functionFragment));
+export const ReadOnlyFunctionForm = ({
+  functionFragment,
+  contractAddress,
+}: TReadOnlyFunctionFormProps) => {
+  const [form, setForm] = useState<Record<string, any>>(() =>
+    getInitialFormState(functionFragment),
+  );
   const [result, setResult] = useState<unknown>();
 
   const { isFetching, refetch } = useContractRead({

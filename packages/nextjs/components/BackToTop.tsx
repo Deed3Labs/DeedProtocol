@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-type Props = {
+interface Props {
   scrollViewSelector?: string;
-};
+}
 export function BackToTop({ scrollViewSelector }: Props) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -42,7 +42,11 @@ export function BackToTop({ scrollViewSelector }: Props) {
             stroke="currentColor"
             className="w-8 h-8"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
+            />
           </svg>
         </button>
       )}

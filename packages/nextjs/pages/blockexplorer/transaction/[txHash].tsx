@@ -12,7 +12,8 @@ import {
 } from "~~/utils/scaffold-eth";
 import { getLocalProvider } from "~~/utils/scaffold-eth";
 
-const provider = getLocalProvider(localhost) || new ethers.providers.JsonRpcProvider("http://localhost:8545");
+const provider =
+  getLocalProvider(localhost) || new ethers.providers.JsonRpcProvider("http://localhost:8545");
 
 const TransactionPage: NextPage = () => {
   const router = useRouter();
@@ -48,7 +49,9 @@ const TransactionPage: NextPage = () => {
       </button>
       {transaction ? (
         <div className="overflow-x-auto">
-          <h2 className="text-3xl font-bold mb-4 text-center text-primary-content">Transaction Details</h2>{" "}
+          <h2 className="text-3xl font-bold mb-4 text-center text-primary-content">
+            Transaction Details
+          </h2>{" "}
           <table className="table w-full shadow-lg">
             <tbody>
               <tr>
@@ -91,7 +94,8 @@ const TransactionPage: NextPage = () => {
                   <strong>Value:</strong>
                 </td>
                 <td>
-                  {ethers.utils.formatEther(transaction.value)} {configuredNetwork.nativeCurrency.symbol}
+                  {ethers.utils.formatEther(transaction.value)}{" "}
+                  {configuredNetwork.nativeCurrency.symbol}
                 </td>
               </tr>
               <tr>
@@ -113,14 +117,21 @@ const TransactionPage: NextPage = () => {
                 <td>
                   <strong>Gas Price:</strong>
                 </td>
-                <td>{ethers.utils.formatUnits(transaction.gasPrice || ethers.constants.Zero, "gwei")} Gwei</td>
+                <td>
+                  {ethers.utils.formatUnits(transaction.gasPrice || ethers.constants.Zero, "gwei")}{" "}
+                  Gwei
+                </td>
               </tr>
               <tr>
                 <td>
                   <strong>Data:</strong>
                 </td>
                 <td className="form-control">
-                  <textarea readOnly value={transaction.data} className="p-0 textarea-primary bg-inherit" />
+                  <textarea
+                    readOnly
+                    value={transaction.data}
+                    className="p-0 textarea-primary bg-inherit"
+                  />
                 </td>
               </tr>
             </tbody>

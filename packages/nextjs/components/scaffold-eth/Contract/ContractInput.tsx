@@ -9,12 +9,12 @@ import {
   IntegerVariant,
 } from "~~/components/scaffold-eth";
 
-type ContractInputProps = {
+interface ContractInputProps {
   setForm: Dispatch<SetStateAction<Record<string, any>>>;
   form: Record<string, any>;
   stateObjectKey: string;
   paramType: utils.ParamType;
-};
+}
 
 /**
  * Generic Input component to handle input's based on their function param type

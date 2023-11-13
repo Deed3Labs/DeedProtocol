@@ -1,1 +1,1 @@
-export { default } from "./property-explorer/index";
+export { default } from "./registration/index";

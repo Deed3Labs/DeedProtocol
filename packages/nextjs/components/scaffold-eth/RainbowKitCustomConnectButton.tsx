@@ -1,6 +1,11 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useDisconnect, useSwitchNetwork } from "wagmi";
-import { ArrowLeftOnRectangleIcon, ArrowsRightLeftIcon, BoltIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLeftOnRectangleIcon,
+  ArrowsRightLeftIcon,
+  BoltIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/24/solid";
 import { Balance, BlockieAvatar } from "~~/components/scaffold-eth";
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-eth";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
@@ -40,7 +45,10 @@ export const RainbowKitCustomConnectButton = () => {
                       <span>Wrong network</span>
                       <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
                     </label>
-                    <ul tabIndex={0} className="dropdown-content menu p-2 mt-1 shadow-lg bg-base-100 rounded-box">
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu p-2 mt-1 shadow-lg bg-base-100 rounded-box"
+                    >
                       <li>
                         <button
                           className="menu-item"
@@ -49,13 +57,19 @@ export const RainbowKitCustomConnectButton = () => {
                         >
                           <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
                           <span className="whitespace-nowrap">
-                            Switch to <span style={{ color: networkColor }}>{configuredNetwork.name}</span>
+                            Switch to{" "}
+                            <span style={{ color: networkColor }}>{configuredNetwork.name}</span>
                           </span>
                         </button>
                       </li>
                       <li>
-                        <button className="menu-item text-error" type="button" onClick={() => disconnect()}>
-                          <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Disconnect</span>
+                        <button
+                          className="menu-item text-error"
+                          type="button"
+                          onClick={() => disconnect()}
+                        >
+                          <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />{" "}
+                          <span>Disconnect</span>
                         </button>
                       </li>
                     </ul>
@@ -77,7 +91,11 @@ export const RainbowKitCustomConnectButton = () => {
                       type="button"
                       className="btn btn-secondary btn-sm pl-0 pr-2 shadow-md"
                     >
-                      <BlockieAvatar address={account.address} size={24} ensImage={account.ensAvatar} />
+                      <BlockieAvatar
+                        address={account.address}
+                        size={24}
+                        ensImage={account.ensAvatar}
+                      />
                       <span className="ml-2 mr-1">{account.displayName}</span>
                       <span>
                         <ChevronDownIcon className="h-6 w-4" />

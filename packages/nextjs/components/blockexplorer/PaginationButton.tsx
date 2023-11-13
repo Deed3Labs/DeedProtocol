@@ -8,7 +8,11 @@ interface PaginationButtonProps {
 
 const ITEMS_PER_PAGE = 20;
 
-export const PaginationButton = ({ currentPage, totalItems, setCurrentPage }: PaginationButtonProps) => {
+export const PaginationButton = ({
+  currentPage,
+  totalItems,
+  setCurrentPage,
+}: PaginationButtonProps) => {
   const isPrevButtonDisabled = currentPage === 0;
   const isNextButtonDisabled = currentPage + 1 >= Math.ceil(totalItems / ITEMS_PER_PAGE);
 

@@ -4,7 +4,14 @@ import { formatUnits } from "@ethersproject/units";
 import { BigNumber } from "ethers";
 import { Address } from "~~/components/scaffold-eth";
 
-type DisplayContent = string | number | BigNumber | Record<string, any> | TransactionResponse | undefined | unknown;
+type DisplayContent =
+  | string
+  | number
+  | BigNumber
+  | Record<string, any>
+  | TransactionResponse
+  | undefined
+  | unknown;
 
 export const displayTxResult = (
   displayContent: DisplayContent | DisplayContent[],
@@ -22,7 +29,11 @@ export const displayTxResult = (
     }
   }
 
-  if (typeof displayContent === "string" && displayContent.indexOf("0x") === 0 && displayContent.length === 42) {
+  if (
+    typeof displayContent === "string" &&
+    displayContent.indexOf("0x") === 0 &&
+    displayContent.length === 42
+  ) {
     return asText ? displayContent : <Address address={displayContent} />;
   }
 
@@ -34,11 +45,14 @@ export const displayTxResult = (
     return asText ? (
       displayable
     ) : (
-      <span style={{ overflowWrap: "break-word", width: "100%" }}>{displayable.replaceAll(",", ",\n")}</span>
+      <span style={{ overflowWrap: "break-word", width: "100%" }}>
+        {displayable.replaceAll(",", ",\n")}
+      </span>
     );
   }
 
   return JSON.stringify(displayContent, null, 2);
 };
 
-const displayTxResultAsText = (displayContent: DisplayContent) => displayTxResult(displayContent, true);
+const displayTxResultAsText = (displayContent: DisplayContent) =>
+  displayTxResult(displayContent, true);

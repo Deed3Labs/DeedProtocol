@@ -3,7 +3,13 @@ import { ethers } from "ethers";
 import { useNetwork } from "wagmi";
 import { hardhat, localhost } from "wagmi/chains";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
-import { Address, AddressInput, Balance, EtherInput, getParsedEthersError } from "~~/components/scaffold-eth";
+import {
+  Address,
+  AddressInput,
+  Balance,
+  EtherInput,
+  getParsedEthersError,
+} from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { getLocalProvider, notification } from "~~/utils/scaffold-eth";
 
@@ -37,10 +43,12 @@ export const Faucet = () => {
           <>
             <p className="font-bold mt-0 mb-1">Cannot connect to local provider</p>
             <p className="m-0">
-              - Did you forget to run <code className="italic bg-base-300 text-base font-bold">yarn chain</code> ?
+              - Did you forget to run{" "}
+              <code className="italic bg-base-300 text-base font-bold">yarn chain</code> ?
             </p>
             <p className="mt-1 break-normal">
-              - Or you can change <code className="italic bg-base-300 text-base font-bold">targetNetwork</code> in{" "}
+              - Or you can change{" "}
+              <code className="italic bg-base-300 text-base font-bold">targetNetwork</code> in{" "}
               <code className="italic bg-base-300 text-base font-bold">scaffold.config.ts</code>
             </p>
           </>,
@@ -86,7 +94,10 @@ export const Faucet = () => {
           {/* dummy input to capture event onclick on modal box */}
           <input className="h-0 w-0 absolute top-0 left-0" />
           <h3 className="text-xl font-bold mb-3">Local Faucet</h3>
-          <label htmlFor="faucet-modal" className="btn btn-ghost btn-sm btn-circle absolute right-3 top-3">
+          <label
+            htmlFor="faucet-modal"
+            className="btn btn-ghost btn-sm btn-circle absolute right-3 top-3"
+          >
             ✕
           </label>
           <div className="space-y-3">
@@ -106,7 +117,11 @@ export const Faucet = () => {
                 value={inputAddress}
                 onChange={value => setInputAddress(value)}
               />
-              <EtherInput placeholder="Amount to send" value={sendValue} onChange={value => setSendValue(value)} />
+              <EtherInput
+                placeholder="Amount to send"
+                value={sendValue}
+                onChange={value => setSendValue(value)}
+              />
               <button
                 className={`h-10 btn btn-primary btn-sm px-2 rounded-full space-x-3 ${
                   loading ? "loading before:!w-4 before:!h-4 before:!mx-0" : ""

@@ -1,14 +1,20 @@
 import { Dispatch, SetStateAction } from "react";
 import { Contract, utils } from "ethers";
 import { FunctionFragment } from "ethers/lib/utils";
-import { DisplayVariable, ReadOnlyFunctionForm, WriteOnlyFunctionForm } from "~~/components/scaffold-eth";
+import {
+  DisplayVariable,
+  ReadOnlyFunctionForm,
+  WriteOnlyFunctionForm,
+} from "~~/components/scaffold-eth";
 
 /**
  * @param {Contract} contract
  * @returns {FunctionFragment[]} array of function fragments
  */
 const getAllContractFunctions = (contract: Contract | null): FunctionFragment[] => {
-  return contract ? Object.values(contract.interface.functions).filter(fn => fn.type === "function") : [];
+  return contract
+    ? Object.values(contract.interface.functions).filter(fn => fn.type === "function")
+    : [];
 };
 
 /**
@@ -29,7 +35,8 @@ const getContractVariablesAndNoParamsReadMethods = (
       ? contractMethodsAndVariables
           .map(fn => {
             const isQueryableWithNoParams =
-              (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length === 0;
+              (fn.stateMutability === "view" || fn.stateMutability === "pure") &&
+              fn.inputs.length === 0;
             if (isQueryableWithNoParams) {
               return (
                 <DisplayVariable
@@ -63,7 +70,8 @@ const getContractReadOnlyMethodsWithParams = (
       ? contractMethodsAndVariables
           .map((fn, idx) => {
             const isQueryableWithParams =
-              (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length > 0;
+              (fn.stateMutability === "view" || fn.stateMutability === "pure") &&
+              fn.inputs.length > 0;
             if (isQueryableWithParams) {
               return (
                 <ReadOnlyFunctionForm
@@ -97,7 +105,8 @@ const getContractWriteMethods = (
     methods: contract
       ? contractMethodsAndVariables
           .map((fn, idx) => {
-            const isWriteableFunction = fn.stateMutability !== "view" && fn.stateMutability !== "pure";
+            const isWriteableFunction =
+              fn.stateMutability !== "view" && fn.stateMutability !== "pure";
             if (isWriteableFunction) {
               return (
                 <WriteOnlyFunctionForm
@@ -122,7 +131,11 @@ const getContractWriteMethods = (
  * @param {number} inputIndex
  * @returns {string} key
  */
-const getFunctionInputKey = (functionInfo: FunctionFragment, input: utils.ParamType, inputIndex: number): string => {
+const getFunctionInputKey = (
+  functionInfo: FunctionFragment,
+  input: utils.ParamType,
+  inputIndex: number,
+): string => {
   const name = input?.name || `input_${inputIndex}_`;
   return functionInfo.name + "_" + name + "_" + input.type + "_" + input.baseType;
 };

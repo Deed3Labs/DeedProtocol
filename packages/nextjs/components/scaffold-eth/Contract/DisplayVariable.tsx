@@ -6,11 +6,11 @@ import { displayTxResult } from "~~/components/scaffold-eth";
 import { useAnimationConfig } from "~~/hooks/scaffold-eth";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
-type TDisplayVariableProps = {
+interface TDisplayVariableProps {
   functionFragment: FunctionFragment;
   contractAddress: string;
   refreshDisplayVariables: boolean;
-};
+}
 
 export const DisplayVariable = ({
   contractAddress,
@@ -42,7 +42,10 @@ export const DisplayVariable = ({
     <div className="space-y-1 pb-2">
       <div className="flex items-center gap-2">
         <h3 className="font-medium text-lg mb-0 break-all">{functionFragment.name}</h3>
-        <button className={`btn btn-ghost btn-xs ${isFetching ? "loading" : ""}`} onClick={async () => await refetch()}>
+        <button
+          className={`btn btn-ghost btn-xs ${isFetching ? "loading" : ""}`}
+          onClick={async () => await refetch()}
+        >
           {!isFetching && <ArrowPathIcon className="h-3 w-3 cursor-pointer" aria-hidden="true" />}
         </button>
       </div>

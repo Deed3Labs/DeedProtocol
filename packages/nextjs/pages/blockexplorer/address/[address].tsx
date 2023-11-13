@@ -17,21 +17,22 @@ import { useFetchBlocks } from "~~/hooks/scaffold-eth";
 import { getLocalProvider } from "~~/utils/scaffold-eth";
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-type AddressCodeTabProps = {
+interface AddressCodeTabProps {
   bytecode: string;
   assembly: string;
-};
+}
 
-type PageProps = {
+interface PageProps {
   address: string;
   contractData: AddressCodeTabProps | null;
-};
+}
 
 const provider = getLocalProvider(localhost);
 
 const AddressPage = ({ address, contractData }: PageProps) => {
   const router = useRouter();
-  const { blocks, transactionReceipts, currentPage, totalBlocks, setCurrentPage, isLoading } = useFetchBlocks();
+  const { blocks, transactionReceipts, currentPage, totalBlocks, setCurrentPage, isLoading } =
+    useFetchBlocks();
   const [activeTab, setActiveTab] = useState("transactions");
   const [isContract, setIsContract] = useState(false);
 
@@ -46,7 +47,9 @@ const AddressPage = ({ address, contractData }: PageProps) => {
 
   const filteredBlocks = blocks.filter(block =>
     block.transactions.some(
-      tx => tx.from.toLowerCase() === address.toLowerCase() || tx.to?.toLowerCase() === address.toLowerCase(),
+      tx =>
+        tx.from.toLowerCase() === address.toLowerCase() ||
+        tx.to?.toLowerCase() === address.toLowerCase(),
     ),
   );
 
@@ -102,8 +105,16 @@ const AddressPage = ({ address, contractData }: PageProps) => {
       )}
       {activeTab === "transactions" && (
         <div className="pt-4">
-          <TransactionsTable blocks={filteredBlocks} transactionReceipts={transactionReceipts} isLoading={isLoading} />
-          <PaginationButton currentPage={currentPage} totalItems={totalBlocks} setCurrentPage={setCurrentPage} />
+          <TransactionsTable
+            blocks={filteredBlocks}
+            transactionReceipts={transactionReceipts}
+            isLoading={isLoading}
+          />
+          <PaginationButton
+            currentPage={currentPage}
+            totalItems={totalBlocks}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
       )}
       {activeTab === "code" && contractData && (

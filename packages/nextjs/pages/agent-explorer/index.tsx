@@ -70,9 +70,9 @@ const AgentExplorer: NextPage = () => {
         address: "address.eth",
         followers: Math.round(Math.random() * 10000),
         // Random between image 0 to 78
-        profile: `https://randomuser.me/api/portraits/${Math.round(Math.random()) === 1 ? "men" : "women"}/${Math.floor(
-          Math.random() * 79,
-        )}.jpg`,
+        profile: `https://randomuser.me/api/portraits/${
+          Math.round(Math.random()) === 1 ? "men" : "women"
+        }/${Math.floor(Math.random() * 79)}.jpg`,
         cover: `https://picsum.photos/seed/${Math.round(Math.random() * 1000)}/500/300`,
         email: "random@gmail.com",
         phone: "1234567890",
