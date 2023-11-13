@@ -1,7 +1,7 @@
 import { usePathname, useSearchParams } from "next/dist/client/components/navigation";
 import Link from "next/link";
 
-export const ExplorerLinks = () => {
+const ExplorerLinks = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const type = searchParams.get("type");
@@ -25,3 +25,5 @@ export const ExplorerLinks = () => {
     </div>
   );
 };
+
+export default ExplorerLinks;

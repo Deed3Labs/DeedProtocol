@@ -2,8 +2,9 @@ import Link from "next/link";
 import OtherInformations from "./OtherInformations";
 import OwnerInformation from "./OwnerInformation";
 import PropertyDetails from "./PropertyDetails";
+import { NextPage } from "next";
 
-const RegistrationForm = () => {
+const RegistrationForm: NextPage = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };

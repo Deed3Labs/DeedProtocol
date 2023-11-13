@@ -2,11 +2,11 @@ import Image from "next/image";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import { PropertyModel } from "~~/models/property.model";
 
-type Props = {
+interface Props {
   property: PropertyModel;
-};
+}
 
-export default function PropertyCard({ property }: Props) {
+const PropertyCard = ({ property }: Props) => {
   return (
     <>
       {property && (
@@ -53,4 +53,6 @@ export default function PropertyCard({ property }: Props) {
       )}
     </>
   );
-}
+};
+
+export default PropertyCard;
