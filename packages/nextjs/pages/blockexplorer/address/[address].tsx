@@ -10,7 +10,7 @@ import {
   AddressStorageTab,
   PaginationButton,
   TransactionsTable,
-} from "~~/components/blockexplorer/";
+} from "~~/components/blockexplorer";
 import { Address, Balance } from "~~/components/scaffold-eth";
 import deployedContracts from "~~/generated/deployedContracts";
 import { useFetchBlocks } from "~~/hooks/scaffold-eth";

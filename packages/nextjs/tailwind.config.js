@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}", "./utils/**/*.{js,ts,jsx,tsx}"],
+  mode: "jit",
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./utils/**/*.{js,ts,jsx,tsx}",
+  ],
   plugins: [require("daisyui")],
   darkTheme: "scaffoldEthDark",
   // DaisyUI theme colors
@@ -10,7 +15,7 @@ module.exports = {
         scaffoldEthDark: {
           primary: "#F9FBFF",
           "primary-content": "#ffffff",
-          secondary: "#141414",
+          secondary: "#b3b3b3",
           "secondary-content": "#9f9f9f",
           accent: "#4969A6",
           "accent-content": "#252525",
@@ -24,7 +29,7 @@ module.exports = {
           info: "#385183",
           success: "#34EEB6",
           warning: "#FFCF72",
-          error: "#FF8863",
+          error: "#cf1f1f",
 
           "--rounded-box": "0", // border radius rounded-box utility class, used in card and other large boxes
           "--rounded-btn": "0", // border radius rounded-btn utility class, used in buttons and similar element
