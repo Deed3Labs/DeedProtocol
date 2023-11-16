@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { localhost } from "@wagmi/chains";
 import { ethers } from "ethers";
 import type { NextPage } from "next";
-import { localhost } from "wagmi/chains";
 import { Address } from "~~/components/scaffold-eth";
 import {
   TransactionWithFunction,
@@ -71,7 +71,7 @@ const TransactionPage: NextPage = () => {
                   <strong>From:</strong>
                 </td>
                 <td>
-                  <Address address={transaction.from} format="long" />
+                  <Address address={transaction.from as any} format="long" />
                 </td>
               </tr>
               <tr>
@@ -80,11 +80,11 @@ const TransactionPage: NextPage = () => {
                 </td>
                 <td>
                   {!receipt?.contractAddress ? (
-                    transaction.to && <Address address={transaction.to} format="long" />
+                    transaction.to && <Address address={transaction.to as any} format="long" />
                   ) : (
                     <span>
                       Contract Creation:
-                      <Address address={receipt.contractAddress} format="long" />
+                      <Address address={receipt.contractAddress as any} format="long" />
                     </span>
                   )}
                 </td>

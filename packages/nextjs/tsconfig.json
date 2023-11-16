@@ -22,7 +22,10 @@
       "~~/*": [
         "./*"
       ]
-    }
+    },
+    "types": [
+      "utils/extensions/**/*.d.ts"
+    ]
   },
   "include": [
     "next-env.d.ts",

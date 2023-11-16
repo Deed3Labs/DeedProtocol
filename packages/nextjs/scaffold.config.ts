@@ -1,6 +1,6 @@
-import * as chains from "wagmi/chains";
+import * as chains from "@wagmi/chains";
 
-export type ScaffoldConfig = {
+export interface ScaffoldConfig {
   targetNetwork: chains.Chain;
   pollingInterval: number;
   alchemyApiKey: string;
@@ -11,7 +11,7 @@ export type ScaffoldConfig = {
   walletAutoConnect: boolean;
   dynamicEnvironementId: string | undefined;
   appName: string;
-};
+}
 
 const scaffoldConfig = {
   // The network where your DApp lives in
@@ -42,8 +42,11 @@ const scaffoldConfig = {
    */
   walletAutoConnect: true,
 
-  dynamicEnvironementId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID,
+  dynamicEnvironementId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
   appName: "Deed3.io",
 } satisfies ScaffoldConfig;
 
+console.log({
+  "process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID": process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID,
+});
 export default scaffoldConfig;

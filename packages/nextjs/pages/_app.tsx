@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react";
+import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
+import { EthersExtension } from "@dynamic-labs/ethers-v5";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import "@rainbow-me/rainbowkit/styles.css";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
 import { useDarkMode } from "usehooks-ts";
@@ -53,16 +54,10 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
       <DynamicContextProvider
         theme={isDarkTheme ? "dark" : "light"}
         settings={{
-          environmentId: scaffoldConfig.dynamicEnvironementId!,
+          environmentId: scaffoldConfig.dynamicEnvironementId,
           appName: scaffoldConfig.appName,
-          initialAuthenticationMode: "connect-and-sign",
-          newToWeb3WalletChainMap: {
-            primary_chain: "sepolia", // <-- Here you specify the primary chain which will select the wallet to show
-            wallets: {
-              // <-- With "wallets" you specify the wallets you want to show for each chain
-              evm: "metamask",
-            },
-          },
+          walletConnectors: [EthereumWalletConnectors],
+          walletConnectorExtensions: [EthersExtension],
         }}
       >
         <DynamicWagmiConnector>

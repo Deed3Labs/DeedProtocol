@@ -1,7 +1,6 @@
-import { RadioBoxOption } from "./components/inputs/RadioBoxes";
 import { IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
 
-export const OwnerTypeOptions: RadioBoxOption[] = [
+export const OwnerTypeOptions = [
   {
     title: "Individual",
     tag: "Most Common",
@@ -18,7 +17,7 @@ export const OwnerTypeOptions: RadioBoxOption[] = [
     value: "foreign",
     disabled: true,
   },
-];
+] as const;
 
 export const StateOptions = [
   { label: "Alabama", value: "AL" },
@@ -80,16 +79,16 @@ export const StateOptions = [
   { label: "West Virginia", value: "WV" },
   { label: "Wisconsin", value: "WI" },
   { label: "Wyoming", value: "WY" },
-];
+] as const;
 
 export const EntityTypeOptions = [
   { label: "Limited Partnership (LP)", value: "LP" },
   { label: "Corporation (C-Corp)", value: "C-Corp" },
   { label: "S Corporation (S-Corp)", value: "S-Corp" },
   { label: "Limited Liability Company (LLC)", value: "LLC" },
-];
+] as const;
 
-export const PropertyTypeOptions: RadioBoxOption[] = [
+export const PropertyTypeOptions = [
   {
     title: "Real Estate",
     value: "realEstate",
@@ -117,7 +116,7 @@ export const PropertyTypeOptions: RadioBoxOption[] = [
     subtitle: "IP, trademarks, etc.",
     disabled: true,
   },
-];
+] as const;
 
 export const PropertySubtypeOptions = [
   { label: "House", value: "house" },
@@ -125,7 +124,7 @@ export const PropertySubtypeOptions = [
   { label: "Bachelor", value: "bachelor" },
   { label: "Condo", value: "condo" },
   { label: "Land", value: "land" },
-];
+] as const;
 
 export const PropertyZoningOptions = [
   { label: "Residential", value: "residential" },
@@ -133,9 +132,9 @@ export const PropertyZoningOptions = [
   { label: "Commercial", value: "commercial" },
   { label: "Agricultural", value: "agricultural" },
   { label: "Mixed-Use", value: "mixed" },
-];
+] as const;
 
-export const BlockchainOptions: RadioBoxOption[] = [
+export const BlockchainOptions = [
   {
     title: "Gnosis Chain",
     tag: "Recommended",
@@ -166,9 +165,9 @@ export const BlockchainOptions: RadioBoxOption[] = [
     value: "other",
     disabled: true,
   },
-];
+] as const;
 
-export const WrapperOptions: RadioBoxOption[] = [
+export const WrapperOptions = [
   {
     title: "Nominee Trust",
     tag: "Recomanded",
@@ -186,4 +185,4 @@ export const WrapperOptions: RadioBoxOption[] = [
     `,
     value: "llc",
   },
-];
+] as const;

@@ -1,27 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { RadioBoxes } from "~~/components/inputs/RadioBoxes";
+import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { BlockchainOptions, WrapperOptions } from "~~/constants";
 
 interface Props {}
 
 const OtherInformations = ({}: Props) => {
-  const [blockchain, setBlockchain] = useState("gnosis");
-  const [wrapper, setWrapper] = useState("trust");
   return (
     <div className="flex flex-col gap-6 mt-6">
+      <div className="text-2xl font-['KronaOne'] leading-10">3. Other Information</div>
       <div>
         <div className="justify-start items-center inline-flex mt-3">
           <div className="text-base font-bold font-['Montserrat'] leading-normal">
-            Property Image
+            Select your Blockchain
           </div>
           <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
         </div>
-        <RadioBoxes
-          fieldName="blockchain"
+        <div>
+          <Link
+            className="link link-accent"
+            href="https://docs.deedprotocol.org/general-information/overview"
+            target="_blank"
+          >
+            Learn more
+          </Link>
+          &nbsp;about the Blockchain.
+        </div>
+        <RadioBoxesInput
+          name="blockchain"
           options={BlockchainOptions}
-          onChange={newValue => setBlockchain(newValue)}
-          value={blockchain}
           optionsClassName="w-[180px] h-[220px]"
         />
       </div>
@@ -33,12 +40,12 @@ const OtherInformations = ({}: Props) => {
         </div>
         <div className="justify-start items-center inline-flex mt-3">
           <div className="text-base font-bold font-['Montserrat'] leading-normal">
-            Customize your Weapper type
+            Customize your Wrapper type
           </div>
         </div>
         <div>
           <Link
-            className="text-accent"
+            className="link link-accent"
             href="https://docs.deedprotocol.org/legal-framework/property-wrappers"
             target="_blank"
           >
@@ -46,13 +53,7 @@ const OtherInformations = ({}: Props) => {
           </Link>
           &nbsp;about each Wrapper type.
         </div>
-        <RadioBoxes
-          fieldName="wrapper"
-          options={WrapperOptions}
-          optionsClassName="w-full"
-          onChange={newValue => setWrapper(newValue)}
-          value={wrapper}
-        />
+        <RadioBoxesInput name="wrapper" options={WrapperOptions} optionsClassName="w-full" />
       </div>
     </div>
   );

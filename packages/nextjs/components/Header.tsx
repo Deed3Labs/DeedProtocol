@@ -1,8 +1,8 @@
 import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { DynamicWidget } from "@dynamic-labs/sdk-react";
+import { usePathname } from "next/navigation";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FaucetButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
@@ -26,7 +26,6 @@ export const Header = () => {
   const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
 
-  const searchParams = useSearchParams();
   const pathname = usePathname();
 
   useOutsideClick(
@@ -42,7 +41,6 @@ export const Header = () => {
     ev.preventDefault();
   });
 
-  const type = searchParams.get("type");
   const nav = (
     <>
       <div className="flex lg:flex-grow lg:items-center w-full lg:pr-14">
@@ -58,11 +56,7 @@ export const Header = () => {
         </kbd>
       </div>
       <Link
-        className={
-          (type !== "all" && type) || pathname === "/registration"
-            ? "opacity-40 pointer-events-none"
-            : ""
-        }
+        className={pathname === "/registration" ? "opacity-40 pointer-events-none" : ""}
         href="/registration"
       >
         Register

@@ -1,8 +1,8 @@
 interface Props {
   label: string;
   name: string;
-  options: { label: string; value: string }[];
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { label: string; value: string }[] | Readonly<{ label: string; value: string }[]>;
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   value?: string;
   className?: string;
   info?: boolean;

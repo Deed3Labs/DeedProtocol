@@ -1,20 +1,16 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { FileUploader } from "~~/components/inputs/FileUploader";
-import { RadioBoxes } from "~~/components/inputs/RadioBoxes";
+import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
+import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
 import { EntityTypeOptions, OwnerTypeOptions } from "~~/constants";
+import { ValueExtractor } from "~~/utils/extract-values";
 
 interface Props {}
 
 const OwnerInformation = ({}: Props) => {
-  const [ownerType, setOwnerType] = useState<"individual" | "legal">("individual");
-  const [proofBill, setProofBill] = useState<File>();
-  const [ids, setIds] = useState<File>();
-  const [articleIncorporation, setArticleIncorporation] = useState<File>();
-  const [operatingAgreement, setOperatingAgreement] = useState<File>();
-  const [supportingDocs, setSupportingDocs] = useState<File[]>();
+  const [ownerType, setOwnerType] = useState<ValueExtractor<typeof OwnerTypeOptions>>("individual");
 
   return (
     <div className="flex flex-col gap-6 mt-6">
@@ -26,13 +22,13 @@ const OwnerInformation = ({}: Props) => {
           </div>
           <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
         </div>
-        <RadioBoxes
-          fieldName="ownerType"
-          onChange={newValue => setOwnerType(newValue as any)}
+        <RadioBoxesInput
+          name="ownerType"
           options={OwnerTypeOptions}
-          value={ownerType}
           optionsClassName="w-[180px] h-[180px]"
-        ></RadioBoxes>
+          value={ownerType}
+          onChange={newValue => setOwnerType(newValue as "individual" | "legal")}
+        ></RadioBoxesInput>
       </div>
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         {ownerType === "legal" && (
@@ -58,7 +54,6 @@ const OwnerInformation = ({}: Props) => {
             name="entityType"
             label="Entity Type"
             options={EntityTypeOptions}
-            onChange={() => {}}
             placeholder="e.g. LLC, Corporation, etc."
           />
         </div>
@@ -72,7 +67,7 @@ const OwnerInformation = ({}: Props) => {
         </label>
         <div>
           <Link
-            className="text-accent"
+            className="link link-accent"
             href="https://docs.deedprotocol.org/legal-framework/identity-verification#organizations-traditional-or-hybrid"
             target="_blank"
           >
@@ -80,20 +75,16 @@ const OwnerInformation = ({}: Props) => {
           </Link>
           &nbsp;about Identity Verification.
         </div>
-        <FileUploader
+        <FileUploaderInput
           name="ids"
           label="ID or Passport"
           subtitle="This document is submited securely off-chain."
-          onChange={newValue => setIds(newValue as File)}
-          value={ids}
         />
-        <FileUploader
+        <FileUploaderInput
           name="proofBill"
           label="Utility Bill or Other Document"
           subtitle="This document is submited securely off-chain."
           optional
-          onChange={newValue => setProofBill(newValue as File)}
-          value={proofBill}
         />
       </div>
       <div className="mt-8">
@@ -105,7 +96,7 @@ const OwnerInformation = ({}: Props) => {
         </label>
         <div>
           <Link
-            className="text-accent"
+            className="link link-accent"
             href="https://docs.deedprotocol.org/legal-framework/identity-verification"
             target="_blank"
           >
@@ -113,28 +104,22 @@ const OwnerInformation = ({}: Props) => {
           </Link>
           &nbsp;about Entity Verification.
         </div>
-        <FileUploader
+        <FileUploaderInput
           name="articleIncorporation"
           label="Articles of Incorporation"
           subtitle="This document is submited securely off-chain."
-          onChange={newValue => setArticleIncorporation(newValue as File)}
-          value={articleIncorporation}
         />
-        <FileUploader
+        <FileUploaderInput
           name="operatingAgreement"
           label="Operating Agreement"
           subtitle="This document is submited securely off-chain."
           optional
-          onChange={newValue => setOperatingAgreement(newValue as File)}
-          value={operatingAgreement}
         />
-        <FileUploader
+        <FileUploaderInput
           name="supportingDoc"
           label="Any other Supporting Documents"
           subtitle="This document is submited securely off-chain."
           optional
-          onChange={newValue => setSupportingDocs(newValue as File[])}
-          value={supportingDocs}
           multiple
         />
       </div>

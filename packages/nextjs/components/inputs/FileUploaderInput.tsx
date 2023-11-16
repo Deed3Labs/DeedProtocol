@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconLightningSolid } from "~~/styles/Icons";
 
 interface Props {
@@ -10,10 +10,10 @@ interface Props {
   value?: File | File[];
   multiple?: boolean;
   maxFileSizeKb?: number;
-  onChange: (file: File | File[]) => void;
+  onChange?: (file: File | File[]) => void;
 }
 
-export const FileUploader = ({
+export const FileUploaderInput = ({
   label,
   name,
   subtitle,
@@ -24,8 +24,18 @@ export const FileUploader = ({
   value,
   maxFileSizeKb = 500,
 }: Props) => {
+  const [files, setFiles] = useState<File[]>([]);
   // If value is not an array, make it an array
-  if (value && !("length" in value)) value = [value];
+
+  useEffect(() => {
+    if (value) {
+      if (Array.isArray(value)) {
+        setFiles(value);
+      } else {
+        setFiles([value]);
+      }
+    }
+  }, [value]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const handleKeyDown = (ev: React.KeyboardEvent<HTMLLabelElement>) => {
@@ -36,8 +46,10 @@ export const FileUploader = ({
 
   function handleFileChange(ev: React.ChangeEvent<HTMLInputElement>) {
     if (ev.target.files) {
+      setFiles(Array.from(ev.target.files));
       // If multiple files are allowed, convert the FileList to an array
-      onChange(multiple ? Array.from(ev.target.files) : ev.target.files[0]);
+      const newValue = multiple ? Array.from(ev.target.files) : ev.target.files[0];
+      onChange?.(newValue);
     }
   }
 
@@ -75,9 +87,9 @@ export const FileUploader = ({
               </span>
             )}
           </div>
-          {value?.length ? (
-            <ul className="line-clamp-3" title={value.map(x => x.name).join("\n")}>
-              {value.map(file => (
+          {files.length ? (
+            <ul className="line-clamp-3" title={files.map(x => x.name).join("\n")}>
+              {files.map(file => (
                 <li key={file.name}>
                   {file.name} (
                   <span className={file.size / 1000 > maxFileSizeKb ? "text-error" : ""}>

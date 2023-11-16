@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { FileUploader } from "~~/components/inputs/FileUploader";
-import { RadioBoxes } from "~~/components/inputs/RadioBoxes";
+import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
+import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
 import {
@@ -20,8 +20,8 @@ const PropertyDetails = ({}: Props) => {
   return (
     <div className="flex flex-col gap-6 mt-6">
       <div className="text-2xl font-['KronaOne'] leading-10">2. Property Details</div>
-      <RadioBoxes
-        fieldName="propertyType"
+      <RadioBoxesInput
+        name="propertyType"
         options={PropertyTypeOptions}
         onChange={newValue => setPropertyType(newValue)}
         value={propertyType}
@@ -40,18 +40,16 @@ const PropertyDetails = ({}: Props) => {
           label="State or Region"
           placeholder="Select State"
           options={StateOptions}
-          onChange={() => {}}
         />
       </div>
       <div className="flex flex-row flex-wrap gap-5 justify-start w-full">
         <TextInput name="propertySize" label="Lot Size" optional placeholder="e.g. 3500 sqft" />
         <SelectInput
-          name="propertySubtype"
+          name="propertySubType"
           label="Sub-Type"
           options={PropertySubtypeOptions}
           optional
           placeholder="Select Sub-Type"
-          onChange={() => {}}
         />
         <SelectInput
           name="propertyZoning"
@@ -69,7 +67,7 @@ const PropertyDetails = ({}: Props) => {
           </div>
           <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
         </div>
-        <FileUploader
+        <FileUploaderInput
           name="propertyImages"
           label="Drag and drop or click to upload"
           subtitle="You may change this after registering your property"
@@ -86,7 +84,7 @@ const PropertyDetails = ({}: Props) => {
           </div>
           <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
         </div>
-        <FileUploader
+        <FileUploaderInput
           name="deedOrTitle"
           label="Deed or Title"
           subtitle="This document is stored securely on-chain via IPFS."
@@ -94,7 +92,7 @@ const PropertyDetails = ({}: Props) => {
           onChange={newValue => setDeedOrTitle(newValue as File)}
           value={deedOrTitle}
         />
-        <FileUploader
+        <FileUploaderInput
           name="purchaseContract"
           label="Purchase Contract"
           subtitle="This document is stored securely on-chain via IPFS."

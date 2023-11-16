@@ -1,10 +1,10 @@
 interface Props {
-  fieldName: string;
+  name: string;
   className?: string;
-  options: RadioBoxOption[];
+  options: RadioBoxOption[] | Readonly<RadioBoxOption[]>;
   value?: string;
   optionsClassName?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 }
 
 export interface RadioBoxOption {
@@ -16,10 +16,10 @@ export interface RadioBoxOption {
   disabled?: boolean;
 }
 
-export const RadioBoxes = ({ fieldName, options, value, optionsClassName, onChange }: Props) => {
+export const RadioBoxesInput = ({ name, options, value, optionsClassName, onChange }: Props) => {
   const handleKeyDown = (ev: React.KeyboardEvent<HTMLLabelElement>, value: string) => {
     if (ev.key === "Enter") {
-      onChange(value);
+      onChange?.(value);
     }
   };
   return (
@@ -28,11 +28,11 @@ export const RadioBoxes = ({ fieldName, options, value, optionsClassName, onChan
         <div key={option.value} title={option.disabled ? "Coming soon" : undefined}>
           <input
             id={`option_${option.value}`}
-            name={fieldName}
+            name={name}
             type="radio"
             value={option.value}
-            checked={option.value === value}
-            onChange={() => onChange(option.value)}
+            checked={value ? option.value === value : undefined}
+            onChange={() => onChange?.(option.value)}
             className={`peer hidden`}
           />
           <label
