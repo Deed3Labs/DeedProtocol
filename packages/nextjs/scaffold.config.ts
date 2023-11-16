@@ -1,13 +1,11 @@
-import * as chains from "@wagmi/chains";
+import * as chains from "viem/chains";
 
 export interface ScaffoldConfig {
   targetNetwork: chains.Chain;
   pollingInterval: number;
   alchemyApiKey: string;
-  burnerWallet: {
-    enabled: boolean;
-    onlyLocal: boolean;
-  };
+  walletConnectProjectId: string;
+  onlyLocalBurnerWallet: boolean;
   walletAutoConnect: boolean;
   dynamicEnvironementId: string | undefined;
   appName: string;
@@ -27,13 +25,15 @@ const scaffoldConfig = {
   // .env.local for local testing, and in the Vercel/system env config for live apps.
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF",
 
-  // Burner Wallet configuration
-  burnerWallet: {
-    // Set it to false to completely remove burner wallet from all networks
-    enabled: true,
-    // Only show the Burner Wallet when running on hardhat network
-    onlyLocal: true,
-  },
+  // This is ours WalletConnect's default project ID.
+  // You can get your own at https://cloud.walletconnect.com
+  // It's recommended to store it in an env variable:
+  // .env.local for local testing, and in the Vercel/system env config for live apps.
+  walletConnectProjectId:
+    process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "3a8170812b534d0ff9d794f19a901d64",
+
+  // Only show the Burner Wallet when running on hardhat network
+  onlyLocalBurnerWallet: true,
 
   /**
    * Auto connect:
@@ -41,12 +41,8 @@ const scaffoldConfig = {
    * 2. If user is not connected to any wallet:  On reload, connect to burner wallet if burnerWallet.enabled is true && burnerWallet.onlyLocal is false
    */
   walletAutoConnect: true,
-
   dynamicEnvironementId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
   appName: "Deed3.io",
 } satisfies ScaffoldConfig;
 
-console.log({
-  "process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID": process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID,
-});
 export default scaffoldConfig;

@@ -1,5 +1,4 @@
-import { Network } from "@ethersproject/networks";
-import * as chains from "wagmi/chains";
+import * as chains from "viem/chains";
 import scaffoldConfig from "~~/scaffold.config";
 
 export type TChainAttributes = {
@@ -52,6 +51,9 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
   [chains.fantomTestnet.id]: {
     color: "#1969ff",
   },
+  [chains.scrollSepolia.id]: {
+    color: "#fbebd4",
+  },
 };
 
 /**
@@ -60,9 +62,7 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
  * @param txnHash
  * @dev returns empty string if the network is localChain
  */
-export function getBlockExplorerTxLink(network: Network, txnHash: string) {
-  const { chainId } = network;
-
+export function getBlockExplorerTxLink(chainId: number, txnHash: string) {
   const chainNames = Object.keys(chains);
 
   const targetChainArr = chainNames.filter(chainName => {
