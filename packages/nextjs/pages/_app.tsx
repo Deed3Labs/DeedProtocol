@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { EthersExtension } from "@dynamic-labs/ethers-v5";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -18,6 +17,33 @@ import { useGlobalState } from "~~/services/store/store";
 import "~~/styles/globals.scss";
 
 config.autoAddCss = false;
+
+const evmNetworks = [
+  // Ethereum Network
+  {
+    chainName: "Ethereum",
+    chainId: 1,
+    nativeCurrency: {
+      decimals: 18,
+      name: "Ether",
+      symbol: "ETH",
+    },
+    rpcUrls: ["https://mainnet.infura.io/v3/..."], //Replace with correct Infura link
+    vanityName: "Ethereum",
+  },
+  // Polygon Network
+  {
+    chainName: "Polygon",
+    chainId: 137,
+    nativeCurrency: {
+      decimals: 18,
+      name: "Matic",
+      symbol: "MATIC",
+    },
+    rpcUrls: ["https://polygon-rpc.com"],
+    vanityName: "Polygon",
+  },
+];
 
 const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   const price = useNativeCurrencyPrice();
@@ -57,7 +83,6 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
           environmentId: scaffoldConfig.dynamicEnvironementId,
           appName: scaffoldConfig.appName,
           walletConnectors: [EthereumWalletConnectors],
-          walletConnectorExtensions: [EthersExtension],
         }}
       >
         <DynamicWagmiConnector>

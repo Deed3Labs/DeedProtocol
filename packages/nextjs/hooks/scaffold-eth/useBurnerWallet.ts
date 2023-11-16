@@ -42,7 +42,8 @@ export const saveBurnerSK = (privateKey: Hex): void => {
 export const loadBurnerSK = (): Hex => {
   let currentSk: Hex = "0x";
   if (typeof window != "undefined" && window != null) {
-    currentSk = (window?.localStorage?.getItem?.(burnerStorageKey)?.replaceAll('"', "") ?? "0x") as Hex;
+    currentSk = (window?.localStorage?.getItem?.(burnerStorageKey)?.replaceAll('"', "") ??
+      "0x") as Hex;
   }
 
   if (!!currentSk && isValidSk(currentSk)) {
@@ -64,7 +65,7 @@ export const loadBurnerSK = (): Hex => {
  *
  * @category Hooks
  */
-export type TBurnerSigner = {
+export interface TBurnerSigner {
   walletClient: WalletClient | undefined;
   account: PrivateKeyAccount | undefined;
   /**
@@ -75,7 +76,7 @@ export type TBurnerSigner = {
    * explicitly save burner to storage
    */
   saveBurner: () => void;
-};
+}
 
 /**
  * #### Summary
@@ -91,7 +92,8 @@ export const useBurnerWallet = (): TBurnerSigner => {
   const [burnerSk, setBurnerSk] = useLocalStorage<Hex>(burnerStorageKey, newDefaultPriaveKey);
 
   const publicClient = usePublicClient();
-  const [walletClient, setWalletClient] = useState<WalletClient<HttpTransport, Chain, PrivateKeyAccount>>();
+  const [walletClient, setWalletClient] =
+    useState<WalletClient<HttpTransport, Chain, PrivateKeyAccount>>();
   const [generatedPrivateKey, setGeneratedPrivateKey] = useState<Hex>("0x");
   const [account, setAccount] = useState<PrivateKeyAccount>();
   const isCreatingNewBurnerRef = useRef(false);

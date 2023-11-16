@@ -8,12 +8,12 @@ import { CheckCircleIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outl
 import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { getBlockExplorerAddressLink, getTargetNetwork } from "~~/utils/scaffold-eth";
 
-type TAddressProps = {
+interface TAddressProps {
   address?: string;
   disableAddressLink?: boolean;
   format?: "short" | "long";
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
-};
+}
 
 const blockieSizeMap = {
   xs: 6,
@@ -33,7 +33,11 @@ export const Address = ({ address, disableAddressLink, format, size = "base" }: 
   const [ensAvatar, setEnsAvatar] = useState<string | null>();
   const [addressCopied, setAddressCopied] = useState(false);
 
-  const { data: fetchedEns } = useEnsName({ address, enabled: isAddress(address ?? ""), chainId: 1 });
+  const { data: fetchedEns } = useEnsName({
+    address,
+    enabled: isAddress(address ?? ""),
+    chainId: 1,
+  });
   const { data: fetchedEnsAvatar } = useEnsAvatar({
     name: fetchedEns,
     enabled: Boolean(fetchedEns),

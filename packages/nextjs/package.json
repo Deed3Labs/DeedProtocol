@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@dynamic-labs/ethereum": "^0.19.0",
-    "@dynamic-labs/ethers-v5": "^0.19.1",
     "@dynamic-labs/magic": "^0.19.0",
     "@dynamic-labs/sdk-react-core": "^0.19.0",
     "@dynamic-labs/wagmi-connector": "^0.19.0",
@@ -37,7 +36,6 @@
     "blo": "^1.0.1",
     "buffer": "^6.0.3",
     "daisyui": "^3.5.1",
-    "ethers": "^5.0.0",
     "finity-ui": "^0.0.2",
     "helia": "^2.1.0",
     "ipfs-http-client": "^60.0.1",
