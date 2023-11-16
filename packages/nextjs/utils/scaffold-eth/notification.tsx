@@ -9,21 +9,27 @@ import {
 } from "@heroicons/react/24/solid";
 import { Spinner } from "~~/components/assets/Spinner";
 
-type TPositions = "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right";
+type TPositions =
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
 
-type TNotificationProps = {
+interface TNotificationProps {
   content: React.ReactNode;
   status: "success" | "info" | "loading" | "error" | "warning";
   duration?: number;
   icon?: string;
   position?: TPositions;
-};
+}
 
-type NotificationOptions = {
+interface NotificationOptions {
   duration?: number;
   icon?: string;
   position?: TPositions;
-};
+}
 
 const ENUM_STATUSES = {
   success: <CheckCircleIcon className="w-7 text-success" />,
@@ -59,7 +65,10 @@ const Notification = ({
         <div className="text-2xl self-start">{icon ? icon : ENUM_STATUSES[status]}</div>
         <div className={`break-all whitespace-pre-line ${icon ? "mt-1" : ""}`}>{content}</div>
 
-        <div className={`cursor-pointer text-lg ${icon ? "mt-1" : ""}`} onClick={() => toast.dismiss(t.id)}>
+        <div
+          className={`cursor-pointer text-lg ${icon ? "mt-1" : ""}`}
+          onClick={() => toast.dismiss(t.id)}
+        >
           <XMarkIcon className="w-6 cursor-pointer" onClick={() => toast.remove(t.id)} />
         </div>
       </div>

@@ -17,15 +17,15 @@ import deployedContracts from "~~/contracts/deployedContracts";
 import { useFetchBlocks } from "~~/hooks/scaffold-eth";
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-type AddressCodeTabProps = {
+interface AddressCodeTabProps {
   bytecode: string;
   assembly: string;
-};
+}
 
-type PageProps = {
+interface PageProps {
   address: string;
   contractData: AddressCodeTabProps | null;
-};
+}
 
 const publicClient = createPublicClient({
   chain: hardhat,
@@ -34,7 +34,8 @@ const publicClient = createPublicClient({
 
 const AddressPage = ({ address, contractData }: PageProps) => {
   const router = useRouter();
-  const { blocks, transactionReceipts, currentPage, totalBlocks, setCurrentPage } = useFetchBlocks();
+  const { blocks, transactionReceipts, currentPage, totalBlocks, setCurrentPage } =
+    useFetchBlocks();
   const [activeTab, setActiveTab] = useState("transactions");
   const [isContract, setIsContract] = useState(false);
 
@@ -52,7 +53,10 @@ const AddressPage = ({ address, contractData }: PageProps) => {
       if (typeof tx === "string") {
         return false;
       }
-      return tx.from.toLowerCase() === address.toLowerCase() || tx.to?.toLowerCase() === address.toLowerCase();
+      return (
+        tx.from.toLowerCase() === address.toLowerCase() ||
+        tx.to?.toLowerCase() === address.toLowerCase()
+      );
     }),
   );
 
