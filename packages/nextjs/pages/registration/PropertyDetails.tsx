@@ -102,7 +102,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
         </div>
         <FileUploaderInput
           name="propertyImages"
-          label="Drag and drop or click to upload"
+          label="Upload images of your property"
           subtitle="You may change this after registering your property"
           optional
           multiple
