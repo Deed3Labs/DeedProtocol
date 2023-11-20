@@ -23,15 +23,13 @@
         "./*"
       ]
     },
-    "types": [
-      "utils/extensions/**/*.d.ts"
-    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "scripts/generate-types.mjs"  ],
+    "**/*.tsx",
+    "scripts/generate-types.mjs"
+  ],
   "exclude": [
     "node_modules"
   ]
