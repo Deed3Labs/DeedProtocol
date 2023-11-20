@@ -26,7 +26,7 @@ export const uploadFile = async (file: File) => {
 
   console.log("[Upload File] response", res);
 
-  return res.data;
+  return res.data.IpfsHash;
 };
 
 export const uploadJson = async (object: any) => {
