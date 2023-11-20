@@ -12,13 +12,17 @@ import {
 } from "~~/components/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
-type TReadOnlyFunctionFormProps = {
+interface TReadOnlyFunctionFormProps {
   contractAddress: Address;
   abiFunction: AbiFunction;
   inheritedFrom?: string;
-};
+}
 
-export const ReadOnlyFunctionForm = ({ contractAddress, abiFunction, inheritedFrom }: TReadOnlyFunctionFormProps) => {
+export const ReadOnlyFunctionForm = ({
+  contractAddress,
+  abiFunction,
+  inheritedFrom,
+}: TReadOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(abiFunction));
   const [result, setResult] = useState<unknown>();
 

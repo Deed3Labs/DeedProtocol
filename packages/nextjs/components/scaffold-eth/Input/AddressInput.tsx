@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import { blo } from "blo";
 import { useDebounce } from "usehooks-ts";
 import { Address, isAddress } from "viem";
@@ -8,7 +9,13 @@ import { CommonInputProps, InputBase, isENS } from "~~/components/scaffold-eth";
 /**
  * Address input with ENS name resolution
  */
-export const AddressInput = ({ value, name, placeholder, onChange, disabled }: CommonInputProps<Address | string>) => {
+export const AddressInput = ({
+  value,
+  name,
+  placeholder,
+  onChange,
+  disabled,
+}: CommonInputProps<Address | string>) => {
   // Debounce the input to keep clean RPC calls when resolving ENS names
   // If the input is an address, we don't need to debounce it
   const _debouncedValue = useDebounce(value, 500);
@@ -72,7 +79,11 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
               <span className="w-[35px]">
                 {
                   // eslint-disable-next-line
-                  <img className="w-full rounded-full" src={ensAvatar} alt={`${ensAddress} avatar`} />
+                  <img
+                    className="w-full rounded-full"
+                    src={ensAvatar}
+                    alt={`${ensAddress} avatar`}
+                  />
                 }
               </span>
             ) : null}
@@ -83,7 +94,15 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
       suffix={
         // Don't want to use nextJS Image here (and adding remote patterns for the URL)
         // eslint-disable-next-line @next/next/no-img-element
-        value && <img alt="" className="!rounded-full" src={blo(value as `0x${string}`)} width="35" height="35" />
+        value && (
+          <Image
+            alt=""
+            className="!rounded-full"
+            src={blo(value as `0x${string}`)}
+            width="35"
+            height="35"
+          />
+        )
       }
     />
   );

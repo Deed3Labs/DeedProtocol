@@ -15,12 +15,12 @@ import {
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
-type WriteOnlyFunctionFormProps = {
+interface WriteOnlyFunctionFormProps {
   abiFunction: AbiFunction;
   onChange: () => void;
   contractAddress: Address;
   inheritedFrom?: string;
-};
+}
 
 export const WriteOnlyFunctionForm = ({
   abiFunction,
@@ -86,7 +86,11 @@ export const WriteOnlyFunctionForm = ({
 
   return (
     <div className="py-5 space-y-3 first:pt-0 last:pb-1">
-      <div className={`flex gap-3 ${zeroInputs ? "flex-row justify-between items-center" : "flex-col"}`}>
+      <div
+        className={`flex gap-3 ${
+          zeroInputs ? "flex-row justify-between items-center" : "flex-col"
+        }`}
+      >
         <p className="font-medium my-0 break-words">
           {abiFunction.name}
           <InheritanceTooltip inheritedFrom={inheritedFrom} />
@@ -115,7 +119,11 @@ export const WriteOnlyFunctionForm = ({
             }`}
             data-tip={`${writeDisabled && "Wallet not connected or in the wrong network"}`}
           >
-            <button className="btn btn-secondary btn-sm" disabled={writeDisabled || isLoading} onClick={handleWrite}>
+            <button
+              className="btn btn-secondary btn-sm"
+              disabled={writeDisabled || isLoading}
+              onClick={handleWrite}
+            >
               {isLoading && <span className="loading loading-spinner loading-xs"></span>}
               Send 💸
             </button>

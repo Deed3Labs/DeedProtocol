@@ -18,33 +18,6 @@ import "~~/styles/globals.scss";
 
 config.autoAddCss = false;
 
-const evmNetworks = [
-  // Ethereum Network
-  {
-    chainName: "Ethereum",
-    chainId: 1,
-    nativeCurrency: {
-      decimals: 18,
-      name: "Ether",
-      symbol: "ETH",
-    },
-    rpcUrls: ["https://mainnet.infura.io/v3/..."], //Replace with correct Infura link
-    vanityName: "Ethereum",
-  },
-  // Polygon Network
-  {
-    chainName: "Polygon",
-    chainId: 137,
-    nativeCurrency: {
-      decimals: 18,
-      name: "Matic",
-      symbol: "MATIC",
-    },
-    rpcUrls: ["https://polygon-rpc.com"],
-    vanityName: "Polygon",
-  },
-];
-
 const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   const price = useNativeCurrencyPrice();
   const setNativeCurrencyPrice = useGlobalState(state => state.setNativeCurrencyPrice);

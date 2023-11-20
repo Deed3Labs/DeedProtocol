@@ -8,12 +8,12 @@ import { displayTxResult } from "~~/components/scaffold-eth";
 import { useAnimationConfig } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
-type DisplayVariableProps = {
+interface DisplayVariableProps {
   contractAddress: Address;
   abiFunction: AbiFunction;
   refreshDisplayVariables: boolean;
   inheritedFrom?: string;
-};
+}
 
 export const DisplayVariable = ({
   contractAddress,

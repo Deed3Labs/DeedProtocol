@@ -35,9 +35,15 @@ export const TransactionsTable = ({ blocks, transactionReceipts }: TransactionsT
                       <TransactionHash hash={tx.hash} />
                     </td>
                     <td className="w-2/12 md:py-4">
-                      {tx.functionName === "0x" ? "" : <span className="mr-1">{tx.functionName}</span>}
+                      {tx.functionName === "0x" ? (
+                        ""
+                      ) : (
+                        <span className="mr-1">{tx.functionName}</span>
+                      )}
                       {functionCalled !== "0x" && (
-                        <span className="badge badge-primary font-bold text-xs">{functionCalled}</span>
+                        <span className="badge badge-primary font-bold text-xs">
+                          {functionCalled}
+                        </span>
                       )}
                     </td>
                     <td className="w-1/12 md:py-4">{block.number?.toString()}</td>

@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { CommonInputProps, InputBase, IntegerVariant, isValidInteger } from "~~/components/scaffold-eth";
+import {
+  CommonInputProps,
+  InputBase,
+  IntegerVariant,
+  isValidInteger,
+} from "~~/components/scaffold-eth";
 
 type IntegerInputProps = CommonInputProps<string | bigint> & {
   variant?: IntegerVariant;
@@ -47,7 +52,9 @@ export const IntegerInput = ({
             data-tip="Multiply by 10^18 (wei)"
           >
             <button
-              className={`${disabled ? "cursor-not-allowed" : "cursor-pointer"} font-semibold px-4 text-accent`}
+              className={`${
+                disabled ? "cursor-not-allowed" : "cursor-pointer"
+              } font-semibold px-4 text-accent`}
               onClick={multiplyBy1e18}
               disabled={disabled}
             >

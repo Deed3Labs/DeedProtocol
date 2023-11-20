@@ -49,7 +49,7 @@ const fakeData: PropertyRegistrationModel = {
 
 const RegistrationForm: NextPage = () => {
   // const [step, setStep] = useState(0);
-  const { writeAsync, isLoading, isSuccess, data } = useDeedNftMint();
+  const { writeAsync } = useDeedNftMint();
   const [formData, setFormData] = useState<PropertyRegistrationModel>(isDev() ? fakeData : {});
 
   useEffect(() => {

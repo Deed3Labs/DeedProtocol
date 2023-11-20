@@ -8,7 +8,11 @@ import { BaseError as BaseViemError } from "viem";
  * @param {number} inputIndex
  * @returns {string} key
  */
-const getFunctionInputKey = (functionName: string, input: AbiParameter, inputIndex: number): string => {
+const getFunctionInputKey = (
+  functionName: string,
+  input: AbiParameter,
+  inputIndex: number,
+): string => {
   const name = input?.name || `input_${inputIndex}_`;
   return functionName + "_" + name + "_" + input.internalType + "_" + input.type;
 };

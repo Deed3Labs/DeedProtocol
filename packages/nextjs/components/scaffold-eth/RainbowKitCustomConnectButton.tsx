@@ -40,7 +40,11 @@ export const RainbowKitCustomConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button className="btn btn-primary btn-sm" onClick={openConnectModal} type="button">
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={openConnectModal}
+                    type="button"
+                  >
                     Connect Wallet
                   </button>
                 );
@@ -65,7 +69,8 @@ export const RainbowKitCustomConnectButton = () => {
                         >
                           <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
                           <span className="whitespace-nowrap">
-                            Switch to <span style={{ color: networkColor }}>{configuredNetwork.name}</span>
+                            Switch to{" "}
+                            <span style={{ color: networkColor }}>{configuredNetwork.name}</span>
                           </span>
                         </button>
                       </li>
@@ -75,7 +80,8 @@ export const RainbowKitCustomConnectButton = () => {
                           type="button"
                           onClick={() => disconnect()}
                         >
-                          <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Disconnect</span>
+                          <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />{" "}
+                          <span>Disconnect</span>
                         </button>
                       </li>
                     </ul>
@@ -96,7 +102,11 @@ export const RainbowKitCustomConnectButton = () => {
                       tabIndex={0}
                       className="btn btn-secondary btn-sm pl-0 pr-2 shadow-md dropdown-toggle gap-0 !h-auto"
                     >
-                      <BlockieAvatar address={account.address} size={30} ensImage={account.ensAvatar} />
+                      <BlockieAvatar
+                        address={account.address}
+                        size={30}
+                        ensImage={account.ensAvatar}
+                      />
                       <span className="ml-2 mr-1">{account.displayName}</span>
                       <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
                     </label>
@@ -134,13 +144,19 @@ export const RainbowKitCustomConnectButton = () => {
                         )}
                       </li>
                       <li>
-                        <label htmlFor="qrcode-modal" className="btn-sm !rounded-xl flex gap-3 py-3">
+                        <label
+                          htmlFor="qrcode-modal"
+                          className="btn-sm !rounded-xl flex gap-3 py-3"
+                        >
                           <QrCodeIcon className="h-6 w-4 ml-2 sm:ml-0" />
                           <span className="whitespace-nowrap">View QR Code</span>
                         </label>
                       </li>
                       <li>
-                        <button className="menu-item btn-sm !rounded-xl flex gap-3 py-3" type="button">
+                        <button
+                          className="menu-item btn-sm !rounded-xl flex gap-3 py-3"
+                          type="button"
+                        >
                           <ArrowTopRightOnSquareIcon className="h-6 w-4 ml-2 sm:ml-0" />
                           <a
                             target="_blank"
@@ -158,7 +174,8 @@ export const RainbowKitCustomConnectButton = () => {
                           type="button"
                           onClick={() => disconnect()}
                         >
-                          <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Disconnect</span>
+                          <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />{" "}
+                          <span>Disconnect</span>
                         </button>
                       </li>
                     </ul>

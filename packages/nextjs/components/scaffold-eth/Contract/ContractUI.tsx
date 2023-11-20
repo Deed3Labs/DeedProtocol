@@ -8,19 +8,23 @@ import { useDeployedContractInfo, useNetworkColor } from "~~/hooks/scaffold-eth"
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { ContractName } from "~~/utils/scaffold-eth/contract";
 
-type ContractUIProps = {
+interface ContractUIProps {
   contractName: ContractName;
   className?: string;
-};
+}
 
 /**
  * UI component to interface with deployed contracts.
  **/
 export const ContractUI = ({ contractName, className = "" }: ContractUIProps) => {
-  const [refreshDisplayVariables, triggerRefreshDisplayVariables] = useReducer(value => !value, false);
+  const [refreshDisplayVariables, triggerRefreshDisplayVariables] = useReducer(
+    value => !value,
+    false,
+  );
   const configuredNetwork = getTargetNetwork();
 
-  const { data: deployedContractData, isLoading: deployedContractLoading } = useDeployedContractInfo(contractName);
+  const { data: deployedContractData, isLoading: deployedContractLoading } =
+    useDeployedContractInfo(contractName);
   const networkColor = useNetworkColor();
 
   if (deployedContractLoading) {
@@ -40,7 +44,9 @@ export const ContractUI = ({ contractName, className = "" }: ContractUIProps) =>
   }
 
   return (
-    <div className={`grid grid-cols-1 lg:grid-cols-6 px-6 lg:px-10 lg:gap-12 w-full max-w-7xl my-0 ${className}`}>
+    <div
+      className={`grid grid-cols-1 lg:grid-cols-6 px-6 lg:px-10 lg:gap-12 w-full max-w-7xl my-0 ${className}`}
+    >
       <div className="col-span-5 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
         <div className="col-span-1 flex flex-col">
           <div className="bg-base-100 border-base-300 border shadow-md shadow-secondary rounded-3xl px-6 lg:px-8 mb-6 space-y-1 py-4">
@@ -50,7 +56,10 @@ export const ContractUI = ({ contractName, className = "" }: ContractUIProps) =>
                 <Address address={deployedContractData.address} />
                 <div className="flex gap-1 items-center">
                   <span className="font-bold text-sm">Balance:</span>
-                  <Balance address={deployedContractData.address} className="px-0 h-1.5 min-h-[0.375rem]" />
+                  <Balance
+                    address={deployedContractData.address}
+                    className="px-0 h-1.5 min-h-[0.375rem]"
+                  />
                 </div>
               </div>
             </div>
