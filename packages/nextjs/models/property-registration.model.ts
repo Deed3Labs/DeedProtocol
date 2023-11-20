@@ -10,8 +10,7 @@ import {
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
 
-export default interface PropertyRegistrationModel {
-  // 1. Owner Information
+export interface OwnerInformationModel {
   ownerType: ValueExtractor<typeof OwnerTypeOptions>;
 
   ownerName: string;
@@ -24,21 +23,38 @@ export default interface PropertyRegistrationModel {
   ownerEntityType?: ValueExtractor<typeof EntityTypeOptions>;
 
   ids: File;
-  proofBill: File;
+  proofBill?: File;
   articleIncorporation: File;
-  operatingAgreement: File;
-  supportingDoc: File[];
+  operatingAgreement?: File;
+  supportingDoc?: File[];
+}
 
-  // 2. Property Details
+export interface PropertyDetailsModel {
   propertyType: ValueExtractor<typeof PropertyTypeOptions>;
-  propertySubType: ValueExtractor<typeof PropertySubtypeOptions>;
+  propertySubType?: ValueExtractor<typeof PropertySubtypeOptions>;
   propertyAddress: string;
   propertyCity: string;
   propertyState: ValueExtractor<typeof StateOptions>;
-  propertySize: string;
+  propertySize?: string;
   propertyZoning?: ValueExtractor<typeof PropertyZoningOptions>;
 
-  // 3. Other information
+  propertyImages?: File;
+  propertyDeedOrTitle: File;
+  propertyPurchaseContract?: File;
+}
+
+export interface OtherInformationModel {
   blockchain: ValueExtractor<typeof BlockchainOptions>;
   wrapper: ValueExtractor<typeof WrapperOptions>;
+}
+
+export interface PropertyRegistrationModel {
+  // 1. Owner Information
+  ownerInformation?: OwnerInformationModel;
+
+  // 2. Property Details
+  propertyDetails?: PropertyDetailsModel;
+
+  // 3. Other information
+  otherInformation?: OtherInformationModel;
 }

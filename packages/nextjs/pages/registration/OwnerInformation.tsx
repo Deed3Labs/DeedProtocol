@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
 import { EntityTypeOptions, OwnerTypeOptions } from "~~/constants";
-import { ValueExtractor } from "~~/utils/extract-values";
+import { LightChangeEvent } from "~~/models/light-change-event";
+import {
+  OwnerInformationModel,
+  PropertyRegistrationModel,
+} from "~~/models/property-registration.model";
 
-interface Props {}
+interface Props {
+  value?: OwnerInformationModel;
+  onChange?: (ev: LightChangeEvent<PropertyRegistrationModel>) => void;
+}
 
-const OwnerInformation = ({}: Props) => {
-  const [ownerType, setOwnerType] = useState<ValueExtractor<typeof OwnerTypeOptions>>("individual");
+const OwnerInformation = ({ value, onChange }: Props) => {
+  const handleChange = (ev: LightChangeEvent<OwnerInformationModel>) => {
+    const updatedValue = { ...value, [ev.name]: ev.value };
+    console.log({ ev, updatedValue });
+    onChange?.({ name: "ownerInformation", value: updatedValue });
+  };
 
   return (
     <div className="flex flex-col gap-6 mt-6">
@@ -26,17 +37,19 @@ const OwnerInformation = ({}: Props) => {
           name="ownerType"
           options={OwnerTypeOptions}
           optionsClassName="w-[180px] h-[180px]"
-          value={ownerType}
-          onChange={newValue => setOwnerType(newValue as "individual" | "legal")}
+          value={value?.ownerType}
+          onChange={handleChange}
         ></RadioBoxesInput>
       </div>
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
-        {ownerType === "legal" && (
+        {value?.ownerType === "legal" && (
           <TextInput
             name="entityName"
             label="Entity Name"
             info
             placeholder="e.g. My Business Name, LLC."
+            value={value?.entityName}
+            onChange={handleChange}
           />
         )}
         <TextInput
@@ -44,17 +57,34 @@ const OwnerInformation = ({}: Props) => {
           label="First & Last Name"
           info
           placeholder="e.g. Johnny Appleseed"
+          value={value?.ownerName}
+          onChange={handleChange}
         />
-        <TextInput name="ownerSuffix" label="Suffix" optional placeholder="e.g. Jr. or Sr." />
+        <TextInput
+          name="ownerSuffix"
+          label="Suffix"
+          optional
+          placeholder="e.g. Jr. or Sr."
+          value={value?.ownerSuffix}
+          onChange={handleChange}
+        />
       </div>
-      {ownerType === "legal" && (
+      {value?.ownerType === "legal" && (
         <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
-          <TextInput name="ownerPosition" label="Position" placeholder="e.g. CEO" />
+          <TextInput
+            name="ownerPosition"
+            label="Position"
+            placeholder="e.g. CEO"
+            value={value?.ownerPosition}
+            onChange={handleChange}
+          />
           <SelectInput
-            name="entityType"
+            name="ownerEntityType"
             label="Entity Type"
             options={EntityTypeOptions}
             placeholder="e.g. LLC, Corporation, etc."
+            value={value?.ownerEntityType}
+            onChange={handleChange}
           />
         </div>
       )}
@@ -79,12 +109,16 @@ const OwnerInformation = ({}: Props) => {
           name="ids"
           label="ID or Passport"
           subtitle="This document is submited securely off-chain."
+          value={value?.ids}
+          onChange={handleChange}
         />
         <FileUploaderInput
           name="proofBill"
           label="Utility Bill or Other Document"
           subtitle="This document is submited securely off-chain."
           optional
+          value={value?.proofBill}
+          onChange={handleChange}
         />
       </div>
       <div className="mt-8">
@@ -108,12 +142,16 @@ const OwnerInformation = ({}: Props) => {
           name="articleIncorporation"
           label="Articles of Incorporation"
           subtitle="This document is submited securely off-chain."
+          value={value?.articleIncorporation}
+          onChange={handleChange}
         />
         <FileUploaderInput
           name="operatingAgreement"
           label="Operating Agreement"
           subtitle="This document is submited securely off-chain."
           optional
+          value={value?.operatingAgreement}
+          onChange={handleChange}
         />
         <FileUploaderInput
           name="supportingDoc"
@@ -121,6 +159,8 @@ const OwnerInformation = ({}: Props) => {
           subtitle="This document is submited securely off-chain."
           optional
           multiple
+          value={value?.supportingDoc}
+          onChange={handleChange}
         />
       </div>
     </div>

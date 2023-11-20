@@ -1,8 +1,10 @@
-interface Props {
+import { LightChangeEvent } from "~~/models/light-change-event";
+
+interface Props<TParent> {
   label: string;
-  name: string;
+  name: keyof TParent;
   options: { label: string; value: string }[] | Readonly<{ label: string; value: string }[]>;
-  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (ev: LightChangeEvent<TParent>) => void;
   value?: string;
   className?: string;
   info?: boolean;
@@ -11,7 +13,7 @@ interface Props {
   large?: boolean;
 }
 
-export const SelectInput = ({
+export const SelectInput = <TParent,>({
   label,
   name,
   options,
@@ -22,7 +24,7 @@ export const SelectInput = ({
   className,
   placeholder,
   large = true,
-}: Props) => {
+}: Props<TParent>) => {
   return (
     <div className={`flex flex-col  ${className ? className : ""}`}>
       <label className="justify-start items-center inline-flex mb-3" htmlFor="state">
@@ -39,11 +41,11 @@ export const SelectInput = ({
         )}
       </label>
       <select
-        id={name}
-        name={name}
+        id={name as string}
+        name={name as string}
         className={`select ${large ? "select-lg" : ""} select-bordered w-full max-w-xs`}
         defaultValue="default"
-        onChange={onChange}
+        onChange={ev => onChange?.({ name, value: ev.target.value })}
         value={value}
       >
         <option disabled value="default">

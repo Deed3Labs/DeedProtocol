@@ -31,7 +31,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "scripts/generate-types.mjs"  ],
   "exclude": [
     "node_modules"
   ]

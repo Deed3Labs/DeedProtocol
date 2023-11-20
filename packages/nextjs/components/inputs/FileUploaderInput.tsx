@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState } from "react";
+import { LightChangeEvent } from "~~/models/light-change-event";
 import { IconLightningSolid } from "~~/styles/Icons";
 
-interface Props {
+interface Props<TParent> {
   label: string;
-  name: string;
+  name: keyof TParent;
   subtitle: string;
   optional?: boolean;
   className?: string;
   value?: File | File[];
   multiple?: boolean;
   maxFileSizeKb?: number;
-  onChange?: (file: File | File[]) => void;
+  onChange?: (file: LightChangeEvent<TParent>) => void;
 }
 
-export const FileUploaderInput = ({
+export const FileUploaderInput = <TParent,>({
   label,
   name,
   subtitle,
@@ -23,9 +24,8 @@ export const FileUploaderInput = ({
   multiple,
   value,
   maxFileSizeKb = 500,
-}: Props) => {
+}: Props<TParent>) => {
   const [files, setFiles] = useState<File[]>([]);
-  // If value is not an array, make it an array
 
   useEffect(() => {
     if (value) {
@@ -49,22 +49,25 @@ export const FileUploaderInput = ({
       setFiles(Array.from(ev.target.files));
       // If multiple files are allowed, convert the FileList to an array
       const newValue = multiple ? Array.from(ev.target.files) : ev.target.files[0];
-      onChange?.(newValue);
+      onChange?.({
+        name,
+        value: newValue,
+      });
     }
   }
 
   return (
     <div className={`mt-3 w-[600px] max-w-full ${className ? className : ""}`}>
       <label
-        htmlFor={name}
+        htmlFor={name as string}
         className="flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-36 border border-white border-opacity-10 cursor-pointer hover:bg-base-100"
         tabIndex={0}
         onKeyDown={ev => handleKeyDown(ev)}
       >
         <input
           ref={inputRef}
-          id={name}
-          name={name}
+          id={name as string}
+          name={name as string}
           type="file"
           className="hidden"
           onChange={handleFileChange}

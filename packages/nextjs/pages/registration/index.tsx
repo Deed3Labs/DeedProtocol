@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import OtherInformations from "./OtherInformations";
 import OwnerInformation from "./OwnerInformation";
 import PropertyDetails from "./PropertyDetails";
 import { NextPage } from "next";
 import { useDeedNftMint } from "~~/hooks/contracts/deed-nft-hooks";
-import PropertyRegistrationModel from "~~/models/property-registration.model";
+import { LightChangeEvent } from "~~/models/light-change-event";
+import {
+  OwnerInformationModel,
+  PropertyDetailsModel,
+  PropertyRegistrationModel,
+} from "~~/models/property-registration.model";
+import { isDev } from "~~/utils/is-dev";
+import { notification } from "~~/utils/scaffold-eth";
 
 // const steps = [
 //   "Owner Information",
@@ -15,15 +22,108 @@ import PropertyRegistrationModel from "~~/models/property-registration.model";
 //   "Wait for validation",
 // ];
 
+const fakeData: PropertyRegistrationModel = {
+  ownerInformation: {
+    ownerName: "John Doe",
+    ownerSuffix: "Jr.",
+    ownerType: "individual",
+    entityName: "",
+    ownerPosition: "",
+    ownerState: "CA",
+    ownerEntityType: "LLC",
+  } as OwnerInformationModel,
+  propertyDetails: {
+    propertyType: "realEstate",
+    propertyAddress: "1234 Main St",
+    propertyCity: "San Francisco",
+    propertyState: "CA",
+    propertyZoning: "commercial",
+    propertySize: "0.5 acres",
+    propertySubType: "land",
+  } as PropertyDetailsModel,
+  otherInformation: {
+    blockchain: "gnosis",
+    wrapper: "llc",
+  },
+};
+
 const RegistrationForm: NextPage = () => {
   // const [step, setStep] = useState(0);
-  const { writeAsync, isLoading, isIdle, isSuccess, data } = useDeedNftMint();
+  const { writeAsync, isLoading, isSuccess, data } = useDeedNftMint();
+  const [formData, setFormData] = useState<PropertyRegistrationModel>(isDev() ? fakeData : {});
+
+  useEffect(() => {
+    if (isDev()) {
+      const createFile = (id: string, content: string) => {
+        const myFile = new File([content], "myFile.txt", {
+          type: "text/plain",
+          lastModified: Date.now(),
+        });
+        const fileInput = document.querySelector(`#${id}`) as HTMLInputElement;
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(myFile);
+        fileInput.files = dataTransfer.files;
+        return myFile;
+      };
+
+      setFormData(prevState => ({
+        ...prevState,
+        ownerInformation: { ...formData.ownerInformation!, ids: createFile("ids", "ids") },
+      }));
+
+      setFormData(prevState => ({
+        ...prevState,
+        ownerInformation: {
+          ...formData.ownerInformation!,
+          articleIncorporation: createFile("articleIncorporation", "articleIncorporation"),
+        },
+      }));
+
+      setFormData(prevState => ({
+        ...prevState,
+        propertyDetails: {
+          ...formData.propertyDetails!,
+          propertyDeedOrTitle: createFile("propertyDeedOrTitle", "propertyDeedOrTitle"),
+        },
+      }));
+    }
+  }, []);
+
+  const handleChange = (ev: LightChangeEvent<PropertyRegistrationModel>) => {
+    setFormData(prevState => ({ ...prevState, [ev.name]: ev.value }));
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validate()) return;
+    console.log({ formData });
+    writeAsync(formData);
+  };
 
-    const formData = new FormData(e.currentTarget);
-    writeAsync(Object.fromEntries(formData.entries()) as unknown as PropertyRegistrationModel);
+  const validate = () => {
+    if (!formData.ownerInformation) {
+      notification.error("Owner Information is required");
+      return false;
+    }
+    if (!formData.ownerInformation.ids) {
+      notification.error("Owner Information ids is required");
+      return false;
+    }
+    if (!formData.ownerInformation.articleIncorporation) {
+      notification.error("Owner Information articleIncorporation is required");
+      return false;
+    }
+
+    if (!formData.propertyDetails) {
+      notification.error("Owner propertyDetails is required");
+      return false;
+    }
+    if (!formData.propertyDetails.propertyDeedOrTitle) {
+      notification.error("Owner Information propertyDeedOrTitle is required");
+      return false;
+    }
+
+    return true;
   };
 
   return (
@@ -53,23 +153,14 @@ const RegistrationForm: NextPage = () => {
                 className={`step ${step >= i ? "step-success" : ""}`}
                 onClick={() => setStep(i)}
               ></li>
-            ))}
+            ))}a
           </ul> */}
           <form onSubmit={handleSubmit}>
-            <OwnerInformation />
-            <PropertyDetails />
-            <OtherInformations />
+            <OwnerInformation value={formData.ownerInformation} onChange={handleChange} />
+            <PropertyDetails value={formData.propertyDetails} onChange={handleChange} />
+            <OtherInformations value={formData.otherInformation} onChange={handleChange} />
             <div className="m-8 w-full text-right">
               <input type="submit" className="btn btn-lg bg-gray-600" />
-            </div>
-            <div>
-              {isLoading && (
-                <div>
-                  Transaction Hash: {data?.hash}
-                  <div className="loading loading-spinner"></div>
-                </div>
-              )}
-              {!isLoading && isSuccess && <div>Succeed</div>}
             </div>
           </form>
         </div>

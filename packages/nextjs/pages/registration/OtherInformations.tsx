@@ -2,10 +2,22 @@ import React from "react";
 import Link from "next/link";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { BlockchainOptions, WrapperOptions } from "~~/constants";
+import { LightChangeEvent } from "~~/models/light-change-event";
+import {
+  OtherInformationModel,
+  PropertyRegistrationModel,
+} from "~~/models/property-registration.model";
 
-interface Props {}
+interface Props {
+  value?: OtherInformationModel;
+  onChange?: (ev: LightChangeEvent<PropertyRegistrationModel>) => void;
+}
 
-const OtherInformations = ({}: Props) => {
+const OtherInformations = ({ value, onChange }: Props) => {
+  const handleChange = (ev: LightChangeEvent<OtherInformationModel>) => {
+    const updatedValue = { ...value, [ev.name]: ev.value };
+    onChange?.({ name: "otherInformation", value: updatedValue });
+  };
   return (
     <div className="flex flex-col gap-6 mt-6">
       <div className="text-2xl font-['KronaOne'] leading-10">3. Other Information</div>
@@ -30,6 +42,8 @@ const OtherInformations = ({}: Props) => {
           name="blockchain"
           options={BlockchainOptions}
           optionsClassName="w-[180px] h-[220px]"
+          value={value?.blockchain}
+          onChange={handleChange}
         />
       </div>
       <div>
@@ -53,7 +67,13 @@ const OtherInformations = ({}: Props) => {
           </Link>
           &nbsp;about each Wrapper type.
         </div>
-        <RadioBoxesInput name="wrapper" options={WrapperOptions} optionsClassName="w-full" />
+        <RadioBoxesInput
+          name="wrapper"
+          options={WrapperOptions}
+          optionsClassName="w-full"
+          value={value?.wrapper}
+          onChange={handleChange}
+        />
       </div>
     </div>
   );

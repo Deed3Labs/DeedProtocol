@@ -1,16 +1,19 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
+import { LightChangeEvent } from "~~/models/light-change-event";
 
-interface Props {
+interface Props<TParent> {
   label: string;
   placeholder: string;
-  name: string;
+  name: keyof TParent;
   optional?: boolean;
   large?: boolean;
   info?: boolean;
   className?: string;
+  value?: string;
+  onChange?: (ev: LightChangeEvent<TParent>) => void;
 }
 
-const TextInput = ({
+const TextInput = <TParent,>({
   label,
   placeholder,
   name,
@@ -18,7 +21,9 @@ const TextInput = ({
   info,
   large = true,
   className,
-}: Props) => {
+  value,
+  onChange,
+}: Props<TParent>) => {
   return (
     <div className={`flex flex-col ${className ? className : ""}`}>
       <label className="justify-start items-center inline-flex mb-3" htmlFor="entityName">
@@ -35,10 +40,14 @@ const TextInput = ({
         )}
       </label>
       <input
-        id={name}
-        name={name}
+        id={name as string}
+        name={name as string}
         className={`input ${large ? "input-lg" : ""} input-bordered`}
         placeholder={placeholder}
+        value={value}
+        onChange={(ev: ChangeEvent<HTMLInputElement>) =>
+          onChange?.({ name, value: ev.target.value })
+        }
       />
     </div>
   );

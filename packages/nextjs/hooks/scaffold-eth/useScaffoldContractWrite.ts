@@ -6,7 +6,9 @@ import { useDeployedContractInfo, useTransactor } from "~~/hooks/scaffold-eth";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
 
-type UpdatedArgs = Parameters<ReturnType<typeof useContractWrite<Abi, string, undefined>>["writeAsync"]>[0];
+type UpdatedArgs = Parameters<
+  ReturnType<typeof useContractWrite<Abi, string, undefined>>["writeAsync"]
+>[0];
 
 /**
  * @dev wrapper for wagmi's useContractWrite hook(with config prepared by usePrepareContractWrite hook) which loads in deployed contract abi and address automatically
@@ -18,7 +20,10 @@ type UpdatedArgs = Parameters<ReturnType<typeof useContractWrite<Abi, string, un
  */
 export const useScaffoldContractWrite = <
   TContractName extends ContractName,
-  TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
+  TFunctionName extends ExtractAbiFunctionNames<
+    ContractAbi<TContractName>,
+    "nonpayable" | "payable"
+  >,
 >({
   contractName,
   functionName,

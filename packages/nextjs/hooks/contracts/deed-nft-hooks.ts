@@ -1,11 +1,10 @@
 import { useScaffoldContractWrite } from "../scaffold-eth";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { dagJson } from "@helia/dag-json";
-import { createHelia } from "helia";
 import { toHex } from "viem";
 import { PropertyTypeOptions } from "~~/constants";
-import PropertyRegistrationModel from "~~/models/property-registration.model";
+import { PropertyRegistrationModel } from "~~/models/property-registration.model";
 import { indexOfLiteral } from "~~/utils/extract-values";
+import { uploadFile, uploadJson } from "~~/utils/ipfs";
 
 export const useDeedNftMint = () => {
   const { primaryWallet } = useDynamicContext();
@@ -17,36 +16,86 @@ export const useDeedNftMint = () => {
   });
 
   const writeAsync = async (data: PropertyRegistrationModel) => {
-    const helia = await createHelia();
-    const jsonNode = dagJson(helia);
-    const ids = await jsonNode.add(data.ids);
-    const proofBill = await jsonNode.add(data.proofBill);
-    const articleIncorporation = await jsonNode.add(data.articleIncorporation);
-    const operatingAgreement = await jsonNode.add(data.operatingAgreement);
-    const supportingDoc = await jsonNode.add(data.supportingDoc);
+    if (!data.ownerInformation) {
+      throw new Error("Missing owner information");
+    }
+    if (!data.propertyDetails) {
+      throw new Error("Missing property details");
+    }
+    if (!data.otherInformation) {
+      throw new Error("Missing other information");
+    }
+
+    // Owner informations docs
+    const ids = await uploadFile(data.ownerInformation.ids);
+
+    const proofBill = data.ownerInformation?.proofBill
+      ? await uploadFile(data.ownerInformation?.proofBill)
+      : undefined;
+
+    const articleIncorporation = await uploadFile(data.ownerInformation.articleIncorporation);
+
+    const operatingAgreement = data.ownerInformation?.operatingAgreement
+      ? await uploadFile(data.ownerInformation.operatingAgreement)
+      : undefined;
+
+    const supportingDoc = data.ownerInformation?.supportingDoc
+      ? await Promise.all(data.ownerInformation.supportingDoc.map(doc => uploadFile(doc)))
+      : undefined;
+
+    // Property details docs
+    const propertyImages = data.propertyDetails?.propertyImages
+      ? await uploadFile(data.propertyDetails.propertyImages)
+      : undefined;
+
+    const propertyDeedOrTitle = await uploadFile(data.propertyDetails.propertyDeedOrTitle);
+
+    const propertyPurchaseContract = data.propertyDetails?.propertyPurchaseContract
+      ? await uploadFile(data.propertyDetails.propertyPurchaseContract)
+      : undefined;
 
     if (!primaryWallet) {
       throw new Error("Not connected");
     }
 
-    const propertyHash = await jsonNode.add({
-      ...data,
-      ids,
-      proofBill,
-      articleIncorporation,
-      operatingAgreement,
-      supportingDoc,
+    const deedInfo = cleanObject({
+      ownerInformation: {
+        ...data.ownerInformation,
+        ids,
+        proofBill,
+        articleIncorporation,
+        operatingAgreement,
+        supportingDoc,
+      },
+      propertyDetails: {
+        ...data.propertyDetails,
+        propertyImages,
+        propertyDeedOrTitle,
+        propertyPurchaseContract,
+      },
+      otherInformation: data.otherInformation,
     });
+
+    const propertyHash = await uploadJson(deedInfo);
+    console.log("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
 
     await contractWritePayload.writeAsync({
       args: [
         primaryWallet.address,
         toHex(propertyHash.toString()),
-        indexOfLiteral(PropertyTypeOptions, data.propertyType),
-        data.propertyAddress,
+        indexOfLiteral(PropertyTypeOptions, data.propertyDetails.propertyType),
+        data.propertyDetails.propertyAddress,
       ],
     });
   };
 
   return { ...contractWritePayload, writeAsync };
 };
+
+function cleanObject(obj: any) {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] && typeof obj[key] === "object") cleanObject(obj[key]);
+    else if (obj[key] === undefined) delete obj[key]; // or set to null
+  });
+  return obj;
+}

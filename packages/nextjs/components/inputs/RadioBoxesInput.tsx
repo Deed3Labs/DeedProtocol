@@ -1,10 +1,12 @@
-interface Props {
-  name: string;
+import { LightChangeEvent } from "~~/models/light-change-event";
+
+interface Props<TParent> {
+  name: keyof TParent;
   className?: string;
   options: RadioBoxOption[] | Readonly<RadioBoxOption[]>;
-  value?: string;
+  value?: TParent[keyof TParent];
   optionsClassName?: string;
-  onChange?: (value: string) => void;
+  onChange?: (value: LightChangeEvent<TParent>) => void;
 }
 
 export interface RadioBoxOption {
@@ -15,11 +17,19 @@ export interface RadioBoxOption {
   icon?: React.ReactNode;
   disabled?: boolean;
 }
-
-export const RadioBoxesInput = ({ name, options, value, optionsClassName, onChange }: Props) => {
-  const handleKeyDown = (ev: React.KeyboardEvent<HTMLLabelElement>, value: string) => {
+export const RadioBoxesInput = <TParent,>({
+  name,
+  options,
+  value,
+  optionsClassName,
+  onChange,
+}: Props<TParent>) => {
+  const handleKeyDown = (
+    ev: React.KeyboardEvent<HTMLLabelElement>,
+    newValue: TParent[keyof TParent],
+  ) => {
     if (ev.key === "Enter") {
-      onChange?.(value);
+      onChange?.({ value: newValue, name });
     }
   };
   return (
@@ -28,11 +38,11 @@ export const RadioBoxesInput = ({ name, options, value, optionsClassName, onChan
         <div key={option.value} title={option.disabled ? "Coming soon" : undefined}>
           <input
             id={`option_${option.value}`}
-            name={name}
+            name={name as string}
             type="radio"
             value={option.value}
             checked={value ? option.value === value : undefined}
-            onChange={() => onChange?.(option.value)}
+            onChange={() => onChange?.({ value: option.value as TParent[keyof TParent], name })}
             className={`peer hidden`}
           />
           <label
@@ -41,7 +51,7 @@ export const RadioBoxesInput = ({ name, options, value, optionsClassName, onChan
             } ${optionsClassName ? optionsClassName : ""}`}
             htmlFor={`option_${option.value}`}
             tabIndex={option.disabled ? undefined : 0}
-            onKeyDown={ev => handleKeyDown(ev, option.value)}
+            onKeyDown={ev => handleKeyDown(ev, option.value as TParent[keyof TParent])}
           >
             {option.icon ? (
               option.icon
