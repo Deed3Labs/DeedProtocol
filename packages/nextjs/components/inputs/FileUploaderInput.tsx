@@ -72,7 +72,7 @@ export const FileUploaderInput = <TParent,>({
           className="hidden"
           onChange={handleFileChange}
           multiple={multiple}
-          accept=".pdf,.txt,.doc,.csv"
+          // accept=".pdf,.txt,.doc,.csv"
         />
         <div className="w-12 h-12 lg:w-24 lg:h-24 mb-2 p-1 lg:p-6 border border-white border-opacity-10 border-dashed justify-start items-center inline-flex">
           <div className="grow shrink basis-0 self-stretch p-1 bg-neutral-900 rounded flex-col justify-center items-center inline-flex">
@@ -95,7 +95,7 @@ export const FileUploaderInput = <TParent,>({
               {files.map(file => (
                 <li key={file.name}>
                   {file.name} (
-                  <span className={file.size / 1000 > maxFileSizeKb ? "text-error" : ""}>
+                  <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
                     {file.size / 1000} KB
                   </span>
                   )
@@ -107,9 +107,11 @@ export const FileUploaderInput = <TParent,>({
               <div className="text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
                 {subtitle}
               </div>
-              <div className=" text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
-                Max File Size: 500 kilobytes. File types: PDF, TXT, DOC, or CSV.
-              </div>
+              {
+                <div className=" text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
+                  Max File Size: 500 kilobytes. {/*File types: PDF, TXT, DOC, or CSV, Images. */}
+                </div>
+              }
             </>
           )}
         </div>

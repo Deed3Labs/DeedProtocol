@@ -35,6 +35,8 @@ const PropertyDetails = ({ value, onChange }: Props) => {
         name="propertyType"
         options={PropertyTypeOptions}
         onChange={handleChange}
+        label="Select Property Type"
+        info
         value={value?.propertyType}
         optionsClassName="w-[180px] h-[210px]"
       />

@@ -15,7 +15,13 @@ type TransactionFunc = (
 /**
  * Custom notification content for TXs.
  */
-const TxnNotification = ({ message, blockExplorerLink }: { message: string; blockExplorerLink?: string }) => {
+const TxnNotification = ({
+  message,
+  blockExplorerLink,
+}: {
+  message: string;
+  blockExplorerLink?: string;
+}) => {
   return (
     <div className={`flex flex-col ml-1 cursor-default`}>
       <p className="my-0">{message}</p>
@@ -54,7 +60,9 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       // Get full transaction from public client
       const publicClient = getPublicClient();
 
-      notificationId = notification.loading(<TxnNotification message="Awaiting for user confirmation" />);
+      notificationId = notification.loading(
+        <TxnNotification message="Awaiting for user confirmation" />,
+      );
       if (typeof tx === "function") {
         // Tx is already prepared by the caller
         transactionHash = (await tx()).hash;
@@ -68,7 +76,10 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       const blockExplorerTxURL = network ? getBlockExplorerTxLink(network, transactionHash) : "";
 
       notificationId = notification.loading(
-        <TxnNotification message="Waiting for transaction to complete." blockExplorerLink={blockExplorerTxURL} />,
+        <TxnNotification
+          message="Waiting for transaction to complete."
+          blockExplorerLink={blockExplorerTxURL}
+        />,
       );
 
       const transactionReceipt = await publicClient.waitForTransactionReceipt({
@@ -78,7 +89,10 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       notification.remove(notificationId);
 
       notification.success(
-        <TxnNotification message="Transaction completed successfully!" blockExplorerLink={blockExplorerTxURL} />,
+        <TxnNotification
+          message="Transaction completed successfully!"
+          blockExplorerLink={blockExplorerTxURL}
+        />,
         {
           icon: "🎉",
         },

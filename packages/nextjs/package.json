@@ -33,6 +33,7 @@
     "@uniswap/sdk-core": "^4.0.1",
     "@uniswap/v2-sdk": "^3.0.1",
     "@wagmi/chains": "^1.2.0",
+    "axios": "^1.6.2",
     "blo": "^1.0.1",
     "buffer": "^6.0.3",
     "daisyui": "^3.5.1",

@@ -50,11 +50,11 @@ export interface OtherInformationModel {
 
 export interface PropertyRegistrationModel {
   // 1. Owner Information
-  ownerInformation?: OwnerInformationModel;
+  ownerInformation: OwnerInformationModel;
 
   // 2. Property Details
-  propertyDetails?: PropertyDetailsModel;
+  propertyDetails: PropertyDetailsModel;
 
   // 3. Other information
-  otherInformation?: OtherInformationModel;
+  otherInformation: OtherInformationModel;
 }

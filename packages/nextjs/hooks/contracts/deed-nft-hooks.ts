@@ -5,6 +5,7 @@ import { PropertyTypeOptions } from "~~/constants";
 import { PropertyRegistrationModel } from "~~/models/property-registration.model";
 import { indexOfLiteral } from "~~/utils/extract-values";
 import { uploadFile, uploadJson } from "~~/utils/ipfs";
+import { notification } from "~~/utils/scaffold-eth";
 
 export const useDeedNftMint = () => {
   const { primaryWallet } = useDynamicContext();
@@ -16,15 +17,12 @@ export const useDeedNftMint = () => {
   });
 
   const writeAsync = async (data: PropertyRegistrationModel) => {
-    if (!data.ownerInformation) {
-      throw new Error("Missing owner information");
+    if (!primaryWallet) {
+      notification.error("No wallet connected");
+      return;
     }
-    if (!data.propertyDetails) {
-      throw new Error("Missing property details");
-    }
-    if (!data.otherInformation) {
-      throw new Error("Missing other information");
-    }
+
+    const toastId = notification.loading("Uploading documents...");
 
     // Owner informations docs
     const ids = await uploadFile(data.ownerInformation.ids);
@@ -54,9 +52,7 @@ export const useDeedNftMint = () => {
       ? await uploadFile(data.propertyDetails.propertyPurchaseContract)
       : undefined;
 
-    if (!primaryWallet) {
-      throw new Error("Not connected");
-    }
+    notification.remove(toastId);
 
     const deedInfo = cleanObject({
       ownerInformation: {

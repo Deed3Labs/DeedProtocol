@@ -26,21 +26,15 @@ const OwnerInformation = ({ value, onChange }: Props) => {
   return (
     <div className="flex flex-col gap-6 mt-6">
       <div className="text-2xl font-['KronaOne'] leading-10">1. Owner Information</div>
-      <div>
-        <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-bold font-['Montserrat'] leading-normal">
-            Current Owner Type
-          </div>
-          <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
-        </div>
-        <RadioBoxesInput
-          name="ownerType"
-          options={OwnerTypeOptions}
-          optionsClassName="w-[180px] h-[180px]"
-          value={value?.ownerType}
-          onChange={handleChange}
-        ></RadioBoxesInput>
-      </div>
+      <RadioBoxesInput
+        name="ownerType"
+        options={OwnerTypeOptions}
+        optionsClassName="w-[180px] h-[180px]"
+        label="Current Owner Type"
+        info
+        value={value?.ownerType}
+        onChange={handleChange}
+      ></RadioBoxesInput>
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         {value?.ownerType === "legal" && (
           <TextInput

@@ -47,15 +47,28 @@ const fakeData: PropertyRegistrationModel = {
   },
 };
 
+const defaultData: PropertyRegistrationModel = {
+  otherInformation: {
+    blockchain: "gnosis",
+    wrapper: "llc",
+  },
+  ownerInformation: {
+    ownerType: "individual",
+  },
+  propertyDetails: {},
+} as PropertyRegistrationModel;
+
 const RegistrationForm: NextPage = () => {
   // const [step, setStep] = useState(0);
   const { writeAsync } = useDeedNftMint();
-  const [formData, setFormData] = useState<PropertyRegistrationModel>(isDev() ? fakeData : {});
+  const [formData, setFormData] = useState<PropertyRegistrationModel>(
+    isDev() ? fakeData : defaultData,
+  );
 
   useEffect(() => {
     if (isDev()) {
       const createFile = (id: string, content: string) => {
-        const myFile = new File([content], "myFile.txt", {
+        const myFile = new File([content], `${id}.txt`, {
           type: "text/plain",
           lastModified: Date.now(),
         });
@@ -101,26 +114,40 @@ const RegistrationForm: NextPage = () => {
   };
 
   const validate = () => {
-    if (!formData.ownerInformation) {
-      notification.error("Owner Information is required");
-      return false;
-    }
     if (!formData.ownerInformation.ids) {
-      notification.error("Owner Information ids is required");
-      return false;
-    }
-    if (!formData.ownerInformation.articleIncorporation) {
-      notification.error("Owner Information articleIncorporation is required");
+      notification.error("Owner Information ids is required", { duration: 3000 });
       return false;
     }
 
-    if (!formData.propertyDetails) {
-      notification.error("Owner propertyDetails is required");
+    if (!formData.ownerInformation.articleIncorporation) {
+      notification.error("Owner Information articleIncorporation is required", { duration: 3000 });
       return false;
     }
+
     if (!formData.propertyDetails.propertyDeedOrTitle) {
-      notification.error("Owner Information propertyDeedOrTitle is required");
+      notification.error("Property details Deed or Title is required", { duration: 3000 });
       return false;
+    }
+
+    for (const field of Object.values(formData.ownerInformation)) {
+      if (field instanceof File && field.size / 1024 > 500) {
+        notification.error(`${field.name} is too big. Max size is 500kb`, { duration: 3000 });
+        return false;
+      }
+    }
+
+    for (const field of Object.values(formData.propertyDetails)) {
+      if (field instanceof File && field.size / 1024 > 500) {
+        notification.error(`${field.name} is too big. Max size is 500kb`, { duration: 3000 });
+        return false;
+      }
+    }
+
+    for (const field of Object.values(formData.otherInformation)) {
+      if (field instanceof File && field.size / 1024 > 500) {
+        notification.error(`${field.name} is too big. Max size is 500kb`);
+        return false;
+      }
     }
 
     return true;
