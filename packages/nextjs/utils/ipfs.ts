@@ -24,8 +24,6 @@ export const uploadFile = async (file: File) => {
     },
   });
 
-  console.log("[Upload File] response", res);
-
   return res.data.IpfsHash;
 };
 
@@ -35,8 +33,9 @@ export const uploadJson = async (object: any) => {
   return res.IpfsHash;
 };
 
-export const retrieveFromHash = <T = any>(hash: string) => {
-  return fetch(
+export const retrieveFromHash = async <T = any>(hash: string) => {
+  const res = await fetch(
     `${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/${hash}?pinataGatewayToken=${process.env.NEXT_PUBLIC_PINATA_GATEWAY_KEY}"`,
-  ).then(res => res.json() as T);
+  );
+  return res.json() as T;
 };
