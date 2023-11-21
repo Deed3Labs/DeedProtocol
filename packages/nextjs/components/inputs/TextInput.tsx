@@ -10,6 +10,7 @@ interface Props<TParent> {
   info?: boolean;
   className?: string;
   value?: string;
+  required?: boolean;
   onChange?: (ev: LightChangeEvent<TParent>) => void;
 }
 
@@ -22,6 +23,7 @@ const TextInput = <TParent,>({
   large = true,
   className,
   value,
+  required,
   onChange,
 }: Props<TParent>) => {
   return (
@@ -42,12 +44,15 @@ const TextInput = <TParent,>({
       <input
         id={name as string}
         name={name as string}
-        className={`input ${large ? "input-lg" : ""} input-bordered`}
+        className={`input ${large ? "input-lg" : ""} input-bordered ${
+          required && !value ? "input-error" : ""
+        }`}
         placeholder={placeholder}
         value={value}
         onChange={(ev: ChangeEvent<HTMLInputElement>) =>
           onChange?.({ name, value: ev.target.value })
         }
+        required={required}
       />
     </div>
   );

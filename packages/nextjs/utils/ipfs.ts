@@ -1,41 +1,38 @@
-import pinataSDK from "@pinata/sdk";
-import axios from "axios";
+import { notification } from "./scaffold-eth";
 
-export const uploadFile = async (file: File) => {
+export const uploadFile = async (file: File, fieldLabel: string) => {
   const formData = new FormData();
-  formData.append("file", file);
-  const pinataBody = {
-    options: {
-      cidVersion: 0,
-    },
-    metadata: {
-      name: file.name,
-    },
-  };
-  formData.append("pinataOptions", JSON.stringify(pinataBody.options));
-  formData.append("pinataMetadata", JSON.stringify(pinataBody.metadata));
-  const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
+  // @ts-ignore
+  formData.append("file", file, { filename: file.name });
+  formData.append("name", file.name);
+  formData.append("description", fieldLabel);
 
-  const res = await axios.post(url, formData, {
-    headers: {
-      // @ts-ignore
-      "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_TOKEN}`,
-    },
-  });
+  try {
+    const res = await fetch("/api/files?mode=file", {
+      method: "POST",
+      body: formData,
+    });
+    return await res.text();
+  } catch (error) {
+    console.error(error);
+    notification.error(`Error uploading file ${file.name} for field ${fieldLabel}`);
+  }
 
-  return res.data.IpfsHash;
+  return null;
 };
 
 export const uploadJson = async (object: any) => {
-  const pinata = new pinataSDK({ pinataJWTKey: process.env.NEXT_PUBLIC_PINATA_TOKEN });
-  const res = await pinata.pinJSONToIPFS(object);
-  return res.IpfsHash;
+  const res = await fetch("/api/files?mode=json", {
+    method: "POST",
+    body: JSON.stringify(object),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await res.text();
 };
 
 export const retrieveFromHash = async <T = any>(hash: string) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/${hash}?pinataGatewayToken=${process.env.NEXT_PUBLIC_PINATA_GATEWAY_KEY}"`,
-  );
+  const res = await fetch("/api/files/" + hash);
   return res.json() as T;
 };

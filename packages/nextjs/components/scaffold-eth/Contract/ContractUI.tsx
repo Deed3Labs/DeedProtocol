@@ -30,7 +30,7 @@ export const ContractUI = ({ contractName, className = "" }: ContractUIProps) =>
   if (deployedContractLoading) {
     return (
       <div className="mt-14">
-        <Spinner width="50px" height="50px" />
+        <Spinner />
       </div>
     );
   }
