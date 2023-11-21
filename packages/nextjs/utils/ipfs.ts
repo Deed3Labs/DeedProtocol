@@ -14,11 +14,9 @@ export const uploadFile = async (file: File, fieldLabel: string) => {
     });
     return await res.text();
   } catch (error) {
-    console.error(error);
     notification.error(`Error uploading file ${file.name} for field ${fieldLabel}`);
+    throw error;
   }
-
-  return null;
 };
 
 export const uploadJson = async (object: any) => {
