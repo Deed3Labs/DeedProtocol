@@ -9,25 +9,22 @@ if (!process.env.NEXT_PINATA_TOKEN) throw new Error("Missing NEXT_PINATA_TOKEN e
 export const config = {
   api: {
     bodyParser: false,
+    externalResolver: true,
   },
 };
 
 const saveFile = async (file: File, fields: Fields) => {
-  try {
-    const stream = fs.createReadStream(file.filepath);
-    const options = {
-      pinataMetadata: {
-        name: fields.name![0],
-        description: fields.description![0],
-      },
-    };
-    const response = await pinata.pinFileToIPFS(stream, options);
-    fs.unlinkSync(file.filepath);
+  const stream = fs.createReadStream(file.filepath);
+  const options = {
+    pinataMetadata: {
+      name: fields.name![0],
+      description: fields.description![0],
+    },
+  };
+  const response = await pinata.pinFileToIPFS(stream, options);
+  fs.unlinkSync(file.filepath);
 
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return response;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
@@ -36,14 +33,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const { mode } = req.query;
       if (mode === "file") {
         const form = new IncomingForm();
-        form.parse(req, async function (error, fields, files) {
+        form.parse(req, async (error, fields, files) => {
           try {
             if (error) {
               console.error(error);
-              return res.status(500).send("Upload Error");
+              res.status(500).send("Upload Error");
+            } else {
+              const response = await saveFile(files.file![0], fields);
+              res.status(200).send(response.IpfsHash);
             }
-            const response = await saveFile(files.file![0], fields);
-            return res.status(200).send(response.IpfsHash);
           } catch (error) {
             console.error(error);
             res.status(500).send("Server Error");
@@ -53,15 +51,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const readable = req.read();
         const buffer = Buffer.from(readable);
         const data = JSON.parse(buffer.toString());
-        console.debug({ data, readable });
+        console.debug(data);
         const response = await pinata.pinJSONToIPFS(data);
-        return res.status(200).send(response.IpfsHash);
+        res.status(200).send(response.IpfsHash);
       }
     } catch (e) {
       console.error(e);
       res.status(500).send("Server Error");
     }
-    res.end();
+  } else {
+    res.status(405).send("Method Not Supported");
   }
   // else if (req.method === "GET") {
   //   try {
