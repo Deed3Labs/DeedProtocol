@@ -1,8 +1,9 @@
 import { useScaffoldContractWrite } from "../scaffold-eth";
-import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { toHex } from "viem";
 import { PropertyTypeOptions } from "~~/constants";
 import { PropertyRegistrationModel } from "~~/models/property-registration.model";
+import logger from "~~/services/logger";
 import { indexOfLiteral } from "~~/utils/extract-values";
 import { uploadFile, uploadJson } from "~~/utils/ipfs";
 import { notification } from "~~/utils/scaffold-eth";
