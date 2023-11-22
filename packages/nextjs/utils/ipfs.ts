@@ -1,4 +1,5 @@
 import { notification } from "./scaffold-eth";
+import logger from "~~/services/logger";
 
 export const uploadFile = async (file: File, fieldLabel: string) => {
   const formData = new FormData();
@@ -14,7 +15,9 @@ export const uploadFile = async (file: File, fieldLabel: string) => {
     });
     return await res.text();
   } catch (error) {
-    notification.error(`Error uploading file ${file.name} for field ${fieldLabel}`);
+    const message = `Error uploading file ${file.name} for field ${fieldLabel}`;
+    notification.error(message);
+    logger.error({ message, error });
     throw error;
   }
 };
