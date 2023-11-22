@@ -3,6 +3,7 @@ import { Abi, ExtractAbiFunctionNames } from "abitype";
 import { useContractWrite, useNetwork } from "wagmi";
 import { getParsedError } from "~~/components/scaffold-eth";
 import { useDeployedContractInfo, useTransactor } from "~~/hooks/scaffold-eth";
+import logger from "~~/services/logger";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
 
@@ -57,7 +58,12 @@ export const useScaffoldContractWrite = <
     value?: UseScaffoldWriteConfig<TContractName, TFunctionName>["value"];
   } & UpdatedArgs = {}) => {
     if (!deployedContractData) {
-      notification.error("Target Contract is not deployed, did you forget to run `yarn deploy`?");
+      const message = "Target Contract is not deployed, did you forget to run `yarn deploy`?";
+      notification.error(message);
+      logger.error({
+        message,
+        contract: contractName,
+      });
       return;
     }
     if (!chain?.id) {
@@ -84,11 +90,14 @@ export const useScaffoldContractWrite = <
       } catch (e: any) {
         const message = getParsedError(e);
         notification.error(message);
+        logger.error({ message, contract: contractName, error: e });
       } finally {
         setIsMining(false);
       }
     } else {
-      notification.error("Contract writer error. Try again.");
+      const message = "Contract writer error. Try again.";
+      notification.error(message);
+      logger.error({ message, contract: contractName });
       return;
     }
   };
