@@ -2,13 +2,13 @@ import { notification } from "./scaffold-eth";
 import logger from "~~/services/logger";
 
 export const uploadFile = async (file: File, fieldLabel: string) => {
-  const formData = new FormData();
-  // @ts-ignore
-  formData.append("file", file, { filename: file.name });
-  formData.append("name", file.name);
-  formData.append("description", fieldLabel);
-
   try {
+    const formData = new FormData();
+    // @ts-ignore
+    formData.append("file", file, { filename: file.name });
+    formData.append("name", file.name);
+    formData.append("description", fieldLabel);
+
     const res = await fetch("/api/files?mode=file", {
       method: "POST",
       body: formData,
