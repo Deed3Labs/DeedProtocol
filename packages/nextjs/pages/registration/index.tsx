@@ -81,13 +81,13 @@ const RegistrationForm: NextPage = () => {
 
       setFormData(prevState => ({
         ...prevState,
-        ownerInformation: { ...formData.ownerInformation!, ids: createFile("ids", "ids") },
+        ownerInformation: { ...formData.ownerInformation, ids: createFile("ids", "ids") },
       }));
 
       setFormData(prevState => ({
         ...prevState,
         ownerInformation: {
-          ...formData.ownerInformation!,
+          ...formData.ownerInformation,
           articleIncorporation: createFile("articleIncorporation", "articleIncorporation"),
         },
       }));
@@ -95,7 +95,7 @@ const RegistrationForm: NextPage = () => {
       setFormData(prevState => ({
         ...prevState,
         propertyDetails: {
-          ...formData.propertyDetails!,
+          ...formData.propertyDetails,
           propertyDeedOrTitle: createFile("propertyDeedOrTitle", "propertyDeedOrTitle"),
         },
       }));

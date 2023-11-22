@@ -61,6 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       console.error(e);
       res.status(500).send("Server Error");
     }
+    res.end();
   }
   // else if (req.method === "GET") {
   //   try {

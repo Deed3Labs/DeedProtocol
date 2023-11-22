@@ -43,7 +43,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   }, [isDarkMode]);
 
   return (
-    <ErrorBoundary>
+    <>
       <NextNProgress />
       <DynamicContextProvider
         theme={isDarkTheme ? "dark" : "light"}
@@ -57,7 +57,9 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
           <div className="flex flex-col min-h-screen">
             <Header />
             <main className="relative flex flex-col flex-1">
-              <Component {...pageProps} />
+              <ErrorBoundary>
+                <Component {...pageProps} />
+              </ErrorBoundary>
             </main>
             <Footer />
           </div>
@@ -65,7 +67,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
           <BackToTop />
         </DynamicWagmiConnector>
       </DynamicContextProvider>
-    </ErrorBoundary>
+    </>
   );
 };
 

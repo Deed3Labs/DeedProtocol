@@ -31,8 +31,8 @@ const OwnerInformation = ({ value, onChange }: Props) => {
         optionsClassName="w-[180px] h-[180px]"
         label="Current Owner Type"
         info
-        value={value?.ownerType}
         onChange={handleChange}
+        value={value?.ownerType}
       ></RadioBoxesInput>
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         {value?.ownerType === "legal" && (

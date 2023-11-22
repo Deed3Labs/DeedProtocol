@@ -34,11 +34,11 @@ const PropertyDetails = ({ value, onChange }: Props) => {
       <RadioBoxesInput
         name="propertyType"
         options={PropertyTypeOptions}
-        onChange={handleChange}
         label="Select Property Type"
         info
-        value={value?.propertyType}
         optionsClassName="w-[180px] h-[210px]"
+        onChange={handleChange}
+        value={value?.propertyType}
       />
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         <TextInput
