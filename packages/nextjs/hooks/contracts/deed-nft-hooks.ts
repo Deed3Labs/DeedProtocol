@@ -17,82 +17,83 @@ export const useDeedNftMint = () => {
   });
 
   const writeAsync = async (data: PropertyRegistrationModel) => {
-    if (!primaryWallet) {
-      notification.error("No wallet connected");
-      return;
-    }
+    throw new Error("Not implemented");
+    // if (!primaryWallet) {
+    //   notification.error("No wallet connected");
+    //   return;
+    // }
 
-    const toastId = notification.loading("Uploading documents...");
+    // const toastId = notification.loading("Uploading documents...");
 
-    // Owner informations docs
-    const ids = await uploadFile(data.ownerInformation.ids, "ID or Passport");
+    // // Owner informations docs
+    // const ids = await uploadFile(data.ownerInformation.ids, "ID or Passport");
 
-    const proofBill = data.ownerInformation?.proofBill
-      ? await uploadFile(data.ownerInformation?.proofBill, "Utility Bill or Other Document")
-      : undefined;
+    // const proofBill = data.ownerInformation?.proofBill
+    //   ? await uploadFile(data.ownerInformation?.proofBill, "Utility Bill or Other Document")
+    //   : undefined;
 
-    const articleIncorporation = await uploadFile(
-      data.ownerInformation.articleIncorporation,
-      "Acrticle of Incorporation",
-    );
+    // const articleIncorporation = await uploadFile(
+    //   data.ownerInformation.articleIncorporation,
+    //   "Acrticle of Incorporation",
+    // );
 
-    const operatingAgreement = data.ownerInformation?.operatingAgreement
-      ? await uploadFile(data.ownerInformation.operatingAgreement, "Operating Agreement")
-      : undefined;
+    // const operatingAgreement = data.ownerInformation?.operatingAgreement
+    //   ? await uploadFile(data.ownerInformation.operatingAgreement, "Operating Agreement")
+    //   : undefined;
 
-    const supportingDoc = data.ownerInformation?.supportingDoc
-      ? await Promise.all(
-          data.ownerInformation.supportingDoc.map((doc, i) =>
-            uploadFile(doc, "Any other Supporting Documents #" + i),
-          ),
-        )
-      : undefined;
+    // const supportingDoc = data.ownerInformation?.supportingDoc
+    //   ? await Promise.all(
+    //       data.ownerInformation.supportingDoc.map((doc, i) =>
+    //         uploadFile(doc, "Any other Supporting Documents #" + i),
+    //       ),
+    //     )
+    //   : undefined;
 
-    // Property details docs
-    const propertyImages = data.propertyDetails?.propertyImages
-      ? await uploadFile(data.propertyDetails.propertyImages, "Property Images")
-      : undefined;
+    // // Property details docs
+    // const propertyImages = data.propertyDetails?.propertyImages
+    //   ? await uploadFile(data.propertyDetails.propertyImages, "Property Images")
+    //   : undefined;
 
-    const propertyDeedOrTitle = await uploadFile(
-      data.propertyDetails.propertyDeedOrTitle,
-      "Deed or Title",
-    );
+    // const propertyDeedOrTitle = await uploadFile(
+    //   data.propertyDetails.propertyDeedOrTitle,
+    //   "Deed or Title",
+    // );
 
-    const propertyPurchaseContract = data.propertyDetails?.propertyPurchaseContract
-      ? await uploadFile(data.propertyDetails.propertyPurchaseContract, "Purchase Contract")
-      : undefined;
+    // const propertyPurchaseContract = data.propertyDetails?.propertyPurchaseContract
+    //   ? await uploadFile(data.propertyDetails.propertyPurchaseContract, "Purchase Contract")
+    //   : undefined;
 
-    notification.remove(toastId);
+    // notification.remove(toastId);
 
-    const deedInfo = cleanObject({
-      ownerInformation: {
-        ...data.ownerInformation,
-        ids,
-        proofBill,
-        articleIncorporation,
-        operatingAgreement,
-        supportingDoc,
-      },
-      propertyDetails: {
-        ...data.propertyDetails,
-        propertyImages,
-        propertyDeedOrTitle,
-        propertyPurchaseContract,
-      },
-      otherInformation: data.otherInformation,
-    });
+    // const deedInfo = cleanObject({
+    //   ownerInformation: {
+    //     ...data.ownerInformation,
+    //     ids,
+    //     proofBill,
+    //     articleIncorporation,
+    //     operatingAgreement,
+    //     supportingDoc,
+    //   },
+    //   propertyDetails: {
+    //     ...data.propertyDetails,
+    //     propertyImages,
+    //     propertyDeedOrTitle,
+    //     propertyPurchaseContract,
+    //   },
+    //   otherInformation: data.otherInformation,
+    // });
 
-    const propertyHash = await uploadJson(deedInfo);
-    console.debug("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
+    // const propertyHash = await uploadJson(deedInfo);
+    // console.debug("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
 
-    await contractWritePayload.writeAsync({
-      args: [
-        primaryWallet.address,
-        toHex(propertyHash.toString()),
-        indexOfLiteral(PropertyTypeOptions, data.propertyDetails.propertyType),
-        data.propertyDetails.propertyAddress,
-      ],
-    });
+    // await contractWritePayload.writeAsync({
+    //   args: [
+    //     primaryWallet.address,
+    //     toHex(propertyHash.toString()),
+    //     indexOfLiteral(PropertyTypeOptions, data.propertyDetails.propertyType),
+    //     data.propertyDetails.propertyAddress,
+    //   ],
+    // });
   };
 
   return { ...contractWritePayload, writeAsync };

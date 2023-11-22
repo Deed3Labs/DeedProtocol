@@ -1,4 +1,3 @@
-import logger from "../../services/logger";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -6,22 +5,23 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   const { level } = req.query;
   const { body } = req;
+
   switch (level) {
     case "debug":
-      logger.debug(body);
+      console.debug(body);
       break;
     case "info":
-      logger.info(body);
+      console.info(body);
       break;
     case "warn":
-      logger.warn(body);
+      console.warn(body);
       break;
     case "error":
-      logger.error(body);
+      console.error(body);
       break;
     default:
-      logger.info(body);
-      break;
+      res.status(400).send("Invalid log level: " + level);
   }
+
   res.status(200);
 }
