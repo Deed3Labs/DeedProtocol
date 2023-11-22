@@ -23,5 +23,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(400).send("Invalid log level: " + level);
   }
 
-  res.status(200);
+  res.status(200).end();
 }

@@ -46,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             return res.status(200).send(response.IpfsHash);
           } catch (error) {
             console.error(error);
+            res.status(500).send("Server Error");
           }
         });
       } else if (mode === "json") {
