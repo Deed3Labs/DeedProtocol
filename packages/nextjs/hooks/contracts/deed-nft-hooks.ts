@@ -86,9 +86,9 @@ export const useDeedNftMint = () => {
       });
 
       propertyHash = await uploadJson(deedInfo);
+
       console.debug("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
     } catch (error) {
-      notification.error("Error while uploading documents");
       logger.error({ message: "Error while uploading documents", error });
       return;
     }
