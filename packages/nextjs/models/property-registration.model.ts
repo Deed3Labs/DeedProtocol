@@ -38,7 +38,7 @@ export interface PropertyDetailsModel {
   propertySize?: string;
   propertyZoning?: ValueExtractor<typeof PropertyZoningOptions>;
 
-  propertyImages?: File;
+  propertyImages?: File[];
   propertyDeedOrTitle: File;
   propertyPurchaseContract?: File;
 }

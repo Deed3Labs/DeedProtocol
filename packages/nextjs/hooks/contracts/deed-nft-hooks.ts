@@ -54,7 +54,11 @@ export const useDeedNftMint = () => {
 
       // Property details docs
       const propertyImages = data.propertyDetails?.propertyImages
-        ? await uploadFile(data.propertyDetails.propertyImages, "Property Images")
+        ? await Promise.all(
+            data.propertyDetails.propertyImages.map((doc, i) =>
+              uploadFile(doc, "Property Images #" + i),
+            ),
+          )
         : undefined;
 
       const propertyDeedOrTitle = await uploadFile(
