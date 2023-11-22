@@ -36,28 +36,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const { mode } = req.query;
       if (mode === "file") {
         const form = new IncomingForm();
-        form.parse(req, async function (err, fields, files) {
+        form.parse(req, async function (error, fields, files) {
           try {
-            if (err) {
-              console.log({ err });
+            if (error) {
+              console.error(error);
               return res.status(500).send("Upload Error");
             }
             const response = await saveFile(files.file![0], fields);
             return res.status(200).send(response.IpfsHash);
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
         });
       } else if (mode === "json") {
         const readable = req.read();
         const buffer = Buffer.from(readable);
         const data = JSON.parse(buffer.toString());
-        console.log({ data, readable });
+        console.debug({ data, readable });
         const response = await pinata.pinJSONToIPFS(data);
         return res.status(200).send(response.IpfsHash);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
       res.status(500).send("Server Error");
     }
   }

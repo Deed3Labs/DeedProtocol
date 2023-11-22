@@ -44,9 +44,8 @@ export const SelectInput = <TParent,>({
         id={name as string}
         name={name as string}
         className={`select ${large ? "select-lg" : ""} select-bordered w-full max-w-xs`}
-        defaultValue="default"
         onChange={ev => onChange?.({ name, value: ev.target.value })}
-        value={value}
+        value={value ?? "default"}
       >
         <option disabled value="default">
           {placeholder}

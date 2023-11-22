@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPublicClient, http, toHex } from "viem";
 import { hardhat } from "viem/chains";
+import logger from "~~/services/logger";
 
 const publicClient = createPublicClient({
   chain: hardhat,
@@ -32,7 +33,7 @@ export const AddressStorageTab = ({ address }: { address: string }) => {
         }
         setStorage(storageData);
       } catch (error) {
-        console.error("Failed to fetch storage:", error);
+        logger.error({ message: "Failed to fetch storage:", error });
       }
     };
 

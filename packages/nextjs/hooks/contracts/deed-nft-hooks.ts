@@ -83,7 +83,7 @@ export const useDeedNftMint = () => {
     });
 
     const propertyHash = await uploadJson(deedInfo);
-    console.log("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
+    console.debug("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
 
     await contractWritePayload.writeAsync({
       args: [

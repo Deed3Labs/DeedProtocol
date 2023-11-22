@@ -9,6 +9,7 @@ import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
 import { useDarkMode } from "usehooks-ts";
 import { BackToTop } from "~~/components/BackToTop";
+import ErrorBoundary from "~~/components/ErrorBoundary";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
@@ -42,14 +43,8 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   }, [isDarkMode]);
 
   return (
-    <>
-      {/* <WagmiConfig client={wagmiClient}> */}
+    <ErrorBoundary>
       <NextNProgress />
-      {/* <RainbowKitProvider
-        chains={appChains.chains}
-        avatar={BlockieAvatar}
-        theme={isDarkTheme ? darkTheme() : lightTheme()}
-      > */}
       <DynamicContextProvider
         theme={isDarkTheme ? "dark" : "light"}
         settings={{
@@ -70,9 +65,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
           <BackToTop />
         </DynamicWagmiConnector>
       </DynamicContextProvider>
-      {/* </RainbowKitProvider> */}
-      {/* </WagmiConfig> */}
-    </>
+    </ErrorBoundary>
   );
 };
 
