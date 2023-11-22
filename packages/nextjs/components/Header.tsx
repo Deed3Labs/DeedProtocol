@@ -1,12 +1,13 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FaucetButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
+import logger from "~~/services/logger";
 
 // const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
 //   const router = useRouter();
@@ -25,6 +26,7 @@ export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
+  const { primaryWallet } = useDynamicContext();
 
   const pathname = usePathname();
 
@@ -40,6 +42,12 @@ export const Header = () => {
     searchRef.current?.focus();
     ev.preventDefault();
   });
+
+  useEffect(() => {
+    if (primaryWallet) {
+      logger.setWallet(primaryWallet.address);
+    }
+  }, [primaryWallet]);
 
   const nav = (
     <>

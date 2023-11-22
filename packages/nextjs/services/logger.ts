@@ -1,32 +1,35 @@
+let currentWallet: string | undefined = undefined;
+
 const logger = {
   debug: (payload: any) => {
-    console.log("debug", payload);
-    fetch("/api/logger?level=debug", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    handleLog(payload, "debug");
   },
   info: (payload: any) => {
-    console.log("info", payload);
-    fetch("/api/logger?level=info", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    handleLog(payload, "info");
   },
   warn: (payload: any) => {
-    console.log("warn", payload);
-    fetch("/api/logger?level=warn", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    handleLog(payload, "warn");
   },
   error: (payload: any) => {
-    console.log("error", payload);
-    fetch("/api/logger?level=error", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    handleLog(payload, "error");
   },
+  setWallet: function (address: string) {
+    currentWallet = address;
+  },
+};
+
+const handleLog = (payload: any, level: "debug" | "info" | "warn" | "error") => {
+  console[level](payload);
+  fetch("/api/logger?level=warn", {
+    method: "POST",
+    body: JSON.stringify({
+      context: {
+        wallet: currentWallet ?? "No wallet",
+        browser: navigator.userAgent,
+      },
+      ...payload,
+    }),
+  });
 };
 
 export default logger;
