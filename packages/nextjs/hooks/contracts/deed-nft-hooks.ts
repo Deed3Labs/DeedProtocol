@@ -1,8 +1,14 @@
 import { useScaffoldContractWrite } from "../scaffold-eth";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { cloneDeep } from "lodash-es";
 import { toHex } from "viem";
 import { PropertyTypeOptions } from "~~/constants";
-import { PropertyRegistrationModel } from "~~/models/property-registration.model";
+import {
+  OtherInformationModel,
+  OwnerInformationModel,
+  PropertyDetailsModel,
+  PropertyRegistrationModel,
+} from "~~/models/property-registration.model";
 import logger from "~~/services/logger";
 import { indexOfLiteral } from "~~/utils/extract-values";
 import { uploadFile, uploadJson } from "~~/utils/ipfs";
@@ -26,69 +32,95 @@ export const useDeedNftMint = () => {
         return;
       }
 
+      const toBeUploaded: {
+        key: [
+          keyof PropertyRegistrationModel,
+          keyof OwnerInformationModel | keyof PropertyDetailsModel | keyof OtherInformationModel,
+        ];
+        label: string;
+        value: File;
+      }[] = [];
+
+      // Owner informations files
+      if (data.ownerInformation.ids)
+        toBeUploaded.push({
+          key: ["ownerInformation", "ids"],
+          label: "ID or Passport",
+          value: data.ownerInformation.ids,
+        });
+      if (data.ownerInformation.proofBill)
+        toBeUploaded.push({
+          key: ["ownerInformation", "proofBill"],
+          label: "Utility Bill or Other Document",
+          value: data.ownerInformation.proofBill,
+        });
+      toBeUploaded.push({
+        key: ["ownerInformation", "articleIncorporation"],
+        label: "Article of Incorporation",
+        value: data.ownerInformation.articleIncorporation,
+      });
+      if (data.ownerInformation.operatingAgreement)
+        toBeUploaded.push({
+          key: ["ownerInformation", "operatingAgreement"],
+          label: "Operating Agreement",
+          value: data.ownerInformation.operatingAgreement,
+        });
+      if (data.ownerInformation.supportingDoc)
+        data.ownerInformation.supportingDoc.forEach((doc, index) => {
+          toBeUploaded.push({
+            key: ["ownerInformation", "supportingDoc"],
+            label: "Any other Supporting Documents #" + index,
+            value: doc,
+          });
+        });
+
+      // Property details files
+      if (data.propertyDetails.propertyImages?.length)
+        data.propertyDetails.propertyImages.forEach((image, index) => {
+          toBeUploaded.push({
+            key: ["propertyDetails", "propertyImages"],
+            label: "Property Images #" + index,
+            value: image,
+          });
+        });
+
+      toBeUploaded.push({
+        key: ["propertyDetails", "propertyDeedOrTitle"],
+        label: "ID or Passport",
+        value: data.propertyDetails.propertyDeedOrTitle,
+      });
+      if (data.propertyDetails.propertyPurchaseContract)
+        toBeUploaded.push({
+          key: ["propertyDetails", "propertyPurchaseContract"],
+          label: "ID or Passport",
+          value: data.propertyDetails.propertyPurchaseContract,
+        });
+
+      // Other informations files
+
       const toastId = notification.loading("Uploading documents...");
+      const payload = cloneDeep(data);
 
-      // Owner informations docs
-      const ids = await uploadFile(data.ownerInformation.ids, "ID or Passport");
-
-      const proofBill = data.ownerInformation?.proofBill
-        ? await uploadFile(data.ownerInformation?.proofBill, "Utility Bill or Other Document")
-        : undefined;
-
-      const articleIncorporation = await uploadFile(
-        data.ownerInformation.articleIncorporation,
-        "Acrticle of Incorporation",
+      await Promise.all(
+        toBeUploaded.map(async ({ key, label, value }, index) => {
+          try {
+            const hash = await uploadFile(value, label);
+            notification.update(
+              toastId,
+              `Uploading documents... (${index + 1}/${toBeUploaded.length})`,
+            );
+            // @ts-ignore
+            payload[key[0]][key[1]] = hash;
+          } catch (error) {
+            logger.error({ message: "Error while uploading documents", error });
+            return;
+          }
+        }),
       );
-
-      const operatingAgreement = data.ownerInformation?.operatingAgreement
-        ? await uploadFile(data.ownerInformation.operatingAgreement, "Operating Agreement")
-        : undefined;
-
-      const supportingDoc = data.ownerInformation?.supportingDoc
-        ? await Promise.all(
-            data.ownerInformation.supportingDoc.map((doc, i) =>
-              uploadFile(doc, "Any other Supporting Documents #" + i),
-            ),
-          )
-        : undefined;
-
-      // Property details docs
-      const propertyImages = data.propertyDetails?.propertyImages
-        ? await Promise.all(
-            data.propertyDetails.propertyImages.map((doc, i) =>
-              uploadFile(doc, "Property Images #" + i),
-            ),
-          )
-        : undefined;
-
-      const propertyDeedOrTitle = await uploadFile(
-        data.propertyDetails.propertyDeedOrTitle,
-        "Deed or Title",
-      );
-
-      const propertyPurchaseContract = data.propertyDetails?.propertyPurchaseContract
-        ? await uploadFile(data.propertyDetails.propertyPurchaseContract, "Purchase Contract")
-        : undefined;
 
       notification.remove(toastId);
 
-      const deedInfo = cleanObject({
-        ownerInformation: {
-          ...data.ownerInformation,
-          ids,
-          proofBill,
-          articleIncorporation,
-          operatingAgreement,
-          supportingDoc,
-        },
-        propertyDetails: {
-          ...data.propertyDetails,
-          propertyImages,
-          propertyDeedOrTitle,
-          propertyPurchaseContract,
-        },
-        otherInformation: data.otherInformation,
-      });
+      const deedInfo = cleanObject(payload);
 
       propertyHash = await uploadJson(deedInfo);
 

@@ -23,6 +23,7 @@ interface TNotificationProps {
   duration?: number;
   icon?: string;
   position?: TPositions;
+  toastId?: string;
 }
 
 interface NotificationOptions {
@@ -51,6 +52,7 @@ const Notification = ({
   duration = DEFAULT_DURATION,
   icon,
   position = DEFAULT_POSITION,
+  toastId,
 }: TNotificationProps) => {
   return toast.custom(
     t => (
@@ -76,6 +78,7 @@ const Notification = ({
     {
       duration: status === "loading" ? Infinity : duration,
       position,
+      id: toastId,
     },
   );
 };
@@ -95,6 +98,10 @@ export const notification = {
   },
   loading: (content: React.ReactNode, options?: NotificationOptions) => {
     return Notification({ content, status: "loading", ...options });
+  },
+  update: (toastId: string, content: React.ReactNode, options?: NotificationOptions) => {
+    toast.remove(toastId);
+    return Notification({ content, status: "loading", toastId, ...options });
   },
   remove: (toastId: string) => {
     toast.remove(toastId);

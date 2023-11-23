@@ -2848,6 +2848,7 @@ __metadata:
     "@trivago/prettier-plugin-sort-imports": ^4.1.1
     "@types/formidable": ^3
     "@types/leaflet": ^1.9.4
+    "@types/lodash-es": ^4
     "@types/mime": ^3
     "@types/multer": ^1
     "@types/node": ^17.0.35
@@ -2871,6 +2872,7 @@ __metadata:
     finity-ui: ^0.0.2
     formidable: ^3.5.1
     leaflet: ^1.9.4
+    lodash-es: ^4.17.21
     next: ^13.1.6
     nextjs-progressbar: ^0.0.16
     postcss: ^8.4.31
@@ -3684,6 +3686,22 @@ __metadata:
   dependencies:
     "@types/geojson": "*"
   checksum: ae5b4422b6eb912e6c6910d049f63cb96537eac46af4a897471ab98c642d059a32789f411157b873a5dafdbc9cef3399dc0673c5f64be067eebc530c43783e75
+  languageName: node
+  linkType: hard
+
+"@types/lodash-es@npm:^4":
+  version: 4.17.12
+  resolution: "@types/lodash-es@npm:4.17.12"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 990a99e2243bebe9505cb5ad19fbc172beb4a8e00f9075c99fc06c46c2801ffdb40bc2867271cf580d5f48994fc9fb076ec92cd60a20e621603bf22114e5b077
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.202
+  resolution: "@types/lodash@npm:4.14.202"
+  checksum: a91acf3564a568c6f199912f3eb2c76c99c5a0d7e219394294213b3f2d54f672619f0fde4da22b29dc5d4c31457cd799acc2e5cb6bd90f9af04a1578483b6ff7
   languageName: node
   linkType: hard
 
