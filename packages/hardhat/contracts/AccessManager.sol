@@ -37,6 +37,21 @@ contract AccessManager is AccessControl {
     }
 
     /**
+     * @dev Check if an address has the admin role
+     */
+    function hasAdminRole(address _address) public view returns (bool) {
+        return hasRole(DEFAULT_ADMIN_ROLE, _address);
+    }
+
+    /**
+     * @dev Check if an address has the validator role
+     * @param _address The address to check
+     */
+    function hasValidatorRole(address _address) public view returns (bool) {
+        return hasRole(VALIDATOR_ROLE, _address);
+    }
+
+    /**
      * @dev See {IERC165-supportsInterface}.
      */
     function supportsInterface(bytes4 _interfaceId) public view virtual override(AccessControl) returns (bool) {
@@ -105,7 +120,11 @@ contract AccessManagerBase is Context {
     }
 
     function hasAdminRole() public view returns (bool) {
-        return accessManager.hasRole(accessManager.DEFAULT_ADMIN_ROLE(), _msgSender());
+        return accessManager.hasAdminRole(_msgSender());
+    }
+
+    function hasValidatorRole() public view returns (bool) {
+        return accessManager.hasValidatorRole(_msgSender());
     }
 
     function hasRole(bytes32 _role, address _address) public view returns (bool) {

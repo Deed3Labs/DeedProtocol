@@ -7,7 +7,7 @@ import { DeployFunction } from "hardhat-deploy/types";
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deployDeedNFT: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deploySubdivisionNFT: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
@@ -19,12 +19,15 @@ const deployDeedNFT: DeployFunction = async function (hre: HardhatRuntimeEnviron
     You can run the `yarn account` command to check your balance in every network.
   */
   const { deployer } = await hre.getNamedAccounts();
-  const { deploy } = hre.deployments;
+  const { deploy, get } = hre.deployments;
 
-  await deploy("DeedNFT", {
+  const accessManagerAddress = (await get("AccessManager")).address;
+  const deedNFTAddress = (await get("DeedNFT")).address;
+
+  await deploy("SubdivisionNFT", {
     from: deployer,
     // Contract constructor arguments
-    args: [],
+    args: [deedNFTAddress, accessManagerAddress],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -35,8 +38,9 @@ const deployDeedNFT: DeployFunction = async function (hre: HardhatRuntimeEnviron
   // const yourContract = await hre.ethers.getContract("YourContract", deployer);
 };
 
-export default deployDeedNFT;
+export default deploySubdivisionNFT;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deployDeedNFT.tags = ["DeedNFT"];
+deploySubdivisionNFT.tags = ["SubdivisionNFT"];
+deploySubdivisionNFT.dependencies = ["DeedNFT", "AccessManager"];

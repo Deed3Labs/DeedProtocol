@@ -99,7 +99,7 @@ export const useDeedNftMint = () => {
       // Other informations files
 
       const toastId = notification.loading("Uploading documents...");
-      const payload = cloneDeep(data);
+      const payload = { ...cloneDeep(data), walletAddress: primaryWallet.address };
 
       await Promise.all(
         toBeUploaded.map(async ({ key, label, value }, index) => {

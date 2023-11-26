@@ -26,7 +26,7 @@ export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet, authToken } = useDynamicContext();
 
   const pathname = usePathname();
 
@@ -47,7 +47,8 @@ export const Header = () => {
     if (primaryWallet) {
       logger.setWallet(primaryWallet.address);
     }
-  }, [primaryWallet]);
+    console.log({ authToken });
+  }, [primaryWallet, authToken]);
 
   const nav = (
     <>

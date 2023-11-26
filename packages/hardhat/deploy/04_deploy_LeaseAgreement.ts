@@ -20,15 +20,25 @@ const deployLeaseAgreement: DeployFunction = async function (hre: HardhatRuntime
   */
   const { deployer } = await hre.getNamedAccounts();
   const { deploy, get } = hre.deployments;
+
+  const accessManagerAddress = (await get("AccessManager")).address;
   const deedNFTAddress = (await get("DeedNFT")).address;
   const subdivisionNFTAddress = (await get("SubdivisionNFT")).address;
   const leaseNFTAddress = (await get("LeaseNFT")).address;
   const hnytAddress = "0x2d467a24095B262787f58ce97d9B130ce7232B57";
   const fundsManagerAddress = (await get("FundsManager")).address;
+
   const leaseAgreementContract = await deploy("LeaseAgreement", {
     from: deployer,
     // Contract constructor arguments
-    args: [leaseNFTAddress, hnytAddress, deedNFTAddress, subdivisionNFTAddress, fundsManagerAddress],
+    args: [
+      leaseNFTAddress,
+      hnytAddress,
+      deedNFTAddress,
+      subdivisionNFTAddress,
+      fundsManagerAddress,
+      accessManagerAddress,
+    ],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -44,4 +54,4 @@ export default deployLeaseAgreement;
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
 deployLeaseAgreement.tags = ["LeaseAgreement"];
-deployLeaseAgreement.dependencies = ["DeedNFT", "SubdivisionNFT", "LeaseNFT"];
+deployLeaseAgreement.dependencies = ["DeedNFT", "SubdivisionNFT", "LeaseNFT", "AccessManager"];

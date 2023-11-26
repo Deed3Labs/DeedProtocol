@@ -30,11 +30,7 @@ contract SubdivisionNFT is ERC1155, AccessManagerBase {
     event SubdivisionBurned(address account, uint256 subdivisionId, uint256 deedId, bytes ipfsDetailsHash);
     event SubdivisionInfoSet(uint256 tokenId, SubdivisionInfo info);
 
-    constructor(
-        string memory _uri,
-        address _deedNFT,
-        address _accessManager
-    ) ERC1155(_uri) AccessManagerBase(_accessManager) {
+    constructor(address _deedNFT, address _accessManager) ERC1155("") AccessManagerBase(_accessManager) {
         require(_deedNFT != address(0), "[SubdivisionNFT] Invalid DeedNFT address");
 
         _nextsubTokenID = 1;

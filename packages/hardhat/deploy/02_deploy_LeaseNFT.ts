@@ -19,12 +19,14 @@ const deployLeaseNFT: DeployFunction = async function (hre: HardhatRuntimeEnviro
     You can run the `yarn account` command to check your balance in every network.
   */
   const { deployer } = await hre.getNamedAccounts();
-  const { deploy } = hre.deployments;
+  const { deploy, get } = hre.deployments;
+
+  const accessManagerAddress = (await get("AccessManager")).address;
 
   await deploy("LeaseNFT", {
     from: deployer,
     // Contract constructor arguments
-    args: [],
+    args: [accessManagerAddress],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -39,4 +41,4 @@ export default deployLeaseNFT;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deployLeaseNFT.tags = ["LeaseNFT"];
+deployLeaseNFT.tags = ["LeaseNFT", "AccessManager"];
