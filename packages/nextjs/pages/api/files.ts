@@ -62,19 +62,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } else {
     res.status(405).send("Method Not Supported");
   }
-  // else if (req.method === "GET") {
-  //   try {
-  //     const { hash } = req.query;
-  //     const filePath = `${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/${hash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}"`;
-  //     const readStream = fileSystem.createReadStream(filePath);
-  //     const stat = fileSystem.statSync(filePath);
-
-  //     res.writeHead({
-  //       "Content-Length": stat.size,
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //     res.status(500).send("Server Error");
-  //   }
-  // }
 }

@@ -2871,6 +2871,7 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     finity-ui: ^0.0.2
     formidable: ^3.5.1
+    jwt-decode: ^4.0.0
     leaflet: ^1.9.4
     lodash-es: ^4.17.21
     next: ^13.1.6
@@ -12369,6 +12370,13 @@ __metadata:
   version: 3.2.0
   resolution: "just-debounce-it@npm:3.2.0"
   checksum: a42039a341f1bdf9ccb797e8df88b7e218a95efee01a7bb4bce53bfd5befe0334f3ce32b905e01666312868ade7c1c23071dcd53e80aaa1000b7246382176e84
+  languageName: node
+  linkType: hard
+
+"jwt-decode@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jwt-decode@npm:4.0.0"
+  checksum: 390e2edcb31a92e86c8cbdd1edeea4c0d62acd371f8a8f0a8878e499390c0ecf4c658b365c4e941e4ef37d0170e4ca650aaa49f99a45c0b9695a235b210154b0
   languageName: node
   linkType: hard
 

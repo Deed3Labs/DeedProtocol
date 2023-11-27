@@ -60,7 +60,7 @@ const PropertyExplorer: NextPage = () => {
     const center = { lat: 40, lng: -100 };
     for (let index = currentPage * pageSize; index < currentPage * pageSize + pageSize; index++) {
       const newProperty: PropertyModel = {
-        id: uniqueId("property-"),
+        id: index,
         name: `Property ${index}`,
         description: `This is the description for property ${index}`,
         photos: [
