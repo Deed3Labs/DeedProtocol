@@ -72,6 +72,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
     function setPrice(uint256 _deedId, uint32 _newPrice) public deedExists(_deedId) onlyOwner(_deedId) {
         DeedInfo storage deedInfo = deedInfoMap[_deedId];
         deedInfo.price = _newPrice;
+        setAssetValidation(_deedId, false);
         emit DeedNFTPriceUpdated(_deedId, _newPrice);
     }
 
@@ -80,6 +81,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         bytes memory _ipfsDetailsHash
     ) public virtual deedExists(_deedId) onlyOwner(_deedId) {
         _setTokenURI(_deedId, string(_ipfsDetailsHash));
+        setAssetValidation(_deedId, false);
         emit DeedNFTIpfsDetailsSet(_deedId, _ipfsDetailsHash);
     }
 

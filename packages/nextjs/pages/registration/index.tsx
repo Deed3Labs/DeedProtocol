@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import OtherInformations from "./OtherInformations";
 import OwnerInformation from "./OwnerInformation";
 import PropertyDetails from "./PropertyDetails";
@@ -61,6 +62,7 @@ const defaultData: PropertyRegistrationModel = {
 const RegistrationForm: NextPage = () => {
   // const [step, setStep] = useState(0);
   const { writeAsync } = useDeedNftMint();
+
   const [formData, setFormData] = useState<PropertyRegistrationModel>(
     isDev() ? fakeData : defaultData,
   );

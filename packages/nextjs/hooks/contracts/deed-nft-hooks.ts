@@ -41,90 +41,97 @@ export const useDeedNftMint = () => {
         value: File;
       }[] = [];
 
-      // Owner informations files
-      if (data.ownerInformation.ids)
-        toBeUploaded.push({
-          key: ["ownerInformation", "ids"],
-          label: "ID or Passport",
-          value: data.ownerInformation.ids,
-        });
-      if (data.ownerInformation.proofBill)
-        toBeUploaded.push({
-          key: ["ownerInformation", "proofBill"],
-          label: "Utility Bill or Other Document",
-          value: data.ownerInformation.proofBill,
-        });
-      toBeUploaded.push({
-        key: ["ownerInformation", "articleIncorporation"],
-        label: "Article of Incorporation",
-        value: data.ownerInformation.articleIncorporation,
-      });
-      if (data.ownerInformation.operatingAgreement)
-        toBeUploaded.push({
-          key: ["ownerInformation", "operatingAgreement"],
-          label: "Operating Agreement",
-          value: data.ownerInformation.operatingAgreement,
-        });
-      if (data.ownerInformation.supportingDoc)
-        data.ownerInformation.supportingDoc.forEach((doc, index) => {
-          toBeUploaded.push({
-            key: ["ownerInformation", "supportingDoc"],
-            label: "Any other Supporting Documents #" + index,
-            value: doc,
-          });
-        });
+      // // Owner informations files
+      // if (data.ownerInformation.ids)
+      //   toBeUploaded.push({
+      //     key: ["ownerInformation", "ids"],
+      //     label: "ID or Passport",
+      //     value: data.ownerInformation.ids,
+      //   });
+      // if (data.ownerInformation.proofBill)
+      //   toBeUploaded.push({
+      //     key: ["ownerInformation", "proofBill"],
+      //     label: "Utility Bill or Other Document",
+      //     value: data.ownerInformation.proofBill,
+      //   });
+      // toBeUploaded.push({
+      //   key: ["ownerInformation", "articleIncorporation"],
+      //   label: "Article of Incorporation",
+      //   value: data.ownerInformation.articleIncorporation,
+      // });
+      // if (data.ownerInformation.operatingAgreement)
+      //   toBeUploaded.push({
+      //     key: ["ownerInformation", "operatingAgreement"],
+      //     label: "Operating Agreement",
+      //     value: data.ownerInformation.operatingAgreement,
+      //   });
+      // if (data.ownerInformation.supportingDoc)
+      //   data.ownerInformation.supportingDoc.forEach((doc, index) => {
+      //     toBeUploaded.push({
+      //       key: ["ownerInformation", "supportingDoc"],
+      //       label: "Any other Supporting Documents #" + index,
+      //       value: doc,
+      //     });
+      //   });
 
-      // Property details files
-      if (data.propertyDetails.propertyImages?.length)
-        data.propertyDetails.propertyImages.forEach((image, index) => {
-          toBeUploaded.push({
-            key: ["propertyDetails", "propertyImages"],
-            label: "Property Images #" + index,
-            value: image,
-          });
-        });
+      // // Property details files
+      // if (data.propertyDetails.propertyImages?.length)
+      //   data.propertyDetails.propertyImages.forEach((image, index) => {
+      //     toBeUploaded.push({
+      //       key: ["propertyDetails", "propertyImages"],
+      //       label: "Property Images #" + index,
+      //       value: image,
+      //     });
+      //   });
 
-      toBeUploaded.push({
-        key: ["propertyDetails", "propertyDeedOrTitle"],
-        label: "ID or Passport",
-        value: data.propertyDetails.propertyDeedOrTitle,
-      });
-      if (data.propertyDetails.propertyPurchaseContract)
-        toBeUploaded.push({
-          key: ["propertyDetails", "propertyPurchaseContract"],
-          label: "ID or Passport",
-          value: data.propertyDetails.propertyPurchaseContract,
-        });
+      // toBeUploaded.push({
+      //   key: ["propertyDetails", "propertyDeedOrTitle"],
+      //   label: "ID or Passport",
+      //   value: data.propertyDetails.propertyDeedOrTitle,
+      // });
+      // if (data.propertyDetails.propertyPurchaseContract)
+      //   toBeUploaded.push({
+      //     key: ["propertyDetails", "propertyPurchaseContract"],
+      //     label: "ID or Passport",
+      //     value: data.propertyDetails.propertyPurchaseContract,
+      //   });
 
-      // Other informations files
-
+      // // Other informations files
       const toastId = notification.loading("Uploading documents...");
-      const payload = { ...cloneDeep(data), walletAddress: primaryWallet.address };
 
-      await Promise.all(
-        toBeUploaded.map(async ({ key, label, value }, index) => {
-          try {
-            const hash = await uploadFile(value, label);
-            notification.update(
-              toastId,
-              `Uploading documents... (${index + 1}/${toBeUploaded.length})`,
-            );
-            // @ts-ignore
-            payload[key[0]][key[1]] = hash;
-          } catch (error) {
-            logger.error({ message: "Error while uploading documents", error });
-            return;
-          }
-        }),
-      );
+      console.log("data", JSON.stringify(data));
+
+      await fetch("/api/deed-info", {
+        body: JSON.stringify(data),
+        method: "POST",
+      });
+
+      // const payload = { ...cloneDeep(data), walletAddress: primaryWallet.address };
+
+      // await Promise.all(
+      //   toBeUploaded.map(async ({ key, label, value }, index) => {
+      //     try {
+      //       const hash = await uploadFile(value, label);
+      //       notification.update(
+      //         toastId,
+      //         `Uploading documents... (${index + 1}/${toBeUploaded.length})`,
+      //       );
+      //       // @ts-ignore
+      //       payload[key[0]][key[1]] = hash;
+      //     } catch (error) {
+      //       logger.error({ message: "Error while uploading documents", error });
+      //       return;
+      //     }
+      //   }),
+      // );
 
       notification.remove(toastId);
 
-      const deedInfo = cleanObject(payload);
+      // const deedInfo = cleanObject(payload);
 
-      propertyHash = await uploadJson(deedInfo);
+      // propertyHash = await uploadJson(deedInfo);
 
-      console.debug("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
+      // console.debug("DeedInfo with hash: ", propertyHash.toString(), { deedInfo });
     } catch (error) {
       logger.error({ message: "Error while uploading documents", error });
       return;

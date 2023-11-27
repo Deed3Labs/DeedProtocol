@@ -3,12 +3,14 @@ import { DeployFunction } from "hardhat-deploy/types";
 
 const deployDeedNFT: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await hre.getNamedAccounts();
-  const { deploy } = hre.deployments;
+  const { deploy, get } = hre.deployments;
 
-  await deploy("AccessManager", {
+  const accessManagerAddress = (await get("AccessManager")).address;
+
+  await deploy("DeedNFT", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer],
+    args: [accessManagerAddress],
     log: true,
 
     autoMine: true,
@@ -18,3 +20,4 @@ const deployDeedNFT: DeployFunction = async function (hre: HardhatRuntimeEnviron
 export default deployDeedNFT;
 
 deployDeedNFT.tags = ["DeedNFT"];
+deployDeedNFT.dependencies = ["AccessManager"];
