@@ -40,8 +40,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const walletAddress = decoded.verified_credentials[0].address;
 
     // const isValidator = contract.read.hasValidatorRole(walletAddress);
-    const isValidator = true;
+    const isValidator = false;
     const deedOwner = await contract.read.ownerOf([id as any]);
+    console.log(deedOwner);
+    console.log(walletAddress);
     const isOwner = deedOwner === walletAddress;
     if (!isValidator && !isOwner) {
       return res.status(401).send("Error: caller isn't validator");

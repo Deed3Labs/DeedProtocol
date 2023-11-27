@@ -11,7 +11,7 @@ const PropertyCard = ({ property }: Props) => {
   return (
     <>
       {property && (
-        <Link href={`/registration`}>
+        <Link href={`/registration?id=${property.id}`}>
           <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] max-w-full w-[350px]">
             <Image
               src={property.photos[0]}
