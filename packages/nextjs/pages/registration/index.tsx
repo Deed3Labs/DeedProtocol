@@ -8,7 +8,7 @@ import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isEqual } from "lodash-es";
 import { NextPage } from "next";
-import { useDeedNftMint } from "~~/hooks/contracts/deed-nft-hooks";
+import { useDeedNftMint, useDeedNftValidate } from "~~/hooks/contracts/deed-nft-hooks";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import {
   OwnerInformationModel,
@@ -67,6 +67,8 @@ const RegistrationForm: NextPage = () => {
   const { query, isReady } = useRouter();
   const id = query.id;
   const { writeAsync } = useDeedNftMint();
+  const { writeValidateAsync: writeValidateAsync } = useDeedNftValidate();
+
   const { authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<PropertyRegistrationModel>(defaultData);
@@ -140,6 +142,12 @@ const RegistrationForm: NextPage = () => {
     e.preventDefault();
     if (!validate()) return;
     writeAsync(formData);
+  };
+  const onAssetValidationClicked = (ev: Event) => {
+    ev.preventDefault();
+    if (id) {
+      writeValidateAsync(+id, true);
+    }
   };
 
   const validate = () => {
@@ -217,8 +225,16 @@ const RegistrationForm: NextPage = () => {
               <PropertyDetails value={formData.propertyDetails} onChange={handleChange} />
               <OtherInformations value={formData.otherInformation} onChange={handleChange} />
               <div className="m-8 w-full text-right">
-                <input type="submit" className="btn btn-lg bg-gray-600" />
-                <button className="btn btn-lg bg-gray-600">Validate</button>
+                {id ? (
+                  <button
+                    onClick={e => onAssetValidationClicked(e)}
+                    className="btn btn-lg bg-gray-600"
+                  >
+                    Validate
+                  </button>
+                ) : (
+                  <input type="submit" className="btn btn-lg bg-gray-600" />
+                )}
               </div>
             </form>
           </div>
