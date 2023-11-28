@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./DeedNFT.sol";
 import "./AccessManager.sol";
 
-// was erc1155, multiple ownership? because cant call ownerof
 contract SubdivisionNFT is ERC1155, AccessManagerBase {
     struct SubdivisionInfo {
         bytes ipfsDetailsHash;
@@ -14,7 +13,6 @@ contract SubdivisionNFT is ERC1155, AccessManagerBase {
     }
 
     uint256 private _nextsubTokenID;
-    //rename var
     mapping(uint256 => SubdivisionInfo) private subdivisionInfoMap;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -37,7 +35,6 @@ contract SubdivisionNFT is ERC1155, AccessManagerBase {
         deedNFT = DeedNFT(_deedNFT);
     }
 
-    // Took out onlyRole(MINTER_ROLE) because we only want owner to be able to mint and not the contract deployer
     function mintSubdivision(SubdivisionInfo memory _info) public {
         require(
             _msgSender() == deedNFT.ownerOf(_info.parentDeed),

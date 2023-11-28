@@ -58,14 +58,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Send the JSON data as the response.
     res.status(200).send(jsonResponse);
-    // res.status(200).send("works");
-
-    // const readStream = await fetch(filePath);
-    // const stat = fileSystem.statSync(filePath);
-
-    // res.writeHead({
-    //   "Content-Length": stat.size,
-    // });
   } catch (e) {
     console.log(e);
     res.status(500).send("Server Error");
@@ -78,11 +70,3 @@ const fetchJson = async (filePath: string) => {
   const jsonData = await fetch(filePath);
   return jsonData.text();
 };
-//
-//This code handles an API request for fetching the deed information. It checks if the request method is GET and if the authorization header is present. If not, it returns an error response.
-//
-//The code then extracts the tokenId and chainId from the query parameters. It gets the deployed DeedNFT contract and creates a public client for interacting with the blockchain.
-//
-//The code then decodes the JWT token to get the wallet address. It fetches the deed information from the contract and constructs the file path for the IPFS file.
-//
-//The code fetches the JSON data from the file path and sends it as the response. If any errors occur during the process, it logs the error and returns a server error response..</s>

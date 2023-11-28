@@ -24,7 +24,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
     event DeedNFTMinted(uint256 deedId, DeedInfo deedInfo, address minter);
     event DeedNFTBurned(uint256 deedId);
     event DeedNFTAssetValidationSet(uint256 deedId, bool isValid);
-    event DeedNFTIpfsDetailsSet(uint256 deedId, bytes newIpfsDetailsHash);
+    event DeedNFTIpfsDetailsSet(uint256 deedId, string newIpfsDetailsHash);
     event DeedNFTPriceUpdated(uint256 deedId, uint256 newPrice);
     event DeedNFTAssetTypeSet(uint256 deedId, AssetType newAssetType);
 
@@ -45,15 +45,13 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         _;
     }
 
-    function mintAsset(address _owner, bytes memory _ipfsDetailsHash, AssetType _assetType) public {
+    function mintAsset(address _owner, string memory _ipfsDetailsHash, AssetType _assetType) public {
         _mint(_owner, nextDeedId);
 
         DeedInfo storage deedInfo = deedInfoMap[nextDeedId];
         deedInfo.assetType = _assetType;
         deedInfo.isValidated = false;
-
-        setIpfsDetailsHash(nextDeedId, _ipfsDetailsHash);
-
+        _setTokenURI(nextDeedId, _ipfsDetailsHash);
         emit DeedNFTMinted(nextDeedId, deedInfo, _msgSender());
         nextDeedId = nextDeedId + 1;
     }
@@ -77,9 +75,9 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
 
     function setIpfsDetailsHash(
         uint256 _deedId,
-        bytes memory _ipfsDetailsHash
+        string memory _ipfsDetailsHash
     ) public virtual deedExists(_deedId) onlyOwner(_deedId) {
-        _setTokenURI(_deedId, string(_ipfsDetailsHash));
+        _setTokenURI(_deedId, _ipfsDetailsHash);
         emit DeedNFTIpfsDetailsSet(_deedId, _ipfsDetailsHash);
     }
 

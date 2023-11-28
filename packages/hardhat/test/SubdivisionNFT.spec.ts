@@ -10,7 +10,7 @@ import {
 } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-describe("SubdivisionNFT", function () {
+describe.only("SubdivisionNFT", function () {
   // We define a fixture to reuse the same setup in every test.
   // let contractOwner: SignerWithAddress;
   let subNFT: SubdivisionNFT;
@@ -30,11 +30,11 @@ describe("SubdivisionNFT", function () {
     deedNFT = await deedNFTFactory.connect(deployer).deploy(accessManager.address);
     await deedNFT.deployed();
 
-    subNFT = await subNFTFactory.deploy("uri", deedNFT.address, accessManager.address);
+    subNFT = await subNFTFactory.deploy(deedNFT.address, accessManager.address);
     await subNFT.deployed();
 
-    await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 2, "10 211 fake Addy");
-    await deedNFT.connect(deployer).mintAsset(subOwner.address, "0x", 2, "10 211 fake Addy");
+    await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 2);
+    await deedNFT.connect(deployer).mintAsset(subOwner.address, "0x", 2);
   });
 
   describe("mintSubdivision", function () {
@@ -63,9 +63,9 @@ describe("SubdivisionNFT", function () {
       // and 2 should work (land or estate)
       // and 3 should revert (commercial equipment and vehicle)
       // token id will be 3
-      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 1, "10 211 fake Addy");
+      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 1);
       // token id will be 4
-      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 3, "10 211 fake Addy");
+      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 3);
       // subNFT minted with tokenID 1
       await expect(
         subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 3 }),
@@ -101,9 +101,9 @@ describe("SubdivisionNFT", function () {
       // 0 and 2 should work (land or estate)
       // 1 and 3 should revert (commercial equipment and vehicle)
       // token id will be 3
-      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 1, "10 211 fake Addy");
+      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 1);
       // oken id will be 4
-      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 3, "10 211 fake Addy");
+      await deedNFT.connect(deployer).mintAsset(deedOwner.address, "0x", 3);
       // SubNFT minted with tokenID 1
       await expect(
         subNFT.connect(deedOwner).batchMint([
