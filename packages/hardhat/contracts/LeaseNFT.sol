@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
@@ -29,8 +29,9 @@ contract LeaseNFT is ERC721, AccessManagerBase {
         _mint(_to, _leaseId);
         emit LeaseNFTMinted(_to, _leaseId, _msgSender());
     }
-    function exists(uint256 _leaseId) public view returns(bool) {
-        return _exists(_leaseId);
+
+    function exists(uint256 _leaseId) public view returns (bool) {
+        return _ownerOf(_leaseId) != address(0);
     }
 
     function burn(uint256 _leaseId) external {

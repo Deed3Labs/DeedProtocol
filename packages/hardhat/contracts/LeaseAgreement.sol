@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./DeedNFT.sol"; // Import the IDeedNFT interface
 import "./LeaseNFT.sol";
 import "./SubdivisionNFT.sol"; // Import the ISubdivisionNFT interface
@@ -251,7 +251,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeasePaymentMade(_leaseId, rentInfo.totalBalance, lease.unclaimedRentAmount);
     }
 
-    function distributeRent(uint256 _leaseId) public nonReentrant {
+    function distributeRent(uint256 _leaseId) external nonReentrant {
         Lease storage lease = leases[_leaseId];
         require(
             _msgSender() == leaseNFT.ownerOf(_leaseId) || _msgSender() == lease.manager,
@@ -296,7 +296,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseExtended(_leaseId, lease.dates.endDate, lease.rentAmount, lease.extensionCount);
     }
 
-    function withdrawDeposit(uint256 _leaseId) public nonReentrant {
+    function withdrawDeposit(uint256 _leaseId) external nonReentrant {
         Lease storage lease = leases[_leaseId];
         require(
             lease.isArchived || block.timestamp > lease.dates.endDate,
@@ -322,7 +322,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         leaseNFT.burn(_leaseId);
     }
 
-    function terminateLease(uint256 _leaseId) public nonReentrant onlyLessor(_leaseId) {
+    function terminateLease(uint256 _leaseId) external nonReentrant onlyLessor(_leaseId) {
         Lease storage lease = leases[_leaseId];
         require(block.timestamp >= lease.dates.startDate, "[Lease Agreement] Lease has not started yet");
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract AccessManager is AccessControl {
@@ -7,7 +7,7 @@ contract AccessManager is AccessControl {
     bytes32 public constant AGENT_ROLE = keccak256("AGENT_ROLE");
 
     constructor(address admin) {
-        _setupRole(DEFAULT_ADMIN_ROLE, admin);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
     }
 
     /**
@@ -26,14 +26,14 @@ contract AccessManager is AccessControl {
      * @dev Add a validator to the contract
      */
     function addValidator(address _validator) public functionRoleOrAdmin(this.addValidator.selector) {
-        grantRole(VALIDATOR_ROLE, _validator);
+        _grantRole(VALIDATOR_ROLE, _validator);
     }
 
     /**
      * @dev Remove a validator from the contract
      */
     function removeValidator(address _validator) public functionRoleOrAdmin(this.removeValidator.selector) {
-        revokeRole(VALIDATOR_ROLE, _validator);
+        _revokeRole(VALIDATOR_ROLE, _validator);
     }
 
     /**

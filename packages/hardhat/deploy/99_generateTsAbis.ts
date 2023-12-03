@@ -60,7 +60,7 @@ function getInheritedFunctions(sources: Record<string, any>, contractName: strin
   const inheritedFunctions = {} as Record<string, any>;
 
   for (const sourceContractName of actualSources) {
-    const sourcePath = Object.keys(sources).find(key => key.includes(sourceContractName));
+    const sourcePath = Object.keys(sources).find(key => key.includes(`/${sourceContractName}`));
     if (sourcePath) {
       const sourceName = sourcePath?.split("/").pop()?.split(".sol")[0];
       const { abi } = JSON.parse(fs.readFileSync(`${ARTIFACTS_DIR}/${sourcePath}/${sourceName}.json`).toString());
@@ -84,9 +84,8 @@ function getContractDataFromDeployments() {
     const chainId = fs.readFileSync(`${DEPLOYMENTS_DIR}/${chainName}/.chainId`).toString();
     const contracts = {} as Record<string, any>;
     for (const contractName of getContractNames(`${DEPLOYMENTS_DIR}/${chainName}`)) {
-      const { abi, address, metadata } = JSON.parse(
-        fs.readFileSync(`${DEPLOYMENTS_DIR}/${chainName}/${contractName}.json`).toString(),
-      );
+      const json = fs.readFileSync(`${DEPLOYMENTS_DIR}/${chainName}/${contractName}.json`).toString();
+      const { abi, address, metadata } = JSON.parse(json);
       const inheritedFunctions = getInheritedFunctions(JSON.parse(metadata).sources, contractName);
       contracts[contractName] = { address, abi, inheritedFunctions };
     }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "./AccessManager.sol";
@@ -33,7 +33,10 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
     }
 
     modifier deedExists(uint256 _deedId) {
-        require(_exists(_deedId), string.concat("[DeedNFT] Deed does not exist with id ", Strings.toString(_deedId)));
+        require(
+            _ownerOf(_deedId) != address(0),
+            string.concat("[DeedNFT] Deed does not exist with id ", Strings.toString(_deedId))
+        );
         _;
     }
 
@@ -104,11 +107,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         return super.supportsInterface(_interfaceId);
     }
 
-    function tokenURI(uint256 _deedId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
+    function tokenURI(uint256 _deedId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(_deedId);
-    }
-
-    function _burn(uint256 _deedId) internal virtual override(ERC721, ERC721URIStorage) {
-        super._burn(_deedId);
     }
 }
