@@ -67,7 +67,7 @@ describe("LeaseAgreement", function () {
     deedNFT = await deedNFTFactory.connect(deployer).deploy(accessManager.address);
     await deedNFT.deployed();
 
-    subNFT = await subNFTFactory.connect(deployer).deploy("uri", deedNFT.address, accessManager.address);
+    subNFT = await subNFTFactory.connect(deployer).deploy(deedNFT.address, accessManager.address);
     await subNFT.deployed();
 
     leaseNFT = await leaseNftFactory.connect(deployer).deploy(accessManager.address);
@@ -91,7 +91,7 @@ describe("LeaseAgreement", function () {
     await leaseNFT.connect(deployer).setLeaseAgreementAddress(leaseAgreement.address);
 
     // This deed id will be 1
-    await deedNFT.mintAsset(deedOwner.address, "0x", 2, "12 000 Fake Addy");
+    await deedNFT.mintAsset(deedOwner.address, "0x", 2);
     await subNFT.connect(deedOwner).mintSubdivision({ ipfsDetailsHash: "0x", owner: subOwner.address, parentDeed: 1 });
   });
 
@@ -534,7 +534,7 @@ describe("LeaseAgreement", function () {
       expect(await leaseToken.balanceOf(fundsManager.address)).to.equal(0);
       expect(await leaseToken.balanceOf(lessee.address)).to.equal(initialLesseeBalance);
     });
-    it.only("Should withdraw the deposit to caller if lessee and burn the leaseNFT if needed", async function () {
+    it("Should withdraw the deposit to caller if lessee and burn the leaseNFT if needed", async function () {
       // Arrange
       const propertyTokenId = 1;
       const latePayementFee = 10;

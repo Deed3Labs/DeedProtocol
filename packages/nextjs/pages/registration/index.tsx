@@ -5,9 +5,8 @@ import OtherInformations from "./OtherInformations";
 import OwnerInformation from "./OwnerInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { isEqual } from "lodash-es";
 import { NextPage } from "next";
-import { useDeedNftMint } from "~~/hooks/contracts/deed-nft-hooks";
+import { useDeedNftMint, useDeedNftValidate } from "~~/hooks/contracts/deed-nft-hooks";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import {
   OwnerInformationModel,
@@ -66,49 +65,53 @@ const RegistrationForm: NextPage = () => {
   const { query, isReady } = useRouter();
   const id = query.id;
   const { writeAsync } = useDeedNftMint();
+  const { writeValidateAsync: writeValidateAsync } = useDeedNftValidate();
 
   const { authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<PropertyRegistrationModel>(defaultData);
 
+  (window as any).enableFakeData = () => {
+    if (isDev() && !id) {
+      const createFile = (id: string, content: string) => {
+        const myFile = new File([content], `${id}.txt`, {
+          type: "text/plain",
+          lastModified: Date.now(),
+        });
+        const fileInput = document.querySelector(`#${id}`) as HTMLInputElement;
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(myFile);
+        fileInput.files = dataTransfer.files;
+        return myFile;
+      };
+
+      setFormData(fakeData);
+
+      setFormData(prevState => ({
+        ...prevState,
+        ownerInformation: { ...formData.ownerInformation, ids: createFile("ids", "ids") },
+      }));
+
+      setFormData(prevState => ({
+        ...prevState,
+        ownerInformation: {
+          ...formData.ownerInformation,
+          articleIncorporation: createFile("articleIncorporation", "articleIncorporation"),
+        },
+      }));
+
+      setFormData(prevState => ({
+        ...prevState,
+        propertyDetails: {
+          ...formData.propertyDetails,
+          propertyDeedOrTitle: createFile("propertyDeedOrTitle", "propertyDeedOrTitle"),
+        },
+      }));
+    }
+  };
+
   useEffect(() => {
-    // if (isDev() && !id) {
-    //   const createFile = (id: string, content: string) => {
-    //     const myFile = new File([content], `${id}.txt`, {
-    //       type: "text/plain",
-    //       lastModified: Date.now(),
-    //     });
-    //     const fileInput = document.querySelector(`#${id}`) as HTMLInputElement;
-    //     const dataTransfer = new DataTransfer();
-    //     dataTransfer.items.add(myFile);
-    //     fileInput.files = dataTransfer.files;
-    //     return myFile;
-    //   };
-
-    //   setFormData(prevState => ({
-    //     ...prevState,
-    //     ownerInformation: { ...formData.ownerInformation, ids: createFile("ids", "ids") },
-    //   }));
-
-    //   setFormData(prevState => ({
-    //     ...prevState,
-    //     ownerInformation: {
-    //       ...formData.ownerInformation,
-    //       articleIncorporation: createFile("articleIncorporation", "articleIncorporation"),
-    //     },
-    //   }));
-
-    //   setFormData(prevState => ({
-    //     ...prevState,
-    //     propertyDetails: {
-    //       ...formData.propertyDetails,
-    //       propertyDeedOrTitle: createFile("propertyDeedOrTitle", "propertyDeedOrTitle"),
-    //     },
-    //   }));
-    // }
-    console.log(id, authToken);
     if (id && authToken) {
-      console.log("called");
       fetchDeedInfo(+id, authToken)
         .then(async data => {
           if (data.status != 200) {
@@ -128,6 +131,7 @@ const RegistrationForm: NextPage = () => {
   const handleChange = (ev: LightChangeEvent<PropertyRegistrationModel>) => {
     setFormData(prevState => ({ ...prevState, [ev.name]: ev.value }));
   };
+
   const fetchDeedInfo = async (tokenId: number, authToken: string) => {
     const id = notification.loading("Loading details...");
     const chainId = getTargetNetwork().id;
@@ -141,6 +145,12 @@ const RegistrationForm: NextPage = () => {
     e.preventDefault();
     if (!validate()) return;
     writeAsync(formData);
+  };
+  const onAssetValidationClicked = (ev: React.MouseEvent) => {
+    ev.preventDefault();
+    if (id) {
+      writeValidateAsync(+id, true);
+    }
   };
 
   const validate = () => {
@@ -218,8 +228,16 @@ const RegistrationForm: NextPage = () => {
               <PropertyDetails value={formData.propertyDetails} onChange={handleChange} />
               <OtherInformations value={formData.otherInformation} onChange={handleChange} />
               <div className="m-8 w-full text-right">
-                <input type="submit" className="btn btn-lg bg-gray-600" />
-                <button className="btn btn-lg bg-gray-600">Validate</button>
+                {id ? (
+                  <button
+                    onClick={e => onAssetValidationClicked(e)}
+                    className="btn btn-lg bg-gray-600"
+                  >
+                    Validate
+                  </button>
+                ) : (
+                  <input type="submit" className="btn btn-lg bg-gray-600" />
+                )}
               </div>
             </form>
           </div>

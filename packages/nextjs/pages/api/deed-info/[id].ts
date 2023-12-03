@@ -72,14 +72,6 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Send the JSON data as the response.
   res.status(200).send(jsonResponse);
-  // res.status(200).send("works");
-
-  // const readStream = await fetch(filePath);
-  // const stat = fileSystem.statSync(filePath);
-
-  // res.writeHead({
-  //   "Content-Length": stat.size,
-  // });
 };
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
