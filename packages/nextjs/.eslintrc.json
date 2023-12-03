@@ -33,6 +33,7 @@
     "@typescript-eslint/consistent-type-definitions": [
       "error"
     ],
-    "react-hooks/exhaustive-deps": "off"
+    "react-hooks/exhaustive-deps": "off",
+    "no-unreachable": "warn"
   }
 }
