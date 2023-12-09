@@ -4,9 +4,7 @@ import { DownloadLogo } from "../assets/DownloadLogo";
 import useHttpClient from "~~/hooks/useHttpClient";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import logger from "~~/services/logger";
 import { IconLightningSolid } from "~~/styles/Icons";
-import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 interface Props<TParent> {
   label: string;
