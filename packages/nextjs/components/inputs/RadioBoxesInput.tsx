@@ -55,7 +55,7 @@ export const RadioBoxesInput = <TParent,>({
               className={`peer hidden`}
             />
             <label
-              className={`flex flex-col gap-2 justify-between p-4 border-2 border-white border-opacity-10 cursor-pointer px-4 py-6 peer-checked:border-red-100 hover:bg-base-100 ${
+              className={`flex flex-col gap-2 justify-between p-4 border-2 border-white border-opacity-10 cursor-pointer px-4 py-6 peer-checked:border-red-100 hover:bg-base-100 max-w-7xl ${
                 option.disabled && "pointer-events-none opacity-50"
               } ${optionsClassName ? optionsClassName : ""}`}
               htmlFor={`option_${option.value}`}

@@ -7,7 +7,9 @@ import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { NextPage } from "next";
 import { TransactionReceipt } from "viem";
+import { useIsValidator } from "~~/hooks/contracts/access-manager.hooks";
 import {
+  useDeedContract,
   useDeedNftMint,
   useDeedNftUpdateInfo,
   useDeedNftValidate,
@@ -23,6 +25,7 @@ import logger from "~~/services/logger";
 import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
+import { contracts } from "~~/utils/scaffold-eth/contract";
 
 // const steps = [
 //   "Owner Information",
@@ -89,13 +92,23 @@ const RegistrationForm: NextPage = () => {
   const { writeAsync: writeDeedNftMintAsync } = useDeedNftMint(onDeedMinted);
   const { writeAsync: writeDeedNftUpdateInfoAsync } = useDeedNftUpdateInfo(onDeedMinted);
   const { writeValidateAsync } = useDeedNftValidate();
+  const isValidator = useIsValidator();
 
-  const { authToken } = useDynamicContext();
+  const { authToken, primaryWallet } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
+  const [isOwner, setIsOwner] = useState(false);
+  const deedContract = useDeedContract();
 
   const httpClient = useHttpClient();
+
+  useEffect(() => {
+    if (!isReady || !id) return;
+    deedContract?.read.ownerOf([BigInt(id)]).then(owner => {
+      setIsOwner(owner === primaryWallet?.address);
+    });
+  }, [primaryWallet, id, isReady]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -108,18 +121,13 @@ const RegistrationForm: NextPage = () => {
     }
   }, [id, authToken, isReady]);
 
-  useEffect(() => {
-    console.log("formData", formData);
-  }, [formData]);
-
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
-    console.log("Index handleChange", ev.name, ev.value);
     setFormData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
   };
 
-  const fetchDeedInfo = async (tokenId: number) => {
+  const fetchDeedInfo = async (id: number) => {
     const chainId = getTargetNetwork().id;
-    const resp = await httpClient.get(`/api/deed-info/${tokenId}?chainId=${chainId}`);
+    const resp = await httpClient.get(`/api/deed-info/${id}?chainId=${chainId}`);
     setErrorCode(undefined);
     if (resp?.status === 200) {
       setFormData(resp.value);
@@ -196,8 +204,9 @@ const RegistrationForm: NextPage = () => {
             <>The property you are looking for does not exist.</>
           ) : (
             <>
-              This property is not yet published and has restricted access. Please connect with the
-              account owner.
+              This property is not yet published and has restricted access.
+              <br />
+              Please connect with the account owner.
             </>
           )}
         </div>
@@ -215,7 +224,7 @@ const RegistrationForm: NextPage = () => {
           errorDom
         ) : (
           <div className="flex flex-row flex-wrap-reverse gap-8 lg:flex-nowrap lg:justify-evenly w-full px-8 xl:px-32">
-            <div className="flex flex-col w-full lg:w-fit">
+            <div className="flex flex-col w-full lg:w-fit lg:ml-64">
               <div className="text-3xl font-normal font-['KronaOne']">
                 First, we’ll need to <br />
                 collect some information
@@ -234,51 +243,33 @@ const RegistrationForm: NextPage = () => {
                 </Link>
               </div>
 
-              <div>
+              <div className="mb-10">
                 <OwnerInformation value={formData.ownerInformation} onChange={handleChange} />
                 <PropertyDetails value={formData.propertyDetails} onChange={handleChange} />
                 <OtherInformations value={formData.otherInformation} onChange={handleChange} />
-                <div className="m-8 w-full text-right">
-                  {id ? (
-                    <button onClick={handleValidationClicked} className="btn btn-lg bg-gray-600">
-                      Validate
-                    </button>
-                  ) : (
-                    <button onClick={handleSubmit} className="btn btn-lg bg-gray-600" />
-                  )}
-                </div>
               </div>
             </div>
-            <div className="bg-base-100 p-9 w-full lg:w-96 h-fit relative lg:sticky lg:top-32 lg:max-h-[75vh] overflow-y-auto">
-              <div className="text-base font-bold font-['Montserrat'] leading-normal">
-                After your registration is validated you’ll be able to:
-              </div>
-              <div className="flex flex-row gap-2 my-2">
-                <div className="h-6 p-3 rounded-full bg-secondary opacity-10 mt-1"></div>
-                <div className="flex flex-col">
-                  <div>Manage your property</div>
-                  <div className="text-secondary-content">
-                    Update property details, view earnings, add managers and etc.
+            <div className="bg-base-100 p-9 w-full lg:w-3/12 h-fit relative lg:sticky lg:top-32 lg:max-h-[75vh] overflow-y-auto">
+              <div className="flex flex-row gap-2">
+                <div className="w-7 h-7 pl-0.5 flex-col justify-start items-start inline-flex">
+                  <div className="self-stretch h-7 p-2 bg-white rounded-2xl shadow justify-center items-center inline-flex">
+                    <div className="w-3 h-3 relative" />
                   </div>
                 </div>
+                <div className="text-xl w-full whitespace-nowrap">Deed3 (The Deed Protocol)</div>
               </div>
-              <div className="flex flex-row gap-2 my-2">
-                <div className="h-6 p-3 rounded-full bg-secondary opacity-10 mt-1"></div>
-                <div className="flex flex-col">
-                  <div>Sell or Lease your Property</div>
-                  <div className="text-secondary-content">
-                    Accept offers, stage auctions and lease properties all in one place.
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-row gap-2 my-2">
-                <div className="h-6 p-3 rounded-full bg-secondary opacity-10 mt-1"></div>
-                <div className="flex flex-col">
-                  <div>Advertise your Property</div>
-                  <div className="text-secondary-content">
-                    Customize your pages by adding photos, videos and renderings.
-                  </div>
-                </div>
+
+              <div className="m-8">
+                {isValidator && (
+                  <button onClick={handleValidationClicked} className="btn btn-lg bg-gray-600">
+                    Validate
+                  </button>
+                )}
+                {isOwner && (
+                  <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
+                    {id ? "Update" : "Submit"}
+                  </button>
+                )}
               </div>
             </div>
           </div>

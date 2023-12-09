@@ -32,8 +32,3 @@ export const uploadJson = async (object: any) => {
   });
   return res.text();
 };
-
-export const retrieveFromHash = async <T = any>(hash: string) => {
-  const res = await fetch("/api/files/" + hash);
-  return res.json() as T;
-};

@@ -18,7 +18,7 @@ export const useIsValidator = () => {
 
   const { data } = useScaffoldContractRead({
     contractName: "AccessManager",
-    functionName: "hasAdminRole",
+    functionName: "hasValidatorRole",
     args: [primaryWallet?.address],
   });
 

@@ -1,6 +1,17 @@
 import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
+export interface HttpClient {
+  get: <TRes = any>(url: string) => Promise<{ status: number; value: TRes } | undefined>;
+  post: <TRes = any>(
+    url: string,
+    body: any,
+  ) => Promise<{ status: number; value: TRes } | undefined>;
+  put: <TRes = any>(url: string, body: any) => Promise<{ status: number; value: TRes } | undefined>;
+  delete: (url: string) => Promise<{ status: number }>;
+  download: (fileHash: string, id: string, name: string) => Promise<void>;
+}
+
 const useHttpClient = () => {
   const { authToken } = useDynamicContext();
 
@@ -108,7 +119,7 @@ const useHttpClient = () => {
     put,
     delete: del,
     download,
-  };
+  } satisfies HttpClient;
 };
 
 export default useHttpClient;

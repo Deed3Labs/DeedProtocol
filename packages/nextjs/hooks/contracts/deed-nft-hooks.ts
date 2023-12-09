@@ -1,4 +1,9 @@
-import { useScaffoldContractWrite } from "../scaffold-eth";
+import {
+  useScaffoldContract,
+  useScaffoldContractRead,
+  useScaffoldContractWrite,
+} from "../scaffold-eth";
+import useHttpClient, { HttpClient } from "../useHttpClient";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { cloneDeep } from "lodash-es";
 import { TransactionReceipt, toHex } from "viem";
@@ -16,6 +21,7 @@ import { notification } from "~~/utils/scaffold-eth";
 
 export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet } = useDynamicContext();
+  const httpClient = useHttpClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -30,7 +36,7 @@ export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) =>
       return;
     }
 
-    const hash = await uploadDocuments(data);
+    const hash = await uploadDocuments(data, httpClient);
     if (!hash) return;
 
     try {
@@ -53,6 +59,7 @@ export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) =>
 
 export const useDeedNftUpdateInfo = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet } = useDynamicContext();
+  const httpClient = useHttpClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -68,7 +75,7 @@ export const useDeedNftUpdateInfo = (onConfirmed?: (txnReceipt: TransactionRecei
       return;
     }
 
-    const hash = await uploadDocuments(data);
+    const hash = await uploadDocuments(data, httpClient);
     if (!hash) return;
 
     try {
@@ -133,7 +140,15 @@ export const useDeedNFTList = () => {
   // return { deeds, isLoading };
 };
 
-async function uploadDocuments(data: DeedInfoModel) {
+export const useDeedContract = () => {
+  const { data } = useScaffoldContract({
+    contractName: "DeedNFT",
+  });
+
+  return data;
+};
+
+async function uploadDocuments(data: DeedInfoModel, httpClient: HttpClient) {
   try {
     const toBeUploaded: {
       key: [
@@ -218,10 +233,7 @@ async function uploadDocuments(data: DeedInfoModel) {
     // Other informations files
     const toastId = notification.loading("Uploading documents...");
 
-    await fetch("/api/deed-info", {
-      body: JSON.stringify(data),
-      method: "POST",
-    });
+    await httpClient.post("/api/deed-info", data);
 
     const payload = cloneDeep(data) as DeedInfoModel;
     let counter = 0;

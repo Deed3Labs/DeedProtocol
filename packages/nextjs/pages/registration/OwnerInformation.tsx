@@ -15,7 +15,6 @@ interface Props {
 
 const OwnerInformation = ({ value, onChange }: Props) => {
   const handleChange = (ev: LightChangeEvent<OwnerInformationModel>) => {
-    console.log("ownerInformation handleChange", ev.name, ev.value);
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({ name: "ownerInformation", value: updatedValue });
   };
