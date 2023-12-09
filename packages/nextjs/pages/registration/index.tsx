@@ -68,6 +68,8 @@ const defaultData: DeedInfoModel = {
   propertyDetails: {},
 } as DeedInfoModel;
 
+type ErrorCode = "notFound" | "unauthorized";
+
 const RegistrationForm: NextPage = () => {
   // const [step, setStep] = useState(0);
   const { query, isReady, push } = useRouter();
@@ -91,7 +93,7 @@ const RegistrationForm: NextPage = () => {
   const { authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<DeedInfoModel>(fakeData);
-  const [notFound, setNotFound] = useState(false);
+  const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
 
   const httpClient = useHttpClient();
 
@@ -118,14 +120,14 @@ const RegistrationForm: NextPage = () => {
 
   const fetchDeedInfo = async (tokenId: number) => {
     const chainId = getTargetNetwork().id;
-    const response = await httpClient.get(
+    const resp = await httpClient.get(
       `http://localhost:3000/api/deed-info/${tokenId}?chainId=${chainId}`,
     );
-    setNotFound(false);
-    if (response) {
-      setFormData(response);
+    setErrorCode(undefined);
+    if (resp?.status === 200) {
+      setFormData(resp.value);
     } else {
-      setNotFound(true);
+      setErrorCode(resp?.status === 404 ? "notFound" : "unauthorized");
     }
     setIsLoading(false);
   };
@@ -185,26 +187,35 @@ const RegistrationForm: NextPage = () => {
     return true;
   };
 
-  const notFoundDom = useMemo(() => {
+  const errorDom = useMemo(() => {
     if (!id) return <></>;
     return (
       <div className="flex flex-col gap-6 mt-6">
-        <div className="text-2xl font-['KronaOne'] leading-10">Property not found</div>
+        <div className="text-2xl font-['KronaOne'] leading-10">
+          Property {errorCode === "notFound" ? "not found" : "restricted"}
+        </div>
         <div className="text-base font-normal font-['Montserrat'] leading-normal">
-          The property you are looking for does not exist.
+          {errorCode === "notFound" ? (
+            <>The property you are looking for does not exist.</>
+          ) : (
+            <>
+              This property is not yet published and has restricted access. Please connect with the
+              account owner.
+            </>
+          )}
         </div>
         <button onClick={() => push("/property-explorer")} className="btn btn-lg bg-gray-600">
           Go back to explorer
         </button>
       </div>
     );
-  }, [id]);
+  }, [errorCode]);
 
   return (
     <div className="container pt-10">
       {!isLoading ? (
-        notFound && id ? (
-          notFoundDom
+        errorCode && id ? (
+          errorDom
         ) : (
           <div className="flex flex-row flex-wrap-reverse gap-8 lg:flex-nowrap lg:justify-evenly w-full px-8 xl:px-32">
             <div className="flex flex-col w-full lg:w-fit">

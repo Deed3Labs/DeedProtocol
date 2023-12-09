@@ -143,6 +143,7 @@ async function uploadDocuments(data: DeedInfoModel) {
       ];
       label: string;
       value: File;
+      restricted?: boolean;
     }[] = [];
 
     // Owner informations files
@@ -151,6 +152,7 @@ async function uploadDocuments(data: DeedInfoModel) {
         key: ["ownerInformation", "ids"],
         label: "ID or Passport",
         value: data.ownerInformation.ids,
+        restricted: true,
       });
     }
     if (data.ownerInformation.proofBill) {
@@ -158,18 +160,21 @@ async function uploadDocuments(data: DeedInfoModel) {
         key: ["ownerInformation", "proofBill"],
         label: "Utility Bill or Other Document",
         value: data.ownerInformation.proofBill,
+        restricted: true,
       });
     }
     toBeUploaded.push({
       key: ["ownerInformation", "articleIncorporation"],
       label: "Article of Incorporation",
       value: data.ownerInformation.articleIncorporation,
+      restricted: true,
     });
     if (data.ownerInformation.operatingAgreement) {
       toBeUploaded.push({
         key: ["ownerInformation", "operatingAgreement"],
         label: "Operating Agreement",
         value: data.ownerInformation.operatingAgreement,
+        restricted: true,
       });
     }
     if (data.ownerInformation.supportingDoc) {
@@ -178,6 +183,7 @@ async function uploadDocuments(data: DeedInfoModel) {
           key: ["ownerInformation", "supportingDoc"],
           label: "Any other Supporting Documents #" + index,
           value: doc,
+          restricted: true,
         });
       });
     }
@@ -195,22 +201,22 @@ async function uploadDocuments(data: DeedInfoModel) {
 
     toBeUploaded.push({
       key: ["propertyDetails", "propertyDeedOrTitle"],
-      label: "ID or Passport",
+      label: "Deed or Title",
       value: data.propertyDetails.propertyDeedOrTitle,
+      restricted: true,
     });
 
     if (data.propertyDetails.propertyPurchaseContract) {
       toBeUploaded.push({
         key: ["propertyDetails", "propertyPurchaseContract"],
-        label: "ID or Passport",
+        label: "Purchase Contract",
         value: data.propertyDetails.propertyPurchaseContract,
+        restricted: true,
       });
     }
 
     // Other informations files
     const toastId = notification.loading("Uploading documents...");
-
-    console.log("data", JSON.stringify(data));
 
     await fetch("/api/deed-info", {
       body: JSON.stringify(data),
@@ -220,7 +226,7 @@ async function uploadDocuments(data: DeedInfoModel) {
     const payload = cloneDeep(data) as DeedInfoModel;
     let counter = 0;
     await Promise.all(
-      toBeUploaded.map(async ({ key, label, value }) => {
+      toBeUploaded.map(async ({ key, label, value, restricted }) => {
         try {
           const hash = await uploadFile(value, label);
           notification.update(
@@ -233,6 +239,7 @@ async function uploadDocuments(data: DeedInfoModel) {
             size: value.size,
             type: value.type,
             lastModified: value.lastModified,
+            restricted,
           };
           // @ts-ignore
           if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = newValue;
@@ -246,12 +253,8 @@ async function uploadDocuments(data: DeedInfoModel) {
     );
 
     notification.remove(toastId);
-
     const deedInfo = cleanObject(payload);
-
     const hash = await uploadJson(deedInfo);
-
-    console.debug("DeedInfo with hash: ", hash.toString(), { deedInfo });
 
     return hash;
   } catch (error) {

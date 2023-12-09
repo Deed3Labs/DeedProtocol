@@ -7,6 +7,7 @@ import { goerli } from "viem/chains";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
+import scaffoldConfig from "~~/scaffold.config";
 
 interface AuthToken extends JwtPayload {
   verified_credentials: [{ address: Address; email: string }];
@@ -42,7 +43,10 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const deedNFT = deployedContracts[+chainId as keyof typeof deployedContracts].DeedNFT;
 
   // Create a public client for interacting with the blockchain.
-  const client = createPublicClient({ chain: goerli, transport: http() });
+  const client = createPublicClient({
+    chain: goerli,
+    transport: http(`${goerli.rpcUrls.alchemy.http[0]}/${scaffoldConfig.alchemyApiKey}`),
+  });
 
   // Get the contract instance.
   const contract = getContract({
@@ -54,7 +58,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   // Extract the JWT token from the authorization header.
   const jwtToken = req.headers.authorization;
   let walletAddress = undefined;
-  let hasPrivilege = false;
+  let canAccess = false;
   let deedOwner: string;
 
   try {
@@ -66,7 +70,11 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).send(`Error while fetching deed ${id} (${error})`);
   }
 
-  if (jwtToken) {
+  // If the JWT token is not present, then check if the deed has been published (validated)
+  const deedInfo = await contract.read.getDeedInfo([id as any]);
+  canAccess = deedInfo.isValidated;
+
+  if (!canAccess && jwtToken) {
     // Decode the JWT token to get the wallet address.
     const decoded = jwtDecode<AuthToken>(jwtToken);
     walletAddress = decoded.verified_credentials[0].address;
@@ -75,16 +83,18 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     const isOwner = deedOwner === walletAddress;
-    hasPrivilege = isValidator || isOwner;
+    canAccess = isValidator || isOwner;
+  }
+
+  if (!canAccess) {
+    return res.status(401).send(`Error: Unauthorized to view deed ${id}`);
   }
 
   // Get the deed information from the contract.
   const tokenUri = await contract.read.tokenURI([id as any]);
   const asciiIpfs = hexToString(tokenUri as Hex);
   // Construct the file path for the IPFS file. And apply the pinata gateway token if the user has the privilege.
-  const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${asciiIpfs}?pinataGatewayToken=${
-    hasPrivilege ? process.env.NEXT_PINATA_GATEWAY_KEY : ""
-  }`;
+  const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${asciiIpfs}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
 
   const response = await fetch(filePath);
   if (response.status !== 200) {
@@ -92,27 +102,33 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const deedInfo = (await response.json()) as DeedInfoModel;
-  deedInfo.id = +id;
-  deedInfo.owner = deedOwner;
+  const deedInfoMetadata = (await response.json()) as DeedInfoModel;
+  deedInfoMetadata.id = +id;
+  deedInfoMetadata.owner = deedOwner;
 
   if (!hash) {
     // Send the JSON data as the response.
-    res.status(200).send(deedInfo);
+    res.status(200).send(deedInfoMetadata);
     return;
   }
 
   let found = false;
   // find the hash in the deedInfo
   [
-    ...Object.values(deedInfo.otherInformation),
-    ...Object.values(deedInfo.ownerInformation),
-    ...Object.values(deedInfo.propertyDetails),
-  ].forEach(field => {
-    if (!found && field.hash === hash) {
-      downloadFile(field, res);
+    ...Object.values(deedInfoMetadata.otherInformation),
+    ...Object.values(deedInfoMetadata.ownerInformation),
+    ...Object.values(deedInfoMetadata.propertyDetails),
+  ].forEach((field: IpfsFileModel | IpfsFileModel[]) => {
+    if (found) return;
+    const item = Array.isArray(field) ? field.find(x => x.hash === hash) : (field as IpfsFileModel);
+    if (!item) return;
+    if (item.hash === hash) {
       found = true;
-      return;
+      if (item.restricted && !canAccess) {
+        res.status(401).send(`Error: Unauthorized to view file ${item.name} for deed ${id}`);
+        return;
+      }
+      downloadFile(item, res);
     }
   });
 

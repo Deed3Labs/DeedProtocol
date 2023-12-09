@@ -12,16 +12,12 @@ import { BackToTop } from "~~/components/BackToTop";
 import ErrorBoundary from "~~/components/ErrorBoundary";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
-import { useNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
 import scaffoldConfig from "~~/scaffold.config";
-import { useGlobalState } from "~~/services/store/store";
 import "~~/styles/globals.scss";
 
 config.autoAddCss = false;
 
 const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
-  const price = useNativeCurrencyPrice();
-  const setNativeCurrencyPrice = useGlobalState(state => state.setNativeCurrencyPrice);
   // This variable is required for initial client side rendering of correct theme for RainbowKit
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const { isDarkMode } = useDarkMode();
@@ -31,12 +27,6 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
       throw new Error("Missing environment ID");
     }
   }, []);
-
-  useEffect(() => {
-    if (price > 0) {
-      setNativeCurrencyPrice(price);
-    }
-  }, [setNativeCurrencyPrice, price]);
 
   useEffect(() => {
     setIsDarkTheme(isDarkMode);

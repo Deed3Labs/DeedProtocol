@@ -11,7 +11,7 @@ const useHttpClient = () => {
 
     if (handleError(url, res)) return undefined;
 
-    return (await res.json()) as TRes;
+    return { status: res.status, value: (await res.json()) as TRes };
   };
 
   const post = async <TRes = any>(url: string, body: any) => {
@@ -23,7 +23,7 @@ const useHttpClient = () => {
 
     if (handleError(url, res)) return undefined;
 
-    return (await res.json()) as TRes;
+    return { status: res.status, value: (await res.json()) as TRes };
   };
 
   const put = async <TRes = any>(url: string, body: any) => {
@@ -35,7 +35,7 @@ const useHttpClient = () => {
 
     if (handleError(url, res)) return undefined;
 
-    return (await res.json()) as TRes;
+    return { status: res.status, value: (await res.json()) as TRes };
   };
 
   const del = async (url: string) => {
@@ -45,6 +45,8 @@ const useHttpClient = () => {
     });
 
     handleError(url, res);
+
+    return { status: res.status };
   };
 
   const download = async (fileHash: string, id: string, name: string) => {
