@@ -1,5 +1,7 @@
 import { IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
 
+export const defaultPage = "registration";
+
 export const OwnerTypeOptions = [
   {
     title: "Individual",

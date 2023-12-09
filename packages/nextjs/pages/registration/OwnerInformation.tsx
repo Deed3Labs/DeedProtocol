@@ -5,19 +5,17 @@ import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
 import { EntityTypeOptions, OwnerTypeOptions } from "~~/constants";
+import { DeedInfoModel, OwnerInformationModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import {
-  OwnerInformationModel,
-  PropertyRegistrationModel,
-} from "~~/models/property-registration.model";
 
 interface Props {
   value?: OwnerInformationModel;
-  onChange?: (ev: LightChangeEvent<PropertyRegistrationModel>) => void;
+  onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
 }
 
 const OwnerInformation = ({ value, onChange }: Props) => {
   const handleChange = (ev: LightChangeEvent<OwnerInformationModel>) => {
+    console.log("ownerInformation handleChange", ev.name, ev.value);
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({ name: "ownerInformation", value: updatedValue });
   };

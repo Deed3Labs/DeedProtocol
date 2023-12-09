@@ -2,15 +2,12 @@ import React from "react";
 import Link from "next/link";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { BlockchainOptions, WrapperOptions } from "~~/constants";
+import { DeedInfoModel, OtherInformationModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import {
-  OtherInformationModel,
-  PropertyRegistrationModel,
-} from "~~/models/property-registration.model";
 
 interface Props {
   value?: OtherInformationModel;
-  onChange?: (ev: LightChangeEvent<PropertyRegistrationModel>) => void;
+  onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
 }
 
 const OtherInformations = ({ value, onChange }: Props) => {

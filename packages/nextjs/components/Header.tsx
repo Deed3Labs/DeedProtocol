@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FaucetButton } from "~~/components/scaffold-eth";
+import { defaultPage } from "~~/constants";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import logger from "~~/services/logger";
@@ -26,9 +27,9 @@ export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-  const { primaryWallet, authToken } = useDynamicContext();
-
-  const pathname = usePathname();
+  const { primaryWallet } = useDynamicContext();
+  const { query, isReady, pathname, replace } = useRouter();
+  const { id } = query;
 
   useOutsideClick(
     burgerMenuRef,
@@ -47,38 +48,48 @@ export const Header = () => {
     if (primaryWallet) {
       logger.setWallet(primaryWallet.address);
     }
-    console.log({ authToken });
-  }, [primaryWallet, authToken]);
+  }, [primaryWallet]);
 
-  const nav = (
-    <>
-      <div className="flex lg:flex-grow lg:items-center w-full lg:pr-14">
-        <input
-          ref={searchRef}
-          className="input input-bordered border-1 w-full lg:w-80"
-          placeholder="Quickly search the entire site"
-          onChange={() => setSearch(searchRef.current?.value)}
-          value={search}
-        />
-        <kbd className="hidden lg:flex bd bg-neutral-focus -ml-14 justify-center items-center w-10 h-10 rounded-xl">
-          /
-        </kbd>
-      </div>
-      <Link
-        className={pathname === "/registration" ? "opacity-40 pointer-events-none" : ""}
-        href="/registration"
-      >
-        Register
-      </Link>
-      <Link
-        className={pathname?.includes("explorer") ? "opacity-40 pointer-events-none" : ""}
-        href="/property-explorer?type=all"
-      >
-        Explore
-      </Link>
-      <Link href="https://docs.deedprotocol.org/">Docs</Link>
-      <Link href="/property-explorer?type=lease">About</Link>
-    </>
+  useEffect(() => {
+    if (pathname === "/") {
+      replace(defaultPage);
+    }
+  }, [pathname]);
+
+  const nav = useMemo(
+    () => (
+      <>
+        <div className="flex lg:flex-grow lg:items-center w-full lg:pr-14">
+          <input
+            ref={searchRef}
+            className="input input-bordered border-1 w-full lg:w-80"
+            placeholder="Quickly search the entire site"
+            onChange={() => setSearch(searchRef.current?.value)}
+            value={search}
+          />
+          <kbd className="hidden lg:flex bd bg-neutral-focus -ml-14 justify-center items-center w-10 h-10 rounded-xl">
+            /
+          </kbd>
+        </div>
+        <Link
+          className={
+            pathname === "/registration" && isReady && !id ? "opacity-40 pointer-events-none" : ""
+          }
+          href="/registration"
+        >
+          Register
+        </Link>
+        <Link
+          className={pathname?.includes("explorer") ? "opacity-40 pointer-events-none" : ""}
+          href="/property-explorer?type=all"
+        >
+          Explore
+        </Link>
+        <Link href="https://docs.deedprotocol.org/">Docs</Link>
+        <Link href="/property-explorer?type=lease">About</Link>
+      </>
+    ),
+    [pathname, isReady, id],
   );
 
   return (

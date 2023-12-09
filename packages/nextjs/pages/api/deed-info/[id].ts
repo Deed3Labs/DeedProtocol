@@ -1,9 +1,12 @@
+import axios from "axios";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Address, createPublicClient, fromHex, getContract, http } from "viem";
+import { Readable } from "stream";
+import { Address, Hex, createPublicClient, getContract, hexToString, http } from "viem";
 import { goerli } from "viem/chains";
 import deployedContracts from "~~/contracts/deployedContracts";
-import { PropertyRegistrationModel } from "~~/models/property-registration.model";
+import { DeedInfoModel } from "~~/models/deed-info.model";
+import { IpfsFileModel } from "~~/models/ipfs-file.model";
 
 interface AuthToken extends JwtPayload {
   verified_credentials: [{ address: Address; email: string }];
@@ -13,28 +16,30 @@ interface AuthToken extends JwtPayload {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Check if the request method is GET.
   try {
-    if (req.method !== "GET")
-      switch (req.method) {
-        case "GET":
-          get(req, res);
-          break;
-        case "POST":
-          post(req, res);
-        default:
-          return res.status(405).send("Method not allowed");
-      }
+    switch (req.method) {
+      case "GET":
+        get(req, res);
+        break;
+      default:
+        return res.status(405).send("Method not allowed");
+    }
   } catch (e) {
     console.log(e);
     res.status(500).send("Server Error");
   }
-  res.status(200).end();
 }
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   // Extract the tokenId and chainId from the query parameters.
-  const { id, chainId } = req.query;
+  const { id, chainId, hash } = req.query;
+
+  if (!chainId || Number.isNaN(chainId))
+    return res.status(400).send("Error: chainId of type number is required");
+
+  if (!id || Number.isNaN(id)) return res.status(400).send("Error: id of type number is required");
+
   // Get the deployed DeedNFT contract.
-  const deedNFT = deployedContracts[5].DeedNFT;
+  const deedNFT = deployedContracts[+chainId as keyof typeof deployedContracts].DeedNFT;
 
   // Create a public client for interacting with the blockchain.
   const client = createPublicClient({ chain: goerli, transport: http() });
@@ -48,39 +53,84 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Extract the JWT token from the authorization header.
   const jwtToken = req.headers.authorization;
+  let walletAddress = undefined;
+  let hasPrivilege = false;
+  let deedOwner: string;
 
-  // Decode the JWT token to get the wallet address.
-  const decoded = jwtDecode<AuthToken>(jwtToken);
-  const walletAddress = decoded.verified_credentials[0].address;
-
-  // const isValidator = contract.read.hasValidatorRole(walletAddress);
-  const isValidator = false;
-  const deedOwner = await contract.read.ownerOf([id as any]);
-  console.log(deedOwner);
-  console.log(walletAddress);
-  const isOwner = deedOwner === walletAddress;
-  if (!isValidator && !isOwner) {
-    return res.status(401).send("Error: caller isn't validator");
+  try {
+    deedOwner = await contract.read.ownerOf([id as any]);
+  } catch (error: any) {
+    if (error.toString().includes("ERC721NonexistentToken")) {
+      return res.status(404).send(`Error: Deed ${id} not found`);
+    }
+    return res.status(500).send(`Error while fetching deed ${id} (${error})`);
   }
+
+  if (jwtToken) {
+    // Decode the JWT token to get the wallet address.
+    const decoded = jwtDecode<AuthToken>(jwtToken);
+    walletAddress = decoded.verified_credentials[0].address;
+    const isValidator = await contract.read.hasValidatorRole({
+      account: walletAddress,
+    });
+
+    const isOwner = deedOwner === walletAddress;
+    hasPrivilege = isValidator || isOwner;
+  }
+
   // Get the deed information from the contract.
-  const deedInfo = await contract.read.getDeedInfo([id as any]);
-  const ipfsHash = fromHex(deedInfo.ipfsDetailsHash, "string");
-  // Construct the file path for the IPFS file.
-  const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${ipfsHash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}"`;
-  // Fetch the JSON data from the file path.
-  const jsonResponse = await fetchJson(filePath);
+  const tokenUri = await contract.read.tokenURI([id as any]);
+  const asciiIpfs = hexToString(tokenUri as Hex);
+  // Construct the file path for the IPFS file. And apply the pinata gateway token if the user has the privilege.
+  const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${asciiIpfs}?pinataGatewayToken=${
+    hasPrivilege ? process.env.NEXT_PINATA_GATEWAY_KEY : ""
+  }`;
 
-  // Send the JSON data as the response.
-  res.status(200).send(jsonResponse);
+  const response = await fetch(filePath);
+  if (response.status !== 200) {
+    res.status(response.status).send(`Error while fetching deed ${id} (${response.statusText})`);
+    return;
+  }
+
+  const deedInfo = (await response.json()) as DeedInfoModel;
+  deedInfo.id = +id;
+  deedInfo.owner = deedOwner;
+
+  if (!hash) {
+    // Send the JSON data as the response.
+    res.status(200).send(deedInfo);
+    return;
+  }
+
+  let found = false;
+  // find the hash in the deedInfo
+  [
+    ...Object.values(deedInfo.otherInformation),
+    ...Object.values(deedInfo.ownerInformation),
+    ...Object.values(deedInfo.propertyDetails),
+  ].forEach(field => {
+    if (!found && field.hash === hash) {
+      downloadFile(field, res);
+      found = true;
+      return;
+    }
+  });
+
+  if (!found) {
+    res.status(404).send(`Error: File ${hash} not found for deed ${id}`);
+  }
 };
 
-const post = async (req: NextApiRequest, res: NextApiResponse) => {
-  const payload = req.body as PropertyRegistrationModel;
-  console.log(payload);
-};
+const downloadFile = async (file: IpfsFileModel, res: NextApiResponse) => {
+  const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${file.hash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
+  const { data } = await axios.get<Readable>(filePath, {
+    responseType: "stream",
+  });
 
-// This function fetches the JSON data from the given file path.
-const fetchJson = async (filePath: string) => {
-  const jsonData = await fetch(filePath);
-  return jsonData.text();
+  const filename = file.name || file.hash;
+
+  res.setHeader("Content-Type", file.type);
+  res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+  data.pipe(res);
 };

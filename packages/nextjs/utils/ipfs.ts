@@ -30,7 +30,7 @@ export const uploadJson = async (object: any) => {
       "Content-Type": "application/json",
     },
   });
-  return await res.text();
+  return res.text();
 };
 
 export const retrieveFromHash = async <T = any>(hash: string) => {

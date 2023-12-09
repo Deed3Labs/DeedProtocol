@@ -20,7 +20,8 @@ const configuredNetwork = getTargetNetwork();
 const { onlyLocalBurnerWallet } = scaffoldConfig;
 
 // We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
-const enabledChains = configuredNetwork.id === 1 ? [configuredNetwork] : [configuredNetwork, chains.mainnet];
+const enabledChains =
+  configuredNetwork.id === 1 ? [configuredNetwork] : [configuredNetwork, chains.mainnet];
 
 /**
  * Chains for the app
@@ -45,7 +46,10 @@ export const appChains = configureChains(
   },
 );
 
-const walletsOptions = { chains: appChains.chains, projectId: scaffoldConfig.walletConnectProjectId };
+const walletsOptions = {
+  chains: appChains.chains,
+  projectId: scaffoldConfig.walletConnectProjectId,
+};
 const wallets = [
   metaMaskWallet({ ...walletsOptions, shimDisconnect: true }),
   walletConnectWallet(walletsOptions),
@@ -56,7 +60,11 @@ const wallets = [
   ...(configuredNetwork.id === chains.hardhat.id || !onlyLocalBurnerWallet
     ? [burnerWalletConfig({ chains: [appChains.chains[0]] })]
     : []),
-  safeWallet({ ...walletsOptions, debug: false, allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/] }),
+  safeWallet({
+    ...walletsOptions,
+    debug: false,
+    allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+  }),
 ];
 
 /**

@@ -9,15 +9,12 @@ import {
   PropertyZoningOptions,
   StateOptions,
 } from "~~/constants";
+import { DeedInfoModel, PropertyDetailsModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import {
-  PropertyDetailsModel,
-  PropertyRegistrationModel,
-} from "~~/models/property-registration.model";
 
 interface Props {
   value?: PropertyDetailsModel;
-  onChange?: (ev: LightChangeEvent<PropertyRegistrationModel>) => void;
+  onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
 }
 
 const PropertyDetails = ({ value, onChange }: Props) => {
@@ -43,9 +40,9 @@ const PropertyDetails = ({ value, onChange }: Props) => {
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         <TextInput
           name="propertyAddress"
-          label="APN # or Street Address"
+          label="APN # and Street Address"
           info
-          placeholder="e.g. CEO"
+          placeholder="e.g. 123 Main Street"
           value={value?.propertyAddress}
           onChange={handleChange}
         />

@@ -345,9 +345,10 @@ const deployedContracts = {
         revokeRole: "@openzeppelin/contracts/access/AccessControl.sol",
         supportsInterface: "@openzeppelin/contracts/access/AccessControl.sol",
       },
+      startBlock: 10152412,
     },
     DeedNFT: {
-      address: "0xd8D142f13E58dFEedaF96418C0B6843108d46B94",
+      address: "0x30B974f71485024A45A1C8A42AAB31a0e1E3AB63",
       abi: [
         {
           inputs: [
@@ -619,11 +620,6 @@ const deployedContracts = {
                   type: "uint8",
                 },
                 {
-                  internalType: "uint256",
-                  name: "price",
-                  type: "uint256",
-                },
-                {
                   internalType: "bool",
                   name: "isValidated",
                   type: "bool",
@@ -642,25 +638,6 @@ const deployedContracts = {
             },
           ],
           name: "DeedNFTMinted",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "deedId",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "newPrice",
-              type: "uint256",
-            },
-          ],
-          name: "DeedNFTPriceUpdated",
           type: "event",
         },
         {
@@ -807,11 +784,6 @@ const deployedContracts = {
                   type: "uint8",
                 },
                 {
-                  internalType: "uint256",
-                  name: "price",
-                  type: "uint256",
-                },
-                {
                   internalType: "bool",
                   name: "isValidated",
                   type: "bool",
@@ -918,7 +890,13 @@ const deployedContracts = {
             },
           ],
           name: "mintAsset",
-          outputs: [],
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
           stateMutability: "nonpayable",
           type: "function",
         },
@@ -930,6 +908,19 @@ const deployedContracts = {
               internalType: "string",
               name: "",
               type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "nextDeedId",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -1080,24 +1071,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "uint256",
-              name: "_deedId",
-              type: "uint256",
-            },
-            {
-              internalType: "uint32",
-              name: "_newPrice",
-              type: "uint32",
-            },
-          ],
-          name: "setPrice",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "bytes4",
               name: "_interfaceId",
               type: "bytes4",
@@ -1195,6 +1168,7 @@ const deployedContracts = {
         transferFrom:
           "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
       },
+      startBlock: 10180114,
     },
     FundsManager: {
       address: "0xE4C45c797e15B7B5ae134b26F7b03dE8bb046a1a",
@@ -1457,9 +1431,10 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
+      startBlock: 10152414,
     },
     LeaseAgreement: {
-      address: "0xA162E61A04f23C2B71a0001526A3472cCc0836A4",
+      address: "0x5dCb1054442a0eBBd0A515DdfFda84a5E28f3BBa",
       abi: [
         {
           inputs: [
@@ -2354,6 +2329,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
+      startBlock: 10180116,
     },
     LeaseNFT: {
       address: "0x4a3127598257B5A0404b858E134Cf5e1c3cAe137",
@@ -2993,9 +2969,10 @@ const deployedContracts = {
         tokenURI: "@openzeppelin/contracts/token/ERC721/ERC721.sol",
         transferFrom: "@openzeppelin/contracts/token/ERC721/ERC721.sol",
       },
+      startBlock: 10152413,
     },
     SubdivisionNFT: {
-      address: "0xF7Ca580B38D60B00eaC495D6f932C5affa55A418",
+      address: "0x3449Ae83ffF5A16264FAA655D51E0038Fe1B54c0",
       abi: [
         {
           inputs: [
@@ -3770,6 +3747,7 @@ const deployedContracts = {
         supportsInterface: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         uri: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
       },
+      startBlock: 10180115,
     },
   },
   17000: {
@@ -4497,6 +4475,7 @@ const deployedContracts = {
         renounceRole: "@openzeppelin/contracts/access/AccessControl.sol",
         revokeRole: "@openzeppelin/contracts/access/AccessControl.sol",
       },
+      startBlock: 143506,
     },
   },
 } as const;
