@@ -119,9 +119,7 @@ const RegistrationForm: NextPage = () => {
 
   const fetchDeedInfo = async (tokenId: number) => {
     const chainId = getTargetNetwork().id;
-    const resp = await httpClient.get(
-      `http://localhost:3000/api/deed-info/${tokenId}?chainId=${chainId}`,
-    );
+    const resp = await httpClient.get(`/api/deed-info/${tokenId}?chainId=${chainId}`);
     setErrorCode(undefined);
     if (resp?.status === 200) {
       setFormData(resp.value);
