@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import AgentCard from "./AgentCard";
 import AgentFilters from "./AgentFilters";
 import { debounce } from "lodash";
-import { uniqueId } from "lodash";
 import { NextPage } from "next";
 import { AgentModel } from "~~/models/agent.model";
 import { MapIconModel } from "~~/models/map-icon.model";
@@ -65,8 +64,8 @@ const AgentExplorer: NextPage = () => {
     const center = { lat: 40, lng: -100 };
     for (let index = currentPage * pageSize; index < currentPage * pageSize + pageSize; index++) {
       const newAgent: AgentModel = {
-        id: uniqueId("agent-"),
-        name: `Agent ${index}`,
+        id: index,
+        name: `Agent ${index + 1}`,
         address: "address.eth",
         followers: Math.round(Math.random() * 10000),
         // Random between image 0 to 78

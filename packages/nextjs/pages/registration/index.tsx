@@ -92,7 +92,7 @@ const RegistrationForm: NextPage = () => {
 
   const { authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
-  const [formData, setFormData] = useState<DeedInfoModel>(fakeData);
+  const [formData, setFormData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
 
   const httpClient = useHttpClient();
@@ -102,7 +102,6 @@ const RegistrationForm: NextPage = () => {
     if (isReady) {
       if (id == null) {
         setIsLoading(false);
-        setFormData(fakeData);
       } else {
         fetchDeedInfo(+id);
       }
