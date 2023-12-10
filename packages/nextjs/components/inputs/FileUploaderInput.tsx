@@ -135,12 +135,14 @@ export const FileUploaderInput = <TParent,>({
           {files.length ? (
             <ul className="line-clamp-3" title={files.map(x => x.name).join("\n")}>
               {files.map(file => (
-                <li key={file.name}>
-                  {file.name} (
-                  <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
-                    {file.size / 1000} KB
-                  </span>
-                  )
+                <li key={file.name} className="flex items-center gap-2">
+                  <div>
+                    {file.name} (
+                    <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
+                      {file.size / 1000} KB
+                    </span>
+                    )
+                  </div>
                   {file.hash && (
                     <button
                       className="btn btn-square pointer-events-auto"
