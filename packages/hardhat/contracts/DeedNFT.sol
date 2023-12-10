@@ -64,6 +64,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
     }
 
     function setAssetValidation(uint256 _deedId, bool _isValid) public onlyValidator {
+        require(_ownerOf(_deedId) != _msgSender(), "[DeedNFT] Owner cannot validate their own asset");
         _setAssetValidation(_deedId, _isValid);
     }
 
@@ -72,13 +73,14 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         string memory _ipfsDetailsHash
     ) public virtual deedExists(_deedId) onlyOwner(_deedId) {
         _setTokenURI(_deedId, _ipfsDetailsHash);
-        setAssetValidation(_deedId, false);
+        _setAssetValidation(_deedId, false);
         emit DeedNFTIpfsDetailsSet(_deedId, _ipfsDetailsHash);
     }
 
     function setAssetType(uint256 _deedId, AssetType _assetType) public deedExists(_deedId) onlyOwner(_deedId) {
         DeedInfo storage deedInfo = deedInfoMap[_deedId];
         deedInfo.assetType = _assetType;
+        _setAssetValidation(_deedId, false);
         emit DeedNFTAssetTypeSet(_deedId, _assetType);
     }
 

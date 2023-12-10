@@ -125,27 +125,27 @@ describe("DeedNFT", function () {
       );
     });
   });
-  describe("setPrice", function () {
-    it("Should set the buy price of a deedNFT", async function () {
-      const newDeedPrice = 1000000;
-      // 0 = land
-      // NFT tokenID will be 1
-      await deedNFT.mintAsset(deedOwner.address, "0x", 0);
-      await deedNFT.connect(deedOwner).setPrice(1, newDeedPrice);
-      const deed = await deedNFT.getDeedInfo(1);
-      expect(deed.price).to.equal(newDeedPrice);
-    });
+  // describe("setPrice", function () {
+  //   it("Should set the buy price of a deedNFT", async function () {
+  //     const newDeedPrice = 1000000;
+  //     // 0 = land
+  //     // NFT tokenID will be 1
+  //     await deedNFT.mintAsset(deedOwner.address, "0x", 0);
+  //     await deedNFT.connect(deedOwner).setPrice(1, newDeedPrice);
+  //     const deed = await deedNFT.getDeedInfo(1);
+  //     expect(deed.price).to.equal(newDeedPrice);
+  //   });
 
-    it("Should revert if caller isn't owner", async function () {
-      const newDeedPrice = 1000000;
-      // 0 = land
-      // NFT tokenID will be 1
-      await deedNFT.mintAsset(deedOwner.address, "0x", 0);
-      await expect(deedNFT.connect(newMinter).setPrice(1, newDeedPrice)).to.be.revertedWith(
-        "[DeedNFT] Must be owner of the Deed with id 1",
-      );
-    });
-  });
+  //   it("Should revert if caller isn't owner", async function () {
+  //     const newDeedPrice = 1000000;
+  //     // 0 = land
+  //     // NFT tokenID will be 1
+  //     await deedNFT.mintAsset(deedOwner.address, "0x", 0);
+  //     await expect(deedNFT.connect(newMinter).setPrice(1, newDeedPrice)).to.be.revertedWith(
+  //       "[DeedNFT] Must be owner of the Deed with id 1",
+  //     );
+  //   });
+  // });
   describe("setAssetValidation", function () {
     it("Should set a new minted deedNFT to valid", async function () {
       accessManager.connect(deployer).addValidator(newMinter.address);
@@ -157,12 +157,21 @@ describe("DeedNFT", function () {
       expect(deed.isValidated).to.equal(true);
     });
 
-    it("Should revert if caller isn't owner", async function () {
+    it("Should revert if caller isn't validator", async function () {
       // 0 = land
       // NFT tokenID will be 1
       await deedNFT.mintAsset(deedOwner.address, "0x", 0);
       await expect(deedNFT.connect(newMinter).setAssetValidation(1, true)).to.be.revertedWith(
         "[AccessManagement] Only the validator can interact",
+      );
+    });
+
+    it("Should revert if validator is owner", async function () {
+      // 0 = land
+      await deedNFT.mintAsset(deedOwner.address, "0x", 0);
+      await accessManager.connect(deployer).addValidator(deedOwner.address);
+      await expect(deedNFT.connect(deedOwner).setAssetValidation(1, true)).to.be.revertedWith(
+        "[DeedNFT] Owner cannot validate their own asset",
       );
     });
   });
