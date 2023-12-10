@@ -109,34 +109,32 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!hash) {
     // Send the JSON data as the response.
     res.status(200).send(deedInfoMetadata);
-  } else {
-    let found = false;
-    // find the hash in the deedInfo
-    [
-      ...Object.values(deedInfoMetadata.otherInformation),
-      ...Object.values(deedInfoMetadata.ownerInformation),
-      ...Object.values(deedInfoMetadata.propertyDetails),
-    ].forEach((field: IpfsFileModel | IpfsFileModel[]) => {
-      if (found) return;
-      const item = Array.isArray(field)
-        ? field.find(x => x.hash === hash)
-        : (field as IpfsFileModel);
-      if (!item) return;
-      if (item.hash === hash) {
-        found = true;
-        if (item.restricted && !canAccess) {
-          res.status(401).send(`Error: Unauthorized to view file ${item.name} for deed ${id}`);
-          return;
-        }
-        downloadFile(item, res);
-      }
-    });
-
-    if (!found) {
-      res.status(404).send(`Error: File ${hash} not found for deed ${id}`);
-    }
+    return;
   }
-  res.end();
+
+  let found = false;
+  // find the hash in the deedInfo
+  [
+    ...Object.values(deedInfoMetadata.otherInformation),
+    ...Object.values(deedInfoMetadata.ownerInformation),
+    ...Object.values(deedInfoMetadata.propertyDetails),
+  ].forEach((field: IpfsFileModel | IpfsFileModel[]) => {
+    if (found) return;
+    const item = Array.isArray(field) ? field.find(x => x.hash === hash) : (field as IpfsFileModel);
+    if (!item) return;
+    if (item.hash === hash) {
+      found = true;
+      if (item.restricted && !canAccess) {
+        res.status(401).send(`Error: Unauthorized to view file ${item.name} for deed ${id}`);
+        return;
+      }
+      downloadFile(item, res);
+    }
+  });
+
+  if (!found) {
+    res.status(404).send(`Error: File ${hash} not found for deed ${id}`);
+  }
 };
 
 const downloadFile = async (file: IpfsFileModel, res: NextApiResponse) => {
