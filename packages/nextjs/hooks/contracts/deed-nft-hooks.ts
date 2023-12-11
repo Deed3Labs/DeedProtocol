@@ -36,7 +36,7 @@ export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) =>
       return;
     }
 
-    const hash = await uploadDocuments(data, httpClient);
+    const hash = await uploadDocuments(httpClient, data);
     if (!hash) return;
 
     try {
@@ -69,13 +69,13 @@ export const useDeedNftUpdateInfo = (onConfirmed?: (txnReceipt: TransactionRecei
     account: primaryWallet?.address,
   });
 
-  const writeAsync = async (data: DeedInfoModel, deedId: number) => {
+  const writeAsync = async (data: DeedInfoModel, old: DeedInfoModel, deedId: number) => {
     if (!primaryWallet) {
       notification.error("No wallet connected");
       return;
     }
 
-    const hash = await uploadDocuments(data, httpClient);
+    const hash = await uploadDocuments(httpClient, data, old);
     if (!hash) return;
 
     try {
@@ -148,7 +148,7 @@ export const useDeedContract = () => {
   return data;
 };
 
-async function uploadDocuments(data: DeedInfoModel, httpClient: HttpClient) {
+async function uploadDocuments(httpClient: HttpClient, data: DeedInfoModel, old?: DeedInfoModel) {
   try {
     const toBeUploaded: {
       key: [
@@ -162,7 +162,10 @@ async function uploadDocuments(data: DeedInfoModel, httpClient: HttpClient) {
     }[] = [];
 
     // Owner informations files
-    if (data.ownerInformation.ids) {
+    if (
+      data.ownerInformation.ids &&
+      (!old || old.ownerInformation.ids !== data.ownerInformation.ids)
+    ) {
       toBeUploaded.push({
         key: ["ownerInformation", "ids"],
         label: "ID or Passport",
@@ -170,7 +173,10 @@ async function uploadDocuments(data: DeedInfoModel, httpClient: HttpClient) {
         restricted: true,
       });
     }
-    if (data.ownerInformation.proofBill) {
+    if (
+      data.ownerInformation.proofBill &&
+      (!old || old.ownerInformation.proofBill !== data.ownerInformation.proofBill)
+    ) {
       toBeUploaded.push({
         key: ["ownerInformation", "proofBill"],
         label: "Utility Bill or Other Document",
@@ -178,13 +184,22 @@ async function uploadDocuments(data: DeedInfoModel, httpClient: HttpClient) {
         restricted: true,
       });
     }
-    toBeUploaded.push({
-      key: ["ownerInformation", "articleIncorporation"],
-      label: "Article of Incorporation",
-      value: data.ownerInformation.articleIncorporation,
-      restricted: true,
-    });
-    if (data.ownerInformation.operatingAgreement) {
+    if (
+      !old ||
+      old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation
+    ) {
+      toBeUploaded.push({
+        key: ["ownerInformation", "articleIncorporation"],
+        label: "Article of Incorporation",
+        value: data.ownerInformation.articleIncorporation,
+        restricted: true,
+      });
+    }
+
+    if (
+      data.ownerInformation.operatingAgreement &&
+      (!old || old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement)
+    ) {
       toBeUploaded.push({
         key: ["ownerInformation", "operatingAgreement"],
         label: "Operating Agreement",
@@ -192,36 +207,49 @@ async function uploadDocuments(data: DeedInfoModel, httpClient: HttpClient) {
         restricted: true,
       });
     }
-    if (data.ownerInformation.supportingDoc) {
+    if (data.ownerInformation.supportingDoc && data.ownerInformation.supportingDoc.length) {
       data.ownerInformation.supportingDoc.forEach((doc, index) => {
-        toBeUploaded.push({
-          key: ["ownerInformation", "supportingDoc"],
-          label: "Any other Supporting Documents #" + index,
-          value: doc,
-          restricted: true,
-        });
+        if (!old || old.ownerInformation.supportingDoc?.[index] !== doc) {
+          toBeUploaded.push({
+            key: ["ownerInformation", "supportingDoc"],
+            label: "Any other Supporting Documents #" + index,
+            value: doc,
+            restricted: true,
+          });
+        }
       });
     }
 
     // Property details files
     if (data.propertyDetails.propertyImages?.length) {
       data.propertyDetails.propertyImages.forEach((image, index) => {
-        toBeUploaded.push({
-          key: ["propertyDetails", "propertyImages", index],
-          label: "Property Images #" + index,
-          value: image,
-        });
+        if (!old || old.propertyDetails.propertyImages?.[index] !== image) {
+          toBeUploaded.push({
+            key: ["propertyDetails", "propertyImages", index],
+            label: "Property Images #" + index,
+            value: image,
+          });
+        }
       });
     }
 
-    toBeUploaded.push({
-      key: ["propertyDetails", "propertyDeedOrTitle"],
-      label: "Deed or Title",
-      value: data.propertyDetails.propertyDeedOrTitle,
-      restricted: true,
-    });
+    if (
+      !old ||
+      old.propertyDetails.propertyDeedOrTitle !== data.propertyDetails.propertyDeedOrTitle
+    )
+      toBeUploaded.push({
+        key: ["propertyDetails", "propertyDeedOrTitle"],
+        label: "Deed or Title",
+        value: data.propertyDetails.propertyDeedOrTitle,
+        restricted: true,
+      });
 
-    if (data.propertyDetails.propertyPurchaseContract) {
+    if (
+      data.propertyDetails.propertyPurchaseContract &&
+      (!old ||
+        old.propertyDetails.propertyPurchaseContract !==
+          data.propertyDetails.propertyPurchaseContract)
+    ) {
       toBeUploaded.push({
         key: ["propertyDetails", "propertyPurchaseContract"],
         label: "Purchase Contract",
@@ -230,37 +258,29 @@ async function uploadDocuments(data: DeedInfoModel, httpClient: HttpClient) {
       });
     }
 
-    // Other informations files
     const toastId = notification.loading("Uploading documents...");
-
-    await httpClient.post("/api/deed-info", data);
-
     const payload = cloneDeep(data) as DeedInfoModel;
+
     let counter = 0;
     await Promise.all(
       toBeUploaded.map(async ({ key, label, value, restricted }) => {
-        try {
-          const hash = await uploadFile(value, label);
-          notification.update(
-            toastId,
-            `Uploading documents... (${counter++}/${toBeUploaded.length})`,
-          );
-          const newValue = {
-            hash,
-            name: value.name,
-            size: value.size,
-            type: value.type,
-            lastModified: value.lastModified,
-            restricted,
-          };
-          // @ts-ignore
-          if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = newValue;
-          // @ts-ignore
-          else payload[key[0]][key[1]] = newValue;
-        } catch (error) {
-          logger.error({ message: "Error while uploading documents", error });
-          return;
-        }
+        const hash = await uploadFile(value, label);
+        notification.update(
+          toastId,
+          `Uploading documents... (${counter++}/${toBeUploaded.length})`,
+        );
+        const newValue = {
+          hash,
+          name: value.name,
+          size: value.size,
+          type: value.type,
+          lastModified: value.lastModified,
+          restricted,
+        };
+        // @ts-ignore
+        if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = newValue;
+        // @ts-ignore
+        else payload[key[0]][key[1]] = newValue;
       }),
     );
 

@@ -87,14 +87,17 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (!canAccess) {
-    return res.status(401).send(`Error: Unauthorized to view deed ${id}`);
+    return res.status(401).send(`Error: AccessControlUnauthorizedAccount to view deed ${id}`);
   }
 
   // Get the deed information from the contract.
-  const tokenUri = await contract.read.tokenURI([id as any]);
-  const asciiIpfs = hexToString(tokenUri as Hex);
+  let tokenHash = await contract.read.tokenURI([id as any]);
+  if (tokenHash.startsWith("0x")) {
+    tokenHash = hexToString(tokenHash as Hex);
+  }
+
   // Construct the file path for the IPFS file. And apply the pinata gateway token if the user has the privilege.
-  const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${asciiIpfs}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
+  const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${tokenHash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
 
   const response = await fetch(filePath);
   if (response.status !== 200) {

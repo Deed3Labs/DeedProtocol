@@ -26,7 +26,6 @@ import logger from "~~/services/logger";
 import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
-import { contracts } from "~~/utils/scaffold-eth/contract";
 
 // const steps = [
 //   "Owner Information",
@@ -91,17 +90,20 @@ const RegistrationForm: NextPage = () => {
   };
 
   const { writeAsync: writeDeedNftMintAsync } = useDeedNftMint(onDeedMinted);
-  const { writeAsync: writeDeedNftUpdateInfoAsync } = useDeedNftUpdateInfo(onDeedMinted);
+  const { writeAsync: writeDeedNftUpdateInfoAsync } = useDeedNftUpdateInfo(() =>
+    fetchDeedInfo(+id),
+  );
   const { writeValidateAsync } = useDeedNftValidate();
   const isValidator = useIsValidator();
 
   const { authToken, primaryWallet } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
+  const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [formData, setFormData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const [isOwner, setIsOwner] = useState(false);
-  const deedContract = useDeedContract();
 
+  const deedContract = useDeedContract();
   const httpClient = useHttpClient();
 
   useEffect(() => {
@@ -131,6 +133,7 @@ const RegistrationForm: NextPage = () => {
     const resp = await httpClient.get(`/api/deed-info/${id}?chainId=${chainId}`);
     setErrorCode(undefined);
     if (resp?.status === 200) {
+      setInitialData(resp.value);
       setFormData(resp.value);
     } else {
       setErrorCode(resp?.status === 404 ? "notFound" : "unauthorized");
@@ -141,7 +144,9 @@ const RegistrationForm: NextPage = () => {
   const handleSubmit = async () => {
     if (!validate()) return;
     if (id) {
-      await writeDeedNftUpdateInfoAsync(formData, +id);
+      if (initialData) {
+        await writeDeedNftUpdateInfoAsync(formData, initialData, +id);
+      }
     } else {
       await writeDeedNftMintAsync(formData);
     }
@@ -262,7 +267,7 @@ const RegistrationForm: NextPage = () => {
               </div>
 
               <div className="m-8">
-                {isValidator && (
+                {isValidator && !isOwner && (
                   <button onClick={handleValidationClicked} className="btn btn-lg bg-gray-600">
                     Validate
                   </button>
