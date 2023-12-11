@@ -13,7 +13,7 @@ interface Props<TParent> {
 
 export interface RadioBoxOption {
   title: string;
-  tag: string;
+  tag?: string;
   subtitle?: string;
   value: string;
   icon?: React.ReactNode;
@@ -69,9 +69,11 @@ export const RadioBoxesInput = <TParent,>({
               )}
 
               <span className="text-xl font-bold mt-2">{option.title}</span>
-              <div className="p-2 bg-white bg-opacity-5 rounded-lg w-fit">
-                <div className="text-xs font-['Montserrat']">{option.tag}</div>
-              </div>
+              {option.tag && (
+                <div className="p-2 bg-white bg-opacity-5 rounded-lg w-fit">
+                  <div className="text-xs font-['Montserrat']">{option.tag}</div>
+                </div>
+              )}
               {option.subtitle && (
                 <div className="text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight">
                   {option.subtitle}
