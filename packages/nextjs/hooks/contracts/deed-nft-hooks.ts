@@ -1,9 +1,4 @@
-import {
-  useScaffoldContract,
-  useScaffoldContractRead,
-  useScaffoldContractWrite,
-} from "../scaffold-eth";
-import useHttpClient, { HttpClient } from "../useHttpClient";
+import { useScaffoldContract, useScaffoldContractWrite } from "../scaffold-eth";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { cloneDeep } from "lodash-es";
 import { TransactionReceipt, toHex } from "viem";
@@ -21,7 +16,6 @@ import { notification } from "~~/utils/scaffold-eth";
 
 export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet } = useDynamicContext();
-  const httpClient = useHttpClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -36,7 +30,12 @@ export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) =>
       return;
     }
 
-    const hash = await uploadDocuments(httpClient, data);
+    if (data.paymentInformation.paymentType === "crypto") {
+    } else {
+      // Call api
+    }
+
+    const hash = await uploadDocuments(data);
     if (!hash) return;
 
     try {
@@ -59,7 +58,6 @@ export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) =>
 
 export const useDeedNftUpdateInfo = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet } = useDynamicContext();
-  const httpClient = useHttpClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -75,7 +73,7 @@ export const useDeedNftUpdateInfo = (onConfirmed?: (txnReceipt: TransactionRecei
       return;
     }
 
-    const hash = await uploadDocuments(httpClient, data, old);
+    const hash = await uploadDocuments(data, old);
     if (!hash) return;
 
     try {
@@ -148,7 +146,7 @@ export const useDeedContract = () => {
   return data;
 };
 
-async function uploadDocuments(httpClient: HttpClient, data: DeedInfoModel, old?: DeedInfoModel) {
+async function uploadDocuments(data: DeedInfoModel, old?: DeedInfoModel) {
   try {
     const toBeUploaded: {
       key: [

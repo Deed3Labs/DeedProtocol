@@ -4,12 +4,12 @@ import {
   BlockchainOptions,
   EntityTypeOptions,
   OwnerTypeOptions,
+  PaymentOptions,
   PropertySubtypeOptions,
   PropertyTypeOptions,
   PropertyZoningOptions,
   StateOptions,
   WrapperOptions,
-  paymentOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
 
@@ -52,7 +52,7 @@ export interface OtherInformationModel {
 }
 
 export interface PaymentInformationModel {
-  paymentType: ValueExtractor<typeof paymentOptions>;
+  paymentType: ValueExtractor<typeof PaymentOptions>;
   cardNumber: string;
   cardExpiry: string;
   cardCVV: string;
