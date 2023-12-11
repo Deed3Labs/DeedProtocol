@@ -182,7 +182,7 @@ describe("DeedNFT", function () {
       // NFT tokenID will be 1
       await deedNFT.mintAsset(deedOwner.address, "0x", 0);
       await deedNFT.connect(deedOwner).burn(1);
-      await expect(deedNFT.ownerOf(1)).to.be.revertedWith("ERC721: invalid token ID");
+      await expect(deedNFT.ownerOf(1)).to.be.revertedWithCustomError(deedNFT, "ERC721NonexistentToken");
     });
 
     it("Should revert if caller isn't owner", async function () {

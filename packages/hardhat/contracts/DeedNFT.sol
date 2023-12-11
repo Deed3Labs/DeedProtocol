@@ -40,7 +40,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
 
     modifier onlyOwner(uint256 _deedId) {
         require(
-            _msgSender() == ownerOf(_deedId),
+            _msgSender() == _ownerOf(_deedId),
             string.concat("[DeedNFT] Must be owner of the Deed with id ", Strings.toString(_deedId))
         );
         _;

@@ -96,7 +96,7 @@ describe("FundsManager", function () {
 
       // Act
       const act = () =>
-        fundsManager.connect(deployer).widthdraw(accountId, token.address, amountToWithdraw, deployer.getAddress());
+        fundsManager.connect(deployer).withdraw(accountId, token.address, amountToWithdraw, deployer.getAddress());
 
       // Assert
       await expect(act())
@@ -129,7 +129,7 @@ describe("FundsManager", function () {
 
       // Act
       const act = () =>
-        fundsManager.connect(deployer).widthdraw(accountId, token.address, amountToWithdraw, deployer.getAddress());
+        fundsManager.connect(deployer).withdraw(accountId, token.address, amountToWithdraw, deployer.getAddress());
 
       // Arrange
       await expect(act()).to.be.revertedWith(

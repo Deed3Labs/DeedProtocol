@@ -10,7 +10,7 @@ import {
 } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-describe.only("SubdivisionNFT", function () {
+describe("SubdivisionNFT", function () {
   // We define a fixture to reuse the same setup in every test.
   // let contractOwner: SignerWithAddress;
   let subNFT: SubdivisionNFT;

@@ -17,7 +17,7 @@ contract AccessManager is AccessControl {
     modifier functionRoleOrAdmin(bytes32 _functionSig) {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) || hasRole(_functionSig, _msgSender()),
-            "[AccessManager] Only the Admin or function granted user can interact"
+            "[AccessManagement] Only the Admin or function granted user can interact"
         );
         _;
     }
@@ -72,7 +72,7 @@ contract AccessManagerBase is Context {
     modifier onlyAdmin() {
         require(
             accessManager.hasRole(accessManager.DEFAULT_ADMIN_ROLE(), _msgSender()),
-            "[AccessManagerBase] Only the admin can interact"
+            "[AccessManagement] Only the admin can interact"
         );
         _;
     }
@@ -83,7 +83,7 @@ contract AccessManagerBase is Context {
     modifier onlyValidator() {
         require(
             accessManager.hasRole(accessManager.VALIDATOR_ROLE(), _msgSender()),
-            "[AccessManagerBase] Only the validator can interact"
+            "[AccessManagement] Only the validator can interact"
         );
         _;
     }
@@ -94,7 +94,7 @@ contract AccessManagerBase is Context {
     modifier onlyAgent() {
         require(
             accessManager.hasRole(accessManager.AGENT_ROLE(), _msgSender()),
-            "[AccessManagerBase] Only the agent can interact"
+            "[AccessManagement] Only the agent can interact"
         );
         _;
     }
@@ -103,7 +103,7 @@ contract AccessManagerBase is Context {
      * Use this modifier to manage the fonction access more granularly
      */
     modifier onlyRole(bytes32 _role) {
-        require(accessManager.hasRole(_role, _msgSender()), "[AccessManagerBase] Only the validator can interact");
+        require(accessManager.hasRole(_role, _msgSender()), "[AccessManager] Only the validator can interact");
         _;
     }
 
@@ -114,7 +114,7 @@ contract AccessManagerBase is Context {
     modifier functionRoleOrAdmin(bytes32 _functionSig) {
         require(
             hasRole(accessManager.DEFAULT_ADMIN_ROLE(), _msgSender()) || hasRole(_functionSig, _msgSender()),
-            "[AccessManagerBase] Only the Admin or function granted user can interact"
+            "[AccessManagement] Only the Admin or function granted user can interact"
         );
         _;
     }

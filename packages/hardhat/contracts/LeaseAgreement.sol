@@ -19,6 +19,7 @@ interface ILeaseNFT {
 contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
     // CONSTANTS
     uint256 private constant MONTH = 30.5 days;
+    uint256 private constant MAX_NB_MONTH_FOR_DEPOSIT = 3;
 
     struct LeaseDates {
         uint256 startDate;
@@ -304,7 +305,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         );
         require(containsAddress(lease.lesseeList, _msgSender()), "[Lease Agreement] Caller must be one of the lessees");
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
-        bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
+        bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= MAX_NB_MONTH_FOR_DEPOSIT);
         // Send security deposit to the sender of the lessee list
         if (!shouldSendDepositToLessor) {
             fundsManager.withdraw(_leaseId, paymentToken, lease.securityDeposit.amount, _msgSender());
@@ -326,7 +327,7 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         Lease storage lease = leases[_leaseId];
         require(block.timestamp >= lease.dates.startDate, "[Lease Agreement] Lease has not started yet");
         RentPaymentInfo memory rentInfo = calculateRentPaymentInfo(_leaseId);
-        bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= 3); // TODO: Configurable
+        bool shouldSendDepositToLessor = (rentInfo.unpaidMonths >= MAX_NB_MONTH_FOR_DEPOSIT);
 
         // Send security deposit to the lessor if needed
         if (shouldSendDepositToLessor) {
@@ -336,9 +337,6 @@ contract LeaseAgreement is ReentrancyGuard, AccessManagerBase {
         emit LeaseTerminated(_leaseId);
     }
 
-    // function recoverRemainingFunds(uint256 _leaseId) public onlyLessor{
-
-    // }
     function calculateRentPaymentInfo(uint256 _leaseId) public view returns (RentPaymentInfo memory rentInfo) {
         Lease storage lease = leases[_leaseId];
         rentInfo.rentAmount = lease.rentAmount;
