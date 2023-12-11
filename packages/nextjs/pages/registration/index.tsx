@@ -267,14 +267,19 @@ const RegistrationForm: NextPage = () => {
               </div>
 
               <div className="m-8">
-                {isValidator && !isOwner && (
+                {isValidator && !isOwner && id && (
                   <button onClick={handleValidationClicked} className="btn btn-lg bg-gray-600">
                     Validate
                   </button>
                 )}
-                {isOwner && (
+                {!id && (
                   <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-                    {id ? "Update" : "Submit"}
+                    Submit
+                  </button>
+                )}
+                {isOwner && id && (
+                  <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
+                    Update
                   </button>
                 )}
               </div>
