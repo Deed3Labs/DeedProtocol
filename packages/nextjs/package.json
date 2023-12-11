@@ -55,6 +55,7 @@
     "react-leaflet-div-icon": "^1.1.0",
     "sass": "^1.68.0",
     "stream": "^0.0.2",
+    "stripe": "^14.8.0",
     "use-debounce": "^8.0.4",
     "usehooks-ts": "^2.7.2",
     "viem": "^1.16.6",

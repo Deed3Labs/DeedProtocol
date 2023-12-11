@@ -9,10 +9,6 @@ import { DeedInfoModel } from "~~/models/deed-info.model";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
 import scaffoldConfig from "~~/scaffold.config";
 
-interface AuthToken extends JwtPayload {
-  verified_credentials: [{ address: Address; email: string }];
-}
-
 // This function handles the API request for fetching the deed information.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Check if the request method is GET.
