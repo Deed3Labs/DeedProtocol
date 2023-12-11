@@ -9,6 +9,7 @@ import {
   PropertyZoningOptions,
   StateOptions,
   WrapperOptions,
+  paymentOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
 
@@ -50,6 +51,19 @@ export interface OtherInformationModel {
   wrapper: ValueExtractor<typeof WrapperOptions>;
 }
 
+export interface PaymentInformationModel {
+  paymentType: ValueExtractor<typeof paymentOptions>;
+  cardNumber: string;
+  cardExpiry: string;
+  cardCVV: string;
+  cardholderName: string;
+  suffix?: string;
+  billingAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
 export interface DeedInfoModel {
   id?: number;
   owner?: Address;
@@ -60,6 +74,9 @@ export interface DeedInfoModel {
   // 2. Property Details
   propertyDetails: PropertyDetailsModel;
 
-  // 3. Other information
+  // 3. Other Information
   otherInformation: OtherInformationModel;
+
+  //4. Payment Information
+  paymentInformation: PaymentInformationModel;
 }

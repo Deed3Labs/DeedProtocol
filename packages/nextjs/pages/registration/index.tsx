@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import OtherInformations from "./OtherInformations";
 import OwnerInformation from "./OwnerInformation";
+import PaymentInformation from "./PaymentInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { NextPage } from "next";
@@ -247,6 +248,7 @@ const RegistrationForm: NextPage = () => {
                 <OwnerInformation value={formData.ownerInformation} onChange={handleChange} />
                 <PropertyDetails value={formData.propertyDetails} onChange={handleChange} />
                 <OtherInformations value={formData.otherInformation} onChange={handleChange} />
+                <PaymentInformation value={formData.paymentInformation} onChange={handleChange} />
               </div>
             </div>
             <div className="bg-base-100 p-9 w-full lg:w-3/12 h-fit relative lg:sticky lg:top-32 lg:max-h-[75vh] overflow-y-auto">

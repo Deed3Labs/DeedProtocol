@@ -168,7 +168,20 @@ export const BlockchainOptions = [
     disabled: true,
   },
 ] as const;
-
+export const PaymentOptions = [
+  {
+    title: "Debit or Credit",
+    subtitle: "Via stripe",
+    value: "fiat",
+    icon: IconPolygon,
+  },
+  {
+    title: "DAI or USDC",
+    subtitle: "Stablecoin",
+    value: "crypto",
+    icon: IconPolygon,
+  },
+] as const;
 export const WrapperOptions = [
   {
     title: "Nominee Trust",
