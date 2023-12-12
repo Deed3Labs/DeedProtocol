@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { DownloadLogo } from "../assets/DownloadLogo";
+import { DownloadLogo } from "../assets/Downloadicon";
 import useHttpClient from "~~/hooks/useHttpClient";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -35,7 +35,9 @@ export const FileUploaderInput = <TParent,>({
   const { id } = query as { id: string };
 
   useEffect(() => {
-    if (value) {
+    if (!value) {
+      setFiles([]);
+    } else {
       if (Array.isArray(value)) {
         setFiles(value);
       } else {

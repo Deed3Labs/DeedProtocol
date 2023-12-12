@@ -1,18 +1,7 @@
-import pinataSDK from "@pinata/sdk";
-import { JwtPayload, jwtDecode } from "jwt-decode";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import AuthToken from "~~/models/auth-token";
-
-const pinata = new pinataSDK({ pinataJWTKey: process.env.NEXT_PINATA_TOKEN });
-if (!process.env.NEXT_PINATA_TOKEN) throw new Error("Missing NEXT_PINATA_TOKEN env var");
-
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  },
-};
+import { jwtDecode } from "~~/services/jwt-util";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method === "POST") {
@@ -21,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       let email = undefined;
       const decoded = jwtDecode<AuthToken>(jwtToken);
       email = decoded.email;
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+      const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!);
       const paymentIntent = await stripe.paymentIntents.create({
         amount: 200,
         currency: "usd",

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import OtherInformations from "./OtherInformations";
@@ -8,6 +8,10 @@ import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { NextPage } from "next";
 import { TransactionReceipt } from "viem";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { BitcoinIcon } from "~~/components/assets/BitcoinIcon";
+import { TransactionHash } from "~~/components/blockexplorer";
+import { Address } from "~~/components/scaffold-eth";
 import { useIsValidator } from "~~/hooks/contracts/access-manager.hooks";
 import {
   useDeedContract,
@@ -58,18 +62,26 @@ const fakeData: DeedInfoModel = {
     blockchain: "gnosis",
     wrapper: "llc",
   },
+  paymentInformation: {
+    paymentType: "crypto",
+    stabeleCoin: "0x9D233A907E065855D2A9c7d4B552ea27fB2E5a36",
+  },
 };
 
-const defaultData: DeedInfoModel = {
-  otherInformation: {
-    blockchain: "gnosis",
-    wrapper: "llc",
-  },
-  ownerInformation: {
-    ownerType: "individual",
-  },
-  propertyDetails: {},
-} as DeedInfoModel;
+const defaultData: DeedInfoModel = fakeData;
+// const defaultData: DeedInfoModel = {
+//   otherInformation: {
+//     blockchain: "gnosis",
+//     wrapper: "llc",
+//   },
+//   ownerInformation: {
+//     ownerType: "individual",
+//   },
+//   propertyDetails: {},
+//   paymentInformation: {
+//     paymentType: "fiat",
+//   },
+// } as DeedInfoModel;
 
 type ErrorCode = "notFound" | "unauthorized";
 
@@ -99,24 +111,26 @@ const RegistrationForm: NextPage = () => {
   const { authToken, primaryWallet } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<DeedInfoModel>();
-  const [formData, setFormData] = useState<DeedInfoModel>(defaultData);
+  const [deedInfo, setDeedInfo] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const [isOwner, setIsOwner] = useState(false);
+  const { id: chainId } = getTargetNetwork();
 
   const deedContract = useDeedContract();
   const httpClient = useHttpClient();
 
   useEffect(() => {
-    if (!isReady || !id) return;
-    deedContract?.read.ownerOf([BigInt(id)]).then(owner => {
+    if (!isReady || !id || !deedContract || !primaryWallet) return;
+    deedContract.read.ownerOf([BigInt(id)]).then(owner => {
       setIsOwner(owner === primaryWallet?.address);
     });
-  }, [primaryWallet, id, isReady]);
+  }, [primaryWallet, id, isReady, deedContract]);
 
   useEffect(() => {
     setIsLoading(true);
     if (isReady) {
       if (id == null) {
+        setDeedInfo(defaultData);
         setIsLoading(false);
       } else {
         fetchDeedInfo(+id);
@@ -125,30 +139,32 @@ const RegistrationForm: NextPage = () => {
   }, [id, authToken, isReady]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
-    setFormData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
+    setDeedInfo((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
   };
 
-  const fetchDeedInfo = async (id: number) => {
-    const chainId = getTargetNetwork().id;
-    const resp = await httpClient.get(`/api/deed-info/${id}?chainId=${chainId}`);
-    setErrorCode(undefined);
-    if (resp?.status === 200) {
-      setInitialData(resp.value);
-      setFormData(resp.value);
-    } else {
-      setErrorCode(resp?.status === 404 ? "notFound" : "unauthorized");
-    }
-    setIsLoading(false);
-  };
+  const fetchDeedInfo = useCallback(
+    async (id: number) => {
+      const resp = await httpClient.get(`/api/deed-info/${id}?chainId=${chainId}`);
+      setErrorCode(undefined);
+      if (resp?.status === 200) {
+        setInitialData(resp.value);
+        setDeedInfo(resp.value);
+      } else {
+        setErrorCode(resp?.status === 404 ? "notFound" : "unauthorized");
+      }
+      setIsLoading(false);
+    },
+    [id, chainId],
+  );
 
   const handleSubmit = async () => {
     if (!validate()) return;
     if (id) {
       if (initialData) {
-        await writeDeedNftUpdateInfoAsync(formData, initialData, +id);
+        await writeDeedNftUpdateInfoAsync(deedInfo, initialData, +id);
       }
     } else {
-      await writeDeedNftMintAsync(formData);
+      await writeDeedNftMintAsync(deedInfo);
     }
   };
 
@@ -159,36 +175,36 @@ const RegistrationForm: NextPage = () => {
   };
 
   const validate = () => {
-    if (!formData.ownerInformation.ids && !isDev()) {
+    if (!deedInfo.ownerInformation.ids && !isDev()) {
       notification.error("Owner Information ids is required", { duration: 3000 });
       return false;
     }
 
-    if (!formData.ownerInformation.articleIncorporation && !isDev()) {
+    if (!deedInfo.ownerInformation.articleIncorporation && !isDev()) {
       notification.error("Owner Information articleIncorporation is required", { duration: 3000 });
       return false;
     }
 
-    if (!formData.propertyDetails.propertyDeedOrTitle && !isDev()) {
+    if (!deedInfo.propertyDetails.propertyDeedOrTitle && !isDev()) {
       notification.error("Property details Deed or Title is required", { duration: 3000 });
       return false;
     }
 
-    for (const field of Object.values(formData.ownerInformation)) {
+    for (const field of Object.values(deedInfo.ownerInformation)) {
       if (field instanceof File && field.size / 1024 > 10000) {
         notification.error(`${field.name} is too big. Max size is 10mb`, { duration: 3000 });
         return false;
       }
     }
 
-    for (const field of Object.values(formData.propertyDetails)) {
+    for (const field of Object.values(deedInfo.propertyDetails)) {
       if (field instanceof File && field.size / 1024 > 10000) {
         notification.error(`${field.name} is too big. Max size is 10mb`, { duration: 3000 });
         return false;
       }
     }
 
-    for (const field of Object.values(formData.otherInformation)) {
+    for (const field of Object.values(deedInfo.otherInformation)) {
       if (field instanceof File && field.size / 1024 > 10000) {
         notification.error(`${field.name} is too big. Max size is 10mb`);
         return false;
@@ -250,10 +266,10 @@ const RegistrationForm: NextPage = () => {
               </div>
 
               <div className="mb-10">
-                <OwnerInformation value={formData.ownerInformation} onChange={handleChange} />
-                <PropertyDetails value={formData.propertyDetails} onChange={handleChange} />
-                <OtherInformations value={formData.otherInformation} onChange={handleChange} />
-                <PaymentInformation value={formData.paymentInformation} onChange={handleChange} />
+                <OwnerInformation value={deedInfo.ownerInformation} onChange={handleChange} />
+                <PropertyDetails value={deedInfo.propertyDetails} onChange={handleChange} />
+                <OtherInformations value={deedInfo.otherInformation} onChange={handleChange} />
+                <PaymentInformation value={deedInfo.paymentInformation} onChange={handleChange} />
               </div>
             </div>
             <div className="bg-base-100 p-9 w-full lg:w-3/12 h-fit relative lg:sticky lg:top-32 lg:max-h-[75vh] overflow-y-auto">
@@ -267,19 +283,66 @@ const RegistrationForm: NextPage = () => {
               </div>
 
               <div className="m-8">
-                {isValidator && !isOwner && id && (
-                  <button onClick={handleValidationClicked} className="btn btn-lg bg-gray-600">
-                    Validate
-                  </button>
-                )}
-                {!id && (
+                {id ? (
+                  <>
+                    {isOwner && (
+                      <div className="text-xl mb-4">
+                        Status:{" "}
+                        <span className={deedInfo.isValidated ? "text-success" : "text-warning"}>
+                          {deedInfo.isValidated ? "Verified" : "Waiting for validation"}
+                        </span>
+                      </div>
+                    )}
+                    {isValidator && !isOwner && (
+                      <>
+                        <div className="mb-4">
+                          <div className="text-2xl">Payment information:</div>
+                          <ul className="flex flex-col gap-2">
+                            <li>
+                              <div className="text-xl">Type:</div>
+                              {deedInfo.paymentInformation.paymentType === "crypto" ? (
+                                <div className="flex flex-row gap-2">
+                                  <BitcoinIcon width={24} />
+                                  Crypto
+                                </div>
+                              ) : (
+                                <div className="flex flex-row gap-2">
+                                  <CurrencyDollarIcon width={24} />
+                                  Fiat
+                                </div>
+                              )}
+                            </li>
+                            {deedInfo.paymentInformation.paymentType === "crypto" && (
+                              <>
+                                <li>
+                                  <div className="text-xl">Coin:</div>
+                                  <Address address={deedInfo.paymentInformation.stabeleCoin} />
+                                </li>
+                                <li>
+                                  <div className="text-xl">Transaction:</div>
+                                  <TransactionHash hash={deedInfo.paymentInformation.receipt!} />
+                                </li>
+                              </>
+                            )}
+                          </ul>
+                        </div>
+                        <button
+                          onClick={handleValidationClicked}
+                          className="btn btn-lg bg-gray-600"
+                        >
+                          Validate
+                        </button>
+                      </>
+                    )}
+                    {isOwner && (
+                      <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
+                        Update
+                      </button>
+                    )}
+                  </>
+                ) : (
                   <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
                     Submit
-                  </button>
-                )}
-                {isOwner && id && (
-                  <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-                    Update
                   </button>
                 )}
               </div>

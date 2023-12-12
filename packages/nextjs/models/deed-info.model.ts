@@ -9,6 +9,7 @@ import {
   PropertyTypeOptions,
   PropertyZoningOptions,
   StateOptions,
+  SupportedStableCoin,
   WrapperOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
@@ -53,20 +54,27 @@ export interface OtherInformationModel {
 
 export interface PaymentInformationModel {
   paymentType: ValueExtractor<typeof PaymentOptions>;
-  cardNumber: string;
-  cardExpiry: string;
-  cardCVV: string;
-  cardholderName: string;
+
+  // -- Fiat only --
+  cardNumber?: string;
+  cardExpiry?: string;
+  cardCVV?: string;
+  cardholderName?: string;
   suffix?: string;
-  billingAddress: string;
-  city: string;
-  state: string;
-  zip: string;
+  billingAddress?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+
+  // -- Crypto only --
+  stabeleCoin?: ValueExtractor<typeof SupportedStableCoin>;
+  receipt?: string;
 }
 
 export interface DeedInfoModel {
   id?: number;
   owner?: Address;
+  isValidated?: boolean;
 
   // 1. Owner Information
   ownerInformation: OwnerInformationModel;

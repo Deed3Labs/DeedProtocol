@@ -1,4 +1,4 @@
-import { JwtPayload } from "jwt-decode";
+import { JwtPayload } from "jsonwebtoken";
 import { Address } from "viem";
 
 export default interface AuthToken extends JwtPayload {

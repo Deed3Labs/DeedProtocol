@@ -12,10 +12,16 @@ import {
 import logger from "~~/services/logger";
 import { indexOfLiteral } from "~~/utils/extract-values";
 import { uploadFile, uploadJson } from "~~/utils/ipfs";
-import { notification } from "~~/utils/scaffold-eth";
+import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet } = useDynamicContext();
+
+  const { writeAsync: erc20Transfer } = useScaffoldContractWrite({
+    contractName: "DAI",
+    functionName: "transfer",
+    args: [] as any, // Will be filled in by write()
+  });
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -31,6 +37,21 @@ export const useDeedNftMint = (onConfirmed?: (txnReceipt: TransactionReceipt) =>
     }
 
     if (data.paymentInformation.paymentType === "crypto") {
+      const paymentNotif = notification.info("Sending payment...");
+      try {
+        const { deedMintingFee, storageWalletAddress } = getTargetNetwork();
+        const txHash = await erc20Transfer({
+          args: [storageWalletAddress, deedMintingFee],
+        });
+        if (txHash) {
+          data.paymentInformation.receipt = txHash;
+        }
+        notification.remove(paymentNotif);
+      } catch (error) {
+        logger.error({ message: "Error while sending payment", error });
+        notification.error("Error while sending payment");
+        return;
+      }
     } else {
       // Call api
     }

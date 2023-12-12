@@ -168,6 +168,7 @@ export const BlockchainOptions = [
     disabled: true,
   },
 ] as const;
+
 export const PaymentOptions = [
   {
     title: "Debit or Credit",
@@ -182,6 +183,7 @@ export const PaymentOptions = [
     icon: IconPolygon,
   },
 ] as const;
+
 export const WrapperOptions = [
   {
     title: "Nominee Trust",
@@ -199,5 +201,14 @@ export const WrapperOptions = [
       Estimated cost to deploy contract: $1499.97
     `,
     value: "llc",
+  },
+] as const;
+
+export const SupportedStableCoin = [
+  {
+    label: "Dai Stablecoin",
+    symbol: "DAI",
+    decimals: 18,
+    value: "0x9D233A907E065855D2A9c7d4B552ea27fB2E5a36",
   },
 ] as const;

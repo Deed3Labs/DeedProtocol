@@ -1,13 +1,14 @@
 import axios from "axios";
-import { JwtPayload, jwtDecode } from "jwt-decode";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
-import { Address, Hex, createPublicClient, getContract, hexToString, http } from "viem";
+import { Hex, createPublicClient, getContract, hexToString, http } from "viem";
 import { goerli } from "viem/chains";
 import deployedContracts from "~~/contracts/deployedContracts";
+import AuthToken from "~~/models/auth-token";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
 import scaffoldConfig from "~~/scaffold.config";
+import { jwtDecode } from "~~/services/jwt-util";
 
 // This function handles the API request for fetching the deed information.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -72,7 +73,14 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!canAccess && jwtToken) {
     // Decode the JWT token to get the wallet address.
-    const decoded = jwtDecode<AuthToken>(jwtToken);
+    let decoded: AuthToken;
+    try {
+      decoded = jwtDecode<AuthToken>(jwtToken);
+    } catch (error) {
+      res.status(401).send(`Error: Invalid JWT token`);
+      return;
+    }
+
     walletAddress = decoded.verified_credentials[0].address;
     const isValidator = await contract.read.hasValidatorRole({
       account: walletAddress,
@@ -104,6 +112,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const deedInfoMetadata = (await response.json()) as DeedInfoModel;
   deedInfoMetadata.id = +id;
   deedInfoMetadata.owner = deedOwner;
+  deedInfoMetadata.isValidated = deedInfo.isValidated;
 
   if (!hash) {
     // Send the JSON data as the response.

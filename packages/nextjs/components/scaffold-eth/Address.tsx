@@ -29,8 +29,8 @@ const blockieSizeMap = {
  * Displays an address (or ENS) with a Blockie image and option to copy address.
  */
 export const Address = ({ address, disableAddressLink, format, size = "base" }: TAddressProps) => {
-  const [ens, setEns] = useState<string | null>();
-  const [ensAvatar, setEnsAvatar] = useState<string | null>();
+  const [ens, setEns] = useState<string | undefined>();
+  const [ensAvatar, setEnsAvatar] = useState<string | undefined>();
   const [addressCopied, setAddressCopied] = useState(false);
 
   const { data: fetchedEns } = useEnsName({
@@ -47,11 +47,11 @@ export const Address = ({ address, disableAddressLink, format, size = "base" }: 
 
   // We need to apply this pattern to avoid Hydration errors.
   useEffect(() => {
-    setEns(fetchedEns);
+    setEns(fetchedEns ?? undefined);
   }, [fetchedEns]);
 
   useEffect(() => {
-    setEnsAvatar(fetchedEnsAvatar);
+    setEnsAvatar(fetchedEnsAvatar ?? undefined);
   }, [fetchedEnsAvatar]);
 
   // Skeleton UI
@@ -70,7 +70,7 @@ export const Address = ({ address, disableAddressLink, format, size = "base" }: 
     return <span className="text-error">Wrong address</span>;
   }
 
-  const blockExplorerAddressLink = getBlockExplorerAddressLink(getTargetNetwork(), address);
+  const blockExplorerAddressLink = getBlockExplorerAddressLink(address);
   let displayAddress = address?.slice(0, 5) + "..." + address?.slice(-4);
 
   if (ens) {

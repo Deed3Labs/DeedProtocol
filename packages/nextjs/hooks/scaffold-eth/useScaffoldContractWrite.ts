@@ -78,7 +78,7 @@ export const useScaffoldContractWrite = <
     if (wagmiContractWrite.writeAsync) {
       try {
         setIsMining(true);
-        await writeTx(
+        const hash = await writeTx(
           () =>
             wagmiContractWrite.writeAsync({
               args: newArgs ?? args,
@@ -87,6 +87,7 @@ export const useScaffoldContractWrite = <
             }),
           { onBlockConfirmation, blockConfirmations },
         );
+        return hash;
       } catch (e: any) {
         const message = getParsedError(e);
         notification.error(message);
@@ -94,11 +95,12 @@ export const useScaffoldContractWrite = <
       } finally {
         setIsMining(false);
       }
+      return null;
     } else {
       const message = "Contract writer error. Try again.";
       notification.error(message);
       logger.error({ message, contract: contractName });
-      return;
+      return null;
     }
   };
 

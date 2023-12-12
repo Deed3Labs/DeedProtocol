@@ -63,6 +63,7 @@ const PropertyExplorer: NextPage = () => {
   };
 
   const loadMoreProperties = async () => {
+    setProperties([]);
     setLoading(true);
     setCurrentPage(prev => prev + 1);
     const radius = 10;
