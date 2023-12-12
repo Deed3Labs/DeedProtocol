@@ -85,7 +85,7 @@ const defaultData: DeedInfoModel = fakeData;
 
 type ErrorCode = "notFound" | "unauthorized";
 
-const RegistrationForm: NextPage = () => {
+const Registration: NextPage = () => {
   // const [step, setStep] = useState(0);
   const { query, isReady, push } = useRouter();
   const { id } = query as { id: string };
@@ -356,4 +356,4 @@ const RegistrationForm: NextPage = () => {
   );
 };
 
-export default RegistrationForm;
+export default Registration;
