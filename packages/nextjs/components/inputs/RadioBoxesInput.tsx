@@ -19,6 +19,7 @@ export interface RadioBoxOption {
   icon?: React.ReactNode;
   disabled?: boolean;
 }
+
 export const RadioBoxesInput = <TParent,>({
   name,
   label,

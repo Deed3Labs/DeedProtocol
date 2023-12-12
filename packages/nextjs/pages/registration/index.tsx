@@ -307,7 +307,7 @@ const RegistrationForm: NextPage = () => {
                                 </div>
                               ) : (
                                 <div className="flex flex-row gap-2">
-                                  <CurrencyDollarIcon width={24} />
+                                  <CurrencyDollarIcon />
                                   Fiat
                                 </div>
                               )}

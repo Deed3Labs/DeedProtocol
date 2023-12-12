@@ -1,4 +1,7 @@
-import { IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
+import { BitcoinIcon } from "./components/assets/BitcoinIcon";
+import { RadioBoxOption } from "./components/inputs/RadioBoxesInput";
+import { IconBitcoin, IconDollar, IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 
 export const defaultPage = "registration";
 
@@ -174,13 +177,13 @@ export const PaymentOptions = [
     title: "Debit or Credit",
     subtitle: "Via stripe",
     value: "fiat",
-    icon: IconPolygon,
+    icon: IconDollar,
   },
   {
     title: "DAI or USDC",
     subtitle: "Stablecoin",
     value: "crypto",
-    icon: IconPolygon,
+    icon: IconBitcoin,
   },
 ] as const;
 

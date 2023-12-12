@@ -1,3 +1,6 @@
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { BitcoinIcon } from "~~/components/assets/BitcoinIcon";
+
 export const AgentIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -95,3 +98,6 @@ export const IconPolygon = (
     </defs>
   </svg>
 );
+
+export const IconDollar = <CurrencyDollarIcon width={24}></CurrencyDollarIcon>;
+export const IconBitcoin = <BitcoinIcon width={24}></BitcoinIcon>;
