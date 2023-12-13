@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
+import withErrorHandler from "~~/middlewares/withErrorHandler";
 import AuthToken from "~~/models/auth-token";
 import { jwtDecode } from "~~/services/jwt-util";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
       const jwtToken = req.headers.authorization!;
@@ -28,4 +29,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } else {
     res.status(405).send("Method Not Supported");
   }
-}
+};
+export default withErrorHandler(handler);

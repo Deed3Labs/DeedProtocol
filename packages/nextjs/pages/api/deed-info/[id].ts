@@ -4,6 +4,7 @@ import { Readable } from "stream";
 import { Hex, createPublicClient, getContract, hexToString, http } from "viem";
 import { goerli } from "viem/chains";
 import deployedContracts from "~~/contracts/deployedContracts";
+import withErrorHandler from "~~/middlewares/withErrorHandler";
 import AuthToken from "~~/models/auth-token";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
@@ -11,7 +12,7 @@ import scaffoldConfig from "~~/scaffold.config";
 import { jwtDecode } from "~~/services/jwt-util";
 
 // This function handles the API request for fetching the deed information.
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Check if the request method is GET.
   try {
     switch (req.method) {
@@ -25,7 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log(e);
     res.status(500).send("Server Error");
   }
-}
+};
+
+export default withErrorHandler(handler);
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   // Extract the tokenId and chainId from the query parameters.

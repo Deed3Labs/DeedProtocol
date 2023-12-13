@@ -32,21 +32,10 @@ export const FileUploaderInput = <TParent,>({
   readOnly,
 }: Props<TParent>) => {
   const httpClient = useHttpClient();
-  const [files, setFiles] = useState<IpfsFileModel[]>([]);
   const { query } = useRouter();
   const { id } = query as { id: string };
 
-  useEffect(() => {
-    if (!value) {
-      setFiles([]);
-    } else {
-      if (Array.isArray(value)) {
-        setFiles(value);
-      } else {
-        setFiles([value]);
-      }
-    }
-  }, [value]);
+  const files = Array.isArray(value) ? value : value ? [value] : [];
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -58,7 +47,6 @@ export const FileUploaderInput = <TParent,>({
 
   const handleFileChange = (files: FileList | null) => {
     if (files) {
-      setFiles(Array.from(files));
       // If multiple files are allowed, convert the FileList to an array
       const newValue = multiple ? Array.from(files) : files[0];
       onChange?.({
@@ -135,13 +123,13 @@ export const FileUploaderInput = <TParent,>({
         <div className="flex flex-col flex-wrap gap-2 pointer-events-none">
           <div className="text-base font-bold font-['Montserrat'] mb-3">
             {label}
-            {optional && !readOnly && (
+            {optional  && (
               <span className="text-xs font-semibold uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3">
                 Optional
               </span>
             )}
           </div>
-          {files.length ? (
+          {files.length > 0 && (
             <ul className="line-clamp-3" title={files.map(x => x.name).join("\n")}>
               {files.map(file => (
                 <li key={file.name} className="flex items-center gap-2">
@@ -163,18 +151,22 @@ export const FileUploaderInput = <TParent,>({
                 </li>
               ))}
             </ul>
-          ) : (
-            <>
-              <div className="text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
-                {subtitle}
-              </div>
-              {
-                <div className=" text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
-                  Max File Size: 500 kilobytes. {/*File types: PDF, TXT, DOC, or CSV, Images. */}
-                </div>
-              }
-            </>
           )}
+          {files.length === 0 &&
+            (readOnly ? (
+              "-"
+            ) : (
+              <>
+                <div className="text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
+                  {subtitle}
+                </div>
+                {
+                  <div className=" text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
+                    Max File Size: 500 kilobytes. {/*File types: PDF, TXT, DOC, or CSV, Images. */}
+                  </div>
+                }
+              </>
+            ))}
         </div>
       </label>
     </div>

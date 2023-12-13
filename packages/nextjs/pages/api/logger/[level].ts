@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import withErrorHandler from "~~/middlewares/withErrorHandler";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler = async (req: NextApiRequest, res: NextApiResponse<string>) => {
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
   const { level } = req.query;
@@ -24,4 +25,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   res.status(200).end();
-}
+};
+
+export default withErrorHandler(handler);

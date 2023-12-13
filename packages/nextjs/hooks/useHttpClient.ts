@@ -58,7 +58,7 @@ const useHttpClient = () => {
   };
 
   const download = async (fileHash: string, id: string, name: string) => {
-    const url = `api/deed-info/${id}?hash=${fileHash}&chainId=${getTargetNetwork().id}`;
+    const url = `/api/deed-info/${id}?hash=${fileHash}&chainId=${getTargetNetwork().id}`;
     const response = await fetch(url, {
       headers: [["authorization", authToken ?? ""]],
     });

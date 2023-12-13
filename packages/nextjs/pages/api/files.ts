@@ -2,6 +2,7 @@ import pinataSDK from "@pinata/sdk";
 import { Fields, File, IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
+import withErrorHandler from "~~/middlewares/withErrorHandler";
 
 const pinata = new pinataSDK({ pinataJWTKey: process.env.NEXT_PINATA_TOKEN });
 if (!process.env.NEXT_PINATA_TOKEN) throw new Error("Missing NEXT_PINATA_TOKEN env var");
@@ -27,7 +28,7 @@ const saveFile = async (file: File, fields: Fields) => {
   return response;
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
+const handler = async (req: NextApiRequest, res: NextApiResponse<string>) => {
   if (req.method === "POST") {
     try {
       const { mode } = req.query;
@@ -62,4 +63,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   } else {
     res.status(405).send("Method Not Supported");
   }
-}
+};
+
+export default withErrorHandler(handler);
