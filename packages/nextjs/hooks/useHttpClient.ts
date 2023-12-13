@@ -2,12 +2,9 @@ import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 export interface HttpClient {
-  get: <TRes = any>(url: string) => Promise<{ status: number; value: TRes } | undefined>;
-  post: <TRes = any>(
-    url: string,
-    body: any,
-  ) => Promise<{ status: number; value: TRes } | undefined>;
-  put: <TRes = any>(url: string, body: any) => Promise<{ status: number; value: TRes } | undefined>;
+  get: <TRes = any>(url: string) => Promise<{ status: number; value?: TRes }>;
+  post: <TRes = any>(url: string, body: any) => Promise<{ status: number; value?: TRes }>;
+  put: <TRes = any>(url: string, body: any) => Promise<{ status: number; value?: TRes }>;
   delete: (url: string) => Promise<{ status: number }>;
   download: (fileHash: string, id: string, name: string) => Promise<void>;
 }
@@ -20,7 +17,7 @@ const useHttpClient = () => {
       headers: [["authorization", authToken ?? ""]],
     });
 
-    if (handleError(url, res)) return undefined;
+    if (handleError(url, res)) return { status: res.status, value: undefined };
 
     return { status: res.status, value: (await res.json()) as TRes };
   };
@@ -32,7 +29,7 @@ const useHttpClient = () => {
       headers: [["authorization", authToken ?? ""]],
     });
 
-    if (handleError(url, res)) return undefined;
+    if (handleError(url, res)) return { status: res.status, value: undefined };
 
     return { status: res.status, value: (await res.json()) as TRes };
   };
@@ -44,7 +41,7 @@ const useHttpClient = () => {
       headers: [["authorization", authToken ?? ""]],
     });
 
-    if (handleError(url, res)) return undefined;
+    if (handleError(url, res)) return { status: res.status, value: undefined };
 
     return { status: res.status, value: (await res.json()) as TRes };
   };
@@ -55,7 +52,7 @@ const useHttpClient = () => {
       headers: [["authorization", authToken ?? ""]],
     });
 
-    handleError(url, res);
+    if (handleError(url, res)) return { status: res.status, value: undefined };
 
     return { status: res.status };
   };
@@ -66,7 +63,7 @@ const useHttpClient = () => {
       headers: [["authorization", authToken ?? ""]],
     });
     if (response.status !== 200) {
-      notification.error("Error downloading file");
+      notification.error("Error downloading file " + name);
       logger.error({ message: "Error downloading file", details: await response.text() });
       return;
     }
@@ -81,31 +78,26 @@ const useHttpClient = () => {
 
   const handleError = (url: string, res: Response) => {
     if (res.status === 401) {
-      notification.error("Unauthorized");
       logger.error({ message: "Unauthorized", url });
       return true;
     }
 
     if (res.status === 500) {
-      notification.error("Server Error");
       logger.error({ message: "Server Error", url });
       return true;
     }
 
     if (res.status === 404) {
-      notification.error("Not Found");
       logger.error({ message: "Not Found", url });
       return true;
     }
 
     if (res.status === 400) {
-      notification.error("Bad Request");
       logger.error({ message: "Bad Request", url });
       return true;
     }
 
     if (res.status === 403) {
-      notification.error("Forbidden");
       logger.error({ message: "Forbidden", url });
       return true;
     }

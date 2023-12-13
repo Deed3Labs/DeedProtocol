@@ -31,7 +31,7 @@ const PropertyExplorer: NextPage = () => {
   });
 
   useEffect(() => {
-    if (nextTokenId) {
+    if (nextTokenId && Number(nextTokenId) > 0) {
       loadMoreProperties();
     }
   }, [nextTokenId]);
@@ -68,7 +68,7 @@ const PropertyExplorer: NextPage = () => {
     setCurrentPage(1);
     const radius = 10;
     const center = { lat: 40, lng: -100 };
-    const pageSize = Number(nextTokenId) || 5;
+    const pageSize = Number(nextTokenId);
     for (let index = 1; index < currentPage * pageSize + pageSize; index++) {
       const newProperty: PropertyModel = {
         id: index,

@@ -22,7 +22,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
       return;
     }
 
-    const toastId = notification.loading("Uploading documents...");
+    let toastId = notification.loading("Uploading documents...");
     let hash;
     try {
       hash = await uploadDocuments(data, old);
@@ -35,6 +35,9 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     }
     if (!hash) return;
 
+    toastId = notification.info("Updating deed...", {
+      duration: Infinity,
+    });
     try {
       await contractWriteHook.writeAsync({
         args: [BigInt(deedId), hash],
@@ -43,6 +46,8 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
       notification.error("Error while minting deed");
       logger.error({ message: "Error while minting deed", error });
       return;
+    } finally {
+      notification.remove(toastId);
     }
   };
 

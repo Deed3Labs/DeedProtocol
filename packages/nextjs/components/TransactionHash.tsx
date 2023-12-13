@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CheckCircleIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
-import { getBlockExplorerTxLink } from "~~/utils/scaffold-eth";
+import { getBlockExplorerTxLink, notification } from "~~/utils/scaffold-eth";
 
 export const TransactionHash = ({ hash }: { hash: string }) => {
   const [addressCopied, setAddressCopied] = useState(false);
@@ -25,6 +25,9 @@ export const TransactionHash = ({ hash }: { hash: string }) => {
         <CopyToClipboard
           text={hash as string}
           onCopy={() => {
+            notification.info("Copied to clipboard", {
+              position: "bottom-right",
+            });
             setAddressCopied(true);
             setTimeout(() => {
               setAddressCopied(false);

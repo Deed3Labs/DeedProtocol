@@ -6,7 +6,7 @@ import { hardhat } from "viem/chains";
 import { useEnsAvatar, useEnsName } from "wagmi";
 import { CheckCircleIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
-import { getBlockExplorerAddressLink, getTargetNetwork } from "~~/utils/scaffold-eth";
+import { getBlockExplorerAddressLink, getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 interface TAddressProps {
   address?: string;
@@ -113,6 +113,9 @@ export const Address = ({ address, disableAddressLink, format, size = "base" }: 
         <CopyToClipboard
           text={address}
           onCopy={() => {
+            notification.info("Copied to clipboard", {
+              position: "bottom-right",
+            });
             setAddressCopied(true);
             setTimeout(() => {
               setAddressCopied(false);

@@ -7,13 +7,12 @@ import OwnerInformation from "./OwnerInformation";
 import PaymentInformation from "./PaymentInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { Address as AddressModel, TransactionReceipt } from "viem";
+import { TransactionReceipt } from "viem";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { BitcoinIcon } from "~~/components/assets/BitcoinIcon";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
-import useDeedContract from "~~/hooks/contracts/deed-nft/useDeedContract.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
@@ -96,38 +95,36 @@ const Page = ({ router }: WithRouterProps) => {
   const { writeValidateAsync } = useDeedValidate();
   const isValidator = useIsValidator();
 
-  const { authToken, primaryWallet } = useDynamicContext();
+  const { primaryWallet, authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
-  const [isOwner, setIsOwner] = useState(false);
   const { id: chainId } = getTargetNetwork();
 
-  const deedContract = useDeedContract();
   const httpClient = useHttpClient();
 
   const { writeAsync: mintDeedAsync } = useDeedMint(onDeedMinted);
   const { writeAsync: updateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(+id!));
 
   useEffect(() => {
-    if (!id || !deedContract || !primaryWallet) return;
-    deedContract.read.ownerOf([BigInt(id)]).then((owner: AddressModel) => {
-      setIsOwner(owner === primaryWallet?.address);
-    });
-  }, [primaryWallet, id, router.isReady, deedContract]);
-
-  useEffect(() => {
-    setIsLoading(true);
     if (router.isReady) {
-      if (id == null) {
+      if (id) {
+        setIsLoading(true);
+        fetchDeedInfo(+id);
+      } else {
         setDeedData(defaultData);
         setIsLoading(false);
-      } else {
-        fetchDeedInfo(+id);
       }
     }
-  }, [id, authToken, router.isReady]);
+  }, [id, router.isReady]);
+
+  useEffect(() => {
+    if (router.isReady && id) {
+      setIsLoading(true);
+      fetchDeedInfo(+id!);
+    }
+  }, [authToken, id, router.isReady]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -145,7 +142,7 @@ const Page = ({ router }: WithRouterProps) => {
       }
       setIsLoading(false);
     },
-    [id, chainId],
+    [id, chainId, authToken],
   );
 
   const handleSubmit = async () => {
@@ -272,7 +269,7 @@ const Page = ({ router }: WithRouterProps) => {
               <div className="m-8">
                 {id ? (
                   <>
-                    {isOwner && (
+                    {deedData.owner === primaryWallet?.address && (
                       <div className="text-xl mb-4">
                         Status:{" "}
                         <span className={deedData.isValidated ? "text-success" : "text-warning"}>
@@ -280,7 +277,7 @@ const Page = ({ router }: WithRouterProps) => {
                         </span>
                       </div>
                     )}
-                    {isValidator && !isOwner && (
+                    {isValidator && deedData.owner !== primaryWallet?.address && (
                       <>
                         <div className="mb-4">
                           <div className="text-2xl">Payment information:</div>
@@ -321,7 +318,7 @@ const Page = ({ router }: WithRouterProps) => {
                         </button>
                       </>
                     )}
-                    {isOwner && (
+                    {deedData.owner === primaryWallet?.address && (
                       <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
                         Update
                       </button>

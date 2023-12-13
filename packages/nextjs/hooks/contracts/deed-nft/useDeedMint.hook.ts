@@ -30,7 +30,9 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     }
 
     if (data.paymentInformation.paymentType === "crypto") {
-      const paymentNotif = notification.info("Sending payment...");
+      const paymentNotif = notification.info("Sending payment...", {
+        duration: Infinity,
+      });
       try {
         const { deedMintingFee, storageWalletAddress } = getTargetNetwork();
         const txHash = await erc20Transfer({
@@ -39,11 +41,12 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
         if (txHash) {
           data.paymentInformation.receipt = txHash;
         }
-        notification.remove(paymentNotif);
       } catch (error) {
         logger.error({ message: "Error while sending payment", error });
         notification.error("Error while sending payment");
         return;
+      } finally {
+        notification.remove(paymentNotif);
       }
     } else {
       // Call api
@@ -61,7 +64,9 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       notification.remove(toastId);
     }
     if (!hash) return;
-
+    const mintNotif = notification.info("Minting...", {
+      duration: Infinity,
+    });
     try {
       await contractWriteHook.writeAsync({
         args: [
@@ -74,6 +79,8 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       notification.error("Error while minting deed");
       logger.error({ message: "Error while minting deed", error });
       return;
+    } finally {
+      notification.remove(mintNotif);
     }
   };
 

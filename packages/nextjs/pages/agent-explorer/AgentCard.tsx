@@ -19,7 +19,9 @@ const AgentCard = ({ agent }: Props) => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    notification.info("Copied to clipboard");
+    notification.info("Copied to clipboard", {
+      position: "bottom-right",
+    });
   };
   return (
     <>
