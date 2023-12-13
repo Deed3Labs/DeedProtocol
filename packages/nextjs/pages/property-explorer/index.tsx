@@ -20,7 +20,7 @@ const propertyIcon: MapIconModel = {
 const PropertyExplorer: NextPage = () => {
   const [properties, setProperties] = useState<PropertyModel[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [isLast, setIsLast] = useState(false);
+  const [_isLast, setIsLast] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);

@@ -28,7 +28,7 @@ import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
-const fakeData: DeedInfoModel = {
+const _fakeData: DeedInfoModel = {
   ownerInformation: {
     ownerName: "John Doe",
     ownerSuffix: "Jr.",
