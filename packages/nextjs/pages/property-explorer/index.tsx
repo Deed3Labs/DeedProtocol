@@ -63,17 +63,13 @@ const PropertyExplorer: NextPage = () => {
   };
 
   const loadMoreProperties = async () => {
-    setProperties([]);
     setLoading(true);
-    setCurrentPage(prev => prev + 1);
+    const _properties = [];
+    setCurrentPage(1);
     const radius = 10;
     const center = { lat: 40, lng: -100 };
     const pageSize = Number(nextTokenId) || 5;
-    for (
-      let index = currentPage * pageSize + 1;
-      index < currentPage * pageSize + pageSize;
-      index++
-    ) {
+    for (let index = 1; index < currentPage * pageSize + pageSize; index++) {
       const newProperty: PropertyModel = {
         id: index,
         name: `Deed #${index}`,
@@ -91,14 +87,14 @@ const PropertyExplorer: NextPage = () => {
         icon: propertyIcon,
       };
       newProperty.popupContent = <PropertyCard property={newProperty} />;
-      properties.push(newProperty);
+      _properties.push(newProperty);
     }
     if (currentPage >= 5) {
       // Fake 5 pages
       setIsLast(true);
     }
     // setProperties([...properties]);
-    setProperties(properties);
+    setProperties(_properties);
     setLoading(false);
   };
 
