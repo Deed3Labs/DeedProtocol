@@ -64,6 +64,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     if (error.toString().includes("ERC721NonexistentToken")) {
       return res.status(404).send(`Error: Deed ${id} not found`);
     }
+    console.error({ message: "Error while fetching deed", error });
     return res.status(500).send(`Error while fetching deed ${id} (${error})`);
   }
 

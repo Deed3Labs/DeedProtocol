@@ -120,7 +120,7 @@ const Page = ({ router }: WithRouterProps) => {
   }, [id, router.isReady]);
 
   useEffect(() => {
-    if (router.isReady && id) {
+    if (router.isReady && id && !isLoading) {
       setIsLoading(true);
       fetchDeedInfo(+id!);
     }
