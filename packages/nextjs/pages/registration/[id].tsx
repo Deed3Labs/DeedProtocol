@@ -156,9 +156,10 @@ const Page = ({ router }: WithRouterProps) => {
     }
   };
 
-  const handleValidationClicked = () => {
+  const handleValidationClicked = async () => {
     if (id) {
-      writeValidateAsync(+id, true);
+      await writeValidateAsync(+id, !deedData.isValidated);
+      fetchDeedInfo(+id);
     }
   };
 
@@ -269,7 +270,7 @@ const Page = ({ router }: WithRouterProps) => {
               <div className="m-8">
                 {id ? (
                   <>
-                    {deedData.owner === primaryWallet?.address && (
+                    {(isValidator || deedData.owner === primaryWallet?.address) && (
                       <div className="text-xl mb-4">
                         Status:{" "}
                         <span className={deedData.isValidated ? "text-success" : "text-warning"}>
@@ -314,7 +315,7 @@ const Page = ({ router }: WithRouterProps) => {
                           onClick={handleValidationClicked}
                           className="btn btn-lg bg-gray-600"
                         >
-                          Validate
+                          {deedData.isValidated ? "Unvalidate" : "Validate"}
                         </button>
                       </>
                     )}

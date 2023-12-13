@@ -16,7 +16,9 @@ const useDeedValidate = () => {
       notification.error("No wallet connected");
       return;
     }
-
+    const toastId = notification.info(isValidated ? "Validating deed..." : "Unvalidating deed...", {
+      duration: Infinity,
+    });
     try {
       await contractWritePayload.writeAsync({
         args: [deedId as any, isValidated],
@@ -25,6 +27,8 @@ const useDeedValidate = () => {
       notification.error("Error while validating deed");
       logger.error({ message: "Error while validating deed", error });
       return;
+    } finally {
+      notification.remove(toastId);
     }
   };
 
