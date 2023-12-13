@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Bars3Icon } from "@heroicons/react/24/outline";
-import { FaucetButton } from "~~/components/scaffold-eth";
 import { defaultPage } from "~~/constants";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
@@ -28,7 +27,7 @@ export const Header = () => {
   const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const { primaryWallet } = useDynamicContext();
-  const { query, isReady, pathname, replace } = useRouter();
+  const { query, pathname, replace } = useRouter();
   const { id } = query;
 
   useOutsideClick(
@@ -72,10 +71,8 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={
-            pathname === "/registration" && isReady && !id ? "opacity-40 pointer-events-none" : ""
-          }
-          href="/registration"
+          className={pathname === "/registration/new" ? "opacity-40 pointer-events-none" : ""}
+          href="/registration/new"
         >
           Register
         </Link>
@@ -86,10 +83,10 @@ export const Header = () => {
           Explore
         </Link>
         <Link href="https://docs.deedprotocol.org/">Docs</Link>
-        <Link href="/property-explorer?type=lease">About</Link>
+        {/* <Link href="/property-explorer?type=lease">About</Link> */}
       </>
     ),
-    [pathname, isReady, id],
+    [pathname, id],
   );
 
   return (
@@ -140,7 +137,6 @@ export const Header = () => {
             buttonClassName="btn btn-neutral"
             innerButtonComponent={<div className="btn btn-neutral">Connect</div>}
           />
-          <FaucetButton />
         </div>
       </div>
     </>

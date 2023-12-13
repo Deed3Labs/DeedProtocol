@@ -53,6 +53,7 @@
     "react-leaflet": "^4.2.1",
     "react-leaflet-div-icon": "^1.1.0",
     "sass": "^1.68.0",
+    "sharp": "^0.33.0",
     "stream": "^0.0.2",
     "stripe": "^14.8.0",
     "use-debounce": "^8.0.4",

@@ -1,1 +1,1 @@
-export { default } from "./registration/index";
+export { default } from "./registration/[id]";

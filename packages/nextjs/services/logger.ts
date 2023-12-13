@@ -1,21 +1,5 @@
 let currentWallet: string | undefined = undefined;
 
-if (!("toJSON" in Error.prototype))
-  Object.defineProperty(Error.prototype, "toJSON", {
-    value: function () {
-      const alt = {};
-
-      Object.getOwnPropertyNames(this).forEach(key => {
-        // @ts-ignore
-        alt[key] = this[key];
-      }, this);
-
-      return alt;
-    },
-    configurable: true,
-    writable: true,
-  });
-
 const logger = {
   debug: (payload: any) => {
     handleLog(payload, "debug");

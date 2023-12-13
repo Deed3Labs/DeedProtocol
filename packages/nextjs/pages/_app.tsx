@@ -33,7 +33,11 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
-      <NextNProgress />
+      <NextNProgress
+        options={{
+          showSpinner: false,
+        }}
+      />
       <DynamicContextProvider
         theme={isDarkTheme ? "dark" : "light"}
         settings={{
