@@ -8,9 +8,10 @@ import { LightChangeEvent } from "~~/models/light-change-event";
 interface Props {
   value?: OtherInformationModel;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
+  readOnly?: boolean;
 }
 
-const OtherInformations = ({ value, onChange }: Props) => {
+const OtherInformations = ({ value, onChange, readOnly }: Props) => {
   const handleChange = (ev: LightChangeEvent<OtherInformationModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({ name: "otherInformation", value: updatedValue });
@@ -41,6 +42,7 @@ const OtherInformations = ({ value, onChange }: Props) => {
           optionsClassName="w-[180px] h-[220px]"
           value={value?.blockchain}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
       <div>
@@ -70,6 +72,7 @@ const OtherInformations = ({ value, onChange }: Props) => {
           optionsClassName="w-full"
           value={value?.wrapper}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
     </div>

@@ -15,9 +15,10 @@ import { LightChangeEvent } from "~~/models/light-change-event";
 interface Props {
   value?: PropertyDetailsModel;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
+  readOnly?: boolean;
 }
 
-const PropertyDetails = ({ value, onChange }: Props) => {
+const PropertyDetails = ({ value, onChange, readOnly }: Props) => {
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({
@@ -36,6 +37,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
         optionsClassName="w-[180px] h-[210px]"
         onChange={handleChange}
         value={value?.propertyType}
+        readOnly={readOnly}
       />
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         <TextInput
@@ -45,6 +47,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           placeholder="e.g. 123 Main Street"
           value={value?.propertyAddress}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <TextInput
           name="propertyCity"
@@ -52,6 +55,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           placeholder="e.g. San Bernardino"
           value={value?.propertyCity}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <SelectInput
           name="propertyState"
@@ -60,6 +64,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           options={StateOptions}
           value={value?.propertyState}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
       <div className="flex flex-row flex-wrap gap-5 justify-start w-full">
@@ -70,6 +75,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           placeholder="e.g. 3500 sqft"
           value={value?.propertySize}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <SelectInput
           name="propertySubType"
@@ -79,6 +85,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           placeholder="Select Sub-Type"
           value={value?.propertySubType}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <SelectInput
           name="propertyZoning"
@@ -88,6 +95,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           placeholder="Select Zoning"
           value={value?.propertyZoning}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
       <div>
@@ -105,6 +113,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           multiple
           value={value?.propertyImages}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
       <div>
@@ -120,6 +129,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           subtitle="This document is stored securely on-chain via IPFS."
           value={value?.propertyDeedOrTitle}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <FileUploaderInput
           name="propertyPurchaseContract"
@@ -128,6 +138,7 @@ const PropertyDetails = ({ value, onChange }: Props) => {
           optional
           value={value?.propertyPurchaseContract}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
     </div>

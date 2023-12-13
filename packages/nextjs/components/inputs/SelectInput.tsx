@@ -11,6 +11,7 @@ interface Props<TParent> {
   optional?: boolean;
   placeholder?: string;
   large?: boolean;
+  readOnly?: boolean;
 }
 
 export const SelectInput = <TParent,>({
@@ -24,6 +25,7 @@ export const SelectInput = <TParent,>({
   className,
   placeholder,
   large = true,
+  readOnly,
 }: Props<TParent>) => {
   return (
     <div className={`flex flex-col  ${className ? className : ""}`}>
@@ -46,6 +48,7 @@ export const SelectInput = <TParent,>({
         className={`select ${large ? "select-lg" : ""} select-bordered w-full max-w-xs`}
         onChange={ev => onChange?.({ name, value: ev.target.value })}
         value={value ?? "default"}
+        disabled={readOnly}
       >
         <option disabled value="default">
           {placeholder}

@@ -15,6 +15,7 @@ interface Props<TParent> {
   value?: IpfsFileModel | IpfsFileModel[];
   multiple?: boolean;
   maxFileSizeKb?: number;
+  readOnly?: boolean;
   onChange?: (file: LightChangeEvent<TParent>) => void;
 }
 
@@ -28,6 +29,7 @@ export const FileUploaderInput = <TParent,>({
   multiple,
   value,
   maxFileSizeKb = 10000,
+  readOnly,
 }: Props<TParent>) => {
   const httpClient = useHttpClient();
   const [files, setFiles] = useState<IpfsFileModel[]>([]);
@@ -100,7 +102,9 @@ export const FileUploaderInput = <TParent,>({
     <div className={`mt-3 w-[600px] max-w-full ${className ? className : ""} `}>
       <label
         htmlFor={name as string}
-        className="flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-36 cursor-pointer hover:bg-base-100 border border-opacity-10"
+        className={`flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-36 cursor-pointer hover:bg-base-100 border border-opacity-10 ${
+          readOnly ? "pointer-events-none border-none" : ""
+        }`}
         tabIndex={0}
         onKeyDown={ev => handleKeyDown(ev)}
         onDrop={ev => handleDrop(ev)}
@@ -116,19 +120,22 @@ export const FileUploaderInput = <TParent,>({
           className="hidden"
           onChange={ev => handleFileChange(ev.target.files)}
           multiple={multiple}
+          readOnly={readOnly}
           // accept=".pdf,.txt,.doc,.csv"
         />
-        <div className="w-12 h-12 lg:w-24 lg:h-24 mb-2 p-1 lg:p-6 border border-white border-opacity-10 border-dashed justify-start items-center inline-flex pointer-events-none">
-          <div className="grow shrink basis-0 self-stretch p-1 bg-neutral-900 rounded flex-col justify-center items-center inline-flex">
-            <div className="self-stretch grow shrink basis-0 pl-1 pr-0.5 pt-px flex-col justify-center items-center flex">
-              <IconLightningSolid />
+        {!readOnly && (
+          <div className="w-12 h-12 lg:w-24 lg:h-24 mb-2 p-1 lg:p-6 border border-white border-opacity-10 border-dashed justify-start items-center inline-flex pointer-events-none">
+            <div className="grow shrink basis-0 self-stretch p-1 bg-neutral-900 rounded flex-col justify-center items-center inline-flex">
+              <div className="self-stretch grow shrink basis-0 pl-1 pr-0.5 pt-px flex-col justify-center items-center flex">
+                <IconLightningSolid />
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div className="flex flex-col flex-wrap gap-2 pointer-events-none">
           <div className="text-base font-bold font-['Montserrat'] mb-3">
             {label}
-            {optional && (
+            {optional && !readOnly && (
               <span className="text-xs font-semibold uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3">
                 Optional
               </span>

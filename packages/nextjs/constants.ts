@@ -1,7 +1,4 @@
-import { BitcoinIcon } from "./components/assets/BitcoinIcon";
-import { RadioBoxOption } from "./components/inputs/RadioBoxesInput";
 import { IconBitcoin, IconDollar, IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
-import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 
 export const defaultPage = "property-explorer";
 

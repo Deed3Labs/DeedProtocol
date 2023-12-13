@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
@@ -106,6 +106,10 @@ const Page = ({ router }: WithRouterProps) => {
 
   const { writeAsync: mintDeedAsync } = useDeedMint(onDeedMinted);
   const { writeAsync: updateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(+id!));
+
+  const isOwner = useMemo(() => {
+    return deedData.owner === primaryWallet?.address;
+  }, [deedData.owner, primaryWallet]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -232,29 +236,47 @@ const Page = ({ router }: WithRouterProps) => {
         ) : (
           <div className="flex flex-row flex-wrap-reverse gap-8 lg:flex-nowrap lg:justify-evenly w-full px-8 xl:px-32">
             <div className="flex flex-col w-full lg:w-fit lg:ml-64">
-              <div className="text-3xl font-normal font-['KronaOne']">
-                First, we’ll need to <br />
-                collect some information
-              </div>
-              <div className="text-base font-normal font-['Montserrat'] mt-3">
-                You’ll need to complete the form below in order to register, transfer and mint the
-                new
-                <br />
-                Digital Deed that will now represent your property.&nbsp;
-                <Link
-                  className="link link-accent"
-                  href="https://docs.deedprotocol.org/how-it-works/property-registration-guide"
-                  target="_blank"
-                >
-                  Learn about Property Registration.
-                </Link>
-              </div>
+              {!id && (
+                <>
+                  <div className="text-3xl font-normal font-['KronaOne']">
+                    First, we’ll need to <br />
+                    collect some information
+                  </div>
+                  <div className="text-base font-normal font-['Montserrat'] mt-3">
+                    You’ll need to complete the form below in order to register, transfer and mint
+                    the new
+                    <br />
+                    Digital Deed that will now represent your property.&nbsp;
+                    <Link
+                      className="link link-accent"
+                      href="https://docs.deedprotocol.org/how-it-works/property-registration-guide"
+                      target="_blank"
+                    >
+                      Learn about Property Registration.
+                    </Link>
+                  </div>
+                </>
+              )}
 
               <div className="mb-10">
-                <OwnerInformation value={deedData.ownerInformation} onChange={handleChange} />
-                <PropertyDetails value={deedData.propertyDetails} onChange={handleChange} />
-                <OtherInformations value={deedData.otherInformation} onChange={handleChange} />
-                <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
+                <OwnerInformation
+                  value={deedData.ownerInformation}
+                  onChange={handleChange}
+                  readOnly={!isOwner}
+                />
+                <PropertyDetails
+                  value={deedData.propertyDetails}
+                  onChange={handleChange}
+                  readOnly={!isOwner}
+                />
+                <OtherInformations
+                  value={deedData.otherInformation}
+                  onChange={handleChange}
+                  readOnly={!isOwner}
+                />
+                {!id && router.isReady && (
+                  <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
+                )}
               </div>
             </div>
             <div className="bg-base-100 p-9 w-full lg:w-3/12 h-fit relative lg:sticky lg:top-32 lg:max-h-[75vh] overflow-y-auto">
@@ -270,7 +292,7 @@ const Page = ({ router }: WithRouterProps) => {
               <div className="m-8">
                 {id ? (
                   <>
-                    {(isValidator || deedData.owner === primaryWallet?.address) && (
+                    {(isValidator || isOwner) && (
                       <div className="text-xl mb-4">
                         Status:{" "}
                         <span className={deedData.isValidated ? "text-success" : "text-warning"}>
@@ -278,7 +300,7 @@ const Page = ({ router }: WithRouterProps) => {
                         </span>
                       </div>
                     )}
-                    {isValidator && deedData.owner !== primaryWallet?.address && (
+                    {isValidator && !isOwner && (
                       <>
                         <div className="mb-4">
                           <div className="text-2xl">Payment information:</div>

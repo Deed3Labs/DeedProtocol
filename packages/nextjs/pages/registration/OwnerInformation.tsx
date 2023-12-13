@@ -11,9 +11,10 @@ import { LightChangeEvent } from "~~/models/light-change-event";
 interface Props {
   value?: OwnerInformationModel;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
+  readOnly?: boolean;
 }
 
-const OwnerInformation = ({ value, onChange }: Props) => {
+const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
   const handleChange = (ev: LightChangeEvent<OwnerInformationModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({ name: "ownerInformation", value: updatedValue });
@@ -30,6 +31,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
         info
         onChange={handleChange}
         value={value?.ownerType}
+        readOnly={readOnly}
       ></RadioBoxesInput>
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         {value?.ownerType === "legal" && (
@@ -40,6 +42,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
             placeholder="e.g. My Business Name, LLC."
             value={value?.entityName}
             onChange={handleChange}
+            readOnly={readOnly}
           />
         )}
         <TextInput
@@ -49,6 +52,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
           placeholder="e.g. Johnny Appleseed"
           value={value?.ownerName}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <TextInput
           name="ownerSuffix"
@@ -57,6 +61,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
           placeholder="e.g. Jr. or Sr."
           value={value?.ownerSuffix}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
       {value?.ownerType === "legal" && (
@@ -67,6 +72,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
             placeholder="e.g. CEO"
             value={value?.ownerPosition}
             onChange={handleChange}
+            readOnly={readOnly}
           />
           <SelectInput
             name="ownerEntityType"
@@ -75,6 +81,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
             placeholder="e.g. LLC, Corporation, etc."
             value={value?.ownerEntityType}
             onChange={handleChange}
+            readOnly={readOnly}
           />
         </div>
       )}
@@ -101,6 +108,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
           subtitle="This document is submited securely off-chain."
           value={value?.ids}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <FileUploaderInput
           name="proofBill"
@@ -109,6 +117,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
           optional
           value={value?.proofBill}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
       <div className="mt-8">
@@ -134,6 +143,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
           subtitle="This document is submited securely off-chain."
           value={value?.articleIncorporation}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <FileUploaderInput
           name="operatingAgreement"
@@ -142,6 +152,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
           optional
           value={value?.operatingAgreement}
           onChange={handleChange}
+          readOnly={readOnly}
         />
         <FileUploaderInput
           name="supportingDoc"
@@ -151,6 +162,7 @@ const OwnerInformation = ({ value, onChange }: Props) => {
           multiple
           value={value?.supportingDoc}
           onChange={handleChange}
+          readOnly={readOnly}
         />
       </div>
     </div>

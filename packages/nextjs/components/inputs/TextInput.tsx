@@ -12,6 +12,7 @@ interface Props<TParent> {
   value?: string;
   required?: boolean;
   onChange?: (ev: LightChangeEvent<TParent>) => void;
+  readOnly?: boolean;
 }
 
 const TextInput = <TParent,>({
@@ -25,6 +26,7 @@ const TextInput = <TParent,>({
   value,
   required,
   onChange,
+  readOnly,
 }: Props<TParent>) => {
   return (
     <div className={`flex flex-col ${className ? className : ""}`}>
@@ -46,13 +48,14 @@ const TextInput = <TParent,>({
         name={name as string}
         className={`input ${large ? "input-lg" : ""} input-bordered ${
           required && !value ? "input-error" : ""
-        }`}
-        placeholder={placeholder}
+        } ${readOnly ? "border-none bg-transparent" : ""}`}
+        placeholder={readOnly ? "-" : placeholder}
         value={value}
         onChange={(ev: ChangeEvent<HTMLInputElement>) =>
           onChange?.({ name, value: ev.target.value })
         }
         required={required}
+        readOnly={readOnly}
       />
     </div>
   );
