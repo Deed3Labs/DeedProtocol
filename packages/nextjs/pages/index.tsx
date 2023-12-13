@@ -1,1 +1,1 @@
-export { default } from "./registration/[id]";
+export { default } from "./property-explorer";
