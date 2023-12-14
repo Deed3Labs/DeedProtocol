@@ -31,7 +31,7 @@ const PropertyExplorer: NextPage = () => {
   });
 
   useEffect(() => {
-    if (nextTokenId && Number(nextTokenId) > 0) {
+    if (nextTokenId && Number(nextTokenId) > 0 && properties.length === 0) {
       loadMoreProperties();
     }
   }, [nextTokenId]);
@@ -57,8 +57,8 @@ const PropertyExplorer: NextPage = () => {
   // };
 
   const onFilter = (_filter?: { search?: string }) => {
-    setCurrentPage(0);
-    setProperties([]);
+    // setCurrentPage(0);
+    // setProperties([]);
     // loadMoreProperties();
   };
 
@@ -69,7 +69,7 @@ const PropertyExplorer: NextPage = () => {
     const radius = 10;
     const center = { lat: 40, lng: -100 };
     const pageSize = Number(nextTokenId);
-    for (let index = 1; index < currentPage * pageSize + pageSize; index++) {
+    for (let index = 1; index < pageSize + 1; index++) {
       const newProperty: PropertyModel = {
         id: index,
         name: `Deed #${index}`,
