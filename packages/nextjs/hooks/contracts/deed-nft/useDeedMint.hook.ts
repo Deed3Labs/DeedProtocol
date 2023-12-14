@@ -1,6 +1,7 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
+import useErc20Transfer from "../erc20/useErc20Transfer.hook";
 import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { TransactionReceipt, toHex } from "viem";
+import { TransactionReceipt, parseEther, toHex } from "viem";
 import { PropertyTypeOptions } from "~~/constants";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { indexOfLiteral } from "~~/utils/extract-values";
@@ -10,11 +11,12 @@ import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet } = useDynamicContext();
 
-  const { writeAsync: erc20Transfer } = useScaffoldContractWrite({
-    contractName: "DAI",
-    functionName: "transfer",
-    args: [] as any, // Will be filled in by write()
-  });
+  const { stableCoinAddress, deedMintingFeeDollar, storageAddress } = getTargetNetwork();
+  const { writeAsync: erc20Transfer } = useErc20Transfer(
+    stableCoinAddress,
+    parseEther(deedMintingFeeDollar.toString()),
+    storageAddress,
+  );
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -34,13 +36,9 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
         duration: Infinity,
       });
       try {
-        const { deedMintingFee, storageWalletAddress } = getTargetNetwork();
-        const txHash = await erc20Transfer({
-          args: [storageWalletAddress, deedMintingFee],
-        });
-        if (txHash) {
-          data.paymentInformation.receipt = txHash;
-        }
+        const txHash = await erc20Transfer();
+        if (!txHash) return;
+        data.paymentInformation.receipt = txHash.hash;
       } catch (error) {
         logger.error({ message: "Error while sending payment", error });
         notification.error("Error while sending payment");

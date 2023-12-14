@@ -9,16 +9,6 @@ import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import logger from "~~/services/logger";
 
-// const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-//   const router = useRouter();
-//   const isActive = router.pathname === href;
-//   return (
-//     <Link href={href} passHref className={`${isActive ? "bg-neutral" : ""} `}>
-//       {children}
-//     </Link>
-//   );
-// };
-
 /**
  * Site header
  */
@@ -29,13 +19,12 @@ export const Header = () => {
   const { primaryWallet } = useDynamicContext();
   const { query, pathname, replace } = useRouter();
   const { id } = query;
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
-
-  const searchRef = useRef<HTMLInputElement>(null);
 
   useKeyboardShortcut(["/"], ev => {
     if (ev.target === searchRef.current) return;
@@ -71,13 +60,17 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={pathname === "/registration/new" ? "opacity-40 pointer-events-none" : ""}
+          className={
+            pathname.includes("registration/[id]") && id === "new"
+              ? "opacity-40 pointer-events-none"
+              : ""
+          }
           href="/registration/new"
         >
           Register
         </Link>
         <Link
-          className={pathname?.includes("explorer") ? "opacity-40 pointer-events-none" : ""}
+          className={pathname.includes("explorer") ? "opacity-40 pointer-events-none" : ""}
           href="/property-explorer?type=all"
         >
           Explore

@@ -1,3 +1,4 @@
+import { Address } from "viem";
 import * as chains from "viem/chains";
 import scaffoldConfig from "~~/scaffold.config";
 
@@ -7,9 +8,9 @@ export interface TChainAttributes {
   // Used to fetch price by providing mainnet token address
   // for networks having native currency other than ETH
   nativeCurrencyTokenAddress: string;
-  stableCoinAddress: string;
-  storageWalletAddress: string;
-  deedMintingFee: bigint;
+  stableCoinAddress: Address;
+  storageAddress: Address;
+  deedMintingFeeDollar: number;
   blockExplorer?: string;
 }
 
@@ -17,99 +18,99 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
   [chains.hardhat.id]: {
     color: "#b8af0c",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.mainnet.id]: {
     color: "#ff8b9e",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.sepolia.id]: {
     color: ["#5f4bb6", "#87ff65"],
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.goerli.id]: {
     color: "#0975F6",
     nativeCurrencyTokenAddress: "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60",
-    storageWalletAddress: "0x52e6102B7C22eeC7A68B11Dd71faC7D6D9AEcf50",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x52e6102B7C22eeC7A68B11Dd71faC7D6D9AEcf50",
+    deedMintingFeeDollar: 500,
     stableCoinAddress: "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60",
   },
   [chains.gnosis.id]: {
     color: "#48a9a6",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.polygon.id]: {
     color: "#2bbdf7",
     nativeCurrencyTokenAddress: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.polygonMumbai.id]: {
     color: "#92D9FA",
     nativeCurrencyTokenAddress: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.optimismGoerli.id]: {
     color: "#f01a37",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.optimism.id]: {
     color: "#f01a37",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.arbitrumGoerli.id]: {
     color: "#28a0f0",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.arbitrum.id]: {
     color: "#28a0f0",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.fantom.id]: {
     color: "#1969ff",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.fantomTestnet.id]: {
     color: "#1969ff",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
   [chains.scrollSepolia.id]: {
     color: "#fbebd4",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageWalletAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFee: BigInt(0),
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
   },
 };
@@ -172,7 +173,7 @@ export function getBlockExplorerAddressLink(address: string, network?: chains.Ch
  * @returns targetNetwork object consisting targetNetwork from scaffold.config and extra network metadata
  */
 
-export function getTargetNetwork(): chains.Chain & Partial<TChainAttributes> {
+export function getTargetNetwork(): chains.Chain & TChainAttributes {
   const configuredNetwork = scaffoldConfig.targetNetwork;
 
   return {

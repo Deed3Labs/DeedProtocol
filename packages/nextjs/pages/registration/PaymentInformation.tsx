@@ -3,7 +3,7 @@ import Link from "next/link";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
-import { PaymentOptions, StateOptions, SupportedStableCoin } from "~~/constants";
+import { PaymentOptions, StateOptions } from "~~/constants";
 import { DeedInfoModel, PaymentInformationModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 
@@ -128,14 +128,15 @@ const PaymentInformation = ({ value, onChange }: Props) => {
           </div>
         </>
       ) : (
-        <SelectInput
-          name="stabeleCoin"
-          label="Select Crypto Currency"
-          placeholder="Select Crypto Currency"
-          options={SupportedStableCoin}
-          value={value?.stabeleCoin}
-          onChange={handleChange}
-        />
+        // <SelectInput
+        //   name="stableCoin"
+        //   label="Select Crypto Currency"
+        //   placeholder="Select Crypto Currency"
+        //   options={SupportedStableCoin}
+        //   value={value?.stableCoin}
+        //   onChange={handleChange}
+        // />
+        <></>
       )}
     </div>
   );

@@ -28,7 +28,7 @@ import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
-const _fakeData: DeedInfoModel = {
+const fakeData: DeedInfoModel = {
   ownerInformation: {
     ownerName: "John Doe",
     ownerSuffix: "Jr.",
@@ -52,25 +52,27 @@ const _fakeData: DeedInfoModel = {
     wrapper: "llc",
   },
   paymentInformation: {
-    paymentType: "crypto",
-    stabeleCoin: "0x9D233A907E065855D2A9c7d4B552ea27fB2E5a36",
+    paymentType: isDev() ? "crypto" : "fiat",
+    stableCoin: getTargetNetwork().stableCoinAddress,
   },
 };
 
-// const defaultData: DeedInfoModel = fakeData;
-const defaultData: DeedInfoModel = {
-  otherInformation: {
-    blockchain: "gnosis",
-    wrapper: "llc",
-  },
-  ownerInformation: {
-    ownerType: "individual",
-  },
-  propertyDetails: {},
-  paymentInformation: {
-    paymentType: "fiat",
-  },
-} as DeedInfoModel;
+const defaultData: DeedInfoModel = isDev()
+  ? fakeData
+  : ({
+      otherInformation: {
+        blockchain: "gnosis",
+        wrapper: "llc",
+      },
+      ownerInformation: {
+        ownerType: "individual",
+      },
+      propertyDetails: { propertyType: "realEstate" },
+      paymentInformation: {
+        paymentType: isDev() ? "crypto" : "fiat",
+        stableCoin: getTargetNetwork().stableCoinAddress,
+      },
+    } as DeedInfoModel);
 
 type ErrorCode = "notFound" | "unauthorized";
 
@@ -92,23 +94,22 @@ const Page = ({ router }: WithRouterProps) => {
     router.push(`?id=${deedId}`);
   };
 
-  const { writeValidateAsync } = useDeedValidate();
-  const isValidator = useIsValidator();
-
   const { primaryWallet, authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
-  const { id: chainId } = getTargetNetwork();
+  const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
   const httpClient = useHttpClient();
 
+  const isValidator = useIsValidator();
+  const { writeValidateAsync } = useDeedValidate();
   const { writeAsync: mintDeedAsync } = useDeedMint(onDeedMinted);
   const { writeAsync: updateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(+id!));
 
   const isOwner = useMemo(() => {
-    return deedData.owner === primaryWallet?.address;
+    return deedData.owner === primaryWallet?.address || !id;
   }, [deedData.owner, primaryWallet]);
 
   useEffect(() => {
@@ -168,17 +169,17 @@ const Page = ({ router }: WithRouterProps) => {
   };
 
   const validate = () => {
-    if (!deedData.ownerInformation.ids && !isDev()) {
+    if (!deedData.ownerInformation.ids) {
       notification.error("Owner Information ids is required", { duration: 3000 });
       return false;
     }
 
-    if (!deedData.ownerInformation.articleIncorporation && !isDev()) {
+    if (!deedData.ownerInformation.articleIncorporation) {
       notification.error("Owner Information articleIncorporation is required", { duration: 3000 });
       return false;
     }
 
-    if (!deedData.propertyDetails.propertyDeedOrTitle && !isDev()) {
+    if (!deedData.propertyDetails.propertyDeedOrTitle) {
       notification.error("Property details Deed or Title is required", { duration: 3000 });
       return false;
     }
@@ -323,7 +324,11 @@ const Page = ({ router }: WithRouterProps) => {
                               <>
                                 <li>
                                   <div className="text-xl">Coin:</div>
-                                  <Address address={deedData.paymentInformation.stabeleCoin} />
+                                  <Address
+                                    address={
+                                      deedData.paymentInformation.stableCoin ?? stableCoinAddress
+                                    }
+                                  />
                                 </li>
                                 <li>
                                   <div className="text-xl">Transaction:</div>

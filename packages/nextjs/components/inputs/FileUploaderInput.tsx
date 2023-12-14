@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useRouter } from "next/router";
 import { DownloadLogo } from "../assets/Downloadicon";
 import useHttpClient from "~~/hooks/useHttpClient";
@@ -109,6 +109,7 @@ export const FileUploaderInput = <TParent,>({
           onChange={ev => handleFileChange(ev.target.files)}
           multiple={multiple}
           readOnly={readOnly}
+          value={""}
           // accept=".pdf,.txt,.doc,.csv"
         />
         {!readOnly && (
@@ -123,7 +124,7 @@ export const FileUploaderInput = <TParent,>({
         <div className="flex flex-col flex-wrap gap-2 pointer-events-none">
           <div className="text-base font-bold font-['Montserrat'] mb-3">
             {label}
-            {optional  && (
+            {optional && (
               <span className="text-xs font-semibold uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3">
                 Optional
               </span>

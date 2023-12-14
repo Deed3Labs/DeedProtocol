@@ -22,6 +22,9 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
       return;
     }
 
+    data.paymentInformation.receipt =
+      "0xb32a868c330b37a6fa60bcb83440dba7ec22efa4e0f392c5327dc8b8c65ce209";
+
     let toastId = notification.loading("Uploading documents...");
     let hash;
     try {

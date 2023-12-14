@@ -50,7 +50,7 @@ const TextInput = <TParent,>({
           required && !value ? "input-error" : ""
         } ${readOnly ? "border-none bg-transparent" : ""}`}
         placeholder={readOnly ? "-" : placeholder}
-        value={value}
+        value={value ?? ""}
         onChange={(ev: ChangeEvent<HTMLInputElement>) =>
           onChange?.({ name, value: ev.target.value })
         }

@@ -177,7 +177,7 @@ export const PaymentOptions = [
     icon: IconDollar,
   },
   {
-    title: "DAI or USDC",
+    title: "DAI",
     subtitle: "Stablecoin",
     value: "crypto",
     icon: IconBitcoin,
@@ -201,14 +201,5 @@ export const WrapperOptions = [
       Estimated cost to deploy contract: $1499.97
     `,
     value: "llc",
-  },
-] as const;
-
-export const SupportedStableCoin = [
-  {
-    label: "Dai Stablecoin",
-    symbol: "DAI",
-    decimals: 18,
-    value: "0x9D233A907E065855D2A9c7d4B552ea27fB2E5a36",
   },
 ] as const;

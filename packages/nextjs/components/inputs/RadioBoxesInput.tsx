@@ -47,14 +47,14 @@ export const RadioBoxesInput = <TParent,>({
       </div>
       <div className="flex flex-row flex-wrap justify-start gap-4 mt-2">
         {options.map(option => {
-          if (readOnly && option.value !== value) return <></>;
+          if (readOnly && option.value !== value) return <div key={option.value}></div>;
           return (
             <div key={option.value} title={option.disabled ? "Coming soon" : undefined}>
               <input
                 id={`option_${option.value}`}
                 name={name as string}
                 type="radio"
-                value={option.value}
+                value={option.value ?? ""}
                 checked={value ? option.value === value : undefined}
                 onChange={() => onChange?.({ value: option.value as TParent[keyof TParent], name })}
                 className={`peer hidden`}

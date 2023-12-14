@@ -41,6 +41,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
       <DynamicContextProvider
         theme={isDarkTheme ? "dark" : "light"}
         settings={{
+          initialAuthenticationMode: "connect-and-sign",
           environmentId: scaffoldConfig.dynamicEnvironementId,
           appName: scaffoldConfig.appName,
           walletConnectors: [EthereumWalletConnectors],
