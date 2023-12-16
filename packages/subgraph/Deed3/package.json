@@ -1,32 +1,18 @@
 {
-  "name": "@deed-protocol/deed-3-subgraph",
+  "name": "Deed3",
   "license": "UNLICENSED",
   "scripts": {
-    "prepare:goerli": "node scripts/prepare.mjs goerli",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ deed3",
-    "deploy:goerli": "yarn prepare:goerli && graph deploy --studio deed3-goerli",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ Deed3",
     "create-local": "graph create --node http://localhost:8020/ Deed3",
     "remove-local": "graph remove --node http://localhost:8020/ Deed3",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 Deed3",
     "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.59.0",
-    "@graphprotocol/graph-ts": "0.30.0"
+    "@graphprotocol/graph-cli": "0.64.0",
+    "@graphprotocol/graph-ts": "0.32.0"
   },
-  "devDependencies": {
-    "@types/configstore": "^6",
-    "@types/inquirer": "^9",
-    "@types/js-yaml": "^4",
-    "@types/minimist": "^1",
-    "@types/mustache": "^4",
-    "configstore": "^6.0.0",
-    "inquirer": "^9.2.11",
-    "js-yaml": "^4.1.0",
-    "matchstick-as": "0.5.0",
-    "minimist": "^1.2.8",
-    "mustache": "^4.2.0"
-  }
+  "devDependencies": { "matchstick-as": "0.5.0" }
 }
