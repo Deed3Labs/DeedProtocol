@@ -1,0 +1,35 @@
+  - kind: ethereum
+    name: DeedNFT
+    network: {{network}}
+    source:
+        address: "{{address}}"
+        abi: DeedNFT
+        startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DeedNFTAssetTypeSet
+        - DeedNFTAssetValidationSet
+        - DeedNFTBurned
+        - DeedNFTIpfsDetailsSet
+        - DeedNFTMinted
+        - Transfer
+      abis:
+        - name: DeedNFT
+          file: ./abis/DeedNFT.json
+      eventHandlers:
+        - event: DeedNFTAssetTypeSet(uint256,uint8)
+          handler: handleDeedNFTAssetTypeSet
+        - event: DeedNFTAssetValidationSet(uint256,bool)
+          handler: handleDeedNFTAssetValidationSet
+        - event: DeedNFTBurned(uint256)
+          handler: handleDeedNFTBurned
+        - event: DeedNFTIpfsDetailsSet(uint256,string)
+          handler: handleDeedNFTIpfsDetailsSet
+        - event: DeedNFTMinted(uint256,(uint8,bool),address)
+          handler: handleDeedNFTMinted
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/deed-nft.ts

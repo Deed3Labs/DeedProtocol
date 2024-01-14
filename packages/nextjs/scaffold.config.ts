@@ -1,19 +1,8 @@
 import * as chains from "viem/chains";
 
-export interface ScaffoldConfig {
-  targetNetwork: chains.Chain;
-  pollingInterval: number;
-  alchemyApiKey: string;
-  walletConnectProjectId: string;
-  onlyLocalBurnerWallet: boolean;
-  walletAutoConnect: boolean;
-  dynamicEnvironementId: string | undefined;
-  appName: string;
-}
-
 const scaffoldConfig = {
   // The network where your DApp lives in
-  targetNetwork: chains.goerli,
+  targetNetwork: chains.sepolia,
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect on the local network
@@ -42,7 +31,8 @@ const scaffoldConfig = {
    */
   walletAutoConnect: true,
   dynamicEnvironementId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
+  ipfsGateway: "https://cyan-surrounding-centipede-246.mypinata.cloud",
   appName: "Deed3.io",
-} satisfies ScaffoldConfig;
+} as const;
 
 export default scaffoldConfig;

@@ -7,7 +7,7 @@
     "compile": "hardhat compile",
     "deploy:goerli": "hardhat deploy --network goerli && yarn verify --network goerli",
     "deploy:gnosis": "hardhat deploy --network gnosis && yarn verify --network gnosis",
-    "deploy:holesky": "hardhat deploy --network holesky && yarn verify --network holesky",
+    "deploy:sepolia": "hardhat deploy --network sepolia && yarn verify --network sepolia",
     "coverage": "hardhat coverage --testfiles \"test/*.spec.ts\" --solcoverjs ./test/coverage.solcover.ts",
     "fork": "MAINNET_FORKING_ENABLED=true hardhat node --network hardhat --no-deploy",
     "generate": "hardhat run scripts/generateAccount.ts",

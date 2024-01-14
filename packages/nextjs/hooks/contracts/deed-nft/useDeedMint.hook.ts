@@ -1,7 +1,7 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
 import useErc20Transfer from "../erc20/useErc20Transfer.hook";
 import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { TransactionReceipt, parseEther, toHex } from "viem";
+import { TransactionReceipt, parseEther } from "viem";
 import { PropertyTypeOptions } from "~~/constants";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { indexOfLiteral } from "~~/utils/extract-values";
@@ -26,6 +26,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
   });
 
   const writeAsync = async (data: DeedInfoModel) => {
+    console.log({ stableCoinAddress });
     if (!primaryWallet) {
       notification.error("No wallet connected");
       return;
@@ -62,6 +63,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       notification.remove(toastId);
     }
     if (!hash) return;
+
     const mintNotif = notification.info("Minting...", {
       duration: Infinity,
     });
@@ -69,7 +71,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       await contractWriteHook.writeAsync({
         args: [
           primaryWallet.address,
-          toHex(hash.toString()),
+          hash.toString(),
           indexOfLiteral(PropertyTypeOptions, data.propertyDetails.propertyType),
         ],
       });

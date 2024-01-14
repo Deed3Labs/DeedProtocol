@@ -7,7 +7,7 @@ import { Bars3Icon } from "@heroicons/react/24/outline";
 import { defaultPage } from "~~/constants";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
-import logger from "~~/services/logger";
+import logger from "~~/services/logger.service";
 
 /**
  * Site header

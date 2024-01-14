@@ -1,0 +1,37 @@
+- kind: ethereum
+  name: SubdivisionNFT
+  network: {{network}}
+  source:
+      address: "{{address}}"
+      abi: SubdivisionNFT
+      startBlock: {{startBlock}}
+  mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+          - IpfsDetailsSet
+          - SubdivisionBurned
+          - Subdivision
+          - TransferBatch
+          - TransferSingle
+          - URI
+      abis:
+          - name: SubdivisionNFT
+            file: ./abis/SubdivisionNFT.json
+      eventHandlers:
+          - event: SubdivisionIpfsDetailsSet(uint256,bytes)
+            handler: handleIpfsDetailsSet
+          - event: SubdivisionBurned(address,uint256,uint256,bytes)
+            handler: handleSubdivisionBurned
+          - event: SubdivisionInfoSet(uint256,(bytes,address,uint256))
+            handler: handleSubdivisionInfoSet
+          - event: SubdivisionMinted(address,uint256,uint256,bytes,address)
+            handler: handleSubdivisionMinted
+          - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+            handler: handleTransferBatch
+          - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+            handler: handleTransferSingle
+          - event: URI(string,indexed uint256)
+            handler: handleURI
+      file: ./src/subdivision.ts

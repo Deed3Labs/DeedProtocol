@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPublicClient, http, toHex } from "viem";
 import { hardhat } from "viem/chains";
-import logger from "~~/services/logger";
+import logger from "~~/services/logger.service";
 
 const publicClient = createPublicClient({
   chain: hardhat,

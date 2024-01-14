@@ -1,39 +1,42 @@
-specVersion: 0.0.5
+specVersion: 0.0.7
 schema:
-  file: ./schema.graphql
+    file: ./schema.graphql
+templates:
+  - name: DeedMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/deed-nft.ts
+      handler: handleMetadata
+      entities:
+        - DeedMetadata
+      abis:
+        - name: DeedNFT
+          file: ./abis/DeedNFT.json
 dataSources:
   - kind: ethereum
     name: DeedNFT
     network: goerli
     source:
-      address: "0xF3dC56410C8C6070cfa1361278c5e2C42Be4e171"
-      abi: DeedNFT
-      startBlock: 0
+        address: "0xF3dC56410C8C6070cfa1361278c5e2C42Be4e171"
+        abi: DeedNFT
+        startBlock: 10206707
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Approval
-        - ApprovalForAll
-        - BatchMetadataUpdate
         - DeedNFTAssetTypeSet
         - DeedNFTAssetValidationSet
         - DeedNFTBurned
         - DeedNFTIpfsDetailsSet
         - DeedNFTMinted
-        - MetadataUpdate
         - Transfer
       abis:
         - name: DeedNFT
           file: ./abis/DeedNFT.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: BatchMetadataUpdate(uint256,uint256)
-          handler: handleBatchMetadataUpdate
         - event: DeedNFTAssetTypeSet(uint256,uint8)
           handler: handleDeedNFTAssetTypeSet
         - event: DeedNFTAssetValidationSet(uint256,bool)
@@ -44,8 +47,6 @@ dataSources:
           handler: handleDeedNFTIpfsDetailsSet
         - event: DeedNFTMinted(uint256,(uint8,bool),address)
           handler: handleDeedNFTMinted
-        - event: MetadataUpdate(uint256)
-          handler: handleMetadataUpdate
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/deed-nft.ts

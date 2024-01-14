@@ -16,19 +16,21 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     account: primaryWallet?.address,
   });
 
-  const writeAsync = async (data: DeedInfoModel, old: DeedInfoModel, deedId: number) => {
+  const writeAsync = async (
+    data: DeedInfoModel,
+    old: DeedInfoModel,
+    deedId: number,
+    isPublic: boolean,
+  ) => {
     if (!primaryWallet) {
       notification.error("No wallet connected");
       return;
     }
 
-    data.paymentInformation.receipt =
-      "0xb32a868c330b37a6fa60bcb83440dba7ec22efa4e0f392c5327dc8b8c65ce209";
-
     let toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      hash = await uploadDocuments(data, old);
+      hash = await uploadDocuments(data, old, isPublic);
     } catch (error) {
       notification.error("Error while uploading documents");
       logger.error({ message: "[Deed Mint] Error while uploading documents", error });

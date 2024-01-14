@@ -53,6 +53,7 @@ export interface OtherInformationModel {
 
 export interface PaymentInformationModel {
   paymentType: ValueExtractor<typeof PaymentOptions>;
+  promoCode?: string;
   receipt?: string;
 
   // -- Fiat only --

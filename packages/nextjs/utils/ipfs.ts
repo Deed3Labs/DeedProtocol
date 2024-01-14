@@ -5,9 +5,9 @@ import {
   OwnerInformationModel,
   PropertyDetailsModel,
 } from "~~/models/deed-info.model";
-import logger from "~~/services/logger";
+import logger from "~~/services/logger.service";
 
-export const uploadFile = async (file: File, fieldLabel: string) => {
+export const uploadFile = async (file: File, fieldLabel: string, isPublic: boolean) => {
   try {
     const formData = new FormData();
     // @ts-ignore
@@ -15,10 +15,11 @@ export const uploadFile = async (file: File, fieldLabel: string) => {
     formData.append("name", file.name);
     formData.append("description", fieldLabel);
 
-    const res = await fetch("/api/files?mode=file", {
+    const res = await fetch(`/api/files?mode=file&isPublic=${isPublic}`, {
       method: "POST",
       body: formData,
     });
+    if (res.status !== 200) throw new Error(await res.text());
     return await res.text();
   } catch (error) {
     const message = `Error uploading file ${file.name} for field ${fieldLabel}`;
@@ -27,8 +28,8 @@ export const uploadFile = async (file: File, fieldLabel: string) => {
   }
 };
 
-export const uploadJson = async (object: any) => {
-  const res = await fetch("/api/files?mode=json", {
+export const uploadJson = async (object: any, isPublic: boolean) => {
+  const res = await fetch(`/api/files?mode=json&isPublic=${isPublic}`, {
     method: "POST",
     body: JSON.stringify(object),
     headers: {
@@ -38,7 +39,11 @@ export const uploadJson = async (object: any) => {
   return res.text();
 };
 
-export async function uploadDocuments(data: DeedInfoModel, old?: DeedInfoModel) {
+export async function uploadDocuments(
+  data: DeedInfoModel,
+  old?: DeedInfoModel,
+  isPublic: boolean = false,
+) {
   const toBeUploaded: {
     key: [
       keyof DeedInfoModel,
@@ -146,10 +151,9 @@ export async function uploadDocuments(data: DeedInfoModel, old?: DeedInfoModel) 
 
   const payload = cloneDeep(data) as DeedInfoModel;
 
-  // let counter = 0;
   await Promise.all(
     toBeUploaded.map(async ({ key, label, value, restricted }) => {
-      const hash = await uploadFile(value, label);
+      const hash = await uploadFile(value, label, !restricted);
 
       const newValue = {
         hash,
@@ -167,7 +171,7 @@ export async function uploadDocuments(data: DeedInfoModel, old?: DeedInfoModel) 
   );
 
   const deedInfo = cleanObject(payload);
-  const hash = await uploadJson(deedInfo);
+  const hash = await uploadJson(deedInfo, isPublic);
 
   return hash;
 }

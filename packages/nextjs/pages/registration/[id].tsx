@@ -7,24 +7,20 @@ import OwnerInformation from "./OwnerInformation";
 import PaymentInformation from "./PaymentInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { TransactionReceipt } from "viem";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { RegistrationClient } from "~~/clients/registrations.client";
 import { BitcoinIcon } from "~~/components/assets/BitcoinIcon";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
-import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
-import useHttpClient from "~~/hooks/useHttpClient";
 import {
   DeedInfoModel,
   OwnerInformationModel,
   PropertyDetailsModel,
 } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import logger from "~~/services/logger";
-import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
@@ -57,7 +53,7 @@ const fakeData: DeedInfoModel = {
   },
 };
 
-const defaultData: DeedInfoModel = isDev()
+const defaultData: DeedInfoModel = false
   ? fakeData
   : ({
       otherInformation: {
@@ -76,23 +72,25 @@ const defaultData: DeedInfoModel = isDev()
 
 type ErrorCode = "notFound" | "unauthorized";
 
+const registrationClient = new RegistrationClient();
+
 const Page = ({ router }: WithRouterProps) => {
   // const [step, setStep] = useState(0);
-  let { id } = router.query as { id?: string };
+  let { id } = router.query;
   if (id === "new") {
     id = undefined;
   }
 
-  const onDeedMinted = (txnReceipt: TransactionReceipt) => {
-    const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");
-    if (!payload) {
-      logger.error({ message: "Error parsing DeedNFTMinted event", txnReceipt });
-      return;
-    }
-    const { deedId } = payload;
-    notification.success(`Deed NFT Minted with id ${deedId}`);
-    router.push(`?id=${deedId}`);
-  };
+  // const onDeedMinted = (txnReceipt: TransactionReceipt) => {
+  //   const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");
+  //   if (!payload) {
+  //     logger.error({ message: "Error parsing DeedNFTMinted event", txnReceipt });
+  //     return;
+  //   }
+  //   const { deedId } = payload;
+  //   notification.success(`Deed NFT Minted with id ${deedId}`);
+  //   router.push(`?id=${deedId}`);
+  // };
 
   const { primaryWallet, authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
@@ -101,11 +99,8 @@ const Page = ({ router }: WithRouterProps) => {
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
-  const httpClient = useHttpClient();
-
   const isValidator = useIsValidator();
   const { writeValidateAsync } = useDeedValidate();
-  const { writeAsync: mintDeedAsync } = useDeedMint(onDeedMinted);
   const { writeAsync: updateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(+id!));
 
   const isOwner = useMemo(() => {
@@ -125,6 +120,9 @@ const Page = ({ router }: WithRouterProps) => {
   }, [id, router.isReady]);
 
   useEffect(() => {
+    if (authToken) {
+      registrationClient.authentify(authToken);
+    }
     if (router.isReady && id && !isLoading) {
       setIsLoading(true);
       fetchDeedInfo(+id!);
@@ -137,33 +135,33 @@ const Page = ({ router }: WithRouterProps) => {
 
   const fetchDeedInfo = useCallback(
     async (id: number) => {
-      const resp = await httpClient.get(`/api/deed-info/${id}?chainId=${chainId}`);
+      const resp = await registrationClient.getRegistration(id, !!router.query?.isDraft);
       setErrorCode(undefined);
-      if (resp?.status === 200) {
+      if (resp.ok) {
         setInitialData(resp.value);
-        setDeedData(resp.value);
+        setDeedData(resp.value!);
       } else {
         setErrorCode(resp?.status === 404 ? "notFound" : "unauthorized");
       }
       setIsLoading(false);
     },
-    [id, chainId, authToken],
+    [id, router.query.isDraft, chainId, authToken],
   );
 
   const handleSubmit = async () => {
     if (!validate()) return;
     if (id) {
       if (initialData) {
-        await updateDeedAsync(deedData, initialData, +id);
+        await updateDeedAsync(deedData, initialData, +id, false);
       }
     } else {
-      await mintDeedAsync(deedData);
+      await registrationClient.createRegistration(deedData);
     }
   };
 
   const handleValidationClicked = async () => {
     if (id) {
-      await writeValidateAsync(+id, !deedData.isValidated);
+      await writeValidateAsync(deedData, !deedData.isValidated);
       fetchDeedInfo(+id);
     }
   };
@@ -353,9 +351,40 @@ const Page = ({ router }: WithRouterProps) => {
                     )}
                   </>
                 ) : (
-                  <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-                    Submit
-                  </button>
+                  <>
+                    {deedData.paymentInformation.paymentType === "crypto" ? (
+                      <div className="flex flex-col gap-4">
+                        <input
+                          id="promoCode"
+                          type="text"
+                          className="input input-bordered"
+                          placeholder="Promo code"
+                          value={deedData.paymentInformation.promoCode ?? ""}
+                          onChange={ev =>
+                            handleChange({
+                              name: "paymentInformation",
+                              value: {
+                                ...deedData.paymentInformation,
+                                promoCode: ev.target.value,
+                              },
+                            })
+                          }
+                        />
+                        <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
+                          Submit
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+                        {/* @ts-ignore */}
+                        <stripe-buy-button
+                          buy-button-id="buy_btn_1OVm0tIOay2xBMTivNc1ciDZ"
+                          publishable-key="pk_test_51OLtZSIOay2xBMTiSZEtwzVQOZFGEPppN2gYt8Qiy7RGcEVdmG65Z9Ds1CzTVIWtMp4kq2BZQrtiXc5x0F9AllVV00vwxejXrI"
+                        />
+                      </>
+                    )}
+                  </>
                 )}
               </div>
             </div>

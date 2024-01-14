@@ -2,8 +2,11 @@
   "name": "Deed3",
   "license": "UNLICENSED",
   "scripts": {
+    "prepare:goerli": "yarn load-env && node scripts/prepare.mjs goerli",
     "codegen": "graph codegen",
-    "build": "graph build",
+    "build": "yarn load-env && graph build",
+    "load-env": "node scripts/load-env.mjs",
+    "deploy:goerli": "yarn prepare:goerli && graph deploy --studio deed3-goerli",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ Deed3",
     "create-local": "graph create --node http://localhost:8020/ Deed3",
     "remove-local": "graph remove --node http://localhost:8020/ Deed3",
@@ -12,7 +15,13 @@
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.64.0",
-    "@graphprotocol/graph-ts": "0.32.0"
+    "@graphprotocol/graph-ts": "0.32.0",
+    "cross-var": "^1.1.0",
+    "dotenv": "^16.3.1",
+    "mustache": "^4.2.0"
   },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+  "devDependencies": {
+    "@types/mustache": "^4",
+    "matchstick-as": "0.5.0"
+  }
 }

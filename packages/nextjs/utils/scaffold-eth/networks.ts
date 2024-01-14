@@ -32,9 +32,9 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
   [chains.sepolia.id]: {
     color: ["#5f4bb6", "#87ff65"],
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFeeDollar: 0,
-    stableCoinAddress: "0x0000000000",
+    storageAddress: "0xD30aee396a54560581a3265Fd2194B0edB787525",
+    deedMintingFeeDollar: 500,
+    stableCoinAddress: "0x2B4987D22648CB0B7C062b03d91147478A95b52b",
   },
   [chains.goerli.id]: {
     color: "#0975F6",

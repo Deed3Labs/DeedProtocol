@@ -16,6 +16,14 @@ const nextConfig = {
     domains: ["picsum.photos", "www.figma.com", "unpkg.com", "xsgames.co", "randomuser.me"],
   },
   productionBrowserSourceMaps: true,
+  rewrites: async () => {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "/api/:path*.api",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

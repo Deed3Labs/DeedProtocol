@@ -1,7 +1,7 @@
 "use client";
 
 import { Component, ErrorInfo, ReactNode } from "react";
-import logger from "~~/services/logger";
+import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
