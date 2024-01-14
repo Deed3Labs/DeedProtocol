@@ -4,12 +4,12 @@ import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt, parseEther } from "viem";
 import { PropertyTypeOptions } from "~~/constants";
 import { DeedInfoModel } from "~~/models/deed-info.model";
+import { uploadDocuments } from "~~/services/document.service";
 import { indexOfLiteral } from "~~/utils/extract-values";
-import { uploadDocuments } from "~~/utils/ipfs";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet, authToken } = useDynamicContext();
 
   const { stableCoinAddress, deedMintingFeeDollar, storageAddress } = getTargetNetwork();
   const { writeAsync: erc20Transfer } = useErc20Transfer(
@@ -26,8 +26,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
   });
 
   const writeAsync = async (data: DeedInfoModel) => {
-    console.log({ stableCoinAddress });
-    if (!primaryWallet) {
+    if (!primaryWallet || !authToken) {
       notification.error("No wallet connected");
       return;
     }
@@ -54,7 +53,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     const toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      hash = await uploadDocuments(data);
+      hash = await uploadDocuments(authToken, data);
     } catch (error) {
       notification.error("Error while uploading documents");
       logger.error({ message: "[Deed Mint] Error while uploading documents", error });

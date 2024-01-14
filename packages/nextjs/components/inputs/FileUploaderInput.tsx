@@ -1,7 +1,6 @@
 import { useRef } from "react";
-import { useRouter } from "next/router";
 import { DownloadLogo } from "../assets/Downloadicon";
-import useHttpClient from "~~/hooks/useHttpClient";
+import useFileClient from "~~/clients/file.client";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { IconLightningSolid } from "~~/styles/Icons";
@@ -31,9 +30,7 @@ export const FileUploaderInput = <TParent,>({
   maxFileSizeKb = 10000,
   readOnly,
 }: Props<TParent>) => {
-  const httpClient = useHttpClient();
-  const { query } = useRouter();
-  const { id } = query as { id: string };
+  const fileClient = useFileClient();
 
   const files = Array.isArray(value) ? value : value ? [value] : [];
 
@@ -57,7 +54,7 @@ export const FileUploaderInput = <TParent,>({
   };
 
   const download = async (hash: string) => {
-    httpClient.download(hash, id, name.toString());
+    await fileClient.downloadFile(hash, name.toString());
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
@@ -141,10 +138,10 @@ export const FileUploaderInput = <TParent,>({
                     </span>
                     )
                   </div>
-                  {file.hash && (
+                  {file.id && (
                     <button
                       className="btn btn-square pointer-events-auto"
-                      onClick={() => download(file.hash!)}
+                      onClick={() => download(file.id!)}
                     >
                       <DownloadLogo />
                     </button>

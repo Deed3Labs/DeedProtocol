@@ -1,4 +1,4 @@
 export type IpfsFileModel = File & {
-  hash?: string;
+  id?: string;
   restricted?: boolean;
 };

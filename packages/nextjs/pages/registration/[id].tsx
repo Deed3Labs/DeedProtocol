@@ -7,12 +7,15 @@ import OwnerInformation from "./OwnerInformation";
 import PaymentInformation from "./PaymentInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { isArray } from "lodash-es";
+import { TransactionReceipt } from "viem";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import { RegistrationClient } from "~~/clients/registrations.client";
+import useRegistrationClient from "~~/clients/registrations.client";
 import { BitcoinIcon } from "~~/components/assets/BitcoinIcon";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
 import {
@@ -21,6 +24,9 @@ import {
   PropertyDetailsModel,
 } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
+import { uploadDocuments } from "~~/services/document.service";
+import logger from "~~/services/logger.service";
+import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
@@ -72,25 +78,23 @@ const defaultData: DeedInfoModel = false
 
 type ErrorCode = "notFound" | "unauthorized";
 
-const registrationClient = new RegistrationClient();
-
 const Page = ({ router }: WithRouterProps) => {
-  // const [step, setStep] = useState(0);
-  let { id } = router.query;
+  // eslint-disable-next-line prefer-const
+  let { id, isDraft } = router.query;
   if (id === "new") {
     id = undefined;
   }
 
-  // const onDeedMinted = (txnReceipt: TransactionReceipt) => {
-  //   const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");
-  //   if (!payload) {
-  //     logger.error({ message: "Error parsing DeedNFTMinted event", txnReceipt });
-  //     return;
-  //   }
-  //   const { deedId } = payload;
-  //   notification.success(`Deed NFT Minted with id ${deedId}`);
-  //   router.push(`?id=${deedId}`);
-  // };
+  const onDeedMinted = async (txnReceipt: TransactionReceipt) => {
+    const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");
+    if (!payload) {
+      logger.error({ message: "Error parsing DeedNFTMinted event", txnReceipt });
+      return;
+    }
+    const { deedId } = payload;
+    notification.success(`Deed NFT Minted with id ${deedId}`);
+    await router.push(`/registration/${deedId}`);
+  };
 
   const { primaryWallet, authToken } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(true);
@@ -102,6 +106,8 @@ const Page = ({ router }: WithRouterProps) => {
   const isValidator = useIsValidator();
   const { writeValidateAsync } = useDeedValidate();
   const { writeAsync: updateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(+id!));
+  const { writeAsync: mintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
+  const registrationClient = useRegistrationClient();
 
   const isOwner = useMemo(() => {
     return deedData.owner === primaryWallet?.address || !id;
@@ -109,9 +115,9 @@ const Page = ({ router }: WithRouterProps) => {
 
   useEffect(() => {
     if (router.isReady) {
-      if (id) {
+      if (id && !isArray(id)) {
         setIsLoading(true);
-        fetchDeedInfo(+id);
+        fetchDeedInfo(id);
       } else {
         setDeedData(defaultData);
         setIsLoading(false);
@@ -120,9 +126,6 @@ const Page = ({ router }: WithRouterProps) => {
   }, [id, router.isReady]);
 
   useEffect(() => {
-    if (authToken) {
-      registrationClient.authentify(authToken);
-    }
     if (router.isReady && id && !isLoading) {
       setIsLoading(true);
       fetchDeedInfo(+id!);
@@ -134,8 +137,8 @@ const Page = ({ router }: WithRouterProps) => {
   };
 
   const fetchDeedInfo = useCallback(
-    async (id: number) => {
-      const resp = await registrationClient.getRegistration(id, !!router.query?.isDraft);
+    async (id: number | string) => {
+      const resp = await registrationClient.getRegistration(id, !!isDraft);
       setErrorCode(undefined);
       if (resp.ok) {
         setInitialData(resp.value);
@@ -145,18 +148,34 @@ const Page = ({ router }: WithRouterProps) => {
       }
       setIsLoading(false);
     },
-    [id, router.query.isDraft, chainId, authToken],
+    [id, isDraft, chainId, authToken],
   );
 
   const handleSubmit = async () => {
-    if (!validate()) return;
-    if (id) {
-      if (initialData) {
-        await updateDeedAsync(deedData, initialData, +id, false);
+    // if (!validateForm() || !deedData || !authToken) return;
+
+    if (isDraft || !id) {
+      // Save in draft
+      const toastId = notification.loading("Uploading documents...");
+      const newDeedData = await uploadDocuments(authToken!, deedData, undefined, true);
+      notification.remove(toastId);
+      const response = await registrationClient.saveRegistration(newDeedData);
+
+      if (response.ok) {
+        notification.success("Registration successfully created");
+        await router.push(`/registration/${response.value}?isDraft=true`);
+      } else {
+        notification.error("Error creating registration");
       }
     } else {
-      await registrationClient.createRegistration(deedData);
+      if (!id || !initialData) return;
+      // Update on chain
+      await updateDeedAsync(deedData, initialData, +id);
     }
+  };
+
+  const mintDeedNFT = async () => {
+    await mintDeedAsync(deedData);
   };
 
   const handleValidationClicked = async () => {
@@ -166,7 +185,7 @@ const Page = ({ router }: WithRouterProps) => {
     }
   };
 
-  const validate = () => {
+  const validateForm = () => {
     if (!deedData.ownerInformation.ids) {
       notification.error("Owner Information ids is required", { duration: 3000 });
       return false;
@@ -336,55 +355,32 @@ const Page = ({ router }: WithRouterProps) => {
                             )}
                           </ul>
                         </div>
-                        <button
-                          onClick={handleValidationClicked}
-                          className="btn btn-lg bg-gray-600"
-                        >
-                          {deedData.isValidated ? "Unvalidate" : "Validate"}
-                        </button>
+                        {isDraft ? (
+                          <button onClick={mintDeedNFT} className="btn btn-lg bg-gray-600">
+                            Mint
+                          </button>
+                        ) : (
+                          <button
+                            onClick={handleValidationClicked}
+                            className="btn btn-lg bg-gray-600"
+                          >
+                            {deedData.isValidated ? "Unvalidate" : "Validate"}
+                          </button>
+                        )}
                       </>
                     )}
                     {deedData.owner === primaryWallet?.address && (
                       <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-                        Update
+                        Save
                       </button>
                     )}
                   </>
                 ) : (
-                  <>
-                    {deedData.paymentInformation.paymentType === "crypto" ? (
-                      <div className="flex flex-col gap-4">
-                        <input
-                          id="promoCode"
-                          type="text"
-                          className="input input-bordered"
-                          placeholder="Promo code"
-                          value={deedData.paymentInformation.promoCode ?? ""}
-                          onChange={ev =>
-                            handleChange({
-                              name: "paymentInformation",
-                              value: {
-                                ...deedData.paymentInformation,
-                                promoCode: ev.target.value,
-                              },
-                            })
-                          }
-                        />
-                        <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-                          Submit
-                        </button>
-                      </div>
-                    ) : (
-                      <>
-                        <script async src="https://js.stripe.com/v3/buy-button.js"></script>
-                        {/* @ts-ignore */}
-                        <stripe-buy-button
-                          buy-button-id="buy_btn_1OVm0tIOay2xBMTivNc1ciDZ"
-                          publishable-key="pk_test_51OLtZSIOay2xBMTiSZEtwzVQOZFGEPppN2gYt8Qiy7RGcEVdmG65Z9Ds1CzTVIWtMp4kq2BZQrtiXc5x0F9AllVV00vwxejXrI"
-                        />
-                      </>
-                    )}
-                  </>
+                  <div className="flex flex-col gap-4">
+                    <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
+                      Create
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

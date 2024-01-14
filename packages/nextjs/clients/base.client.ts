@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import logger from "~~/services/logger.service";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
@@ -18,31 +20,31 @@ export class HttpClient {
 
     if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
 
-    return { status: res.status, value: (await res.json()) as TRes, ok: true };
+    return { status: res.status, value: (await res.text()) as TRes, ok: true };
   }
 
   public async post<TRes = any>(url: string, body: any) {
     const res = await fetch(url, {
       method: "POST",
-      body: JSON.stringify(body),
+      body: body,
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
 
     if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
 
-    return { status: res.status, value: (await res.json()) as TRes, ok: true };
+    return { status: res.status, value: (await res.text()) as TRes, ok: true };
   }
 
   public async put<TRes = any>(url: string, body: any) {
     const res = await fetch(url, {
       method: "PUT",
-      body: JSON.stringify(body),
+      body: body,
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
 
     if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
 
-    return { status: res.status, value: (await res.json()) as TRes, ok: true };
+    return { status: res.status, value: (await res.text()) as TRes, ok: true };
   }
 
   public async del(url: string) {
@@ -85,3 +87,17 @@ export class HttpClient {
     return false;
   }
 }
+
+const useHttpClient = <TClient extends HttpClient>(client: TClient): TClient => {
+  const { authToken } = useDynamicContext();
+
+  useEffect(() => {
+    if (authToken) {
+      client.authentify(authToken);
+    }
+  }, [authToken]);
+
+  return client ?? new HttpClient();
+};
+
+export default useHttpClient;

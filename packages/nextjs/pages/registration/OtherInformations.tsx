@@ -48,11 +48,6 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
       <div>
         <div className="justify-start items-center inline-flex mt-3">
           <div className="text-base font-bold font-['Montserrat'] leading-normal">
-            Advanced settings
-          </div>
-        </div>
-        <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-bold font-['Montserrat'] leading-normal">
             Customize your Wrapper type
           </div>
         </div>

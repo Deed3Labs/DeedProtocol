@@ -1,10 +1,12 @@
-import { HttpClient } from "./base.client";
+import useHttpClient, { HttpClient } from "./base.client";
 import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
+// LINK ../pages/api/files.api.ts
+
 export class FileClient extends HttpClient {
-  public async download(fileHash: string, id: string, name: string) {
-    const url = `/api/deed-info/${id}?hash=${fileHash}&chainId=${this.chainId}`;
+  public async downloadFile(fileId: string, name: string) {
+    const url = `/api/files/?fileId=${fileId}`;
     const response = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
@@ -17,8 +19,28 @@ export class FileClient extends HttpClient {
     const blobUrl = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = `${id}-${name}`;
+    link.download = `${fileId}-${name}`;
     link.click();
     URL.revokeObjectURL(blobUrl);
   }
+
+  public async uploadFile(file: File, fieldLabel: string, isRestricted: boolean) {
+    try {
+      const formData = new FormData();
+      // @ts-ignore
+      formData.append("file", file, { filename: file.name });
+      formData.append("name", file.name);
+      formData.append("description", fieldLabel);
+
+      const res = await this.post(`/api/files?isRestricted=${isRestricted}`, formData);
+      return res.value;
+    } catch (error) {
+      const message = `Error uploading file ${file.name} for field ${fieldLabel}`;
+      logger.error({ message, error });
+      throw error;
+    }
+  }
 }
+
+const useFileClient = () => useHttpClient(new FileClient());
+export default useFileClient;

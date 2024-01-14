@@ -15,7 +15,7 @@
     "lint-staged": "eslint --config ./.eslintrc.json --ignore-path ./.eslintignore",
     "test": "hardhat test --network hardhat",
     "verify": "hardhat etherscan-verify",
-    "verify:goerli": "yarn verify --network goerli"
+    "verify:sepolia": "yarn verify --network sepolia"
   },
   "devDependencies": {
     "@eth-optimism/hardhat-ovm": "^0.2.4",

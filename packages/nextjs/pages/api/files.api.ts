@@ -1,9 +1,12 @@
 import pinataSDK from "@pinata/sdk";
-import { IncomingForm } from "formidable";
+import axios from "axios";
+import formidable, { IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Readable } from "stream";
+import { FileInfo, FilesDb  } from "~~/databases/files.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
-import { createFile } from "~~/servers/databases/files.db";
+import { authentify, extractWalletAddressFromToken } from "~~/servers/auth";
 
 if (!process.env.NEXT_PINATA_GATEWAY_KEY) {
   throw new Error("Missing NEXT_PINATA_GATEWAY_KEY env var");
@@ -17,13 +20,14 @@ const pinata = new pinataSDK(
 export const config = {
   api: {
     bodyParser: false,
-    externalResolver: true,
   },
 };
 
 const handler = (req: NextApiRequest, res: NextApiResponse<string>) => {
   if (req.method === "POST") {
-    post(req, res);
+    addFile(req, res);
+  } else if (req.method === "GET") {
+    download(req, res);
   } else {
     res.status(405).send("Method Not Supported");
   }
@@ -32,9 +36,17 @@ const handler = (req: NextApiRequest, res: NextApiResponse<string>) => {
 /**
  * Add a new file to the database if isPublic is false, otherwise add it to IPFS.
  */
-const post = async (req: NextApiRequest, res: NextApiResponse<string>) => {
-  const { isPublic } = req.query;
+const addFile = async (req: NextApiRequest, res: NextApiResponse<string>) => {
+  const { isRestricted } = req.query;
   const form = new IncomingForm();
+
+  const walletAddress = extractWalletAddressFromToken(req);
+
+  if (!walletAddress) {
+    res.status(401).send("Error: Unauthorized");
+    return;
+  }
+
   form.parse(req, async (error, fields, files) => {
     try {
       if (error) {
@@ -44,7 +56,14 @@ const post = async (req: NextApiRequest, res: NextApiResponse<string>) => {
         const file = files.file![0];
         const stream = fs.createReadStream(file.filepath);
         let response;
-        if (isPublic) {
+        if (isRestricted) {
+          // Push the file to the database
+          response = await FilesDb.createFile(stream, fields.name![0], {
+            ...file,
+            owner: walletAddress,
+          });
+        } else {
+          // Push the file to IPFS
           const options = {
             pinataMetadata: {
               name: fields.name![0],
@@ -52,8 +71,6 @@ const post = async (req: NextApiRequest, res: NextApiResponse<string>) => {
             },
           };
           response = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
-        } else {
-          response = await createFile(stream, fields.name![0], fields.description![0]);
         }
         fs.unlinkSync(file.filepath);
         res.status(200).send(response);
@@ -63,6 +80,42 @@ const post = async (req: NextApiRequest, res: NextApiResponse<string>) => {
       res.status(500).send("Server Error");
     }
   });
+};
+
+const download = async (req: NextApiRequest, res: NextApiResponse<string>) => {
+  const { fileId, isRestricted } = req.query;
+  let stream: Readable;
+  let fileInfo: FileInfo;
+
+  if (!fileId || typeof fileId !== "string") {
+    res.status(400).send("Error: id is required");
+    return;
+  }
+
+  if (isRestricted === "true") {
+    // Get the file from database
+    const response = await FilesDb.downloadFile(fileId);
+    stream = response.stream;
+    fileInfo = response.fileInfo;
+    if (
+      !authentify(req, res, {
+        requireSpecificAddress: fileInfo.owner,
+      })
+    ) {
+      return;
+    }
+    res.setHeader("Content-Type", fileInfo.mimetype ?? "application/octet-stream");
+  } else {
+    const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${fileId}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
+    const { data } = await axios.get<Readable>(filePath, {
+      responseType: "stream",
+    });
+    stream = data;
+  }
+
+  res.setHeader("Content-Disposition", `attachment; filename="${fileId}"`);
+
+  stream.pipe(res);
 };
 
 export default withErrorHandler(handler);

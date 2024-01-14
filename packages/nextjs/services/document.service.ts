@@ -1,49 +1,22 @@
 import { cloneDeep } from "lodash-es";
+import { FileClient } from "~~/clients/file.client";
 import {
   DeedInfoModel,
   OtherInformationModel,
   OwnerInformationModel,
   PropertyDetailsModel,
 } from "~~/models/deed-info.model";
-import logger from "~~/services/logger.service";
 
-export const uploadFile = async (file: File, fieldLabel: string, isPublic: boolean) => {
-  try {
-    const formData = new FormData();
-    // @ts-ignore
-    formData.append("file", file, { filename: file.name });
-    formData.append("name", file.name);
-    formData.append("description", fieldLabel);
-
-    const res = await fetch(`/api/files?mode=file&isPublic=${isPublic}`, {
-      method: "POST",
-      body: formData,
-    });
-    if (res.status !== 200) throw new Error(await res.text());
-    return await res.text();
-  } catch (error) {
-    const message = `Error uploading file ${file.name} for field ${fieldLabel}`;
-    logger.error({ message, error });
-    throw error;
-  }
-};
-
-export const uploadJson = async (object: any, isPublic: boolean) => {
-  const res = await fetch(`/api/files?mode=json&isPublic=${isPublic}`, {
-    method: "POST",
-    body: JSON.stringify(object),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return res.text();
-};
+const fileClient = new FileClient();
 
 export async function uploadDocuments(
+  authToken: string,
   data: DeedInfoModel,
   old?: DeedInfoModel,
-  isPublic: boolean = false,
+  isDraft: boolean = false,
 ) {
+  fileClient.authentify(authToken);
+
   const toBeUploaded: {
     key: [
       keyof DeedInfoModel,
@@ -122,6 +95,7 @@ export async function uploadDocuments(
           key: ["propertyDetails", "propertyImages", index],
           label: "Property Images #" + index,
           value: image,
+          restricted: isDraft,
         });
       }
     });
@@ -152,31 +126,30 @@ export async function uploadDocuments(
   const payload = cloneDeep(data) as DeedInfoModel;
 
   await Promise.all(
-    toBeUploaded.map(async ({ key, label, value, restricted }) => {
-      const hash = await uploadFile(value, label, !restricted);
+    toBeUploaded
+      .filter(x => !!x.value)
+      .map(async ({ key, label, value, restricted }) => {
+        const id = await fileClient.uploadFile(value, label, !!restricted);
 
-      const newValue = {
-        hash,
-        name: value.name,
-        size: value.size,
-        type: value.type,
-        lastModified: value.lastModified,
-        restricted,
-      };
-      // @ts-ignore
-      if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = newValue;
-      // @ts-ignore
-      else payload[key[0]][key[1]] = newValue;
-    }),
+        const newValue = {
+          id,
+          name: value.name,
+          size: value.size,
+          type: value.type,
+          lastModified: value.lastModified,
+          restricted,
+        };
+        // @ts-ignore
+        if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = newValue;
+        // @ts-ignore
+        else payload[key[0]][key[1]] = newValue;
+      }),
   );
 
-  const deedInfo = cleanObject(payload);
-  const hash = await uploadJson(deedInfo, isPublic);
-
-  return hash;
+  return cleanObject(payload);
 }
 
-export function cleanObject(obj: any) {
+function cleanObject(obj: any) {
   Object.keys(obj).forEach(key => {
     if (obj[key] && typeof obj[key] === "object") cleanObject(obj[key]);
     else if (obj[key] === undefined) delete obj[key]; // or set to null

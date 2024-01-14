@@ -4081,7 +4081,7 @@ const deployedContracts = {
       startBlock: 5034801,
     },
     DeedNFT: {
-      address: "0xF462BcA1e685337feAA4Cd6C3710c7fc535DAAF3",
+      address: "0x156f3825C43366eEC47fa9036974A3BC7E09BFfD",
       abi: [
         {
           inputs: [
@@ -4890,7 +4890,7 @@ const deployedContracts = {
         tokenURI: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         transferFrom: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
       },
-      startBlock: 5034804,
+      startBlock: 5085793,
     },
     FundsManager: {
       address: "0x51D2F339404E431831315Cb3A52533370032F954",
@@ -6694,7 +6694,7 @@ const deployedContracts = {
       startBlock: 5034802,
     },
     SubdivisionNFT: {
-      address: "0xb53cf6D852722b8c59330B0167AEbCD30763f6Ea",
+      address: "0x2d372a35649E17c14487565207ac976E4b8B1617",
       abi: [
         {
           inputs: [
@@ -7468,7 +7468,7 @@ const deployedContracts = {
         supportsInterface: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         uri: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
       },
-      startBlock: 5034805,
+      startBlock: 5085794,
     },
   },
 } as const;

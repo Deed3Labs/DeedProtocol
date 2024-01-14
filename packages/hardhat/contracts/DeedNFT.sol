@@ -46,12 +46,16 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         _;
     }
 
-    function mintAsset(address _owner, string memory _ipfsDetailsHash, AssetType _assetType) public returns (uint256) {
+    function mintAsset(
+        address _owner,
+        string memory _ipfsDetailsHash,
+        AssetType _assetType
+    ) public onlyValidator returns (uint256) {
         _mint(_owner, nextDeedId);
 
         DeedInfo storage deedInfo = deedInfoMap[nextDeedId];
         deedInfo.assetType = _assetType;
-        deedInfo.isValidated = false;
+        deedInfo.isValidated = true;
         _setTokenURI(nextDeedId, _ipfsDetailsHash);
         emit DeedNFTMinted(nextDeedId, deedInfo, _msgSender());
         nextDeedId = nextDeedId + 1;

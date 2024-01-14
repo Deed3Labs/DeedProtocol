@@ -2,11 +2,11 @@ import { useScaffoldContractWrite } from "../../scaffold-eth";
 import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { uploadDocuments } from "~~/utils/ipfs";
+import { uploadDocuments } from "~~/services/document.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet, authToken } = useDynamicContext();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -16,13 +16,8 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     account: primaryWallet?.address,
   });
 
-  const writeAsync = async (
-    data: DeedInfoModel,
-    old: DeedInfoModel,
-    deedId: number,
-    isPublic: boolean,
-  ) => {
-    if (!primaryWallet) {
+  const writeAsync = async (data: DeedInfoModel, old: DeedInfoModel, deedId: number) => {
+    if (!primaryWallet || !authToken) {
       notification.error("No wallet connected");
       return;
     }
@@ -30,7 +25,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     let toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      hash = await uploadDocuments(data, old, isPublic);
+      hash = await uploadDocuments(authToken, data, old);
     } catch (error) {
       notification.error("Error while uploading documents");
       logger.error({ message: "[Deed Mint] Error while uploading documents", error });

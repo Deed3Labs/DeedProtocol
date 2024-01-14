@@ -69,7 +69,7 @@ const PropertyExplorer: NextPage = () => {
     const radius = 10;
     const center = { lat: 40, lng: -100 };
     const pageSize = Number(nextTokenId);
-    for (let index = 1; index < pageSize + 1; index++) {
+    for (let index = 1; index < pageSize; index++) {
       const newProperty: PropertyModel = {
         id: index,
         name: `Deed #${index}`,
@@ -103,9 +103,15 @@ const PropertyExplorer: NextPage = () => {
       <PropertyFilters properties={properties} onFilter={onFilter} />
 
       <div className="flex flex-wrap gap-8 items-center justify-center max-w-full">
-        {properties.map(property => (
-          <PropertyCard key={property.id} property={property} />
-        ))}
+        {properties.length === 0 ? (
+          <div className="card w-96 bg-neutral">
+            <div className="card-body items-center text-center">
+              <h2 className="card-title">No properties</h2>
+            </div>
+          </div>
+        ) : (
+          properties.map(property => <PropertyCard key={property.id} property={property} />)
+        )}
       </div>
       {loading && <span className="loading loading-bars loading-lg my-8"></span>}
     </div>

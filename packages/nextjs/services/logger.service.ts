@@ -20,7 +20,7 @@ const logger = {
 
 const handleLog = (payload: any, level: "debug" | "info" | "warn" | "error") => {
   console[level](payload);
-  fetch(`/api/logger/${level}`, {
+  fetch(`/api/logger?level=${level}`, {
     method: "POST",
     body: JSON.stringify({
       context: {
