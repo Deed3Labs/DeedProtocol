@@ -16,9 +16,10 @@ interface Props {
   value?: PropertyDetailsModel;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
   readOnly?: boolean;
+  isDraft?: boolean;
 }
 
-const PropertyDetails = ({ value, onChange, readOnly }: Props) => {
+const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) => {
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({
@@ -114,6 +115,7 @@ const PropertyDetails = ({ value, onChange, readOnly }: Props) => {
           value={value?.propertyImages}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={isDraft}
         />
       </div>
       <div>
@@ -130,6 +132,7 @@ const PropertyDetails = ({ value, onChange, readOnly }: Props) => {
           value={value?.propertyDeedOrTitle}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={true}
         />
         <FileUploaderInput
           name="propertyPurchaseContract"
@@ -139,6 +142,7 @@ const PropertyDetails = ({ value, onChange, readOnly }: Props) => {
           value={value?.propertyPurchaseContract}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={true}
         />
       </div>
     </div>

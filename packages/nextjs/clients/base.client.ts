@@ -11,6 +11,7 @@ export class HttpClient {
 
   public authentify(authorizationToken: string) {
     this.authorizationToken = authorizationToken;
+    return this;
   }
 
   public async get<TRes = any>(url: string) {
@@ -20,7 +21,7 @@ export class HttpClient {
 
     if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
 
-    return { status: res.status, value: (await res.text()) as TRes, ok: true };
+    return { status: res.status, value: (await res.json()) as TRes, ok: true };
   }
 
   public async post<TRes = any>(url: string, body: any) {

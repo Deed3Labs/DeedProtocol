@@ -7,7 +7,6 @@ import OwnerInformation from "./OwnerInformation";
 import PaymentInformation from "./PaymentInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { isArray } from "lodash-es";
 import { TransactionReceipt } from "viem";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import useRegistrationClient from "~~/clients/registrations.client";
@@ -18,6 +17,7 @@ import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hoo
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
+import useCryptoPayement from "~~/hooks/useCryptoPayment.hook";
 import {
   DeedInfoModel,
   OwnerInformationModel,
@@ -105,9 +105,10 @@ const Page = ({ router }: WithRouterProps) => {
 
   const isValidator = useIsValidator();
   const { writeValidateAsync } = useDeedValidate();
-  const { writeAsync: updateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(+id!));
-  const { writeAsync: mintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
+  const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(+id!));
+  const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const registrationClient = useRegistrationClient();
+  const { writeAsync: writeCryptoPayement } = useCryptoPayement();
 
   const isOwner = useMemo(() => {
     return deedData.owner === primaryWallet?.address || !id;
@@ -115,9 +116,9 @@ const Page = ({ router }: WithRouterProps) => {
 
   useEffect(() => {
     if (router.isReady) {
-      if (id && !isArray(id)) {
+      if (id) {
         setIsLoading(true);
-        fetchDeedInfo(id);
+        fetchDeedInfo(id as string);
       } else {
         setDeedData(defaultData);
         setIsLoading(false);
@@ -128,7 +129,7 @@ const Page = ({ router }: WithRouterProps) => {
   useEffect(() => {
     if (router.isReady && id && !isLoading) {
       setIsLoading(true);
-      fetchDeedInfo(+id!);
+      fetchDeedInfo(id as string);
     }
   }, [authToken, id, router.isReady]);
 
@@ -138,7 +139,7 @@ const Page = ({ router }: WithRouterProps) => {
 
   const fetchDeedInfo = useCallback(
     async (id: number | string) => {
-      const resp = await registrationClient.getRegistration(id, !!isDraft);
+      const resp = await registrationClient.authentify(authToken!).getRegistration(id, !!isDraft);
       setErrorCode(undefined);
       if (resp.ok) {
         setInitialData(resp.value);
@@ -155,11 +156,18 @@ const Page = ({ router }: WithRouterProps) => {
     // if (!validateForm() || !deedData || !authToken) return;
 
     if (isDraft || !id) {
+      if (!id) {
+        // Should send payment
+        deedData.paymentInformation.receipt = await writeCryptoPayement();
+      }
+
       // Save in draft
       const toastId = notification.loading("Uploading documents...");
       const newDeedData = await uploadDocuments(authToken!, deedData, undefined, true);
       notification.remove(toastId);
-      const response = await registrationClient.saveRegistration(newDeedData);
+      const response = await registrationClient
+        .authentify(authToken!)
+        .saveRegistration(newDeedData);
 
       if (response.ok) {
         notification.success("Registration successfully created");
@@ -170,12 +178,12 @@ const Page = ({ router }: WithRouterProps) => {
     } else {
       if (!id || !initialData) return;
       // Update on chain
-      await updateDeedAsync(deedData, initialData, +id);
+      await writeUpdateDeedAsync(deedData, initialData, +id);
     }
   };
 
   const mintDeedNFT = async () => {
-    await mintDeedAsync(deedData);
+    await writeMintDeedAsync(deedData);
   };
 
   const handleValidationClicked = async () => {
@@ -325,7 +333,7 @@ const Page = ({ router }: WithRouterProps) => {
                           <ul className="flex flex-col gap-2">
                             <li>
                               <div className="text-xl">Type:</div>
-                              {deedData.paymentInformation.paymentType === "crypto" ? (
+                              {deedData.paymentInformation?.paymentType === "crypto" ? (
                                 <div className="flex flex-row gap-2">
                                   <BitcoinIcon width={24} />
                                   Crypto
@@ -337,7 +345,7 @@ const Page = ({ router }: WithRouterProps) => {
                                 </div>
                               )}
                             </li>
-                            {deedData.paymentInformation.paymentType === "crypto" && (
+                            {deedData.paymentInformation?.paymentType === "crypto" && (
                               <>
                                 <li>
                                   <div className="text-xl">Coin:</div>
@@ -349,7 +357,11 @@ const Page = ({ router }: WithRouterProps) => {
                                 </li>
                                 <li>
                                   <div className="text-xl">Transaction:</div>
-                                  <TransactionHash hash={deedData.paymentInformation.receipt!} />
+                                  {deedData.paymentInformation.receipt ? (
+                                    <TransactionHash hash={deedData.paymentInformation.receipt} />
+                                  ) : (
+                                    <span className="text-error">No receipt</span>
+                                  )}
                                 </li>
                               </>
                             )}

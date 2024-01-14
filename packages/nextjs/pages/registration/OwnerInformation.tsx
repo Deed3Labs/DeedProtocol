@@ -109,6 +109,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           value={value?.ids}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={true}
         />
         <FileUploaderInput
           name="proofBill"
@@ -118,6 +119,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           value={value?.proofBill}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={true}
         />
       </div>
       <div className="mt-8">
@@ -144,6 +146,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           value={value?.articleIncorporation}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={true}
         />
         <FileUploaderInput
           name="operatingAgreement"
@@ -153,6 +156,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           value={value?.operatingAgreement}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={true}
         />
         <FileUploaderInput
           name="supportingDoc"
@@ -163,6 +167,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           value={value?.supportingDoc}
           onChange={handleChange}
           readOnly={readOnly}
+          isRestricted={true}
         />
       </div>
     </div>

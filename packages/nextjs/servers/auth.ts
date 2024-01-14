@@ -16,16 +16,8 @@ export const authentify = async (
   },
 ) => {
   const { chainId } = req.query;
-  const walletAddress = extractWalletAddressFromToken(req);
+  const walletAddress = getWalletAddressFromToken(req);
   if (walletAddress) {
-    if (
-      constraints?.requireSpecificAddress &&
-      walletAddress !== constraints.requireSpecificAddress
-    ) {
-      res.status(401).send("Error: Unauthorized");
-      return false;
-    }
-
     if (constraints?.requireValidator || constraints?.requireAdmin) {
       if (!chainId || Number.isNaN(chainId) || isArray(chainId)) {
         res.status(400).send("Error: chainId is required and should be a number");
@@ -44,6 +36,14 @@ export const authentify = async (
         return await contract.read.hasAdminRole([walletAddress]);
       }
     }
+
+    if (
+      constraints?.requireSpecificAddress &&
+      walletAddress !== constraints.requireSpecificAddress
+    ) {
+      res.status(401).send("Error: Unauthorized");
+      return false;
+    }
   } else {
     res.status(401).send("Error: Unauthorized");
     return false;
@@ -52,7 +52,7 @@ export const authentify = async (
   return true;
 };
 
-export const extractWalletAddressFromToken = (req: NextApiRequest) => {
+export const getWalletAddressFromToken = (req: NextApiRequest) => {
   const decoded = getDecodedToken(req);
   if (decoded) {
     return decoded.verified_credentials[0].address;

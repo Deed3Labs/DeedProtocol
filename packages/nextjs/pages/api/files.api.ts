@@ -4,9 +4,9 @@ import formidable, { IncomingForm } from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
-import { FileInfo, FilesDb  } from "~~/databases/files.db";
+import { FileInfo, FilesDb } from "~~/databases/files.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
-import { authentify, extractWalletAddressFromToken } from "~~/servers/auth";
+import { authentify, getWalletAddressFromToken } from "~~/servers/auth";
 
 if (!process.env.NEXT_PINATA_GATEWAY_KEY) {
   throw new Error("Missing NEXT_PINATA_GATEWAY_KEY env var");
@@ -40,7 +40,7 @@ const addFile = async (req: NextApiRequest, res: NextApiResponse<string>) => {
   const { isRestricted } = req.query;
   const form = new IncomingForm();
 
-  const walletAddress = extractWalletAddressFromToken(req);
+  const walletAddress = getWalletAddressFromToken(req);
 
   if (!walletAddress) {
     res.status(401).send("Error: Unauthorized");

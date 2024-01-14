@@ -5,8 +5,8 @@ import { notification } from "~~/utils/scaffold-eth";
 // LINK ../pages/api/files.api.ts
 
 export class FileClient extends HttpClient {
-  public async downloadFile(fileId: string, name: string) {
-    const url = `/api/files/?fileId=${fileId}`;
+  public async downloadFile(fileId: string, name: string, isRestricted: boolean) {
+    const url = `/api/files?fileId=${fileId}&isRestricted=${isRestricted}`;
     const response = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
@@ -19,7 +19,7 @@ export class FileClient extends HttpClient {
     const blobUrl = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = `${fileId}-${name}`;
+    link.download = isRestricted ? fileId : `${fileId}-${name}`;
     link.click();
     URL.revokeObjectURL(blobUrl);
   }

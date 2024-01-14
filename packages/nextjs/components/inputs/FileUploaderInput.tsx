@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useFileClient from "~~/clients/file.client";
 import { IpfsFileModel } from "~~/models/ipfs-file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -15,6 +16,7 @@ interface Props<TParent> {
   multiple?: boolean;
   maxFileSizeKb?: number;
   readOnly?: boolean;
+  isRestricted?: boolean;
   onChange?: (file: LightChangeEvent<TParent>) => void;
 }
 
@@ -29,9 +31,10 @@ export const FileUploaderInput = <TParent,>({
   value,
   maxFileSizeKb = 10000,
   readOnly,
+  isRestricted: restricted = true,
 }: Props<TParent>) => {
   const fileClient = useFileClient();
-
+  const { authToken } = useDynamicContext();
   const files = Array.isArray(value) ? value : value ? [value] : [];
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,7 +57,7 @@ export const FileUploaderInput = <TParent,>({
   };
 
   const download = async (hash: string) => {
-    await fileClient.downloadFile(hash, name.toString());
+    await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString(), restricted);
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {

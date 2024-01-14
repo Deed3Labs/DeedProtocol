@@ -7,7 +7,8 @@ export class RegistrationDb extends DbBase {
 
   static async saveRegistration(registration: DeedInfoModel) {
     if (registration.id === undefined) {
-      return (await this.collection.insertOne(registration)).insertedId.id;
+      const result = await this.collection.insertOne(registration);
+      return result.insertedId.toString().replaceAll('"', "");
     } else {
       await this.collection.updateOne({ id: registration.id }, registration);
       return registration.id;

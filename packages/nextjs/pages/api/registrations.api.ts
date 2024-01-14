@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { RegistrationDb as RegistrationsDb } from "~~/databases/registrations.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { DeedInfoModel } from "~~/models/deed-info.model";
+import { authentify, getWalletAddressFromToken } from "~~/servers/auth";
 import { getContractInstance, getDeedOwner } from "~~/servers/contract";
 import { getFileFromHash } from "~~/servers/ipfs";
 
@@ -25,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(405).send("Method not allowed");
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).send("Server Error");
   }
 };
@@ -86,6 +87,12 @@ async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResp
     return res.status(404).send(`Error: Deed ${id} not found in drafts`);
   }
 
+  if (
+    !authentify(req, res, { requireSpecificAddress: registration.owner, requireValidator: true })
+  ) {
+    return res.status(401).send("Error: Unauthorized");
+  }
+
   return res.status(200).json(registration);
 }
 
@@ -94,11 +101,19 @@ async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResp
  */
 async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
   const deedInfo = JSON.parse(req.body) as DeedInfoModel;
+  const walletAddress = getWalletAddressFromToken(req);
+
+  if (!walletAddress) {
+    res.status(401).send("Error: Unauthorized");
+    return;
+  }
 
   if (!validate()) {
     res.status(400).send("Error: deedInfo is invalid");
     return;
   }
+
+  deedInfo.owner = walletAddress;
 
   const id = await RegistrationsDb.saveRegistration(deedInfo);
 
