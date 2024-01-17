@@ -12,16 +12,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case "GET":
-        const { isRestricted } = req.query;
-        if (isRestricted) {
-          getRegistrationFromDatabase(req, res);
+        if (req.query.isRestricted === "true") {
+          return await getRegistrationFromDatabase(req, res);
         } else {
-          getRegistrationFromChain(req, res);
+          return await getRegistrationFromChain(req, res);
         }
-        break;
       case "POST":
-        saveRegistration(req, res);
-        break;
+        return await saveRegistration(req, res);
       default:
         return res.status(405).send("Method not allowed");
     }
@@ -69,6 +66,8 @@ async function getRegistrationFromChain(req: NextApiRequest, res: NextApiRespons
   deedInfoMetadata.id = +id;
   deedInfoMetadata.owner = deedOwner;
   deedInfoMetadata.isValidated = deedInfo.isValidated;
+
+  return res.status(200).json(deedInfoMetadata);
 }
 
 /**
@@ -90,7 +89,7 @@ async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResp
   if (
     !authentify(req, res, { requireSpecificAddress: registration.owner, requireValidator: true })
   ) {
-    return res.status(401).send("Error: Unauthorized");
+    return;
   }
 
   return res.status(200).json(registration);
@@ -104,18 +103,19 @@ async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
   const walletAddress = getWalletAddressFromToken(req);
 
   if (!walletAddress) {
-    res.status(401).send("Error: Unauthorized");
-    return;
+    return res.status(401).send("Error: Unauthorized");
   }
 
   if (!validate()) {
-    res.status(400).send("Error: deedInfo is invalid");
-    return;
+    return res.status(400).send("Error: deedInfo is invalid");
   }
 
   deedInfo.owner = walletAddress;
 
   const id = await RegistrationsDb.saveRegistration(deedInfo);
+  if (!id) {
+    return res.status(500).send("Error: Unable to save deedInfo");
+  }
 
   return res.status(200).send(id);
 }

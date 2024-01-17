@@ -15,9 +15,11 @@ export class RegistrationClient extends HttpClient {
 
   async getRegistration(id: number | string, isRestricted: boolean = false) {
     const result = await this.get<DeedInfoModel>(
-      `/api/registrations?id=${id}&chainId=${this.chainId}&isRestricted=${isRestricted}`,
+      `/api/registrations?id=${id}&isRestricted=${isRestricted}`,
     );
-    logger.error({ message: "Error getting registration with id " + id, status: result.status });
+    if (!result.ok) {
+      logger.error({ message: "Error getting registration with id " + id, status: result.status });
+    }
     return result;
   }
 }

@@ -76,11 +76,11 @@ const defaultData: DeedInfoModel = false
       },
     } as DeedInfoModel);
 
-type ErrorCode = "notFound" | "unauthorized";
+type ErrorCode = "notFound" | "unauthorized" | "unexpected";
 
 const Page = ({ router }: WithRouterProps) => {
   // eslint-disable-next-line prefer-const
-  let { id, isDraft } = router.query;
+  let { id } = router.query;
   if (id === "new") {
     id = undefined;
   }
@@ -101,6 +101,9 @@ const Page = ({ router }: WithRouterProps) => {
   const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
+  const isDraft = useMemo(() => {
+    return !id || Number.isNaN(+id);
+  }, [id, router.isReady]);
   const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
   const isValidator = useIsValidator();
@@ -145,7 +148,11 @@ const Page = ({ router }: WithRouterProps) => {
         setInitialData(resp.value);
         setDeedData(resp.value!);
       } else {
-        setErrorCode(resp?.status === 404 ? "notFound" : "unauthorized");
+        if (resp?.status === 404) setErrorCode("notFound");
+        else if (resp?.status === 401) setErrorCode("unauthorized");
+        else {
+          setErrorCode("unexpected");
+        }
       }
       setIsLoading(false);
     },
@@ -162,23 +169,43 @@ const Page = ({ router }: WithRouterProps) => {
       }
 
       // Save in draft
-      const toastId = notification.loading("Uploading documents...");
-      const newDeedData = await uploadDocuments(authToken!, deedData, undefined, true);
+      let toastId = notification.loading("Uploading documents...");
+      const newDeedData = await uploadDocuments(authToken!, deedData, initialData, true);
       notification.remove(toastId);
+      toastId = notification.loading("Saving...");
       const response = await registrationClient
         .authentify(authToken!)
         .saveRegistration(newDeedData);
+      notification.remove(toastId);
 
       if (response.ok) {
-        notification.success("Registration successfully created");
-        await router.push(`/registration/${response.value}?isDraft=true`);
+        if (!id) {
+          notification.success("Successfully created");
+          await router.push(`/registration/${response.value}`);
+        } else {
+          notification.success("Successfully updated");
+          router.reload();
+        }
       } else {
-        notification.error("Error creating registration");
+        notification.error("Error saving registration");
       }
     } else {
       if (!id || !initialData) return;
       // Update on chain
       await writeUpdateDeedAsync(deedData, initialData, +id);
+    }
+  };
+
+  const handlePayement = async () => {
+    deedData.paymentInformation.receipt = await writeCryptoPayement();
+    const toastId = notification.loading("Submiting payment...");
+    const response = await registrationClient.authentify(authToken!).saveRegistration(deedData);
+    notification.remove(toastId);
+    if (response.ok) {
+      notification.success("Receipt successfully submited");
+      router.reload();
+    } else {
+      notification.error("Error submiting receipt");
     }
   };
 
@@ -190,6 +217,16 @@ const Page = ({ router }: WithRouterProps) => {
     if (id) {
       await writeValidateAsync(deedData, !deedData.isValidated);
       fetchDeedInfo(+id);
+    }
+  };
+
+  const handleErrorClick = async () => {
+    if (errorCode === "unexpected") {
+      setIsLoading(true);
+      await fetchDeedInfo(id as string);
+      setIsLoading(false);
+    } else {
+      router.push("/explorer");
     }
   };
 
@@ -239,24 +276,28 @@ const Page = ({ router }: WithRouterProps) => {
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
             <div className="text-2xl font-['KronaOne'] leading-10">
-              Property {errorCode === "notFound" ? "not found" : "restricted"}
-            </div>
-            <div className="text-base font-normal font-['Montserrat'] leading-normal">
-              {errorCode === "notFound" ? (
-                <>The property you are looking for does not exist.</>
+              {errorCode === "unexpected" ? (
+                "Oops, something went wrong"
               ) : (
-                <>
-                  This property is not yet published and has restricted access.
-                  <br />
-                  Please connect with the account owner.
-                </>
+                <>Property {errorCode === "notFound" ? "not found" : "restricted"}</>
               )}
             </div>
-            <button
-              onClick={() => router.push("/property-explorer")}
-              className="btn btn-lg bg-gray-600"
-            >
-              Go back to explorer
+            {errorCode !== "unexpected" && (
+              <div className="text-base font-normal font-['Montserrat'] leading-normal">
+                {errorCode === "notFound" ? (
+                  <>The property you are looking for does not exist.</>
+                ) : (
+                  <>
+                    This property is not yet published and has restricted access.
+                    <br />
+                    Please connect with the account owner.
+                  </>
+                )}
+              </div>
+            )}
+
+            <button onClick={handleErrorClick} className="btn btn-lg bg-gray-600">
+              {errorCode === "unexpected" ? "Retry" : "Go back to explorer"}
             </button>
           </div>
         ) : (
@@ -294,6 +335,7 @@ const Page = ({ router }: WithRouterProps) => {
                   value={deedData.propertyDetails}
                   onChange={handleChange}
                   readOnly={!isOwner}
+                  isDraft={isDraft}
                 />
                 <OtherInformations
                   value={deedData.otherInformation}
@@ -382,9 +424,16 @@ const Page = ({ router }: WithRouterProps) => {
                       </>
                     )}
                     {deedData.owner === primaryWallet?.address && (
-                      <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-                        Save
-                      </button>
+                      <>
+                        <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
+                          Save
+                        </button>
+                        {!deedData.paymentInformation.receipt && (
+                          <button onClick={handlePayement} className="btn btn-lg bg-gray-600">
+                            Pay
+                          </button>
+                        )}
+                      </>
                     )}
                   </>
                 ) : (

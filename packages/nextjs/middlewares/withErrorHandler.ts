@@ -6,7 +6,14 @@ function withErrorHandler(fn: any) {
       return await fn(request, ...args);
     } catch (error) {
       console.error({ error, requestBody: request, location: fn.name });
-      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+      return NextResponse.json(
+        {
+          message: "Internal Server Error",
+          // @ts-ignore
+          details: "message" in error ? error.message : error,
+        },
+        { status: 500 },
+      );
     }
   };
 }

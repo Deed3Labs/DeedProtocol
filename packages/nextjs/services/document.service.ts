@@ -14,6 +14,7 @@ export async function uploadDocuments(
   data: DeedInfoModel,
   old?: DeedInfoModel,
   isDraft: boolean = false,
+  publish: boolean = false,
 ) {
   fileClient.authentify(authToken);
 
@@ -123,30 +124,41 @@ export async function uploadDocuments(
     });
   }
 
-  const payload = cloneDeep(data) as DeedInfoModel;
+  const payload = cloneDeep(data);
 
   await Promise.all(
     toBeUploaded
-      .filter(x => !!x.value)
+      .filter(x => !!x.value && (!x.restricted || !publish))
       .map(async ({ key, label, value, restricted }) => {
-        const id = await fileClient.uploadFile(value, label, !!restricted);
+        let id;
+        if (publish) {
+          id = await fileClient.publish(value, label);
+        } else {
+          id = await fileClient.uploadFile(value, label, !!restricted);
+        }
 
-        const newValue = {
+        const newValue: any = {
           id,
           name: value.name,
           size: value.size,
           type: value.type,
           lastModified: value.lastModified,
-          restricted,
+          owner: data.owner,
         };
+
+        if (!publish) {
+          newValue.restricted = restricted;
+        }
         // @ts-ignore
         if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = newValue;
         // @ts-ignore
         else payload[key[0]][key[1]] = newValue;
       }),
-  );
+  ).catch(error => {
+    throw error;
+  });
 
-  return cleanObject(payload);
+  return cleanObject(payload) as DeedInfoModel;
 }
 
 function cleanObject(obj: any) {

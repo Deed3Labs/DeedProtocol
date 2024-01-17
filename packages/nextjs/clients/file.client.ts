@@ -1,4 +1,5 @@
 import useHttpClient, { HttpClient } from "./base.client";
+import { DeedInfoModel } from "~~/models/deed-info.model";
 import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -6,10 +7,12 @@ import { notification } from "~~/utils/scaffold-eth";
 
 export class FileClient extends HttpClient {
   public async downloadFile(fileId: string, name: string, isRestricted: boolean) {
-    const url = `/api/files?fileId=${fileId}&isRestricted=${isRestricted}`;
+    const url = `/api/files?fileId=${fileId}&chainId=${this.chainId}&isRestricted=${isRestricted}`;
+    const toastId = notification.info("Downloading file ...");
     const response = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
+    notification.remove(toastId);
     if (response.status !== 200) {
       notification.error("Error downloading file " + name);
       logger.error({ message: "Error downloading file", details: await response.text() });
@@ -33,9 +36,38 @@ export class FileClient extends HttpClient {
       formData.append("description", fieldLabel);
 
       const res = await this.post(`/api/files?isRestricted=${isRestricted}`, formData);
+      if (!res.ok) throw new Error(res.error);
       return res.value;
     } catch (error) {
       const message = `Error uploading file ${file.name} for field ${fieldLabel}`;
+      logger.error({ message, error });
+      throw error;
+    }
+  }
+
+  public async uploadJson(payload: DeedInfoModel): Promise<string> {
+    try {
+      const res = await this.post(`/api/files?isJson=true`, JSON.stringify(payload), [
+        ["Content-Type", "application/json"],
+      ]);
+      if (!res.ok) throw new Error(res.error);
+      return res.value;
+    } catch (error) {
+      const message = `Error uploading json with payload ${payload}`;
+      logger.error({ message, error });
+      throw error;
+    }
+  }
+
+  public async publish(file: File, fieldLabel: string) {
+    try {
+      const res = await this.post(`/api/files?publish=true`, JSON.stringify(file), [
+        ["Content-Type", "application/json"],
+      ]);
+      if (!res.ok) throw new Error(res.error);
+      return res.value;
+    } catch (error) {
+      const message = `Error publishing file ${file.name} for field ${fieldLabel}`;
       logger.error({ message, error });
       throw error;
     }

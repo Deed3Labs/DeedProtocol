@@ -1,10 +1,13 @@
 import { useRef } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { Address } from "viem";
 import useFileClient from "~~/clients/file.client";
-import { IpfsFileModel } from "~~/models/ipfs-file.model";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import { FileModel } from "~~/models/ipfs-file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { IconLightningSolid } from "~~/styles/Icons";
+import { notification } from "~~/utils/scaffold-eth";
 
 interface Props<TParent> {
   label: string;
@@ -12,7 +15,7 @@ interface Props<TParent> {
   subtitle: string;
   optional?: boolean;
   className?: string;
-  value?: IpfsFileModel | IpfsFileModel[];
+  value?: FileModel | FileModel[];
   multiple?: boolean;
   maxFileSizeKb?: number;
   readOnly?: boolean;
@@ -31,11 +34,13 @@ export const FileUploaderInput = <TParent,>({
   value,
   maxFileSizeKb = 10000,
   readOnly,
-  isRestricted: restricted = true,
+  isRestricted = true,
 }: Props<TParent>) => {
   const fileClient = useFileClient();
-  const { authToken } = useDynamicContext();
+  const { authToken, primaryWallet } = useDynamicContext();
   const files = Array.isArray(value) ? value : value ? [value] : [];
+
+  const isValidator = useIsValidator();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -57,7 +62,9 @@ export const FileUploaderInput = <TParent,>({
   };
 
   const download = async (hash: string) => {
-    await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString(), restricted);
+    const toastId = notification.loading("Downloading file...");
+    await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString(), isRestricted);
+    notification.remove(toastId);
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
@@ -141,7 +148,7 @@ export const FileUploaderInput = <TParent,>({
                     </span>
                     )
                   </div>
-                  {file.id && (
+                  {file.id && (isValidator || file.owner === primaryWallet?.address) && (
                     <button
                       className="btn btn-square pointer-events-auto"
                       onClick={() => download(file.id!)}

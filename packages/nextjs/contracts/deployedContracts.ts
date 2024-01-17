@@ -1144,18 +1144,29 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {
-        approve: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        balanceOf: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        getApproved: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        isApprovedForAll: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        approve:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        balanceOf:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        getApproved:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        isApprovedForAll:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         name: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        ownerOf: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        safeTransferFrom: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        setApprovalForAll: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        supportsInterface: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        symbol: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        tokenURI: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        transferFrom: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        ownerOf:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        safeTransferFrom:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        setApprovalForAll:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        supportsInterface:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        symbol:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        tokenURI:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        transferFrom:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
       },
       startBlock: 10206707,
     },
@@ -3729,7 +3740,8 @@ const deployedContracts = {
         balanceOf: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         balanceOfBatch: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         isApprovedForAll: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
-        safeBatchTransferFrom: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
+        safeBatchTransferFrom:
+          "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         safeTransferFrom: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         setApprovalForAll: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         supportsInterface: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
@@ -4081,7 +4093,7 @@ const deployedContracts = {
       startBlock: 5034801,
     },
     DeedNFT: {
-      address: "0x156f3825C43366eEC47fa9036974A3BC7E09BFfD",
+      address: "0x215c20C0b355AB8b4c109c3FA88ab6B22B8ee80F",
       abi: [
         {
           inputs: [
@@ -4877,20 +4889,31 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {
-        approve: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        balanceOf: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        getApproved: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        isApprovedForAll: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        approve:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        balanceOf:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        getApproved:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        isApprovedForAll:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         name: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        ownerOf: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        safeTransferFrom: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        setApprovalForAll: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        supportsInterface: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        symbol: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        tokenURI: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        transferFrom: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        ownerOf:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        safeTransferFrom:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        setApprovalForAll:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        supportsInterface:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        symbol:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        tokenURI:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        transferFrom:
+          "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
       },
-      startBlock: 5085793,
+      startBlock: 5100727,
     },
     FundsManager: {
       address: "0x51D2F339404E431831315Cb3A52533370032F954",
@@ -5156,7 +5179,7 @@ const deployedContracts = {
       startBlock: 5034803,
     },
     LeaseAgreement: {
-      address: "0x5F544cbeE8Fdb8de7730A1352136a700080D1828",
+      address: "0xc719af211D76e197fB6F5cD0B94D23222749A0E5",
       abi: [
         {
           inputs: [
@@ -6051,7 +6074,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      startBlock: 5034806,
+      startBlock: 5100729,
     },
     LeaseNFT: {
       address: "0xCC82d565D99a238e97D85f18ed55A0671aBE2981",
@@ -6694,7 +6717,7 @@ const deployedContracts = {
       startBlock: 5034802,
     },
     SubdivisionNFT: {
-      address: "0x2d372a35649E17c14487565207ac976E4b8B1617",
+      address: "0xD5fF48D41866a89490AE964F2000dcB6c0ca1Acd",
       abi: [
         {
           inputs: [
@@ -7462,13 +7485,14 @@ const deployedContracts = {
         balanceOf: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         balanceOfBatch: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         isApprovedForAll: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
-        safeBatchTransferFrom: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
+        safeBatchTransferFrom:
+          "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         safeTransferFrom: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         setApprovalForAll: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         supportsInterface: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
         uri: "@openzeppelin/contracts/token/ERC1155/ERC1155.sol",
       },
-      startBlock: 5085794,
+      startBlock: 5100728,
     },
   },
 } as const;

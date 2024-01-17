@@ -2,7 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<string>) => {
-  if (req.method !== "POST") return res.status(405).send("Method not allowed");
+  if (req.method !== "POST") {
+    return res.status(405).send("Method not allowed");
+  }
 
   const { level } = req.query;
   const { body } = req;
@@ -21,10 +23,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<string>) => {
       console.error(body);
       break;
     default:
-      res.status(400).send("Invalid log level: " + level);
+      return res.status(400).send("Invalid log level: " + level);
   }
 
-  res.status(200).end();
+  return res.status(200).end();
 };
 
 export default withErrorHandler(handler);

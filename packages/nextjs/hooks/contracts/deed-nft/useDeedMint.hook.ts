@@ -1,6 +1,7 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
 import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
+import useFileClient from "~~/clients/file.client";
 import { PropertyTypeOptions } from "~~/constants";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { uploadDocuments } from "~~/services/document.service";
@@ -9,6 +10,7 @@ import { notification } from "~~/utils/scaffold-eth";
 
 const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet, authToken } = useDynamicContext();
+  const fileClient = useFileClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -26,7 +28,9 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     const toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      hash = await uploadDocuments(authToken, data);
+      const payload = await uploadDocuments(authToken, data, undefined, false, true);
+      if (!payload) return;
+      hash = await fileClient.authentify(authToken).uploadJson(payload);
     } catch (error) {
       notification.error("Error while uploading documents");
       logger.error({ message: "[Deed Mint] Error while uploading documents", error });
@@ -42,7 +46,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     try {
       await contractWriteHook.writeAsync({
         args: [
-          primaryWallet.address,
+          data.owner,
           hash.toString(),
           indexOfLiteral(PropertyTypeOptions, data.propertyDetails.propertyType),
         ],

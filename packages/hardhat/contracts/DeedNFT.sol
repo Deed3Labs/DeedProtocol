@@ -55,8 +55,8 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
 
         DeedInfo storage deedInfo = deedInfoMap[nextDeedId];
         deedInfo.assetType = _assetType;
-        deedInfo.isValidated = true;
         _setTokenURI(nextDeedId, _ipfsDetailsHash);
+        deedInfo.isValidated = true;
         emit DeedNFTMinted(nextDeedId, deedInfo, _msgSender());
         nextDeedId = nextDeedId + 1;
         return nextDeedId;

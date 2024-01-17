@@ -1,4 +1,4 @@
-import { IpfsFileModel } from "./ipfs-file.model";
+import { FileModel } from "./ipfs-file.model";
 import { Address } from "viem";
 import {
   BlockchainOptions,
@@ -25,11 +25,11 @@ export interface OwnerInformationModel {
   ownerState: ValueExtractor<typeof StateOptions>;
   ownerEntityType?: ValueExtractor<typeof EntityTypeOptions>;
 
-  ids: IpfsFileModel;
-  proofBill?: IpfsFileModel;
-  articleIncorporation: IpfsFileModel;
-  operatingAgreement?: IpfsFileModel;
-  supportingDoc?: IpfsFileModel[];
+  ids: FileModel;
+  proofBill?: FileModel;
+  articleIncorporation: FileModel;
+  operatingAgreement?: FileModel;
+  supportingDoc?: FileModel[];
 }
 
 export interface PropertyDetailsModel {
@@ -41,9 +41,9 @@ export interface PropertyDetailsModel {
   propertySize?: string;
   propertyZoning?: ValueExtractor<typeof PropertyZoningOptions>;
 
-  propertyImages?: IpfsFileModel[];
-  propertyDeedOrTitle: IpfsFileModel;
-  propertyPurchaseContract?: IpfsFileModel;
+  propertyImages?: FileModel[];
+  propertyDeedOrTitle: FileModel;
+  propertyPurchaseContract?: FileModel;
 }
 
 export interface OtherInformationModel {
@@ -75,6 +75,7 @@ export interface DeedInfoModel {
   id?: number | string;
   owner?: Address;
   isValidated?: boolean;
+  timestamp?: number;
 
   // 1. Owner Information
   ownerInformation: OwnerInformationModel;

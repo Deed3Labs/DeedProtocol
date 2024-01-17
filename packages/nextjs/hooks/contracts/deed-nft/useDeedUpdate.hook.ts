@@ -1,12 +1,14 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
 import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
+import useFileClient from "~~/clients/file.client";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { uploadDocuments } from "~~/services/document.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet, authToken } = useDynamicContext();
+  const fileClient = useFileClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -25,7 +27,9 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     let toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      hash = await uploadDocuments(authToken, data, old);
+      const payload = await uploadDocuments(authToken, data, old);
+      if (!payload) return;
+      hash = await fileClient.authentify(authToken).uploadJson(payload);
     } catch (error) {
       notification.error("Error while uploading documents");
       logger.error({ message: "[Deed Mint] Error while uploading documents", error });
@@ -43,8 +47,8 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
         args: [BigInt(deedId), hash],
       });
     } catch (error) {
-      notification.error("Error while minting deed");
-      logger.error({ message: "Error while minting deed", error });
+      notification.error("Error while updating deed");
+      logger.error({ message: "Error while updating deed", error });
       return;
     } finally {
       notification.remove(toastId);

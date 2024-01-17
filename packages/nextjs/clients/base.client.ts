@@ -15,77 +15,91 @@ export class HttpClient {
   }
 
   public async get<TRes = any>(url: string) {
+    url = this.loadParams(url);
     const res = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
-
-    if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
+    const error = this.handleError(url, res);
+    if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, value: (await res.json()) as TRes, ok: true };
   }
 
-  public async post<TRes = any>(url: string, body: any) {
+  public async post<TRes = any>(url: string, body: any, headers?: [string, string][]) {
+    url = this.loadParams(url);
     const res = await fetch(url, {
       method: "POST",
       body: body,
-      headers: [["authorization", this.authorizationToken ?? ""]],
+      headers: [["authorization", this.authorizationToken ?? ""], ...(headers ?? [])],
     });
-
-    if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
+    const error = this.handleError(url, res);
+    if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, value: (await res.text()) as TRes, ok: true };
   }
 
   public async put<TRes = any>(url: string, body: any) {
+    url = this.loadParams(url);
     const res = await fetch(url, {
       method: "PUT",
       body: body,
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
-
-    if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
+    const error = this.handleError(url, res);
+    if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, value: (await res.text()) as TRes, ok: true };
   }
 
   public async del(url: string) {
+    url = this.loadParams(url);
     const res = await fetch(url, {
       method: "DELETE",
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
-
-    if (this.handleError(url, res)) return { status: res.status, value: undefined, ok: false };
+    const error = this.handleError(url, res);
+    if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, ok: true };
   }
 
   private handleError(url: string, res: Response) {
     if (res.status === 401) {
-      logger.error({ message: "Unauthorized", url });
-      return true;
+      const message = "Unauthorized";
+      logger.error({ message, url });
+      return message;
     }
 
     if (res.status === 500) {
-      logger.error({ message: "Server Error", url });
-      return true;
+      const message = "Server Error";
+      logger.error({ message, url });
+      return message;
     }
 
     if (res.status === 404) {
-      logger.error({ message: "Not Found", url });
-      return true;
+      const message = "Not Found";
+      logger.error({ message, url });
+      return message;
     }
 
     if (res.status === 400) {
-      logger.error({ message: "Bad Request", url });
-      return true;
+      const message = "Bad Request";
+      logger.error({ message, url });
+      return message;
     }
 
     if (res.status === 403) {
-      logger.error({ message: "Forbidden", url });
-      return true;
+      const message = "Forbidden";
+      logger.error({ message, url });
+      return message;
     }
 
-    return false;
+    return undefined;
+  }
+
+  private loadParams(url: string) {
+    url = appendQueryParam(url, "chainId", this.chainId.toString());
+    return url;
   }
 }
 
@@ -99,6 +113,13 @@ const useHttpClient = <TClient extends HttpClient>(client: TClient): TClient => 
   }, [authToken]);
 
   return client ?? new HttpClient();
+};
+
+const appendQueryParam = (url: string, key: string, value: string) => {
+  const [path, query] = url.split("?");
+  const searchParams = new URLSearchParams(query);
+  searchParams.append(key, value);
+  return `${path}?${searchParams.toString()}`;
 };
 
 export default useHttpClient;

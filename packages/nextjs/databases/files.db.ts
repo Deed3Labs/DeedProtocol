@@ -1,20 +1,27 @@
 import { DbBase } from "./db-utils.db";
 import formidable from "formidable";
 import { ReadStream } from "fs";
-import { GridFSBucket } from "mongodb";
+import { GridFSBucket, ObjectId } from "mongodb";
 
-export type FileInfo = formidable.File & {
+export interface FileInfo {
+  id: string;
   owner: string;
-};
+  fileId: ObjectId;
+  fileName: string;
+  metadata: formidable.File;
+}
 
 export class FilesDb extends DbBase {
   private static collection = this.deedDB.collection("FilesInfos");
 
-  static async downloadFile(fileName: string) {
+  static async downloadFile(fileId: string) {
     const bucket = new GridFSBucket(this.deedDB);
-    const stream = bucket.openDownloadStreamByName(fileName);
 
-    const fileInfo = (await this.collection.findOne({ fileName })) as unknown as FileInfo;
+    const fileInfo = (await this.collection.findOne({
+      fileId: new ObjectId(fileId),
+    })) as unknown as FileInfo;
+
+    const stream = bucket.openDownloadStream(new ObjectId(fileId));
     return { stream, fileInfo };
   }
 
@@ -24,18 +31,25 @@ export class FilesDb extends DbBase {
     metadata: formidable.File & { owner: string },
   ) {
     const bucket = new GridFSBucket(this.deedDB);
-    stream.pipe(
+    const id = stream.pipe(
       bucket.openUploadStream(fileName, {
         metadata,
       }),
-    );
+    ).id;
 
     // create file entry with owner and file metadata
     this.collection.insertOne({
       fileName,
       metadata,
+      fileId: id,
+      timestamp: new Date(),
     });
 
-    return fileName;
+    return id.toString().replaceAll('"', "");
+  }
+
+  static async deleteFile(fileInfo: FileInfo) {
+    const bucket = new GridFSBucket(this.deedDB);
+    await bucket.delete(fileInfo.fileId);
   }
 }

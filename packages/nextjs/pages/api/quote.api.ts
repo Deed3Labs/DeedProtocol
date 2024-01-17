@@ -4,9 +4,9 @@ import withErrorHandler from "~~/middlewares/withErrorHandler";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
-    get(req, res);
+    return await get(req, res);
   } else {
-    res.status(405).send("Method Not Supported");
+    return res.status(405).send("Method Not Supported");
   }
 };
 
@@ -16,12 +16,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const { code, product, advancedPlanEnabled, appraisalEnabled } = req.body;
   if (!code || typeof code !== "string") {
-    res.status(400).send("Error: code is required");
-    return;
+    return res.status(400).send("Error: code is required");
   }
   if (!product || typeof product !== "string") {
-    res.status(400).send("Error: product is required");
-    return;
+    return res.status(400).send("Error: product is required");
   }
 
   const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!);
@@ -46,7 +44,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   if (advancedPlanEnabled) {
   }
 
-  res.status(200).send(`${priceUSDcents}`);
+  return res.status(200).send(`${priceUSDcents}`);
 };
 
 export default withErrorHandler(handler);
