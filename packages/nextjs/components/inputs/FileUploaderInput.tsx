@@ -62,9 +62,7 @@ export const FileUploaderInput = <TParent,>({
   };
 
   const download = async (hash: string) => {
-    const toastId = notification.loading("Downloading file...");
     await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString(), isRestricted);
-    notification.remove(toastId);
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
