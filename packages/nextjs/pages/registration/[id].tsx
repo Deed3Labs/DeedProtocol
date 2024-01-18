@@ -184,7 +184,7 @@ const Page = ({ router }: WithRouterProps) => {
           await router.push(`/registration/${response.value}`);
         } else {
           notification.success("Successfully updated");
-          router.reload();
+          await fetchDeedInfo(id as string);
         }
       } else {
         notification.error("Error saving registration");
