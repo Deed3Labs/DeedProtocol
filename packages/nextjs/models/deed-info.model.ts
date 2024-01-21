@@ -1,4 +1,4 @@
-import { FileModel } from "./ipfs-file.model";
+import { FileModel } from "./file.model";
 import { Address } from "viem";
 import {
   BlockchainOptions,

@@ -9,7 +9,7 @@ export class HttpClient {
     return getTargetNetwork().id;
   }
 
-  public authentify(authorizationToken: string) {
+  public authentify(authorizationToken?: string) {
     this.authorizationToken = authorizationToken;
     return this;
   }

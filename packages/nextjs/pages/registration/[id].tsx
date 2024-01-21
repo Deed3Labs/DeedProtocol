@@ -24,7 +24,7 @@ import {
   PropertyDetailsModel,
 } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import { uploadDocuments } from "~~/services/document.service";
+import { uploadFile } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
@@ -163,6 +163,11 @@ const Page = ({ router }: WithRouterProps) => {
     // if (!validateForm() || !deedData || !authToken) return;
 
     if (isDraft || !id) {
+      if (!primaryWallet?.connected) {
+        notification.error("Please connect your wallet");
+        return;
+      }
+
       if (!id) {
         // Should send payment
         deedData.paymentInformation.receipt = await writeCryptoPayement();
@@ -170,7 +175,7 @@ const Page = ({ router }: WithRouterProps) => {
 
       // Save in draft
       let toastId = notification.loading("Uploading documents...");
-      const newDeedData = await uploadDocuments(authToken!, deedData, initialData, true);
+      const newDeedData = await uploadFile(authToken!, deedData, initialData);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
       const response = await registrationClient
@@ -368,7 +373,7 @@ const Page = ({ router }: WithRouterProps) => {
                         </span>
                       </div>
                     )}
-                    {isValidator && !isOwner && (
+                    {isValidator && (isDev() || !isOwner) && (
                       <>
                         <div className="mb-4">
                           <div className="text-2xl">Payment information:</div>

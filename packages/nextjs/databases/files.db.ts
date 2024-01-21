@@ -1,15 +1,7 @@
 import { DbBase } from "./db-utils.db";
-import formidable from "formidable";
 import { ReadStream } from "fs";
 import { GridFSBucket, ObjectId } from "mongodb";
-
-export interface FileInfo {
-  id: string;
-  owner: string;
-  fileId: ObjectId;
-  fileName: string;
-  metadata: formidable.File;
-}
+import { FileModel } from "~~/models/file.model";
 
 export class FilesDb extends DbBase {
   private static collection = this.deedDB.collection("FilesInfos");
@@ -18,38 +10,41 @@ export class FilesDb extends DbBase {
     const bucket = new GridFSBucket(this.deedDB);
 
     const fileInfo = (await this.collection.findOne({
-      fileId: new ObjectId(fileId),
-    })) as unknown as FileInfo;
+      fileId,
+    })) as unknown as FileModel;
 
     const stream = bucket.openDownloadStream(new ObjectId(fileId));
     return { stream, fileInfo };
   }
 
-  static async createFile(
-    stream: ReadStream,
-    fileName: string,
-    metadata: formidable.File & { owner: string },
-  ) {
+  static async createFile(stream: ReadStream, fileInfo: Omit<FileModel, "fileId">) {
     const bucket = new GridFSBucket(this.deedDB);
     const id = stream.pipe(
-      bucket.openUploadStream(fileName, {
-        metadata,
+      bucket.openUploadStream(fileInfo.fileName, {
+        metadata: fileInfo.metadata,
       }),
     ).id;
-
+    const fileId = id.toString().replaceAll('"', "");
     // create file entry with owner and file metadata
-    this.collection.insertOne({
-      fileName,
-      metadata,
-      fileId: id,
-      timestamp: new Date(),
-    });
+    await FilesDb.saveFileInfo({ ...fileInfo, fileId });
 
-    return id.toString().replaceAll('"', "");
+    return fileId;
   }
 
-  static async deleteFile(fileInfo: FileInfo) {
+  static async saveFileInfo(fileInfo: FileModel) {
+    await this.collection.deleteOne({ fileId: fileInfo.fileId });
+    const result = await this.collection.insertOne(fileInfo);
+
+    return result.insertedId.toString().replaceAll('"', "");
+  }
+
+  static async deleteFile(fileInfo: FileModel) {
     const bucket = new GridFSBucket(this.deedDB);
-    await bucket.delete(fileInfo.fileId);
+    await bucket.delete(new ObjectId(fileInfo.fileId));
+    await this.collection.deleteOne({ fileId: fileInfo.fileId });
+  }
+
+  static async getFileInfo(fileId: string) {
+    return (await this.collection.findOne({ fileId })) as unknown as FileModel;
   }
 }

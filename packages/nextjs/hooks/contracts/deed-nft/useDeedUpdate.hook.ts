@@ -3,7 +3,7 @@ import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
 import useFileClient from "~~/clients/file.client";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { uploadDocuments } from "~~/services/document.service";
+import { uploadFile } from "~~/services/file.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
@@ -27,7 +27,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     let toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      const payload = await uploadDocuments(authToken, data, old);
+      const payload = await uploadFile(authToken, data, old);
       if (!payload) return;
       hash = await fileClient.authentify(authToken).uploadJson(payload);
     } catch (error) {

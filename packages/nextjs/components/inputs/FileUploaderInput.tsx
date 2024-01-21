@@ -1,13 +1,11 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { Address } from "viem";
 import useFileClient from "~~/clients/file.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
-import { FileModel } from "~~/models/ipfs-file.model";
+import { FileModel } from "~~/models/file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { IconLightningSolid } from "~~/styles/Icons";
-import { notification } from "~~/utils/scaffold-eth";
 
 interface Props<TParent> {
   label: string;
@@ -38,7 +36,12 @@ export const FileUploaderInput = <TParent,>({
 }: Props<TParent>) => {
   const fileClient = useFileClient();
   const { authToken, primaryWallet } = useDynamicContext();
-  const files = Array.isArray(value) ? value : value ? [value] : [];
+  const files = useMemo(() => {
+    if (value) {
+      return Array.isArray(value) ? value : [value];
+    }
+    return [];
+  }, [value]);
 
   const isValidator = useIsValidator();
 
@@ -52,17 +55,25 @@ export const FileUploaderInput = <TParent,>({
 
   const handleFileChange = (files: FileList | null) => {
     if (files) {
+      const newValues = Array.from(files).map(
+        x =>
+          ({
+            fileName: x.name,
+            restricted: isRestricted,
+            metadata: x,
+          } satisfies Omit<FileModel, "fileId" | "owner" | "timestamp">),
+      );
+
       // If multiple files are allowed, convert the FileList to an array
-      const newValue = multiple ? Array.from(files) : files[0];
       onChange?.({
         name,
-        value: newValue,
+        value: multiple ? newValues : newValues[0],
       });
     }
   };
 
   const download = async (hash: string) => {
-    await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString(), isRestricted);
+    await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString());
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
@@ -136,26 +147,31 @@ export const FileUploaderInput = <TParent,>({
             )}
           </div>
           {files.length > 0 && (
-            <ul className="line-clamp-3" title={files.map(x => x.name).join("\n")}>
-              {files.map(file => (
-                <li key={file.name} className="flex items-center gap-2">
-                  <div>
-                    {file.name} (
-                    <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
-                      {file.size / 1000} KB
-                    </span>
-                    )
-                  </div>
-                  {file.id && (isValidator || file.owner === primaryWallet?.address) && (
-                    <button
-                      className="btn btn-square pointer-events-auto"
-                      onClick={() => download(file.id!)}
-                    >
-                      <DownloadLogo />
-                    </button>
-                  )}
-                </li>
-              ))}
+            <ul className="line-clamp-3" title={files.map(x => x.fileName).join("\n")}>
+              {/* If file is string then its was not successfully fetched */}
+              {files
+                .filter(x => typeof x !== "string")
+                .map(file => (
+                  <li key={file.fileName} className="flex items-center gap-2">
+                    <div>
+                      {file.fileName} (
+                      <span
+                        className={file.metadata.size / 1024 > maxFileSizeKb ? "text-error" : ""}
+                      >
+                        {file.metadata.size / 1000} KB
+                      </span>
+                      )
+                    </div>
+                    {file.fileId && (isValidator || file.owner === primaryWallet?.address) && (
+                      <button
+                        className="btn btn-square pointer-events-auto"
+                        onClick={() => download(file.fileId!)}
+                      >
+                        <DownloadLogo />
+                      </button>
+                    )}
+                  </li>
+                ))}
             </ul>
           )}
           {files.length === 0 &&

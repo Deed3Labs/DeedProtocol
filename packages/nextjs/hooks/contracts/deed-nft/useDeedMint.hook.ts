@@ -4,7 +4,7 @@ import { TransactionReceipt } from "viem";
 import useFileClient from "~~/clients/file.client";
 import { PropertyTypeOptions } from "~~/constants";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { uploadDocuments } from "~~/services/document.service";
+import { uploadFile } from "~~/services/file.service";
 import { indexOfLiteral } from "~~/utils/extract-values";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -28,7 +28,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     const toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      const payload = await uploadDocuments(authToken, data, undefined, false, true);
+      const payload = await uploadFile(authToken, data, undefined, false);
       if (!payload) return;
       hash = await fileClient.authentify(authToken).uploadJson(payload);
     } catch (error) {
