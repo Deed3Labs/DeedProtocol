@@ -70,6 +70,7 @@ const SidePanel = ({
       if (response.ok) {
         if (!deedData.id) {
           notification.success("Successfully created");
+          await handlePayment();
           await router.push(`/registration/${response.value}`);
         } else {
           notification.success("Successfully updated");
