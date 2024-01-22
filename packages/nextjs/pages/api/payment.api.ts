@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
+import { RegistrationDb } from "~~/databases/registrations.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
-import { getDecodedToken } from "~~/servers/auth";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "POST") {
-    return await post(req, res);
+  if (req.method === "GET") {
+    return await verifyPayment(req, res);
   } else {
     return res.status(405).send("Method Not Supported");
   }
@@ -14,23 +14,41 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 /**
  * Send a payement intent to Stripe.
  */
-const post = async (req: NextApiRequest, res: NextApiResponse) => {
-  let email = undefined;
-  const decoded = getDecodedToken(req);
-  if (!decoded) {
-    return res.status(401).send("Error: Unauthorized");
+const verifyPayment = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { receiptId } = req.query;
+  if (receiptId === undefined || typeof receiptId !== "string") {
+    return res.status(400).send("Missing receiptId or receiptId is not a string");
   }
-  email = decoded.email;
-  const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!);
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: 200,
-    currency: "usd",
-    payment_method_types: ["card"],
-    receipt_email: email,
-  });
-  await stripe.paymentIntents.confirm(paymentIntent.id, { payment_method: "pm_card_visa" });
+  const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!, {});
+  const paymentIntent = await stripe.checkout.sessions.retrieve(receiptId as string);
 
-  return res.status(200).send("success");
+  if (paymentIntent === undefined) {
+    return res.status(404).send("Payment not found");
+  }
+
+  if (paymentIntent.payment_status !== "paid") {
+    return res.status(400).send("Payment not paid");
+  }
+  const registrationId = paymentIntent.client_reference_id;
+
+  if (!registrationId) {
+    return res.status(400).send("No registration id");
+  }
+
+  const registration = await RegistrationDb.getRegistration(registrationId);
+
+  if (!registration) {
+    return res.status(404).send({ registrationId, error: "Registration not found" });
+  }
+
+  registration.paymentInformation.receipt = paymentIntent.payment_intent?.toString();
+
+  await RegistrationDb.saveRegistration(registration);
+
+  return res.status(200).send({
+    registrationId,
+    isVerified: true,
+  });
 };
 
 export default withErrorHandler(handler);

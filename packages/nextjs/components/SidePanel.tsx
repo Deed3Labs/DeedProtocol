@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
-import withRouter, { WithRouterProps } from "next/dist/client/with-router";
+import { useState } from "react";
+import Link from "next/link";
 import { NextRouter } from "next/router";
 import { BitcoinIcon } from "./assets/BitcoinIcon";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import useRegistrationClient from "~~/clients/registrations.client";
@@ -18,7 +18,7 @@ import { uploadFile } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
-import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
+import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   isOwner: boolean;
@@ -170,7 +170,7 @@ const SidePanel = ({
                         </div>
                       )}
                     </li>
-                    {deedData.paymentInformation?.paymentType === "crypto" && (
+                    {deedData.paymentInformation?.paymentType === "crypto" ? (
                       <>
                         <li>
                           <div className="text-xl">Coin:</div>
@@ -182,6 +182,24 @@ const SidePanel = ({
                           <div className="text-xl">Transaction:</div>
                           {deedData.paymentInformation.receipt ? (
                             <TransactionHash hash={deedData.paymentInformation.receipt} />
+                          ) : (
+                            <span className="text-error">No receipt</span>
+                          )}
+                        </li>
+                      </>
+                    ) : (
+                      <>
+                        <li>
+                          <div className="text-xl">Receipt:</div>
+                          {deedData.paymentInformation.receipt ? (
+                            <Link
+                              href={`https://dashboard.stripe.com/test/payments/${deedData.paymentInformation.receipt}`}
+                              target="_blank"
+                              className="link link-accent"
+                            >
+                              <ExternalLinkIcon />
+                              Open in stripe
+                            </Link>
                           ) : (
                             <span className="text-error">No receipt</span>
                           )}
