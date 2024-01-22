@@ -12,7 +12,7 @@ import { BackToTop } from "~~/components/BackToTop";
 import ErrorBoundary from "~~/components/ErrorBoundary";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
-import scaffoldConfig from "~~/scaffold.config";
+import CONFIG from "~~/config";
 import "~~/styles/globals.scss";
 
 config.autoAddCss = false;
@@ -22,7 +22,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
-    if (!scaffoldConfig.dynamicEnvironementId) {
+    if (!CONFIG.dynamicEnvironementId) {
       throw new Error("Missing environment ID");
     }
   }, []);
@@ -42,8 +42,8 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
         theme={isDarkTheme ? "dark" : "light"}
         settings={{
           initialAuthenticationMode: "connect-and-sign",
-          environmentId: scaffoldConfig.dynamicEnvironementId,
-          appName: scaffoldConfig.appName,
+          environmentId: CONFIG.dynamicEnvironementId,
+          appName: CONFIG.appName,
           walletConnectors: [EthereumWalletConnectors],
         }}
       >

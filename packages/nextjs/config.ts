@@ -1,6 +1,6 @@
 import * as chains from "viem/chains";
 
-const scaffoldConfig = {
+const CONFIG = {
   // The network where your DApp lives in
   targetNetwork: chains.sepolia,
 
@@ -31,8 +31,9 @@ const scaffoldConfig = {
    */
   walletAutoConnect: true,
   dynamicEnvironementId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
+  paymentLink: process.env.NEXT_PUBLIC_PAYMENT_LINK!,
   ipfsGateway: "https://cyan-surrounding-centipede-246.mypinata.cloud",
   appName: "Deed3.io",
 } as const;
 
-export default scaffoldConfig;
+export default CONFIG;

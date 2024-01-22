@@ -1,8 +1,8 @@
 import { createPublicClient, getContract, http } from "viem";
 import { gnosis, goerli } from "viem/chains";
 import { mainnet, sepolia } from "wagmi";
+import CONFIG from "~~/config";
 import deployedContracts from "~~/contracts/deployedContracts";
-import scaffoldConfig from "~~/scaffold.config";
 
 export const getClient = (chainId: number | string) => {
   let chain;
@@ -20,7 +20,7 @@ export const getClient = (chainId: number | string) => {
   }
   let rpcUrl;
   if ("alchemy" in chain.rpcUrls) {
-    rpcUrl = `${chain.rpcUrls.alchemy.http[0]}/${scaffoldConfig.alchemyApiKey}`;
+    rpcUrl = `${chain.rpcUrls.alchemy.http[0]}/${CONFIG.alchemyApiKey}`;
   } else {
     rpcUrl = chain.rpcUrls.default.http[0];
   }

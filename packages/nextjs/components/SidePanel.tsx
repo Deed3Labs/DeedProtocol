@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Link from "next/link";
 import { NextRouter } from "next/router";
 import { BitcoinIcon } from "./assets/BitcoinIcon";
@@ -8,6 +7,7 @@ import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import useRegistrationClient from "~~/clients/registrations.client";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
+import CONFIG from "~~/config";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
@@ -26,27 +26,26 @@ interface Props {
   isDraft: boolean;
   stableCoinAddress: string;
   deedData: DeedInfoModel;
-  fetchDeedInfo: () => void;
+  initialData?: DeedInfoModel;
+  refetchDeedInfo: () => void;
   router: NextRouter;
 }
-type ErrorCode = "notFound" | "unauthorized" | "unexpected";
 
 const SidePanel = ({
   isOwner,
   deedData,
+  initialData,
   isDraft,
   stableCoinAddress,
-  fetchDeedInfo,
+  refetchDeedInfo,
   router,
 }: Props) => {
   const isValidator = useIsValidator();
   const { writeValidateAsync } = useDeedValidate();
-  const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => fetchDeedInfo());
+  const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(refetchDeedInfo);
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const { writeAsync: writeCryptoPayement } = useCryptoPayement();
   const { primaryWallet, authToken } = useDynamicContext();
-  const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
-  const [initialData, setInitialData] = useState<DeedInfoModel>();
   const registrationClient = useRegistrationClient();
 
   const handleSubmit = async () => {
@@ -60,7 +59,7 @@ const SidePanel = ({
       }
 
       let toastId = notification.loading("Uploading documents...");
-      const newDeedData = await uploadFile(authToken!, deedData, initialData, true);
+      const newDeedData = await uploadFile(authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
       const response = await registrationClient
@@ -74,7 +73,7 @@ const SidePanel = ({
           await router.push(`/registration/${response.value}`);
         } else {
           notification.success("Successfully updated");
-          await fetchDeedInfo();
+          refetchDeedInfo();
         }
       } else {
         notification.error("Error saving registration");
@@ -90,18 +89,14 @@ const SidePanel = ({
     if (deedData.paymentInformation.paymentType === "crypto") {
       deedData.paymentInformation.receipt = await writeCryptoPayement();
     } else if (deedData.paymentInformation.paymentType === "fiat") {
-      window.open(
-        `https://buy.stripe.com/test_fZebKNb6lfcFenS9AA?client_reference_id=${deedData.id}`,
-        "_blank",
-      );
+      location.href = `${CONFIG.paymentLink}?client_reference_id=${deedData.id}`;
     }
 
     const toastId = notification.loading("Submiting payment...");
     const response = await registrationClient.authentify(authToken!).saveRegistration(deedData);
     notification.remove(toastId);
     if (response.ok) {
-      notification.success("Receipt successfully submited");
-      router.reload();
+      refetchDeedInfo();
     } else {
       notification.error("Error submiting receipt");
     }
@@ -125,7 +120,7 @@ const SidePanel = ({
   const handleValidationClicked = async () => {
     if (deedData.id) {
       await writeValidateAsync(deedData, !deedData.isValidated);
-      fetchDeedInfo();
+      refetchDeedInfo();
     }
   };
 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useEffectOnce, useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { hardhat } from "viem/chains";
 import { Connector, useAccount, useConnect } from "wagmi";
-import scaffoldConfig from "~~/scaffold.config";
+import CONFIG from "~~/config";
 import {
   burnerWalletId,
   defaultBurnerChainId,
@@ -35,17 +35,17 @@ const getInitialConnector = (
   }
 
   const targetNetwork = getTargetNetwork();
-  const allowBurner = scaffoldConfig.onlyLocalBurnerWallet ? targetNetwork.id === hardhat.id : true;
+  const allowBurner = CONFIG.onlyLocalBurnerWallet ? targetNetwork.id === hardhat.id : true;
 
   if (!previousWalletId) {
     // The user was not connected to a wallet
-    if (allowBurner && scaffoldConfig.walletAutoConnect) {
+    if (allowBurner && CONFIG.walletAutoConnect) {
       const connector = connectors.find(f => f.id === burnerWalletId);
       return { connector, chainId: defaultBurnerChainId };
     }
   } else {
     // the user was connected to wallet
-    if (scaffoldConfig.walletAutoConnect) {
+    if (CONFIG.walletAutoConnect) {
       if (previousWalletId === burnerWalletId && !allowBurner) {
         return;
       }

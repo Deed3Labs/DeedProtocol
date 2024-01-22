@@ -1,6 +1,6 @@
 import { Address } from "viem";
 import * as chains from "viem/chains";
-import scaffoldConfig from "~~/scaffold.config";
+import CONFIG from "~~/config";
 
 export interface TChainAttributes {
   // color | [lightThemeColor, darkThemeColor]
@@ -174,7 +174,7 @@ export function getBlockExplorerAddressLink(address: string, network?: chains.Ch
  */
 
 export function getTargetNetwork(): chains.Chain & TChainAttributes {
-  const configuredNetwork = scaffoldConfig.targetNetwork;
+  const configuredNetwork = CONFIG.targetNetwork;
 
   return {
     ...configuredNetwork,

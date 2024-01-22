@@ -19,9 +19,9 @@ import {
   TransactionReceipt,
 } from "viem";
 import { UseContractEventConfig, UseContractReadConfig, UseContractWriteConfig } from "wagmi";
+import CONFIG from "~~/config";
 import deployedContractsData from "~~/contracts/deployedContracts";
 import externalContractsData from "~~/contracts/externalContracts";
-import scaffoldConfig from "~~/scaffold.config";
 
 const deepMergeContracts = <D extends Record<PropertyKey, any>, S extends Record<PropertyKey, any>>(
   destination: D,
@@ -54,7 +54,7 @@ export interface GenericContractsDeclaration {
 
 export const contracts = contractsData as GenericContractsDeclaration | null;
 
-type ConfiguredChainId = (typeof scaffoldConfig)["targetNetwork"]["id"];
+type ConfiguredChainId = (typeof CONFIG)["targetNetwork"]["id"];
 
 type IsContractDeclarationMissing<TYes, TNo> = typeof contractsData extends {
   [key in ConfiguredChainId]: any;
