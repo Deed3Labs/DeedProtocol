@@ -70,6 +70,7 @@ const SidePanel = ({
       if (response.ok) {
         if (!deedData.id) {
           notification.success("Successfully created");
+          deedData.id = response.value;
           await handlePayment();
           await router.push(`/registration/${response.value}`);
         } else {
@@ -153,18 +154,14 @@ const SidePanel = ({
                   <div className="text-2xl">Payment information:</div>
                   <ul className="flex flex-col gap-2">
                     <li>
-                      <div className="text-xl">Type:</div>
-                      {deedData.paymentInformation?.paymentType === "crypto" ? (
-                        <div className="flex flex-row gap-2">
-                          <BitcoinIcon width={24} />
-                          Crypto
-                        </div>
-                      ) : (
-                        <div className="flex flex-row gap-2">
-                          <CurrencyDollarIcon />
-                          Fiat
-                        </div>
-                      )}
+                      <div className="text-xl flex flex-row gap2">
+                        <span className="mr-2">Type: </span>
+                        {deedData.paymentInformation?.paymentType === "crypto" ? (
+                          <span className="text-secondary">Crypto</span>
+                        ) : (
+                          <span className="text-secondary">Fiat</span>
+                        )}
+                      </div>
                     </li>
                     {deedData.paymentInformation?.paymentType === "crypto" ? (
                       <>
@@ -191,7 +188,7 @@ const SidePanel = ({
                             <Link
                               href={`https://dashboard.stripe.com/test/payments/${deedData.paymentInformation.receipt}`}
                               target="_blank"
-                              className="link link-accent"
+                              className="flex link items-baseline gap-2 link-accent"
                             >
                               <ExternalLinkIcon />
                               Open in stripe
@@ -231,7 +228,7 @@ const SidePanel = ({
         ) : (
           <div className="flex flex-col gap-4">
             <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-              Create
+              Submit
             </button>
           </div>
         )}

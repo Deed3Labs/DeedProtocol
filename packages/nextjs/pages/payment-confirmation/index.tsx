@@ -31,15 +31,26 @@ const Page = ({ router }: WithRouterProps) => {
         {isLoading && <span className="loading loading-bars loading-lg my-8"></span>}
         {!isLoading && (
           <>
-            {isVerified && <h1>Payment is verified 🎉🎉🎉</h1>}
-            {!isVerified && <h1>Payment is not verified</h1>}
-            <div className="flex mt-4">
-              <Link className="btn" href={`/registration/${registrationId}`}>
-                Goto registration
-              </Link>
-              <button className="btn" onClick={() => fetchIsVerified()}>
-                Retry
-              </button>
+            <div className="card w-96 bg-neutral">
+              <div className="card-body items-center text-center">
+                <h2 className="card-title">
+                  {isVerified ? "Congratulation" : "Payment not confirmed"}
+                </h2>
+                {isVerified ? (
+                  <p>You have successfully registered your property.</p>
+                ) : (
+                  <p>
+                    We encountered some problem verifying the payment, please go back to the
+                    registration and click the payment button. If you have already paid, please
+                    contact us.
+                  </p>
+                )}
+                <div className="card-actions justify-end">
+                  <Link className="btn" href={`/registration/${registrationId}`}>
+                    Go back to registration
+                  </Link>
+                </div>
+              </div>
             </div>
           </>
         )}
