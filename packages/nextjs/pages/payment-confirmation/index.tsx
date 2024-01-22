@@ -34,7 +34,11 @@ const Page = ({ router }: WithRouterProps) => {
             <div className="card w-96 bg-neutral">
               <div className="card-body items-center text-center">
                 <h2 className="card-title">
-                  {isVerified ? "Congratulation" : "Payment not confirmed"}
+                  {isVerified ? (
+                    <span className="text-success">Congratulation</span>
+                  ) : (
+                    "Payment not confirmed"
+                  )}
                 </h2>
                 {isVerified ? (
                   <p>You have successfully registered your property.</p>
