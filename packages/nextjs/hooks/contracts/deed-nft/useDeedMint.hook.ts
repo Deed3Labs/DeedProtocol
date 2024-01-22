@@ -28,7 +28,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     const toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      const payload = await uploadFile(authToken, data, undefined, false);
+      const payload = await uploadFile(authToken, data, undefined, true);
       if (!payload) return;
       hash = await fileClient.authentify(authToken).uploadJson(payload);
     } catch (error) {
