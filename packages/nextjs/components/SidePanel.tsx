@@ -70,7 +70,6 @@ const SidePanel = ({
           notification.success("Successfully created");
           deedData.id = response.value;
           await handlePayment();
-          await router.push(`/registration/${response.value}`);
         } else {
           notification.success("Successfully updated");
           refetchDeedInfo();
@@ -112,6 +111,7 @@ const SidePanel = ({
       } else {
         notification.error("Error submiting receipt");
       }
+      await router.push(`/registration/${response.value}`);
     } else if (deedData.paymentInformation.paymentType === "fiat") {
       location.href = `${CONFIG.paymentLink}?client_reference_id=${deedData.id}`;
     }
