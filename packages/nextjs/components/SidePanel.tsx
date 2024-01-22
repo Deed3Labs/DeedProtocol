@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
-import { WithRouterProps } from "next/dist/client/with-router";
+import withRouter, { WithRouterProps } from "next/dist/client/with-router";
+import { NextRouter } from "next/router";
 import { BitcoinIcon } from "./assets/BitcoinIcon";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
@@ -16,6 +17,7 @@ import { DeedInfoModel } from "~~/models/deed-info.model";
 import { uploadFile } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
+import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 interface Props {
@@ -25,13 +27,18 @@ interface Props {
   stableCoinAddress: string;
   deedData: DeedInfoModel;
   fetchDeedInfo: () => void;
+  router: NextRouter;
 }
 type ErrorCode = "notFound" | "unauthorized" | "unexpected";
 
-export const SidePanel = (
-  { isOwner, deedData, isDraft, stableCoinAddress, fetchDeedInfo }: Props,
-  { router }: WithRouterProps,
-) => {
+const SidePanel = ({
+  isOwner,
+  deedData,
+  isDraft,
+  stableCoinAddress,
+  fetchDeedInfo,
+  router,
+}: Props) => {
   const isValidator = useIsValidator();
   const { writeValidateAsync } = useDeedValidate();
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => fetchDeedInfo());
@@ -218,3 +225,4 @@ export const SidePanel = (
     </div>
   );
 };
+export default SidePanel;

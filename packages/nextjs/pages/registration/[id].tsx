@@ -7,12 +7,8 @@ import OwnerInformation from "./OwnerInformation";
 import PaymentInformation from "./PaymentInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import useRegistrationClient from "~~/clients/registrations.client";
-import { SidePanel } from "~~/components/SidePanel";
-import { BitcoinIcon } from "~~/components/assets/BitcoinIcon";
-import { TransactionHash } from "~~/components/blockexplorer";
-import { Address } from "~~/components/scaffold-eth";
+import SidePanel from "~~/components/SidePanel";
 import {
   DeedInfoModel,
   OwnerInformationModel,
@@ -257,7 +253,7 @@ const Page = ({ router }: WithRouterProps) => {
                   onChange={handleChange}
                   readOnly={!isOwner}
                 />
-                {!id && router.isReady && (
+                {router.isReady && (
                   <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
                 )}
               </div>
@@ -269,6 +265,7 @@ const Page = ({ router }: WithRouterProps) => {
               stableCoinAddress={stableCoinAddress}
               deedData={deedData}
               fetchDeedInfo={() => fetchDeedInfo(id as string)}
+              router={router}
             />
           </div>
         )
