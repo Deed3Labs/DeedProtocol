@@ -25,7 +25,7 @@ export class HttpClient {
     return { status: res.status, value: (await res.json()) as TRes, ok: true };
   }
 
-  public async post<TRes = any>(url: string, body: any, headers?: [string, string][]) {
+  public async post<TRes = any>(url: string, body?: any, headers?: [string, string][]) {
     url = this.loadParams(url);
     const res = await fetch(url, {
       method: "POST",

@@ -12,7 +12,7 @@ import { notification } from "~~/utils/scaffold-eth";
 
 const fileClient = new FileClient();
 
-export async function uploadFile(
+export async function uploadFiles(
   authToken: string,
   data: DeedInfoModel,
   old?: DeedInfoModel,

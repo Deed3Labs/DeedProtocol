@@ -1,6 +1,6 @@
 import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
-import { RegistrationDb as RegistrationsDb } from "~~/databases/registrations.db";
+import { RegistrationDb, RegistrationDb as RegistrationsDb } from "~~/databases/registrations.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { authentify, getWalletAddressFromToken } from "~~/servers/auth";
@@ -18,7 +18,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           return await getRegistrationFromChain(req, res);
         }
       case "POST":
-        return await saveRegistration(req, res);
+        if (req.query.paymentReceipt) {
+          return await savePaymentReceipt(req, res);
+        } else {
+          return await saveRegistration(req, res);
+        }
       default:
         return res.status(405).send("Method not allowed");
     }
@@ -63,7 +67,7 @@ async function getRegistrationFromChain(req: NextApiRequest, res: NextApiRespons
   const deedInfo = await contract.read.getDeedInfo([id as any]);
 
   const deedInfoMetadata = (await tokenMetadataResponse.json()) as DeedInfoModel;
-  deedInfoMetadata.id = +id;
+  deedInfoMetadata.id = id as string;
   deedInfoMetadata.owner = deedOwner;
   deedInfoMetadata.isValidated = deedInfo.isValidated;
 
@@ -118,6 +122,29 @@ async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
   }
 
   return res.status(200).send(id);
+}
+
+async function savePaymentReceipt(req: NextApiRequest, res: NextApiResponse) {
+  const { id, paymentReceipt } = req.query;
+
+  if (!id || isArray(id)) {
+    return res.status(400).send("Error: id of type number is required");
+  }
+
+  const deedInfo = await RegistrationDb.getRegistration(id);
+
+  if (!deedInfo) {
+    return res.status(404).send(`Error: Deed ${id} not found`);
+  }
+
+  if (!authentify(req, res, { requireSpecificAddress: deedInfo.owner, requireValidator: true })) {
+    return;
+  }
+
+  deedInfo.paymentInformation.receipt = paymentReceipt as string;
+  await RegistrationDb.saveRegistration(deedInfo);
+
+  return res.status(200).send("success");
 }
 
 function validate() {

@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { NextRouter } from "next/router";
-import { BitcoinIcon } from "./assets/BitcoinIcon";
 import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
-import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import useRegistrationClient from "~~/clients/registrations.client";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
@@ -14,7 +12,7 @@ import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
 import useCryptoPayement from "~~/hooks/useCryptoPayment.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { uploadFile } from "~~/services/file.service";
+import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
@@ -59,7 +57,7 @@ const SidePanel = ({
       }
 
       let toastId = notification.loading("Uploading documents...");
-      const newDeedData = await uploadFile(authToken!, deedData, initialData, false);
+      const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
       const response = await registrationClient
@@ -88,19 +86,34 @@ const SidePanel = ({
   };
 
   const handlePayment = async () => {
-    if (deedData.paymentInformation.paymentType === "crypto") {
-      deedData.paymentInformation.receipt = await writeCryptoPayement();
-    } else if (deedData.paymentInformation.paymentType === "fiat") {
-      location.href = `${CONFIG.paymentLink}?client_reference_id=${deedData.id}`;
+    if (!authToken) {
+      notification.error("Please connect your wallet");
+      return;
     }
 
-    const toastId = notification.loading("Submiting payment...");
-    const response = await registrationClient.authentify(authToken!).saveRegistration(deedData);
-    notification.remove(toastId);
-    if (response.ok) {
-      refetchDeedInfo();
-    } else {
-      notification.error("Error submiting receipt");
+    if (!deedData.id) {
+      notification.error("Deed does not exist yet, please retry");
+      return;
+    }
+
+    if (deedData.paymentInformation.paymentType === "crypto") {
+      const toastId = notification.loading("Submiting payment...");
+      const hash = await writeCryptoPayement();
+      if (!hash) {
+        notification.error("Error submiting payment");
+        return;
+      }
+      const response = await registrationClient
+        .authentify(authToken!)
+        .savePaymentReceipt(deedData.id, hash?.toString());
+      notification.remove(toastId);
+      if (response.ok) {
+        refetchDeedInfo();
+      } else {
+        notification.error("Error submiting receipt");
+      }
+    } else if (deedData.paymentInformation.paymentType === "fiat") {
+      location.href = `${CONFIG.paymentLink}?client_reference_id=${deedData.id}`;
     }
   };
 

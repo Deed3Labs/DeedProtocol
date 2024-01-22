@@ -72,7 +72,7 @@ export interface PaymentInformationModel {
 }
 
 export interface DeedInfoModel {
-  id?: number | string;
+  id?: string;
   owner?: Address;
   isValidated?: boolean;
   timestamp?: number;
