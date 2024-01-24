@@ -36,6 +36,7 @@
       "error"
     ],
     "react-hooks/exhaustive-deps": "off",
-    "no-unreachable": "warn"
+    "no-unreachable": "warn",
+    "no-console": "warn"
   }
 }

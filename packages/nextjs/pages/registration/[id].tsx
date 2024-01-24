@@ -87,7 +87,7 @@ const Page = ({ router }: WithRouterProps) => {
 
   const isOwner = useMemo(() => {
     return deedData.owner === primaryWallet?.address || !id;
-  }, [deedData.owner, primaryWallet]);
+  }, [deedData.owner, primaryWallet, id]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -113,7 +113,7 @@ const Page = ({ router }: WithRouterProps) => {
   };
 
   const fetchDeedInfo = useCallback(
-    async (id: number | string) => {
+    async (id: string) => {
       const resp = await registrationClient.authentify(authToken!).getRegistration(id, !!isDraft);
       setErrorCode(undefined);
       if (resp.ok) {
@@ -259,9 +259,8 @@ const Page = ({ router }: WithRouterProps) => {
               </div>
             </div>
             <SidePanel
-              isOwner
-              isDraft
-              isValidator
+              isOwner={isOwner}
+              isDraft={isDraft}
               stableCoinAddress={stableCoinAddress}
               deedData={deedData}
               initialData={initialData}

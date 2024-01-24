@@ -20,7 +20,6 @@ import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   isOwner: boolean;
-  isValidator: boolean;
   isDraft: boolean;
   stableCoinAddress: string;
   deedData: DeedInfoModel;
