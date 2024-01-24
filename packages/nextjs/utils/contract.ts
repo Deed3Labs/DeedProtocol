@@ -1,7 +1,7 @@
 import { TransactionReceipt, decodeEventLog, getEventSelector } from "viem";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-const testChainId: keyof typeof deployedContracts = 5;
+const testChainId: keyof typeof deployedContracts = 11155111;
 type EventNames<TAbi> = TAbi extends { type: "event"; name: infer TName } ? TName : never;
 
 type ContractAtIndex = (typeof deployedContracts)[typeof testChainId];

@@ -24,7 +24,7 @@ interface Props {
   stableCoinAddress: string;
   deedData: DeedInfoModel;
   initialData?: DeedInfoModel;
-  refetchDeedInfo: () => void;
+  refetchDeedInfo: (id?: string) => void;
   router: NextRouter;
 }
 
@@ -39,7 +39,7 @@ const SidePanel = ({
 }: Props) => {
   const isValidator = useIsValidator();
   const { writeValidateAsync } = useDeedValidate();
-  const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(refetchDeedInfo);
+  const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => refetchDeedInfo());
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const { writeAsync: writeCryptoPayement } = useCryptoPayement();
   const { primaryWallet, authToken } = useDynamicContext();
@@ -64,11 +64,9 @@ const SidePanel = ({
         .saveRegistration(newDeedData);
       notification.remove(toastId);
 
-      if (response.ok) {
+      if (response.ok && response.value) {
         if (!deedData.id) {
-          notification.success("Successfully created");
-          deedData.id = response.value;
-          await handlePayment();
+          await handlePayment(response.value);
         } else {
           notification.success("Successfully updated");
           refetchDeedInfo();
@@ -83,14 +81,9 @@ const SidePanel = ({
     }
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async (_id: string) => {
     if (!authToken) {
       notification.error("Please connect your wallet");
-      return;
-    }
-
-    if (!deedData.id) {
-      notification.error("Deed does not exist yet, please retry");
       return;
     }
 
@@ -103,16 +96,14 @@ const SidePanel = ({
       }
       const response = await registrationClient
         .authentify(authToken!)
-        .savePaymentReceipt(deedData.id, hash?.toString());
+        .savePaymentReceipt(_id, hash?.toString());
       notification.remove(toastId);
-      if (response.ok) {
-        refetchDeedInfo();
-      } else {
+      if (!response.ok) {
         notification.error("Error submiting receipt");
       }
-      await router.push(`/registration/${response.value}`);
+      await router.push(`/registration/${_id}`);
     } else if (deedData.paymentInformation.paymentType === "fiat") {
-      location.href = `${CONFIG.paymentLink}?client_reference_id=${deedData.id}`;
+      location.href = `${CONFIG.paymentLink}?client_reference_id=${_id}`;
     }
   };
 
@@ -229,8 +220,11 @@ const SidePanel = ({
                 <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
                   Save
                 </button>
-                {!deedData.paymentInformation.receipt && (
-                  <button onClick={handlePayment} className="btn btn-lg bg-gray-600">
+                {!deedData.paymentInformation.receipt && deedData.id && (
+                  <button
+                    onClick={() => handlePayment(deedData.id)}
+                    className="btn btn-lg bg-gray-600"
+                  >
                     Pay
                   </button>
                 )}

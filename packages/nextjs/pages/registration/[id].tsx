@@ -264,7 +264,7 @@ const Page = ({ router }: WithRouterProps) => {
               stableCoinAddress={stableCoinAddress}
               deedData={deedData}
               initialData={initialData}
-              refetchDeedInfo={() => fetchDeedInfo(id as string)}
+              refetchDeedInfo={_id => fetchDeedInfo(_id ?? (id as string))}
               router={router}
             />
           </div>
