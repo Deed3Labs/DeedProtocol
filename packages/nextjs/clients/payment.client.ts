@@ -18,5 +18,5 @@ export class PaymentClient extends HttpClient {
   }
 }
 
-const usePaymentCLient = () => useHttpClient(new PaymentClient());
-export default usePaymentCLient;
+const usePaymentClient = () => useHttpClient(new PaymentClient());
+export default usePaymentClient;

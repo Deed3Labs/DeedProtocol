@@ -14,8 +14,8 @@ export class HttpClient {
     return this;
   }
 
-  public async get<TRes = any>(url: string) {
-    url = this.loadParams(url);
+  public async get<TRes = any>(url: string, params: any = {}) {
+    url = this.appendQueryParams(url, params);
     const res = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
@@ -25,8 +25,13 @@ export class HttpClient {
     return { status: res.status, value: (await res.json()) as TRes, ok: true };
   }
 
-  public async post<TRes = any>(url: string, body?: any, headers?: [string, string][]) {
-    url = this.loadParams(url);
+  public async post<TRes = any>(
+    url: string,
+    params: any = {},
+    body?: any,
+    headers?: [string, string][],
+  ) {
+    url = this.appendQueryParams(url, params);
     const res = await fetch(url, {
       method: "POST",
       body: body,
@@ -38,8 +43,8 @@ export class HttpClient {
     return { status: res.status, value: (await res.text()) as TRes, ok: true };
   }
 
-  public async put<TRes = any>(url: string, body: any) {
-    url = this.loadParams(url);
+  public async put<TRes = any>(url: string, params: any = {}, body: any) {
+    url = this.appendQueryParams(url, params);
     const res = await fetch(url, {
       method: "PUT",
       body: body,
@@ -51,8 +56,8 @@ export class HttpClient {
     return { status: res.status, value: (await res.text()) as TRes, ok: true };
   }
 
-  public async del(url: string) {
-    url = this.loadParams(url);
+  public async del(url: string, params: any = {}) {
+    url = this.appendQueryParams(url, params);
     const res = await fetch(url, {
       method: "DELETE",
       headers: [["authorization", this.authorizationToken ?? ""]],
@@ -97,9 +102,13 @@ export class HttpClient {
     return undefined;
   }
 
-  private loadParams(url: string) {
-    url = appendQueryParam(url, "chainId", this.chainId.toString());
-    return url;
+  private appendQueryParams(url: string, params: any = {}) {
+    const [path, query] = url.split("?");
+    const searchParams = new URLSearchParams(query);
+    Object.keys(params).forEach(key => {
+      searchParams.append(key, params[key].toString());
+    });
+    return `${path}?${searchParams.toString()}`;
   }
 }
 
@@ -113,13 +122,6 @@ const useHttpClient = <TClient extends HttpClient>(client: TClient): TClient => 
   }, [authToken]);
 
   return client ?? new HttpClient();
-};
-
-const appendQueryParam = (url: string, key: string, value: string) => {
-  const [path, query] = url.split("?");
-  const searchParams = new URLSearchParams(query);
-  searchParams.append(key, value);
-  return `${path}?${searchParams.toString()}`;
 };
 
 export default useHttpClient;

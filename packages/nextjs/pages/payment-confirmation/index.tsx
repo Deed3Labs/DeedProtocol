@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
-import usePaymentCLient from "~~/clients/payment.client";
+import usePaymentClient from "~~/clients/payment.client";
 
 const Page = ({ router }: WithRouterProps) => {
   const { query } = router;
-  const paymentClient = usePaymentCLient();
+  const paymentClient = usePaymentClient();
   const [isVerified, setIsVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [registrationId, setRegistrationId] = useState<string | undefined>();
