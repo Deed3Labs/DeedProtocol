@@ -34,7 +34,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
       documentNotarizationFees +
       stateAndCountyFees +
       titleReportFees +
-      (appraisalAndInspection ? appraisalAndInspectionFees : 0) -
+      (appraisalAndInspection === "true" ? appraisalAndInspectionFees : 0) -
       (promoCode ? 100 : 0),
   };
 

@@ -4,7 +4,7 @@ import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 export class QuoteClient extends HttpClient {
-  public async getQuote(options: { promoCode: string; appraisalAndInspection: boolean }) {
+  public async getQuote(options: { promoCode?: string; appraisalAndInspection: boolean }) {
     const res = await this.get<QuoteModel>(`/api/quote`, options);
     if (!res.ok || !res.value) {
       const message = "Error getting quote";
