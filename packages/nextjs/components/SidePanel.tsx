@@ -91,7 +91,7 @@ const SidePanel = ({
       const toastId = notification.loading("Submiting payment...");
       const hash = await writeCryptoPayement();
       if (!hash) {
-        notification.error("Error submiting payment");
+        notification.remove(toastId);
         return;
       }
       const response = await registrationClient
