@@ -46,6 +46,7 @@ export const useScaffoldContractWrite = <
     functionName: functionName as any,
     args: args as unknown[],
     value: value,
+    cacheKey: `${chain?.id}-${contractName}-${functionName}`,
     ...writeConfig,
   });
 

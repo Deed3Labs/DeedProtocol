@@ -18,7 +18,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     account: primaryWallet?.address,
   });
 
-  const writeAsync = async (data: DeedInfoModel, old: DeedInfoModel, deedId: number) => {
+  const writeAsync = async (data: DeedInfoModel, old: DeedInfoModel, deedId: string) => {
     if (!primaryWallet || !authToken) {
       notification.error("No wallet connected");
       return;

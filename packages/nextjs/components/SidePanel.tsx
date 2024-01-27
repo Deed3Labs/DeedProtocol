@@ -77,7 +77,7 @@ const SidePanel = ({
     } else {
       if (!deedData.id || !initialData) return;
       // Update on chain
-      await writeUpdateDeedAsync(deedData, initialData, +deedData.id!);
+      await writeUpdateDeedAsync(deedData, initialData, deedData.id!);
     }
   };
 
@@ -222,7 +222,7 @@ const SidePanel = ({
                 </button>
                 {!deedData.paymentInformation.receipt && deedData.id && (
                   <button
-                    onClick={() => handlePayment(deedData.id)}
+                    onClick={() => handlePayment(deedData.id!)}
                     className="btn btn-lg bg-gray-600"
                   >
                     Pay

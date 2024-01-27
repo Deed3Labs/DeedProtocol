@@ -1,15 +1,9 @@
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import { cacheIsAdmin } from "~~/services/cache.service";
 
 const useIsAdmin = () => {
   const { primaryWallet } = useDynamicContext();
-
-  const { data } = useScaffoldContractRead({
-    contractName: "AccessManager",
-    functionName: "hasAdminRole",
-    args: [primaryWallet?.address],
-  });
-
-  return data;
+  return primaryWallet?.address ? cacheIsAdmin(primaryWallet?.address) : false;
 };
+
 export default useIsAdmin;

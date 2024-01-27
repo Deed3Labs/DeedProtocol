@@ -1,15 +1,9 @@
-import { useScaffoldContractRead } from "../../scaffold-eth";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { cacheIsValidator } from "~~/services/cache.service";
 
 const useIsValidator = () => {
   const { primaryWallet } = useDynamicContext();
-
-  const { data } = useScaffoldContractRead({
-    contractName: "AccessManager",
-    functionName: "hasValidatorRole",
-    args: [primaryWallet?.address],
-  });
-
-  return data;
+  return primaryWallet?.address ? cacheIsValidator(primaryWallet?.address) : false;
 };
+
 export default useIsValidator;

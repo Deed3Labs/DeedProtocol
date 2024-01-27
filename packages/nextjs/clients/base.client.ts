@@ -15,7 +15,7 @@ export class HttpClient {
   }
 
   public async get<TRes = any>(url: string, params: any = {}) {
-    url = this.appendQueryParams(url, params);
+    url = this.appendQueryParams(url, { ...params, chainId: this.chainId });
     const res = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
@@ -31,7 +31,7 @@ export class HttpClient {
     body?: any,
     headers?: [string, string][],
   ) {
-    url = this.appendQueryParams(url, params);
+    url = this.appendQueryParams(url, { ...params, chainId: this.chainId });
     const res = await fetch(url, {
       method: "POST",
       body: body,
@@ -44,7 +44,7 @@ export class HttpClient {
   }
 
   public async put<TRes = any>(url: string, params: any = {}, body: any) {
-    url = this.appendQueryParams(url, params);
+    url = this.appendQueryParams(url, { ...params, chainId: this.chainId });
     const res = await fetch(url, {
       method: "PUT",
       body: body,
@@ -57,7 +57,7 @@ export class HttpClient {
   }
 
   public async del(url: string, params: any = {}) {
-    url = this.appendQueryParams(url, params);
+    url = this.appendQueryParams(url, { ...params, chainId: this.chainId });
     const res = await fetch(url, {
       method: "DELETE",
       headers: [["authorization", this.authorizationToken ?? ""]],

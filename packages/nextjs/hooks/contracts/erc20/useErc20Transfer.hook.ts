@@ -20,7 +20,7 @@ const useErc20Transfer = (token: Address, amount: bigint, to: Address) => {
     ],
     address: token,
     functionName: "transfer",
-    account: primaryWallet,
+    account: primaryWallet?.address,
   });
 
   const writeAsync = async () => {

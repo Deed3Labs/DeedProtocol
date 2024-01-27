@@ -28,6 +28,7 @@ const PropertyExplorer: NextPage = () => {
   const { data: nextTokenId } = useScaffoldContractRead({
     contractName: "DeedNFT",
     functionName: "nextDeedId",
+    cacheOnBlock: true,
   });
 
   useEffect(() => {

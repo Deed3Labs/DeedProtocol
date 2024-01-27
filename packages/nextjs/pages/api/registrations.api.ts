@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } catch (e) {
     console.error(e);
-    res.status(500).send("Server Error");
+    return res.status(500).send("Server Error");
   }
 };
 
@@ -91,7 +91,10 @@ async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResp
   }
 
   if (
-    !authentify(req, res, { requireSpecificAddress: registration.owner, requireValidator: true })
+    !(await authentify(req, res, {
+      requireSpecificAddress: registration.owner,
+      requireValidator: true,
+    }))
   ) {
     return;
   }
@@ -119,9 +122,9 @@ async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
   const id = await RegistrationsDb.saveRegistration(deedInfo);
   if (!id) {
     return res.status(500).send("Error: Unable to save deedInfo");
+  } else {
+    return res.status(200).send(id);
   }
-
-  return res.status(200).send(id);
 }
 
 async function savePaymentReceipt(req: NextApiRequest, res: NextApiResponse) {
@@ -137,7 +140,12 @@ async function savePaymentReceipt(req: NextApiRequest, res: NextApiResponse) {
     return res.status(404).send(`Error: Deed ${id} not found`);
   }
 
-  if (!authentify(req, res, { requireSpecificAddress: deedInfo.owner, requireValidator: true })) {
+  if (
+    !(await authentify(req, res, {
+      requireSpecificAddress: deedInfo.owner,
+      requireValidator: true,
+    }))
+  ) {
     return;
   }
 

@@ -1,16 +1,16 @@
 let currentWallet: string | undefined = undefined;
 
 const logger = {
-  debug: (payload: any) => {
+  debug: (...payload: any) => {
     handleLog(payload, "debug");
   },
-  info: (payload: any) => {
+  info: (...payload: any) => {
     handleLog(payload, "info");
   },
-  warn: (payload: any) => {
+  warn: (...payload: any) => {
     handleLog(payload, "warn");
   },
-  error: (payload: any) => {
+  error: (...payload: any) => {
     handleLog(payload, "error");
   },
   setWallet: function (address: string) {
@@ -25,7 +25,7 @@ const handleLog = (payload: any, level: "debug" | "info" | "warn" | "error") => 
     body: JSON.stringify({
       context: {
         wallet: currentWallet ?? "No wallet",
-        browser: navigator.userAgent,
+        // browser: navigator.userAgent,
       },
       ...payload,
     }),
