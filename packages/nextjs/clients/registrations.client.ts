@@ -8,7 +8,11 @@ import { notification } from "~~/utils/scaffold-eth";
 
 export class RegistrationClient extends HttpClient {
   async saveRegistration(registration: DeedInfoModel) {
-    const result = await this.post<string>("/api/registrations", JSON.stringify(registration));
+    const result = await this.post<string>(
+      "/api/registrations",
+      undefined,
+      JSON.stringify(registration),
+    );
     if (!result.ok) {
       logger.error({ message: "Error creating registration", status: result.status });
     }

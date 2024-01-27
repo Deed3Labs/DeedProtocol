@@ -40,7 +40,7 @@ export class FileClient extends HttpClient {
       formData.append("file", file.metadata, file.fileName);
       formData.append("payload", JSON.stringify(file));
 
-      const res = await this.post(`/api/files`, formData);
+      const res = await this.post(`/api/files`, undefined, formData);
       if (!res.ok) throw new Error(res.error);
       return res.value;
     } catch (error) {
@@ -52,7 +52,7 @@ export class FileClient extends HttpClient {
 
   public async uploadJson(payload: DeedInfoModel): Promise<string> {
     try {
-      const res = await this.post(`/api/files?isJson=true`, JSON.stringify(payload), [
+      const res = await this.post(`/api/files?isJson=true`, undefined, JSON.stringify(payload), [
         ["Content-Type", "application/json"],
       ]);
       if (!res.ok) throw new Error(res.error);
@@ -66,7 +66,7 @@ export class FileClient extends HttpClient {
 
   public async publish(file: FileModel, fieldLabel: string) {
     try {
-      const res = await this.post(`/api/files?publish=true`, JSON.stringify(file), [
+      const res = await this.post(`/api/files?publish=true`, undefined, JSON.stringify(file), [
         ["Content-Type", "application/json"],
       ]);
       if (!res.ok) throw new Error(res.error);
