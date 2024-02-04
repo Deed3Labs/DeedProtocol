@@ -6,7 +6,7 @@ type DeedEntity @entity(immutable: false) {
     isValidated: Boolean! # address
     updatedAtTimestamp: BigInt
     ipfsHash: String!
-    deedInfo: DeedMetadata
+    deedMetadata: DeedMetadata!
 }
 
 type DeedMetadata @entity(immutable: false) {

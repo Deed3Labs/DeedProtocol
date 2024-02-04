@@ -25,6 +25,8 @@ import {
     PropertyDetails,
 } from "../generated/schema";
 
+import { DeedMetadata as DeedMetadataTemplate} from "../generated/templates";
+
 export function handleDeedNFTMinted(event: DeedNFTMinted): void {
     let deedContract = DeedNFT.bind(event.address);
     let entityId = getDeedEntityId(event.address, event.params.deedId);
@@ -34,6 +36,7 @@ export function handleDeedNFTMinted(event: DeedNFTMinted): void {
     deed.assetType = event.params.deedInfo.assetType;
     deed.isValidated = event.params.deedInfo.isValidated;
     deed.ipfsHash = deedContract.tokenURI(event.params.deedId);
+    DeedMetadataTemplate.create(deed.deedMetadata);
     deed.save();
 }
 
@@ -44,12 +47,6 @@ export function handleDeedNFTAssetValidationSet(
         getDeedEntityId(event.address, event.params.deedId)
     )!;
     deed.isValidated = event.params.isValid;
-    if (event.params.isValid) {
-        let deedContract = DeedNFT.bind(event.address);
-        deed.deedInfo = getIpfsUri(deedContract.tokenURI(event.params.deedId));
-    } else {
-        deed.deedInfo = null;
-    }
     deed.save();
 }
 
@@ -67,7 +64,8 @@ export function handleDeedNFTIpfsDetailsSet(
         getDeedEntityId(event.address, event.params.deedId)
     )!;
     if (deed.isValidated) {
-        deed.deedInfo = getIpfsUri(event.params.newIpfsDetailsHash);
+        deed.ipfsHash = event.params.newIpfsDetailsHash;
+        DeedMetadataTemplate.create(deed.deedMetadata);
         deed.save();
     }
 }

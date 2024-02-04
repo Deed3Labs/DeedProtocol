@@ -7,7 +7,7 @@ templates:
     mapping:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/deed-nft.ts
+      file: ./src/deed-nft.mapping.ts
       handler: handleMetadata
       entities:
         - DeedMetadata

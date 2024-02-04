@@ -9,7 +9,7 @@ import {
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { ExampleEntity } from "../generated/schema"
 import { Approval } from "../generated/DeedNFT/DeedNFT"
-import { handleApproval } from "../src/deed-nft"
+import { handleApproval } from "../src/deed-nft.mapping"
 import { createApprovalEvent } from "./deed-nft-utils"
 
 // Tests structure (matchstick-as >=0.5.0)
