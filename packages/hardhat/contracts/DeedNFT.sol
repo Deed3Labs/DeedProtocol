@@ -20,7 +20,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         CommercialEquipment
     }
 
-    event DeedNFTMinted(uint256 deedId, DeedInfo deedInfo, address minter);
+    event DeedNFTMinted(uint256 deedId, DeedInfo deedInfo, address minter, string ipfsHash);
     event DeedNFTBurned(uint256 deedId);
     event DeedNFTAssetValidationSet(uint256 deedId, bool isValid);
     event DeedNFTIpfsDetailsSet(uint256 deedId, string newIpfsDetailsHash);
@@ -57,7 +57,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         deedInfo.assetType = _assetType;
         _setTokenURI(nextDeedId, _ipfsDetailsHash);
         deedInfo.isValidated = true;
-        emit DeedNFTMinted(nextDeedId, deedInfo, _msgSender());
+        emit DeedNFTMinted(nextDeedId, deedInfo, _msgSender(), _ipfsDetailsHash);
         nextDeedId = nextDeedId + 1;
         return nextDeedId;
     }

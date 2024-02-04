@@ -17,9 +17,9 @@ templates:
 dataSources:
   - kind: ethereum
     name: DeedNFT
-    network: goerli
+    network: sepolia
     source:
-      address: "0xF3dC56410C8C6070cfa1361278c5e2C42Be4e171"
+      address: "0x215c20C0b355AB8b4c109c3FA88ab6B22B8ee80F"
       abi: DeedNFT
       startBlock: 10206707
     mapping:

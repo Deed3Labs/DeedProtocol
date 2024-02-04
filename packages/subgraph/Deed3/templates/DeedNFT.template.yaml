@@ -32,4 +32,4 @@
           handler: handleDeedNFTMinted
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-      file: ./src/deed-nft.ts
+      file: ./src/deed-nft.mapping.ts

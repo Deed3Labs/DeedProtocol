@@ -132,21 +132,17 @@ export class DeedEntity extends Entity {
     this.set("ipfsHash", Value.fromString(value));
   }
 
-  get deedInfo(): string | null {
-    let value = this.get("deedInfo");
+  get deedMetadata(): string {
+    let value = this.get("deedMetadata");
     if (!value || value.kind == ValueKind.NULL) {
-      return null;
+      throw new Error("Cannot return null for a required field.");
     } else {
       return value.toString();
     }
   }
 
-  set deedInfo(value: string | null) {
-    if (!value) {
-      this.unset("deedInfo");
-    } else {
-      this.set("deedInfo", Value.fromString(<string>value));
-    }
+  set deedMetadata(value: string) {
+    this.set("deedMetadata", Value.fromString(value));
   }
 }
 
@@ -228,19 +224,6 @@ export class DeedMetadata extends Entity {
 
   set propertyDetails(value: string) {
     this.set("propertyDetails", Value.fromString(value));
-  }
-
-  get paymentInformation(): string {
-    let value = this.get("paymentInformation");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set paymentInformation(value: string) {
-    this.set("paymentInformation", Value.fromString(value));
   }
 }
 
@@ -701,101 +684,6 @@ export class OtherInformation extends Entity {
 
   set wrapper(value: string) {
     this.set("wrapper", Value.fromString(value));
-  }
-}
-
-export class PaymentInformation extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save PaymentInformation entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type PaymentInformation must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("PaymentInformation", id.toString(), this);
-    }
-  }
-
-  static loadInBlock(id: string): PaymentInformation | null {
-    return changetype<PaymentInformation | null>(
-      store.get_in_block("PaymentInformation", id)
-    );
-  }
-
-  static load(id: string): PaymentInformation | null {
-    return changetype<PaymentInformation | null>(
-      store.get("PaymentInformation", id)
-    );
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get paymentType(): string | null {
-    let value = this.get("paymentType");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set paymentType(value: string | null) {
-    if (!value) {
-      this.unset("paymentType");
-    } else {
-      this.set("paymentType", Value.fromString(<string>value));
-    }
-  }
-
-  get stableCoin(): string | null {
-    let value = this.get("stableCoin");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set stableCoin(value: string | null) {
-    if (!value) {
-      this.unset("stableCoin");
-    } else {
-      this.set("stableCoin", Value.fromString(<string>value));
-    }
-  }
-
-  get receipt(): string | null {
-    let value = this.get("receipt");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set receipt(value: string | null) {
-    if (!value) {
-      this.unset("receipt");
-    } else {
-      this.set("receipt", Value.fromString(<string>value));
-    }
   }
 }
 
