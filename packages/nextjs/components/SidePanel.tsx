@@ -1,7 +1,10 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { NextRouter } from "next/router";
+import QuoteDetail from "./scaffold-eth/QuoteDetail";
 import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
+import useQuoteClient from "~~/clients/quote.client";
 import useRegistrationClient from "~~/clients/registrations.client";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
@@ -12,6 +15,7 @@ import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
 import useCryptoPayement from "~~/hooks/useCryptoPayment.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
+import { QuoteModel } from "~~/models/quote.model";
 import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
@@ -43,7 +47,18 @@ const SidePanel = ({
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const { writeAsync: writeCryptoPayement } = useCryptoPayement();
   const { primaryWallet, authToken } = useDynamicContext();
+  const [quoteDetails, setQuoteDetails] = useState<QuoteModel>();
+  const [appraisalInspection, setAppraisalInspection] = useState(false);
   const registrationClient = useRegistrationClient();
+  const quoteClient = useQuoteClient();
+
+  useEffect(() => {
+    if (!quoteDetails) {
+      quoteClient.getQuote({ appraisalAndInspection: appraisalInspection }).then(quote => {
+        setQuoteDetails(quote);
+      });
+    }
+  }, [appraisalInspection]);
 
   const handleSubmit = async () => {
     // if (!validateForm() || !deedData || !authToken) return;
@@ -130,14 +145,45 @@ const SidePanel = ({
   };
 
   return (
-    <div className="bg-base-100 p-9 w-full lg:w-3/12 h-fit relative lg:sticky lg:top-32 lg:max-h-[75vh] overflow-y-auto">
+    <div className="bg-base-100 p-9 w-full lg:w-5/12 h-fit relative lg:sticky lg:top-32 lg:max-h-[75vh] overflow-y-auto">
       <div className="flex flex-row gap-2">
         <div className="w-7 h-7 pl-0.5 flex-col justify-start items-start inline-flex">
           <div className="self-stretch h-7 p-2 bg-white rounded-2xl shadow justify-center items-center inline-flex">
             <div className="w-3 h-3 relative" />
           </div>
         </div>
-        <div className="text-xl w-full whitespace-nowrap">Deed3 (The Deed Protocol)</div>
+        <div className="text-xl w-full ">
+          Deed3 (The Deed Protocol)
+          {!deedData.id && quoteDetails && (
+            <>
+              <div className="text-xl mt-4 font-normal font-['KronaOne']">
+                STANDARD PROPERTY LISTING
+              </div>
+
+              <QuoteDetail
+                title="Legal Wrapper"
+                secondary="NOMINEE TRUST WRAPPER"
+                price={quoteDetails.legalWrapperFees}
+              />
+              <QuoteDetail
+                title="Document Notarization"
+                secondary="ONLINE DOCUMENT SIGNING"
+                price={quoteDetails.documentNotarizationFees}
+              />
+              <QuoteDetail
+                title="State & County Filing Fees"
+                secondary="GRANT DEED-COUNTY CLERK"
+                price={quoteDetails.stateAndCountyFees}
+              />
+              <QuoteDetail
+                title="Preliminary Title Report"
+                secondary="PROPERTY HISTORY VERIFICATION"
+                price={quoteDetails.titleReportFees}
+              />
+              <QuoteDetail title="Legal Wrapper" secondary="ONLINE DOCUMENT SIGNING" price={250} />
+            </>
+          )}
+        </div>
       </div>
 
       <div className="m-8">
