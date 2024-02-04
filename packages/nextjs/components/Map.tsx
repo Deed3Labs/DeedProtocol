@@ -6,9 +6,9 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { IMarker } from "~~/models/marker.model";
 
-type Props = {
+interface Props {
   markers: IMarker[];
-};
+}
 
 const defaultIcon = new DivIcon({
   className: "property-icon",
@@ -32,7 +32,12 @@ const Map = ({ markers }: Props) => {
       <MapContainer
         center={[40, -100]}
         zoom={5}
-        style={{ height: 750, width: "calc(100%-32px)", maxHeight: "calc(100vh - 130px)", margin: "16px" }}
+        style={{
+          height: 750,
+          width: "calc(100%-32px)",
+          maxHeight: "calc(100vh - 130px)",
+          margin: "16px",
+        }}
         id="map"
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" noWrap={true} />

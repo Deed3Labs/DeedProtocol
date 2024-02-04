@@ -1,23 +1,25 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
+import ExplorerLinks from "./ExplorerLinks";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { ListingType, PropertyModel, PropertyType } from "~~/models/property.model";
 
-type Props = {
+interface Props {
   properties: PropertyModel[];
   onFilter: (filter?: PropertiesFilterModel) => void;
-};
+}
 
 const PropertyFilters = ({ properties, onFilter }: Props) => {
+  const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
-  const searchParams = useSearchParams();
   const listingType = searchParams.get("listingType");
   const [filter, setFilter] = useState<PropertiesFilterModel>({
     listingType: listingType ? (listingType as ListingType) : "All",
@@ -54,20 +56,13 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     onFilter(filter);
   };
 
-  const searchRef = useRef<HTMLInputElement>(null);
-
-  useKeyboardShortcut(["/"], ev => {
-    if (ev.target === searchRef.current) return;
-    searchRef.current?.focus();
-    ev.preventDefault();
-  });
-
   useKeyboardShortcut(["Enter"], () => {
     onFilter(filter);
   });
 
   return (
     <div className="Wrapper flex flex-col w-full mb-8">
+      <ExplorerLinks />
       <div className="filters">
         <div className="flex flex-wrap justify-evenly items-center gap-8 w-full ">
           <button className="btn btn-lg btn-outline">
@@ -88,12 +83,10 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
           </div>
           <div className="flex-grow flex items-center">
             <input
-              ref={searchRef}
               className="input input-lg input-bordered border-1 w-full"
               placeholder="Enter a city, state, address or ZIP code"
-              onChange={() => setSearch(searchRef.current?.value)}
+              onChange={val => setSearch(val.target.value)}
             />
-            <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">/</kbd>
           </div>
           <select
             className="select select-lg select-bordered"
@@ -103,15 +96,21 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             <option disabled value={0}>
               Property type
             </option>
-            <option value="House">House</option>
-            <option value="Appartement">Appartement</option>
-            <option value="Bachelor">Bachelor</option>
-            <option value="Condo">Condo</option>
-            <option value="Land">Land</option>
+            {PropertyTypeOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.title}
+              </option>
+            ))}
           </select>
           <div className="join">
             <button className="join-item btn btn-square btn-outline">
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
@@ -120,7 +119,10 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
                 />
               </svg>
             </button>
-            <button className="join-item btn btn-square btn-outline" onClick={() => setMapOpened(!mapOpened)}>
+            <button
+              className="join-item btn btn-square btn-outline"
+              onClick={() => setMapOpened(!mapOpened)}
+            >
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
             </button>
           </div>

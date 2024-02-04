@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import ExplorerLinks from "../property-explorer/ExplorerLinks";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
@@ -7,12 +8,14 @@ import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { AgentModel } from "~~/models/agent.model";
 
-type FilterModel = { search?: string };
+interface FilterModel {
+  search?: string;
+}
 
-type Props = {
+interface Props {
   onFilter: (filter?: FilterModel) => void;
   agents: AgentModel[];
-};
+}
 
 const AgentFilters = ({ onFilter, agents }: Props) => {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -58,6 +61,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
 
   return (
     <div className="Wrapper flex flex-col w-full mb-8">
+      <ExplorerLinks />
       <div className="filters">
         <div className="flex flex-wrap justify-evenly items-center gap-8 w-full ">
           <button className="btn btn-lg btn-outline">
@@ -72,11 +76,19 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
               onChange={() => setSearch(searchRef.current?.value)}
               value={search}
             />
-            <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">/</kbd>
+            <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">
+              /
+            </kbd>
           </div>
           <div className="join">
             <button className="join-item btn btn-square btn-outline">
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
@@ -85,7 +97,10 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
                 />
               </svg>
             </button>
-            <button className="join-item btn btn-square btn-outline" onClick={() => setMapOpened(!mapOpened)}>
+            <button
+              className="join-item btn btn-square btn-outline"
+              onClick={() => setMapOpened(!mapOpened)}
+            >
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
             </button>
           </div>

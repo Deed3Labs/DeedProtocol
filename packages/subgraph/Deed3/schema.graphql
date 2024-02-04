@@ -1,70 +1,61 @@
-type Approval @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type DeedEntity @entity(immutable: false) {
+    id: ID!
+    owner: Bytes! # address
+    minter: Bytes! # address
+    assetType: Int!
+    isValidated: Boolean! # address
+    updatedAtTimestamp: BigInt
+    ipfsHash: String!
+    deedInfo: DeedMetadata
 }
 
-type ApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type DeedMetadata @entity(immutable: false) {
+    id: ID!
+    ownerInformation: OwnerInformation!
+    otherInformation: OtherInformation!
+    propertyDetails: PropertyDetails!
 }
 
-type DeedMinted @entity(immutable: true) {
-  id: Bytes!
-  _deedInfo_ipfsDetailsHash: String! # string
-  _deedInfo_assetType: Int! # uint8
-  _deedInfo_price: BigInt! # uint256
-  _deedInfo_latLong: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type PropertyDetails @entity(immutable: true) {
+    id: ID!
+    propertyType: String!
+    propertyAddress: String!
+    propertyCity: String!
+    propertyState: String!
+    propertySize: String
+    propertySubType: String
+    propertyZoning: String
+    propertyPurchaseContract: FileInfo
+    propertyDeedOrTitle: FileInfo!
+    propertyImages: [FileInfo!]
 }
 
-type RoleAdminChanged @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  previousAdminRole: Bytes! # bytes32
-  newAdminRole: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type OwnerInformation @entity(immutable: true) {
+    id: ID!
+    ownerType: String!
+    ownerName: String!
+    entityName: String
+    ownerPosition: String
+    ownerEntityType: String
+    supportingDoc: [FileInfo!]
+    operatingAgreement: FileInfo
+    proofBill: FileInfo
+    articleIncorporation: FileInfo!
+    ids: FileInfo!
 }
 
-type RoleGranted @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type OtherInformation @entity(immutable: true) {
+    id: ID!
+    blockchain: String!
+    wrapper: String!
 }
 
-type RoleRevoked @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Transfer @entity(immutable: true) {
-  id: Bytes!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type FileInfo @entity(immutable: true) {
+    id: ID!
+    hash: String
+    name: String
+    size: BigInt
+    type: String
+    lastModified: BigInt
+    restricted: Boolean
 }

@@ -1,42 +1,52 @@
-specVersion: 0.0.5
+specVersion: 0.0.7
 schema:
-  file: ./schema.graphql
+    file: ./schema.graphql
+templates:
+  - name: DeedMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/deed-nft.ts
+      handler: handleMetadata
+      entities:
+        - DeedMetadata
+      abis:
+        - name: DeedNFT
+          file: ./abis/DeedNFT.json
 dataSources:
   - kind: ethereum
     name: DeedNFT
     network: goerli
     source:
-      address: "0xea05766a8EB2C02c92A7094606850a210d668864"
-      abi: DeedNFT
-      startBlock: 9839682
+        address: "0xF3dC56410C8C6070cfa1361278c5e2C42Be4e171"
+        abi: DeedNFT
+        startBlock: 10206707
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Approval
-        - ApprovalForAll
-        - DeedMinted
-        - RoleAdminChanged
-        - RoleGranted
-        - RoleRevoked
+        - DeedNFTAssetTypeSet
+        - DeedNFTAssetValidationSet
+        - DeedNFTBurned
+        - DeedNFTIpfsDetailsSet
+        - DeedNFTMinted
         - Transfer
       abis:
         - name: DeedNFT
           file: ./abis/DeedNFT.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: DeedMinted((string,uint8,uint256,string))
-          handler: handleDeedMinted
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-          handler: handleRoleAdminChanged
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleRevoked
+        - event: DeedNFTAssetTypeSet(uint256,uint8)
+          handler: handleDeedNFTAssetTypeSet
+        - event: DeedNFTAssetValidationSet(uint256,bool)
+          handler: handleDeedNFTAssetValidationSet
+        - event: DeedNFTBurned(uint256)
+          handler: handleDeedNFTBurned
+        - event: DeedNFTIpfsDetailsSet(uint256,string)
+          handler: handleDeedNFTIpfsDetailsSet
+        - event: DeedNFTMinted(uint256,(uint8,bool),address)
+          handler: handleDeedNFTMinted
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/deed-nft.ts

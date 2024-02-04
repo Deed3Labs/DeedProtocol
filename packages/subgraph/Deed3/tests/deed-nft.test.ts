@@ -6,9 +6,9 @@ import {
   beforeAll,
   afterAll
 } from "matchstick-as/assembly/index"
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
-import { Approval } from "../generated/schema"
-import { Approval as ApprovalEvent } from "../generated/DeedNFT/DeedNFT"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { ExampleEntity } from "../generated/schema"
+import { Approval } from "../generated/DeedNFT/DeedNFT"
 import { handleApproval } from "../src/deed-nft"
 import { createApprovalEvent } from "./deed-nft-utils"
 
@@ -33,25 +33,25 @@ describe("Describe entity assertions", () => {
   // For more test scenarios, see:
   // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
 
-  test("Approval created and stored", () => {
-    assert.entityCount("Approval", 1)
+  test("ExampleEntity created and stored", () => {
+    assert.entityCount("ExampleEntity", 1)
 
     // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
     assert.fieldEquals(
-      "Approval",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
+      "ExampleEntity",
+      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
       "owner",
       "0x0000000000000000000000000000000000000001"
     )
     assert.fieldEquals(
-      "Approval",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
+      "ExampleEntity",
+      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
       "approved",
       "0x0000000000000000000000000000000000000001"
     )
     assert.fieldEquals(
-      "Approval",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
+      "ExampleEntity",
+      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
       "tokenId",
       "234"
     )

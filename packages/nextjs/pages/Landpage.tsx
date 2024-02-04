@@ -17,7 +17,9 @@ const Home: NextPage = () => {
             </div>
             <div className="justify-start items-center gap-0.5 flex">
               <div className="pt-px flex-col justify-start items-start inline-flex">
-                <div className="text-neutral-200 text-xs font-bold uppercase leading-3">Read More</div>
+                <div className="text-neutral-200 text-xs font-bold uppercase leading-3">
+                  Read More
+                </div>
               </div>
               <div className="w-4 self-stretch px-0.5 py-0.5 flex-col justify-start items-start inline-flex" />
             </div>

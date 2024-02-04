@@ -1,7 +1,7 @@
 import { MapIconModel } from "./map-icon.model";
 
 export interface IMarker {
-  id: string;
+  id: number;
   name: string;
   latitude: number;
   longitude: number;

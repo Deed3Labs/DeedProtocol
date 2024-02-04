@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { utils } from "ethers";
+import { AbiParameter } from "abitype";
 import {
   AddressInput,
   Bytes32Input,
@@ -9,12 +9,12 @@ import {
   IntegerVariant,
 } from "~~/components/scaffold-eth";
 
-type ContractInputProps = {
+interface ContractInputProps {
   setForm: Dispatch<SetStateAction<Record<string, any>>>;
-  form: Record<string, any>;
+  form: Record<string, any> | undefined;
   stateObjectKey: string;
-  paramType: utils.ParamType;
-};
+  paramType: AbiParameter;
+}
 
 /**
  * Generic Input component to handle input's based on their function param type
@@ -22,7 +22,7 @@ type ContractInputProps = {
 export const ContractInput = ({ setForm, form, stateObjectKey, paramType }: ContractInputProps) => {
   const inputProps = {
     name: stateObjectKey,
-    value: form[stateObjectKey],
+    value: form?.[stateObjectKey],
     placeholder: paramType.name ? `${paramType.type} ${paramType.name}` : paramType.type,
     onChange: (value: any) => {
       setForm(form => ({ ...form, [stateObjectKey]: value }));

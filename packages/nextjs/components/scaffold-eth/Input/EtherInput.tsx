@@ -5,7 +5,11 @@ import { useGlobalState } from "~~/services/store/store";
 
 const MAX_DECIMALS_USD = 2;
 
-function etherValueToDisplayValue(usdMode: boolean, etherValue: string, nativeCurrencyPrice: number) {
+function etherValueToDisplayValue(
+  usdMode: boolean,
+  etherValue: string,
+  nativeCurrencyPrice: number,
+) {
   if (usdMode && nativeCurrencyPrice) {
     const parsedEthValue = parseFloat(etherValue);
     if (Number.isNaN(parsedEthValue)) {
@@ -23,7 +27,11 @@ function etherValueToDisplayValue(usdMode: boolean, etherValue: string, nativeCu
   }
 }
 
-function displayValueToEtherValue(usdMode: boolean, displayValue: string, nativeCurrencyPrice: number) {
+function displayValueToEtherValue(
+  usdMode: boolean,
+  displayValue: string,
+  nativeCurrencyPrice: number,
+) {
   if (usdMode && nativeCurrencyPrice) {
     const parsedDisplayValue = parseFloat(displayValue);
     if (Number.isNaN(parsedDisplayValue)) {
@@ -43,7 +51,7 @@ function displayValueToEtherValue(usdMode: boolean, displayValue: string, native
  *
  * onChange will always be called with the value in ETH
  */
-export const EtherInput = ({ value, name, placeholder, onChange }: CommonInputProps) => {
+export const EtherInput = ({ value, name, placeholder, onChange, disabled }: CommonInputProps) => {
   const [transitoryDisplayValue, setTransitoryDisplayValue] = useState<string>();
   const nativeCurrencyPrice = useGlobalState(state => state.nativeCurrencyPrice);
   const [usdMode, setUSDMode] = useState(false);
@@ -52,7 +60,10 @@ export const EtherInput = ({ value, name, placeholder, onChange }: CommonInputPr
   // In usdMode, it is converted to its usd value, in regular mode it is unaltered
   const displayValue = useMemo(() => {
     const newDisplayValue = etherValueToDisplayValue(usdMode, value, nativeCurrencyPrice);
-    if (transitoryDisplayValue && parseFloat(newDisplayValue) === parseFloat(transitoryDisplayValue)) {
+    if (
+      transitoryDisplayValue &&
+      parseFloat(newDisplayValue) === parseFloat(transitoryDisplayValue)
+    ) {
       return transitoryDisplayValue;
     }
     // Clear any transitory display values that might be set
@@ -96,10 +107,13 @@ export const EtherInput = ({ value, name, placeholder, onChange }: CommonInputPr
       value={displayValue}
       placeholder={placeholder}
       onChange={handleChangeNumber}
+      disabled={disabled}
       prefix={<span className="pl-4 -mr-2 text-accent self-center">{usdMode ? "$" : "Ξ"}</span>}
       suffix={
         <button
-          className={`btn btn-primary h-[2.2rem] min-h-[2.2rem] ${nativeCurrencyPrice > 0 ? "" : "hidden"}`}
+          className={`btn btn-primary h-[2.2rem] min-h-[2.2rem] ${
+            nativeCurrencyPrice > 0 ? "" : "hidden"
+          }`}
           onClick={toggleMode}
           disabled={!usdMode && !nativeCurrencyPrice}
         >

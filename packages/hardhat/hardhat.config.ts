@@ -19,7 +19,7 @@ const etherscanApiKey = process.env.ETHERSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.17",
+    version: "0.8.20",
     settings: {
       optimizer: {
         enabled: true,
@@ -29,7 +29,7 @@ const config: HardhatUserConfig = {
     },
   },
   ovm: {
-    solcVersion: "0.8.17",
+    solcVersion: "0.8.20",
   },
   namedAccounts: {
     deployer: {
@@ -56,7 +56,12 @@ const config: HardhatUserConfig = {
       gasPrice: 1000000000,
       accounts: [deployerPrivateKey],
     },
-
+    holesky: {
+      url: "https://ethereum-holesky.publicnode.com",
+      gasPrice: 1000000000,
+      chainId: 17000,
+      accounts: [deployerPrivateKey],
+    },
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],

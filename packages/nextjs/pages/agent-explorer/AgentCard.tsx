@@ -4,11 +4,11 @@ import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { AgentModel } from "~~/models/agent.model";
 import { notification } from "~~/utils/scaffold-eth";
 
-type Props = {
+interface Props {
   agent: AgentModel;
-};
+}
 
-export default function AgentCard({ agent }: Props) {
+const AgentCard = ({ agent }: Props) => {
   const followers = useMemo(() => {
     if (!agent) return undefined;
     if (agent.followers >= 1000) {
@@ -19,7 +19,9 @@ export default function AgentCard({ agent }: Props) {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    notification.info("Copied to clipboard");
+    notification.info("Copied to clipboard", {
+      position: "bottom-right",
+    });
   };
   return (
     <>
@@ -58,7 +60,10 @@ export default function AgentCard({ agent }: Props) {
               <span className="flex w-fit gap-2 flex-col">
                 <span className="text-secondary-content inline-flex items-center">
                   {agent.address}
-                  <button className="btn btn-neutral btn-xs h-8" onClick={() => copyToClipboard(agent.address)}>
+                  <button
+                    className="btn btn-neutral btn-xs h-8"
+                    onClick={() => copyToClipboard(agent.address)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -78,7 +83,10 @@ export default function AgentCard({ agent }: Props) {
                 <span className="text-secondary-content">{followers} Followers</span>
               </span>
             </div>
-            <button type="button" className="btn btn-outline btn-lg  border border-white border-opacity-25">
+            <button
+              type="button"
+              className="btn btn-outline btn-lg  border border-white border-opacity-25"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -96,4 +104,6 @@ export default function AgentCard({ agent }: Props) {
       )}
     </>
   );
-}
+};
+
+export default AgentCard;

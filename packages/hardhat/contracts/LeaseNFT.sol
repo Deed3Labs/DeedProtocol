@@ -1,31 +1,45 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+// SPDX-License-Identifier: AGPL-3.0
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+import "./AccessManager.sol";
 
-contract LeaseNFT is ERC721, Ownable {
+contract LeaseNFT is ERC721, AccessManagerBase {
     address private leaseAgreementAddress;
 
-    constructor() ERC721("LeaseNFT", "LEASE") {}
+    event LeaseNFTMinted(address leaseOwner, uint256 leaseId, address minter);
+    event LeaseNFTBurned(uint256 leaseId, address burner);
+    event LeaseNFTAgreementSet(uint256 leaseId, address burner);
 
-    function setLeaseAgreementAddress(address _leaseAgreementAddress) public onlyOwner {
+    constructor(address _accessManager) ERC721("LeaseNFT", "LEASE") AccessManagerBase(_accessManager) {}
+
+    function setLeaseAgreementAddress(address _leaseAgreementAddress) external onlyAdmin {
         leaseAgreementAddress = _leaseAgreementAddress;
     }
 
-    function mintToken(address to, uint256 tokenId) external {
-        _mint(to, tokenId);
+    function mint(address _to, uint256 _leaseId) external {
+        require(
+            hasAdminRole() || _msgSender() == leaseAgreementAddress,
+            "[LeaseNFT] Only LeaseAgreement contract can mint the lease"
+        );
+        _mint(_to, _leaseId);
+        emit LeaseNFTMinted(_to, _leaseId, _msgSender());
     }
 
-    function burn(uint256 tokenId) external {
+    function exists(uint256 _leaseId) public view returns (bool) {
+        return _ownerOf(_leaseId) != address(0);
+    }
+
+    function burn(uint256 _leaseId) external {
         require(
-            msg.sender == this.ownerOf(tokenId) || msg.sender == leaseAgreementAddress,
-            "Only token owner can burn the leaseNFT"
+            hasAdminRole() || _msgSender() == leaseAgreementAddress,
+            "[LeaseNFT] Only LeaseAgreement can burn the lease"
         );
-        _burn(tokenId);
+        _burn(_leaseId);
+        emit LeaseNFTBurned(_leaseId, _msgSender());
     }
 }

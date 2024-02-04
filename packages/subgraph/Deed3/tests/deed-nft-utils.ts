@@ -1,12 +1,15 @@
 import { newMockEvent } from "matchstick-as"
-import { ethereum, Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
+import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   Approval,
   ApprovalForAll,
-  DeedMinted,
-  RoleAdminChanged,
-  RoleGranted,
-  RoleRevoked,
+  BatchMetadataUpdate,
+  DeedNFTAssetTypeSet,
+  DeedNFTAssetValidationSet,
+  DeedNFTBurned,
+  DeedNFTIpfsDetailsSet,
+  DeedNFTMinted,
+  MetadataUpdate,
   Transfer
 } from "../generated/DeedNFT/DeedNFT"
 
@@ -57,88 +60,141 @@ export function createApprovalForAllEvent(
   return approvalForAllEvent
 }
 
-export function createDeedMintedEvent(_deedInfo: ethereum.Tuple): DeedMinted {
-  let deedMintedEvent = changetype<DeedMinted>(newMockEvent())
+export function createBatchMetadataUpdateEvent(
+  _fromTokenId: BigInt,
+  _toTokenId: BigInt
+): BatchMetadataUpdate {
+  let batchMetadataUpdateEvent = changetype<BatchMetadataUpdate>(newMockEvent())
 
-  deedMintedEvent.parameters = new Array()
+  batchMetadataUpdateEvent.parameters = new Array()
 
-  deedMintedEvent.parameters.push(
-    new ethereum.EventParam("_deedInfo", ethereum.Value.fromTuple(_deedInfo))
-  )
-
-  return deedMintedEvent
-}
-
-export function createRoleAdminChangedEvent(
-  role: Bytes,
-  previousAdminRole: Bytes,
-  newAdminRole: Bytes
-): RoleAdminChanged {
-  let roleAdminChangedEvent = changetype<RoleAdminChanged>(newMockEvent())
-
-  roleAdminChangedEvent.parameters = new Array()
-
-  roleAdminChangedEvent.parameters.push(
-    new ethereum.EventParam("role", ethereum.Value.fromFixedBytes(role))
-  )
-  roleAdminChangedEvent.parameters.push(
+  batchMetadataUpdateEvent.parameters.push(
     new ethereum.EventParam(
-      "previousAdminRole",
-      ethereum.Value.fromFixedBytes(previousAdminRole)
+      "_fromTokenId",
+      ethereum.Value.fromUnsignedBigInt(_fromTokenId)
     )
   )
-  roleAdminChangedEvent.parameters.push(
+  batchMetadataUpdateEvent.parameters.push(
     new ethereum.EventParam(
-      "newAdminRole",
-      ethereum.Value.fromFixedBytes(newAdminRole)
+      "_toTokenId",
+      ethereum.Value.fromUnsignedBigInt(_toTokenId)
     )
   )
 
-  return roleAdminChangedEvent
+  return batchMetadataUpdateEvent
 }
 
-export function createRoleGrantedEvent(
-  role: Bytes,
-  account: Address,
-  sender: Address
-): RoleGranted {
-  let roleGrantedEvent = changetype<RoleGranted>(newMockEvent())
+export function createDeedNFTAssetTypeSetEvent(
+  deedId: BigInt,
+  newAssetType: i32
+): DeedNFTAssetTypeSet {
+  let deedNftAssetTypeSetEvent = changetype<DeedNFTAssetTypeSet>(newMockEvent())
 
-  roleGrantedEvent.parameters = new Array()
+  deedNftAssetTypeSetEvent.parameters = new Array()
 
-  roleGrantedEvent.parameters.push(
-    new ethereum.EventParam("role", ethereum.Value.fromFixedBytes(role))
+  deedNftAssetTypeSetEvent.parameters.push(
+    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
   )
-  roleGrantedEvent.parameters.push(
-    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
-  )
-  roleGrantedEvent.parameters.push(
-    new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender))
+  deedNftAssetTypeSetEvent.parameters.push(
+    new ethereum.EventParam(
+      "newAssetType",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(newAssetType))
+    )
   )
 
-  return roleGrantedEvent
+  return deedNftAssetTypeSetEvent
 }
 
-export function createRoleRevokedEvent(
-  role: Bytes,
-  account: Address,
-  sender: Address
-): RoleRevoked {
-  let roleRevokedEvent = changetype<RoleRevoked>(newMockEvent())
-
-  roleRevokedEvent.parameters = new Array()
-
-  roleRevokedEvent.parameters.push(
-    new ethereum.EventParam("role", ethereum.Value.fromFixedBytes(role))
-  )
-  roleRevokedEvent.parameters.push(
-    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
-  )
-  roleRevokedEvent.parameters.push(
-    new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender))
+export function createDeedNFTAssetValidationSetEvent(
+  deedId: BigInt,
+  isValid: boolean
+): DeedNFTAssetValidationSet {
+  let deedNftAssetValidationSetEvent = changetype<DeedNFTAssetValidationSet>(
+    newMockEvent()
   )
 
-  return roleRevokedEvent
+  deedNftAssetValidationSetEvent.parameters = new Array()
+
+  deedNftAssetValidationSetEvent.parameters.push(
+    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
+  )
+  deedNftAssetValidationSetEvent.parameters.push(
+    new ethereum.EventParam("isValid", ethereum.Value.fromBoolean(isValid))
+  )
+
+  return deedNftAssetValidationSetEvent
+}
+
+export function createDeedNFTBurnedEvent(deedId: BigInt): DeedNFTBurned {
+  let deedNftBurnedEvent = changetype<DeedNFTBurned>(newMockEvent())
+
+  deedNftBurnedEvent.parameters = new Array()
+
+  deedNftBurnedEvent.parameters.push(
+    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
+  )
+
+  return deedNftBurnedEvent
+}
+
+export function createDeedNFTIpfsDetailsSetEvent(
+  deedId: BigInt,
+  newIpfsDetailsHash: string
+): DeedNFTIpfsDetailsSet {
+  let deedNftIpfsDetailsSetEvent = changetype<DeedNFTIpfsDetailsSet>(
+    newMockEvent()
+  )
+
+  deedNftIpfsDetailsSetEvent.parameters = new Array()
+
+  deedNftIpfsDetailsSetEvent.parameters.push(
+    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
+  )
+  deedNftIpfsDetailsSetEvent.parameters.push(
+    new ethereum.EventParam(
+      "newIpfsDetailsHash",
+      ethereum.Value.fromString(newIpfsDetailsHash)
+    )
+  )
+
+  return deedNftIpfsDetailsSetEvent
+}
+
+export function createDeedNFTMintedEvent(
+  deedId: BigInt,
+  deedInfo: ethereum.Tuple,
+  minter: Address
+): DeedNFTMinted {
+  let deedNftMintedEvent = changetype<DeedNFTMinted>(newMockEvent())
+
+  deedNftMintedEvent.parameters = new Array()
+
+  deedNftMintedEvent.parameters.push(
+    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
+  )
+  deedNftMintedEvent.parameters.push(
+    new ethereum.EventParam("deedInfo", ethereum.Value.fromTuple(deedInfo))
+  )
+  deedNftMintedEvent.parameters.push(
+    new ethereum.EventParam("minter", ethereum.Value.fromAddress(minter))
+  )
+
+  return deedNftMintedEvent
+}
+
+export function createMetadataUpdateEvent(_tokenId: BigInt): MetadataUpdate {
+  let metadataUpdateEvent = changetype<MetadataUpdate>(newMockEvent())
+
+  metadataUpdateEvent.parameters = new Array()
+
+  metadataUpdateEvent.parameters.push(
+    new ethereum.EventParam(
+      "_tokenId",
+      ethereum.Value.fromUnsignedBigInt(_tokenId)
+    )
+  )
+
+  return metadataUpdateEvent
 }
 
 export function createTransferEvent(

@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { localhost } from "wagmi/chains";
-import { getLocalProvider } from "~~/utils/scaffold-eth";
+import { createPublicClient, http, toHex } from "viem";
+import { hardhat } from "viem/chains";
+import logger from "~~/services/logger.service";
 
-const provider = getLocalProvider(localhost);
+const publicClient = createPublicClient({
+  chain: hardhat,
+  transport: http(),
+});
 
 export const AddressStorageTab = ({ address }: { address: string }) => {
   const [storage, setStorage] = useState<string[]>([]);
@@ -14,7 +18,10 @@ export const AddressStorageTab = ({ address }: { address: string }) => {
         let idx = 0;
 
         while (true) {
-          const storageAtPosition = await provider?.getStorageAt(address, idx);
+          const storageAtPosition = await publicClient.getStorageAt({
+            address: address,
+            slot: toHex(idx),
+          });
 
           if (storageAtPosition === "0x" + "0".repeat(64)) break;
 
@@ -26,7 +33,7 @@ export const AddressStorageTab = ({ address }: { address: string }) => {
         }
         setStorage(storageData);
       } catch (error) {
-        console.error("Failed to fetch storage:", error);
+        logger.error({ message: "Failed to fetch storage:", error });
       }
     };
 

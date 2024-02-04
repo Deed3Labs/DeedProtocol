@@ -1,7 +1,7 @@
 import { IMarker } from "./marker.model";
 
 export interface PropertyModel extends IMarker {
-  id: string;
+  id: number;
   name: string;
   price: number;
   type: PropertyType;

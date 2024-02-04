@@ -1,7 +1,7 @@
-type AddressCodeTabProps = {
+interface AddressCodeTabProps {
   bytecode: string;
   assembly: string;
-};
+}
 
 export const AddressCodeTab = ({ bytecode, assembly }: AddressCodeTabProps) => {
   const formattedAssembly = assembly.split(" ").join("\n");

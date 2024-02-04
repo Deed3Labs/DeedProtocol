@@ -1,8 +1,117 @@
 [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_accessManager",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "ERC721IncorrectOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ERC721InsufficientApproval",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "approver",
+        "type": "address"
+      }
+    ],
+    "name": "ERC721InvalidApprover",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      }
+    ],
+    "name": "ERC721InvalidOperator",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "ERC721InvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "ERC721InvalidReceiver",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "ERC721InvalidSender",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ERC721NonexistentToken",
+    "type": "error"
   },
   {
     "anonymous": false,
@@ -58,110 +167,139 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_fromTokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_toTokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "BatchMetadataUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "deedId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DeedNFT.AssetType",
+        "name": "newAssetType",
+        "type": "uint8"
+      }
+    ],
+    "name": "DeedNFTAssetTypeSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "deedId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isValid",
+        "type": "bool"
+      }
+    ],
+    "name": "DeedNFTAssetValidationSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "deedId",
+        "type": "uint256"
+      }
+    ],
+    "name": "DeedNFTBurned",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "deedId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newIpfsDetailsHash",
+        "type": "string"
+      }
+    ],
+    "name": "DeedNFTIpfsDetailsSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "deedId",
+        "type": "uint256"
+      },
+      {
         "components": [
-          {
-            "internalType": "string",
-            "name": "ipfsDetailsHash",
-            "type": "string"
-          },
           {
             "internalType": "enum DeedNFT.AssetType",
             "name": "assetType",
             "type": "uint8"
           },
           {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "latLong",
-            "type": "string"
+            "internalType": "bool",
+            "name": "isValidated",
+            "type": "bool"
           }
         ],
         "indexed": false,
         "internalType": "struct DeedNFT.DeedInfo",
-        "name": "_deedInfo",
+        "name": "deedInfo",
         "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "minter",
+        "type": "address"
       }
     ],
-    "name": "DeedMinted",
+    "name": "DeedNFTMinted",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "previousAdminRole",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "newAdminRole",
-        "type": "bytes32"
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
       }
     ],
-    "name": "RoleAdminChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      }
-    ],
-    "name": "RoleGranted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      }
-    ],
-    "name": "RoleRevoked",
+    "name": "MetadataUpdate",
     "type": "event"
   },
   {
@@ -188,45 +326,6 @@
     ],
     "name": "Transfer",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "DEFAULT_ADMIN_ROLE",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "VALIDATOR_ROLE",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "minter",
-        "type": "address"
-      }
-    ],
-    "name": "addValidator",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
   },
   {
     "inputs": [
@@ -269,7 +368,20 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "_deedId",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_deedId",
         "type": "uint256"
       }
     ],
@@ -307,7 +419,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_tokenId",
+        "name": "_deedId",
         "type": "uint256"
       }
     ],
@@ -316,24 +428,14 @@
       {
         "components": [
           {
-            "internalType": "string",
-            "name": "ipfsDetailsHash",
-            "type": "string"
-          },
-          {
             "internalType": "enum DeedNFT.AssetType",
             "name": "assetType",
             "type": "uint8"
           },
           {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "latLong",
-            "type": "string"
+            "internalType": "bool",
+            "name": "isValidated",
+            "type": "bool"
           }
         ],
         "internalType": "struct DeedNFT.DeedInfo",
@@ -345,19 +447,13 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getRoleAdmin",
+    "inputs": [],
+    "name": "hasAdminRole",
     "outputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "bool",
         "name": "",
-        "type": "bytes32"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -367,34 +463,29 @@
     "inputs": [
       {
         "internalType": "bytes32",
-        "name": "role",
+        "name": "_role",
         "type": "bytes32"
       },
       {
         "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "grantRole",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
+        "name": "_address",
         "type": "address"
       }
     ],
     "name": "hasRole",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "hasValidatorRole",
     "outputs": [
       {
         "internalType": "bool",
@@ -433,7 +524,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_to",
+        "name": "_owner",
         "type": "address"
       },
       {
@@ -445,15 +536,16 @@
         "internalType": "enum DeedNFT.AssetType",
         "name": "_assetType",
         "type": "uint8"
-      },
-      {
-        "internalType": "string",
-        "name": "latLong",
-        "type": "string"
       }
     ],
     "name": "mintAsset",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -465,6 +557,19 @@
         "internalType": "string",
         "name": "",
         "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nextDeedId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -487,55 +592,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "minter",
-        "type": "address"
-      }
-    ],
-    "name": "removeValidator",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "renounceRole",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "revokeRole",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -615,12 +671,48 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint32",
-        "name": "_newPrice",
-        "type": "uint32"
+        "internalType": "enum DeedNFT.AssetType",
+        "name": "_assetType",
+        "type": "uint8"
       }
     ],
-    "name": "setPrice",
+    "name": "setAssetType",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_deedId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isValid",
+        "type": "bool"
+      }
+    ],
+    "name": "setAssetValidation",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_deedId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_ipfsDetailsHash",
+        "type": "string"
+      }
+    ],
+    "name": "setIpfsDetailsHash",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -629,7 +721,7 @@
     "inputs": [
       {
         "internalType": "bytes4",
-        "name": "interfaceId",
+        "name": "_interfaceId",
         "type": "bytes4"
       }
     ],
@@ -661,7 +753,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "_deedId",
         "type": "uint256"
       }
     ],
