@@ -64,14 +64,16 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
         return res.status(500).send("Upload Error");
       }
       const file: FileModel = fields.payload ? JSON.parse(fields.payload[0]) : {};
-      const metadata = files.file![0];
-      const stream = fs.createReadStream(metadata.filepath);
+      const fileInfo = files.file![0];
+
+      const stream = fs.createReadStream(fileInfo.filepath);
       let response;
       if (file.restricted) {
         // Push the file to the database
         response = await FilesDb.createFile(stream, {
           fileName: file.fileName,
-          metadata: metadata,
+          mimetype: fileInfo.mimetype,
+          size: fileInfo.size,
           owner: walletAddress,
           restricted: file.restricted,
           timestamp: new Date(),
@@ -80,20 +82,24 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
         // Push the file to IPFS
         const options = {
           pinataMetadata: {
-            name: fields.name![0],
-            description: fields.description![0],
+            name: file.fileName![0],
+            description: `
+            - Owner ${file.owner}
+            - DB File ID ${file.fileId}
+            - Timestamp ${new Date().toISOString()}`,
           },
         };
         response = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
         FilesDb.saveFileInfo({
-          metadata: metadata,
-          fileName: fields.name![0],
+          mimetype: fileInfo.mimetype,
+          fileName: file.fileName,
           owner: walletAddress,
+          size: fileInfo.size,
           fileId: response,
           timestamp: new Date(),
         });
       }
-      fs.unlinkSync(metadata.filepath);
+      fs.unlinkSync(fileInfo.filepath);
       return res.status(200).send(response);
     } catch (error) {
       console.error(error);
@@ -165,19 +171,18 @@ const download = async (req: NextApiRequest, res: NextApiResponse<string>) => {
       return;
     }
   } else {
-    const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${fileId}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
+    let gateway = process.env.NEXT_PINATA_GATEWAY;
+    if (!gateway?.endsWith("/")) {
+      gateway += "/";
+    }
+    const filePath = `${gateway}ipfs/${fileId}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
     const { data } = await axios.get<Readable>(filePath, {
       responseType: "stream",
     });
     stream = data;
   }
 
-  let fileType;
-  if ("mimetype" in fileInfo.metadata) fileType = fileInfo.metadata.mimetype;
-  else if ("type" in fileInfo.metadata) fileType = fileInfo.metadata.type;
-  if (!fileType) fileType = "application/octet-stream";
-
-  res.setHeader("Content-Type", fileType);
+  res.setHeader("Content-Type", fileInfo.mimetype ?? "application/octet-stream");
   res.setHeader("Content-Disposition", `attachment; filename=${fileInfo.fileName}`);
 
   return stream.pipe(res);

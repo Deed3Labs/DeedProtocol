@@ -21,7 +21,7 @@ export class FilesDb extends DbBase {
     const bucket = new GridFSBucket(this.deedDB);
     const id = stream.pipe(
       bucket.openUploadStream(fileInfo.fileName, {
-        metadata: fileInfo.metadata,
+        metadata: fileInfo,
       }),
     ).id;
     const fileId = id.toString().replaceAll('"', "");
