@@ -1,10 +1,14 @@
+specVersion: 0.0.7
+schema:
+  file: schema.graphql
+dataSources:
   - kind: ethereum
     name: DeedNFT
-    network: {{network}}
+    network: sepolia
     source:
-        address: "{{address}}"
-        abi: DeedNFT
-        startBlock: {{startBlock}}
+      address: "0xAd48c73B7144255f949aF4514a31DD1729B74931"
+      abi: DeedNFT
+      startBlock: 10206707
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -18,7 +22,7 @@
         - Transfer
       abis:
         - name: DeedNFT
-          file: ./abis/DeedNFT.json
+          file: DeedNFT\abis\DeedNFT.json
       eventHandlers:
         - event: DeedNFTAssetTypeSet(uint256,uint8)
           handler: handleDeedNFTAssetTypeSet
@@ -32,4 +36,4 @@
           handler: handleDeedNFTMinted
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-      file: ./src/deed-nft.mapping.ts
+      file: DeedNFT\DeedNFT.wasm

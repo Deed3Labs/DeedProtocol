@@ -4,11 +4,12 @@ import {
   Approval,
   ApprovalForAll,
   BatchMetadataUpdate,
-  DeedNFTAssetTypeSet,
-  DeedNFTAssetValidationSet,
+  DeedNFTAssetTypeChanged,
   DeedNFTBurned,
-  DeedNFTIpfsDetailsSet,
   DeedNFTMinted,
+  DeedNFTUriChanged,
+  DeedNFTValidatedChanged,
+  Initialized,
   MetadataUpdate,
   Transfer
 } from "../generated/DeedNFT/DeedNFT"
@@ -84,45 +85,27 @@ export function createBatchMetadataUpdateEvent(
   return batchMetadataUpdateEvent
 }
 
-export function createDeedNFTAssetTypeSetEvent(
+export function createDeedNFTAssetTypeChangedEvent(
   deedId: BigInt,
   newAssetType: i32
-): DeedNFTAssetTypeSet {
-  let deedNftAssetTypeSetEvent = changetype<DeedNFTAssetTypeSet>(newMockEvent())
+): DeedNFTAssetTypeChanged {
+  let deedNftAssetTypeChangedEvent = changetype<DeedNFTAssetTypeChanged>(
+    newMockEvent()
+  )
 
-  deedNftAssetTypeSetEvent.parameters = new Array()
+  deedNftAssetTypeChangedEvent.parameters = new Array()
 
-  deedNftAssetTypeSetEvent.parameters.push(
+  deedNftAssetTypeChangedEvent.parameters.push(
     new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
   )
-  deedNftAssetTypeSetEvent.parameters.push(
+  deedNftAssetTypeChangedEvent.parameters.push(
     new ethereum.EventParam(
       "newAssetType",
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(newAssetType))
     )
   )
 
-  return deedNftAssetTypeSetEvent
-}
-
-export function createDeedNFTAssetValidationSetEvent(
-  deedId: BigInt,
-  isValid: boolean
-): DeedNFTAssetValidationSet {
-  let deedNftAssetValidationSetEvent = changetype<DeedNFTAssetValidationSet>(
-    newMockEvent()
-  )
-
-  deedNftAssetValidationSetEvent.parameters = new Array()
-
-  deedNftAssetValidationSetEvent.parameters.push(
-    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
-  )
-  deedNftAssetValidationSetEvent.parameters.push(
-    new ethereum.EventParam("isValid", ethereum.Value.fromBoolean(isValid))
-  )
-
-  return deedNftAssetValidationSetEvent
+  return deedNftAssetTypeChangedEvent
 }
 
 export function createDeedNFTBurnedEvent(deedId: BigInt): DeedNFTBurned {
@@ -137,33 +120,11 @@ export function createDeedNFTBurnedEvent(deedId: BigInt): DeedNFTBurned {
   return deedNftBurnedEvent
 }
 
-export function createDeedNFTIpfsDetailsSetEvent(
-  deedId: BigInt,
-  newIpfsDetailsHash: string
-): DeedNFTIpfsDetailsSet {
-  let deedNftIpfsDetailsSetEvent = changetype<DeedNFTIpfsDetailsSet>(
-    newMockEvent()
-  )
-
-  deedNftIpfsDetailsSetEvent.parameters = new Array()
-
-  deedNftIpfsDetailsSetEvent.parameters.push(
-    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
-  )
-  deedNftIpfsDetailsSetEvent.parameters.push(
-    new ethereum.EventParam(
-      "newIpfsDetailsHash",
-      ethereum.Value.fromString(newIpfsDetailsHash)
-    )
-  )
-
-  return deedNftIpfsDetailsSetEvent
-}
-
 export function createDeedNFTMintedEvent(
   deedId: BigInt,
   deedInfo: ethereum.Tuple,
-  minter: Address
+  minter: Address,
+  uri: string
 ): DeedNFTMinted {
   let deedNftMintedEvent = changetype<DeedNFTMinted>(newMockEvent())
 
@@ -178,8 +139,67 @@ export function createDeedNFTMintedEvent(
   deedNftMintedEvent.parameters.push(
     new ethereum.EventParam("minter", ethereum.Value.fromAddress(minter))
   )
+  deedNftMintedEvent.parameters.push(
+    new ethereum.EventParam("uri", ethereum.Value.fromString(uri))
+  )
 
   return deedNftMintedEvent
+}
+
+export function createDeedNFTUriChangedEvent(
+  deedId: BigInt,
+  newIpfsDetailsHash: string
+): DeedNFTUriChanged {
+  let deedNftUriChangedEvent = changetype<DeedNFTUriChanged>(newMockEvent())
+
+  deedNftUriChangedEvent.parameters = new Array()
+
+  deedNftUriChangedEvent.parameters.push(
+    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
+  )
+  deedNftUriChangedEvent.parameters.push(
+    new ethereum.EventParam(
+      "newIpfsDetailsHash",
+      ethereum.Value.fromString(newIpfsDetailsHash)
+    )
+  )
+
+  return deedNftUriChangedEvent
+}
+
+export function createDeedNFTValidatedChangedEvent(
+  deedId: BigInt,
+  isValid: boolean
+): DeedNFTValidatedChanged {
+  let deedNftValidatedChangedEvent = changetype<DeedNFTValidatedChanged>(
+    newMockEvent()
+  )
+
+  deedNftValidatedChangedEvent.parameters = new Array()
+
+  deedNftValidatedChangedEvent.parameters.push(
+    new ethereum.EventParam("deedId", ethereum.Value.fromUnsignedBigInt(deedId))
+  )
+  deedNftValidatedChangedEvent.parameters.push(
+    new ethereum.EventParam("isValid", ethereum.Value.fromBoolean(isValid))
+  )
+
+  return deedNftValidatedChangedEvent
+}
+
+export function createInitializedEvent(version: BigInt): Initialized {
+  let initializedEvent = changetype<Initialized>(newMockEvent())
+
+  initializedEvent.parameters = new Array()
+
+  initializedEvent.parameters.push(
+    new ethereum.EventParam(
+      "version",
+      ethereum.Value.fromUnsignedBigInt(version)
+    )
+  )
+
+  return initializedEvent
 }
 
 export function createMetadataUpdateEvent(_tokenId: BigInt): MetadataUpdate {

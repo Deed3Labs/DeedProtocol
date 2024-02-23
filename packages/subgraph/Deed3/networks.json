@@ -1,14 +1,8 @@
 {
-  "goerli": {
-    "DeedNFT": {
-      "address": "0xF3dC56410C8C6070cfa1361278c5e2C42Be4e171",
-      "startBlock": 10206707
-    }
-  },
   "sepolia": {
     "DeedNFT": {
-      "address": "0x215c20C0b355AB8b4c109c3FA88ab6B22B8ee80F",
-      "startBlock": 10206707
+      "address": "0xAd48c73B7144255f949aF4514a31DD1729B74931",
+      "startBlock": 5336526
     }
   }
 }
