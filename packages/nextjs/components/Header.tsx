@@ -75,7 +75,9 @@ export const Header = () => {
         >
           Explore
         </Link>
-        <Link href="https://docs.deedprotocol.org/">Docs</Link>
+        <Link target="_blank" href="https://docs.deedprotocol.org/">
+          Docs
+        </Link>
         {/* <Link href="/property-explorer?type=lease">About</Link> */}
       </>
     ),
