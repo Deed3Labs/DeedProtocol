@@ -1,0 +1,7 @@
+{
+  "sepolia": {
+    "manager": "0xD30aee396a54560581a3265Fd2194B0edB787525",
+    "deed-proxy": "0xAd48c73B7144255f949aF4514a31DD1729B74931",
+    "access-manager-proxy": "0x42B39e8fd8A63203869C9BB59583c70176192540"
+  }
+}

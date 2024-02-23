@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./AccessManager.sol";
 
-contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
+contract DeedNFT is ERC721Upgradeable, ERC721URIStorageUpgradeable, AccessManagerBase {
     struct DeedInfo {
         AssetType assetType;
         bool isValidated;
@@ -12,6 +13,7 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
 
     uint256 public nextDeedId;
     mapping(uint256 => DeedInfo) private deedInfoMap;
+    uint256[48] __gap;
 
     enum AssetType {
         Land,
@@ -20,13 +22,21 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
         CommercialEquipment
     }
 
-    event DeedNFTMinted(uint256 deedId, DeedInfo deedInfo, address minter, string ipfsHash);
+    event DeedNFTMinted(uint256 deedId, DeedInfo deedInfo, address minter, string uri);
     event DeedNFTBurned(uint256 deedId);
-    event DeedNFTAssetValidationSet(uint256 deedId, bool isValid);
-    event DeedNFTIpfsDetailsSet(uint256 deedId, string newIpfsDetailsHash);
-    event DeedNFTAssetTypeSet(uint256 deedId, AssetType newAssetType);
+    event DeedNFTValidatedChanged(uint256 deedId, bool isValid);
+    event DeedNFTUriChanged(uint256 deedId, string newIpfsDetailsHash);
+    event DeedNFTAssetTypeChanged(uint256 deedId, AssetType newAssetType);
 
-    constructor(address _accessManager) ERC721("DeedNFT", "DEED") ERC721URIStorage() AccessManagerBase(_accessManager) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address admin) public override(AccessManagerBase) initializer {
+        __ERC721URIStorage_init();
+        __ERC721_init("DeedNFT", "DEED");
+        AccessManagerBase.initialize(admin);
         nextDeedId = 1;
     }
 
@@ -78,14 +88,14 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
     ) public virtual deedExists(_deedId) onlyOwner(_deedId) {
         _setTokenURI(_deedId, _ipfsDetailsHash);
         _setAssetValidation(_deedId, false);
-        emit DeedNFTIpfsDetailsSet(_deedId, _ipfsDetailsHash);
+        emit DeedNFTUriChanged(_deedId, _ipfsDetailsHash);
     }
 
     function setAssetType(uint256 _deedId, AssetType _assetType) public deedExists(_deedId) onlyOwner(_deedId) {
         DeedInfo storage deedInfo = deedInfoMap[_deedId];
         deedInfo.assetType = _assetType;
         _setAssetValidation(_deedId, false);
-        emit DeedNFTAssetTypeSet(_deedId, _assetType);
+        emit DeedNFTAssetTypeChanged(_deedId, _assetType);
     }
 
     function getDeedInfo(uint256 _deedId) public view deedExists(_deedId) returns (DeedInfo memory) {
@@ -99,17 +109,19 @@ contract DeedNFT is ERC721, ERC721URIStorage, AccessManagerBase {
 
     function supportsInterface(
         bytes4 _interfaceId
-    ) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
+    ) public view virtual override(ERC721Upgradeable, ERC721URIStorageUpgradeable) returns (bool) {
         return super.supportsInterface(_interfaceId);
     }
 
-    function tokenURI(uint256 _deedId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+    function tokenURI(
+        uint256 _deedId
+    ) public view override(ERC721Upgradeable, ERC721URIStorageUpgradeable) returns (string memory) {
         return super.tokenURI(_deedId);
     }
 
     function _setAssetValidation(uint256 _deedId, bool _isValid) internal {
         DeedInfo storage deedInfo = deedInfoMap[_deedId];
         deedInfo.isValidated = _isValid;
-        emit DeedNFTAssetValidationSet(_deedId, _isValid);
+        emit DeedNFTValidatedChanged(_deedId, _isValid);
     }
 }

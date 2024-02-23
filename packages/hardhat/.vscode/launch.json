@@ -10,6 +10,16 @@
       "runtimeArgs": [
         "test"
       ]
+    },
+    {
+      "name": "Hardhat deploy sepolia",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "deploy:sepolia"
+      ]
     }
   ]
 }
