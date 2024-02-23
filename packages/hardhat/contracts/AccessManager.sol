@@ -1,12 +1,21 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract AccessManager is AccessControl {
+contract AccessManager is AccessControlUpgradeable {
     bytes32 public constant VALIDATOR_ROLE = keccak256("VALIDATOR_ROLE");
     bytes32 public constant AGENT_ROLE = keccak256("AGENT_ROLE");
+    uint256[48] __gap;
 
-    constructor(address admin) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address admin) public initializer {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
     }
 
@@ -54,15 +63,22 @@ contract AccessManager is AccessControl {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 _interfaceId) public view virtual override(AccessControl) returns (bool) {
+    function supportsInterface(
+        bytes4 _interfaceId
+    ) public view virtual override(AccessControlUpgradeable) returns (bool) {
         return super.supportsInterface(_interfaceId);
     }
 }
 
-contract AccessManagerBase is Context {
+contract AccessManagerBase is ContextUpgradeable {
     AccessManager accessManager;
 
-    constructor(address _accessManager) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address _accessManager) public virtual initializer {
         accessManager = AccessManager(_accessManager);
     }
 
