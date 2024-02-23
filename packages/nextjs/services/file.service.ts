@@ -125,11 +125,11 @@ function getSupportedFiles(data: DeedInfoModel, old?: DeedInfoModel) {
     });
   }
 
-  if (data.ownerInformation.supportingDoc && data.ownerInformation.supportingDoc.length) {
+  if (data.ownerInformation.supportingDoc?.length) {
     data.ownerInformation.supportingDoc.forEach((doc, index) => {
       if (!old || old.ownerInformation.supportingDoc?.[index] !== doc) {
         files.push({
-          key: ["ownerInformation", "supportingDoc"],
+          key: ["ownerInformation", "supportingDoc", index],
           label: "Any other Supporting Documents #" + index,
           value: doc,
         });

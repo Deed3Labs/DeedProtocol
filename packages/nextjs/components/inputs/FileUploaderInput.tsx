@@ -55,14 +55,13 @@ export const FileUploaderInput = <TParent,>({
 
   const handleFileChange = (files: FileList | null) => {
     if (files) {
-      const newValues = Array.from(files).map(
-        x =>
-          ({
-            fileName: x.name,
-            restricted: isRestricted,
-            metadata: x,
-          } satisfies Omit<FileModel, "fileId" | "owner" | "timestamp">),
-      );
+      const newValues = Array.from(files).map(x => ({
+        fileName: x.name,
+        restricted: isRestricted,
+        size: x.size,
+        mimetype: x.type,
+        metadata: x,
+      }));
 
       // If multiple files are allowed, convert the FileList to an array
       onChange?.({
@@ -155,10 +154,8 @@ export const FileUploaderInput = <TParent,>({
                   <li key={file.fileName} className="flex items-center gap-2">
                     <div>
                       {file.fileName} (
-                      <span
-                        className={file.metadata.size / 1024 > maxFileSizeKb ? "text-error" : ""}
-                      >
-                        {file.metadata.size / 1000} KB
+                      <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
+                        {file.size / 1000} KB
                       </span>
                       )
                     </div>

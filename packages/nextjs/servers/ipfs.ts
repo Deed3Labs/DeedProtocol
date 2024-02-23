@@ -7,10 +7,10 @@ export const getFileFromHash = async (hash: string) => {
 
   let gateway = process.env.NEXT_PINATA_GATEWAY;
 
-  if (gateway?.endsWith("/")) {
-    gateway = gateway.substring(0, gateway.length - 1);
+  if (!gateway?.endsWith("/")) {
+    gateway += "/";
   }
 
-  const filePath = `${gateway}/ipfs/${hash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
+  const filePath = `${gateway}ipfs/${hash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
   return await fetch(filePath);
 };
