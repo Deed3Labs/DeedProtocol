@@ -1,61 +1,101 @@
-type DeedEntity @entity(immutable: false) {
-    id: ID!
-    owner: Bytes! # address
-    minter: Bytes! # address
-    assetType: Int!
-    isValidated: Boolean! # address
-    updatedAtTimestamp: BigInt
-    ipfsHash: String!
-    deedMetadata: DeedMetadata!
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
 
-type DeedMetadata @entity(immutable: false) {
-    id: ID!
-    ownerInformation: OwnerInformation!
-    otherInformation: OtherInformation!
-    propertyDetails: PropertyDetails!
+type ApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
 
-type PropertyDetails @entity(immutable: true) {
-    id: ID!
-    propertyType: String!
-    propertyAddress: String!
-    propertyCity: String!
-    propertyState: String!
-    propertySize: String
-    propertySubType: String
-    propertyZoning: String
-    propertyPurchaseContract: FileInfo
-    propertyDeedOrTitle: FileInfo!
-    propertyImages: [FileInfo!]
+type BatchMetadataUpdate @entity(immutable: true) {
+  id: Bytes!
+  _fromTokenId: BigInt! # uint256
+  _toTokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
 
-type OwnerInformation @entity(immutable: true) {
-    id: ID!
-    ownerType: String!
-    ownerName: String!
-    entityName: String
-    ownerPosition: String
-    ownerEntityType: String
-    supportingDoc: [FileInfo!]
-    operatingAgreement: FileInfo
-    proofBill: FileInfo
-    articleIncorporation: FileInfo!
-    ids: FileInfo!
+type DeedNFTAssetTypeChanged @entity(immutable: true) {
+  id: Bytes!
+  deedId: BigInt! # uint256
+  newAssetType: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
 
-type OtherInformation @entity(immutable: true) {
-    id: ID!
-    blockchain: String!
-    wrapper: String!
+type DeedNFTBurned @entity(immutable: true) {
+  id: Bytes!
+  deedId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
 
-type FileInfo @entity(immutable: true) {
-    id: ID!
-    hash: String
-    name: String
-    size: BigInt
-    type: String
-    lastModified: BigInt
-    restricted: Boolean
+type DeedNFTMinted @entity(immutable: true) {
+  id: Bytes!
+  deedId: BigInt! # uint256
+  deedInfo_assetType: Int! # uint8
+  deedInfo_isValidated: Boolean! # bool
+  minter: Bytes! # address
+  uri: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DeedNFTUriChanged @entity(immutable: true) {
+  id: Bytes!
+  deedId: BigInt! # uint256
+  newIpfsDetailsHash: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DeedNFTValidatedChanged @entity(immutable: true) {
+  id: Bytes!
+  deedId: BigInt! # uint256
+  isValid: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Initialized @entity(immutable: true) {
+  id: Bytes!
+  version: BigInt! # uint64
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MetadataUpdate @entity(immutable: true) {
+  id: Bytes!
+  _tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
