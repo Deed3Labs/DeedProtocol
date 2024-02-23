@@ -5,7 +5,6 @@ import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaf
 import logger from "~~/services/logger.service";
 
 const adminRole = `0x${Array(64).join("0")}` as `0x${string}`;
-console.log({ adminRole });
 const Page = () => {
   const [walletToGrant, setWalletToGrant] = useState<string>();
   const { primaryWallet } = useDynamicContext();
