@@ -8,8 +8,9 @@ import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
+import { PropertyType } from "~~/models/deed-info.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
-import { ListingType, PropertyModel, PropertyType } from "~~/models/property.model";
+import { ListingType, PropertyModel } from "~~/models/property.model";
 
 interface Props {
   properties: PropertyModel[];
@@ -90,7 +91,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
           </div>
           <select
             className="select select-lg select-bordered"
-            defaultValue={0}
+            value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
             <option disabled value={0}>

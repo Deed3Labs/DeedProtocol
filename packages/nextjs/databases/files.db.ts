@@ -32,7 +32,8 @@ export class FilesDb extends DbBase {
   }
 
   static async saveFileInfo(fileInfo: FileModel) {
-    await this.collection.deleteOne({ fileId: fileInfo.fileId });
+    // @ts-ignore
+    await this.collection.deleteOne({ _id: fileInfo._id });
     const result = await this.collection.insertOne(fileInfo);
 
     return result.insertedId.toString().replaceAll('"', "");

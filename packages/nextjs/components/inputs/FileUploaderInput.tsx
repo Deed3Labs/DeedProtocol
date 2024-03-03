@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useFileClient from "~~/clients/file.client";
@@ -36,16 +36,18 @@ export const FileUploaderInput = <TParent,>({
 }: Props<TParent>) => {
   const fileClient = useFileClient();
   const { authToken, primaryWallet } = useDynamicContext();
-  const files = useMemo(() => {
-    if (value) {
-      return Array.isArray(value) ? value : [value];
-    }
-    return [];
-  }, [value]);
-
+  const [files, setFiles] = useState<FileModel[]>([]);
   const isValidator = useIsValidator();
-
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (value) {
+      const values = Array.isArray(value) ? value : [value];
+      setFiles(values);
+    } else {
+      setFiles([]);
+    }
+  }, [value, authToken]);
 
   const handleKeyDown = (ev: React.KeyboardEvent<HTMLLabelElement>) => {
     if (ev.key === "Enter") {
@@ -148,10 +150,11 @@ export const FileUploaderInput = <TParent,>({
           {files.length > 0 && (
             <ul className="line-clamp-3" title={files.map(x => x.fileName).join("\n")}>
               {/* If file is string then its was not successfully fetched */}
-              {files
-                .filter(x => typeof x !== "string")
-                .map(file => (
-                  <li key={file.fileName} className="flex items-center gap-2">
+              {files.map((file, i) =>
+                typeof file === "string" ? (
+                  <li key={file}>Loading</li>
+                ) : (
+                  <li key={file.fileId ?? i} className="flex items-center gap-2">
                     <div>
                       {file.fileName} (
                       <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
@@ -159,16 +162,18 @@ export const FileUploaderInput = <TParent,>({
                       </span>
                       )
                     </div>
-                    {file.fileId && (isValidator || file.owner === primaryWallet?.address) && (
-                      <button
-                        className="btn btn-square pointer-events-auto"
-                        onClick={() => download(file.fileId!)}
-                      >
-                        <DownloadLogo />
-                      </button>
-                    )}
+                    {file.fileId &&
+                      (!isRestricted || isValidator || file.owner === primaryWallet?.address) && (
+                        <button
+                          className="btn btn-square pointer-events-auto"
+                          onClick={() => download(file.fileId!)}
+                        >
+                          <DownloadLogo />
+                        </button>
+                      )}
                   </li>
-                ))}
+                ),
+              )}
             </ul>
           )}
           {files.length === 0 &&

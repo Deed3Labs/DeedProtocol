@@ -12,6 +12,7 @@ export interface TChainAttributes {
   storageAddress: Address;
   deedMintingFeeDollar: number;
   blockExplorer?: string;
+  deedSubgraph?: string;
 }
 
 export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
@@ -35,6 +36,7 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     storageAddress: "0xD30aee396a54560581a3265Fd2194B0edB787525",
     deedMintingFeeDollar: 500,
     stableCoinAddress: "0x2B4987D22648CB0B7C062b03d91147478A95b52b",
+    deedSubgraph: "https://api.studio.thegraph.com/query/56229/deed3-sepolia/version/latest",
   },
   [chains.goerli.id]: {
     color: "#0975F6",

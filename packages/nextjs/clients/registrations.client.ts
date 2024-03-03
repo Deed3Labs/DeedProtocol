@@ -1,6 +1,5 @@
 import useHttpClient, { HttpClient } from "./base.client";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { fetchFileInfos } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -27,11 +26,6 @@ export class RegistrationClient extends HttpClient {
     const result = await this.get<DeedInfoModel>(
       `/api/registrations?id=${id}&isRestricted=${isRestricted}`,
     );
-    if (result.value === undefined || !result.ok) {
-      logger.error({ message: "Error getting registration with id " + id, status: result.status });
-    } else {
-      result.value = await fetchFileInfos(result.value, this.authorizationToken);
-    }
 
     return result;
   }

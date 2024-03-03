@@ -9,11 +9,11 @@ contract DeedNFT is ERC721Upgradeable, ERC721URIStorageUpgradeable, AccessManage
     struct DeedInfo {
         AssetType assetType;
         bool isValidated;
+        uint256[48] __gap;
     }
 
     uint256 public nextDeedId;
     mapping(uint256 => DeedInfo) private deedInfoMap;
-    uint256[48] __gap;
 
     enum AssetType {
         Land,

@@ -20,7 +20,7 @@ export async function uploadFiles(
 ) {
   fileClient.authentify(authToken);
 
-  const toBeUploaded = getSupportedFiles(data, old);
+  const toBeUploaded = getSupportedFiles(data, old, publish);
 
   const payload = cloneDeep(data);
 
@@ -70,7 +70,12 @@ export async function fetchFileInfos(deedData: DeedInfoModel, authToken?: string
   return deedData;
 }
 
-function getSupportedFiles(data: DeedInfoModel, old?: DeedInfoModel) {
+function getSupportedFiles(data: DeedInfoModel, old?: DeedInfoModel, publish: boolean = false) {
+  console.log({
+    data,
+    old,
+    publish,
+  });
   const files: {
     key: [
       keyof DeedInfoModel,
@@ -144,7 +149,10 @@ function getSupportedFiles(data: DeedInfoModel, old?: DeedInfoModel) {
         files.push({
           key: ["propertyDetails", "propertyImages", index],
           label: "Property Images #" + index,
-          value: image,
+          value:
+            typeof image === "string"
+              ? image
+              : { ...image, restricted: publish ? false : image.restricted },
         });
       }
     });

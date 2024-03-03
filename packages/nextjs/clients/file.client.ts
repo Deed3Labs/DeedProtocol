@@ -8,13 +8,14 @@ import { notification } from "~~/utils/scaffold-eth";
 
 export class FileClient extends HttpClient {
   public async downloadFile(fileId: string, name: string) {
+    const toastId = notification.loading("Downloading file ...");
     const fileInfo = await this.getFileInfo(fileId);
     if (!fileInfo) {
       notification.error("Error downloading file " + name);
       return;
     }
     const url = `/api/files?download=true&fileId=${fileId}&chainId=${this.chainId}`;
-    const toastId = notification.loading("Downloading file ...");
+
     const response = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
