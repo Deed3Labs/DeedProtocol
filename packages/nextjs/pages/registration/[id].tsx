@@ -8,13 +8,15 @@ import PaymentInformation from "./PaymentInformation";
 import PropertyDetails from "./PropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useRegistrationClient from "~~/clients/registrations.client";
-import SidePanel from "~~/components/SidePanel";
 import {
   DeedInfoModel,
   OwnerInformationModel,
   PropertyDetailsModel,
 } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
+import SidePanel from "~~/pages/registration/SidePanel";
+import { fetchFileInfos } from "~~/services/file.service";
+import logger from "~~/services/logger.service";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
@@ -80,7 +82,7 @@ const Page = ({ router }: WithRouterProps) => {
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const isDraft = useMemo(() => {
     return !id || Number.isNaN(+id);
-  }, [id, router.isReady]);
+  }, [id, router.isReady, deedData]);
   const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
   const registrationClient = useRegistrationClient();
@@ -116,9 +118,22 @@ const Page = ({ router }: WithRouterProps) => {
     async (id: string) => {
       const resp = await registrationClient.authentify(authToken!).getRegistration(id, !!isDraft);
       setErrorCode(undefined);
-      if (resp.ok) {
+      setIsLoading(false);
+      if (resp.ok && resp.value) {
         setInitialData(resp.value);
-        setDeedData(resp.value!);
+        setDeedData(resp.value);
+
+        // Fetch file infos in a second time
+        if (resp.value === undefined || !resp.ok) {
+          logger.error({
+            message: "Error getting registration with id " + id,
+            status: resp.status,
+          });
+        } else {
+          resp.value = await fetchFileInfos(resp.value, authToken);
+          setInitialData(resp.value);
+          setDeedData(resp.value);
+        }
       } else {
         if (resp?.status === 404) setErrorCode("notFound");
         else if (resp?.status === 401) setErrorCode("unauthorized");
@@ -126,7 +141,6 @@ const Page = ({ router }: WithRouterProps) => {
           setErrorCode("unexpected");
         }
       }
-      setIsLoading(false);
     },
     [id, isDraft, chainId, authToken],
   );

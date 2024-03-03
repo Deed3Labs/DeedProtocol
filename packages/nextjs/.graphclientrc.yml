@@ -1,0 +1,5 @@
+sources:
+  - name: Deed3-Sepolia
+    handler:
+      graphql:
+        endpoint: https://api.studio.thegraph.com/query/56229/deed3-sepolia/version/latest

@@ -32,8 +32,10 @@ export interface OwnerInformationModel {
   supportingDoc?: FileModel[];
 }
 
+export type PropertyType = ValueExtractor<typeof PropertyTypeOptions>;
+
 export interface PropertyDetailsModel {
-  propertyType: ValueExtractor<typeof PropertyTypeOptions>;
+  propertyType: PropertyType;
   propertySubType?: ValueExtractor<typeof PropertySubtypeOptions>;
   propertyAddress: string;
   propertyCity: string;

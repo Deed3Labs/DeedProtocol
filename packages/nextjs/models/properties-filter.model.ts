@@ -1,8 +1,9 @@
-import { ListingType, PropertyType } from "./property.model";
+import { PropertyType } from "./deed-info.model";
+import { ListingType } from "./property.model";
 
-export type PropertiesFilterModel = {
+export interface PropertiesFilterModel {
   propertyType?: PropertyType | "All";
   featured?: boolean;
   search?: string;
   listingType?: ListingType | "All";
-};
+}

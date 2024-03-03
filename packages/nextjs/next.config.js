@@ -13,7 +13,14 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ["picsum.photos", "www.figma.com", "unpkg.com", "xsgames.co", "randomuser.me"],
+    domains: [
+      "picsum.photos",
+      "www.figma.com",
+      "unpkg.com",
+      "xsgames.co",
+      "randomuser.me",
+      "ipfs.io",
+    ],
   },
   productionBrowserSourceMaps: true,
   rewrites: async () => {

@@ -1,0 +1,23 @@
+- kind: ethereum
+  name: FundsManager
+  network: {{network}}
+  source:
+      address: "{{address}}"
+      abi: FundsManager
+      startBlock: {{startBlock}}
+  mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+          - FundsStored
+          - FundsWithdrawn
+      abis:
+          - name: FundsManager
+            file: ./abis/FundsManager.json
+      eventHandlers:
+          - event: FundsStored(uint256,address,uint256,address,address,uint256)
+            handler: handleFundsStored
+          - event: FundsWithdrawn(uint256,address,uint256,address,address,uint256)
+            handler: handleFundsWithdrawn
+      file: ./src/funds-manager.ts

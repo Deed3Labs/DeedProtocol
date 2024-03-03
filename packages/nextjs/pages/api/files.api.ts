@@ -8,6 +8,7 @@ import { FilesDb } from "~~/databases/files.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { FileModel } from "~~/models/file.model";
 import { authentify, getWalletAddressFromToken, testEncryption } from "~~/servers/auth";
+import logger from "~~/services/logger.service";
 
 if (!process.env.NEXT_PINATA_GATEWAY_KEY) {
   throw new Error("Missing NEXT_PINATA_GATEWAY_KEY env var");
@@ -61,7 +62,7 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
   form.parse(req, async (error, fields, files) => {
     try {
       if (error) {
-        console.error(error);
+        logger.error(error);
         return res.status(500).send("Upload Error");
       }
       const file: FileModel = fields.payload ? JSON.parse(fields.payload[0]) : {};
@@ -91,7 +92,7 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
           },
         };
         response = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
-        FilesDb.saveFileInfo({
+        await FilesDb.saveFileInfo({
           mimetype: fileInfo.mimetype,
           fileName: file.fileName,
           owner: walletAddress,
@@ -103,7 +104,7 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
       fs.unlinkSync(fileInfo.filepath);
       return res.status(200).send(response);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return res.status(500).send("Server Error");
     }
   });
@@ -121,11 +122,7 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   const file = JSON.parse(Buffer.from(req.read()).toString()) as FileModel;
   const dbFile = await FilesDb.downloadFile(file.fileId);
   const stream = dbFile.stream;
-  if (
-    !authentify(req, res, {
-      requireValidator: true,
-    })
-  ) {
+  if (!authentify(req, res, ["Validator"])) {
     return;
   }
 
@@ -142,7 +139,7 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   // await FilesDb.deleteFile(dbFile.fileInfo);
 
   // Update the file in database
-  FilesDb.saveFileInfo({ ...dbFile.fileInfo, fileId: ipfsHash, restricted: false });
+  await FilesDb.saveFileInfo({ ...dbFile.fileInfo, fileId: ipfsHash, restricted: false });
 
   return res.status(200).send(ipfsHash);
 };
@@ -163,12 +160,7 @@ const download = async (req: NextApiRequest, res: NextApiResponse<string>) => {
     const response = await FilesDb.downloadFile(fileId);
     stream = response.stream;
     fileInfo = response.fileInfo;
-    if (
-      !authentify(req, res, {
-        requireSpecificAddress: fileInfo.owner,
-        requireValidator: true,
-      })
-    ) {
+    if (!authentify(req, res, [fileInfo.owner, "Validator"])) {
       return;
     }
   } else {
@@ -197,16 +189,6 @@ export const getFileInfo = async (req: NextApiRequest, res: NextApiResponse<stri
   }
 
   const fileInfo = await FilesDb.getFileInfo(fileId);
-
-  if (
-    fileInfo.restricted &&
-    !authentify(req, res, {
-      requireSpecificAddress: fileInfo.owner,
-      requireValidator: true,
-    })
-  ) {
-    return;
-  }
 
   if ("_id" in fileInfo) {
     delete fileInfo._id;

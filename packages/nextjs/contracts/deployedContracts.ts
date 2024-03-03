@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11155111: {
     AccessManager: {
-      address: "0x42B39e8fd8A63203869C9BB59583c70176192540",
+      address: "0xd0A50194CeFf1A33E2a831F80EBfa2b11aC44B78",
       abi: [
         {
           inputs: [],
@@ -378,7 +378,7 @@ const deployedContracts = {
       startBlock: 5034801,
     },
     DeedNFT: {
-      address: "0xAd48c73B7144255f949aF4514a31DD1729B74931",
+      address: "0xEA6015008c7926E84C76b70344EbD31a48A6fd2c",
       abi: [
         {
           inputs: [],

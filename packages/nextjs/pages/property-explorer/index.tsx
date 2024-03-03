@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import PropertyFilters from "./PropertyFilters";
 import { NextPage } from "next";
-import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import { execute } from "~~/.graphclient";
+import deed3Query from "~~/clients/deed3.query";
+import { PropertyTypeOptions } from "~~/constants";
+import { PropertyType } from "~~/models/deed-info.model";
 import { MapIconModel } from "~~/models/map-icon.model";
+import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { PropertyModel } from "~~/models/property.model";
 import PropertyCard from "~~/pages/property-explorer/PropertyCard";
+import { indexOfLiteral } from "~~/utils/extract-values";
 
 const propertyIcon: MapIconModel = {
   className: "property-icon",
@@ -19,23 +24,13 @@ const propertyIcon: MapIconModel = {
 
 const PropertyExplorer: NextPage = () => {
   const [properties, setProperties] = useState<PropertyModel[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [_isLast, setIsLast] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: nextTokenId } = useScaffoldContractRead({
-    contractName: "DeedNFT",
-    functionName: "nextDeedId",
-    cacheOnBlock: true,
-  });
-
   useEffect(() => {
-    if (nextTokenId && Number(nextTokenId) > 0 && properties.length === 0) {
-      loadMoreProperties();
-    }
-  }, [nextTokenId]);
+    loadProperties();
+  }, []);
 
   // useEffect(() => {
   //   const handleDebouncedScroll = debounce(() => !isLast && handleScroll(), 100);
@@ -57,44 +52,41 @@ const PropertyExplorer: NextPage = () => {
   //   }
   // };
 
-  const onFilter = (_filter?: { search?: string }) => {
-    // setCurrentPage(0);
-    // setProperties([]);
-    // loadMoreProperties();
+  const onFilter = async (filter?: PropertiesFilterModel) => {
+    loadProperties(filter);
   };
 
-  const loadMoreProperties = async () => {
+  const loadProperties = async (filter?: PropertiesFilterModel) => {
     setLoading(true);
+    const results = await execute(
+      deed3Query,
+      {
+        PROPERTY_ADDRESS: filter?.search || " ",
+        PROPERTY_CITY: filter?.search || " ",
+        PROPERTY_STATE: filter?.search || " ",
+        PROPERTY_TYPE: filter?.propertyType || "realEstate",
+      },
+      {},
+    );
     const _properties = [];
-    setCurrentPage(1);
     const radius = 10;
     const center = { lat: 40, lng: -100 };
-    const pageSize = Number(nextTokenId);
-    for (let index = 1; index < pageSize; index++) {
+    for (const property of results.data.deedEntities) {
+      const infos = property.deedMetadata;
       const newProperty: PropertyModel = {
-        id: index,
-        name: `Deed #${index}`,
-        description: `This is the description for property ${index}`,
-        photos: [
-          `https://picsum.photos/seed/${Math.random() * 1000}/350/400`,
-          `https://picsum.photos/seed/${Math.random() * 1000}/350/400`,
-          `https://picsum.photos/seed/${Math.random() * 1000}/350/400`,
-        ],
-        address: `Deed #${index}`,
+        id: property.id,
+        name: `${infos.propertyDetails_city}, ${infos.propertyDetails_state}`,
+        pictures: infos.propertyDetails_images.map((x: any) => "https://ipfs.io/ipfs/" + x.id),
+        address: infos.propertyDetails_address,
         price: Math.round(Math.random() * 1000000),
         latitude: center.lat + (Math.random() - 0.5) * (radius * 2),
         longitude: center.lng + (Math.random() - 0.5) * (radius * 2),
-        type: Math.random() > 0.3 ? "Appartement" : Math.random() > 0.5 ? "House" : "Condo",
+        type: infos.propertyDetails_type,
         icon: propertyIcon,
       };
       newProperty.popupContent = <PropertyCard property={newProperty} />;
       _properties.push(newProperty);
     }
-    if (currentPage >= 5) {
-      // Fake 5 pages
-      setIsLast(true);
-    }
-    // setProperties([...properties]);
     setProperties(_properties);
     setLoading(false);
   };
@@ -104,15 +96,16 @@ const PropertyExplorer: NextPage = () => {
       <PropertyFilters properties={properties} onFilter={onFilter} />
 
       <div className="flex flex-wrap gap-8 items-center justify-center max-w-full">
-        {properties.length === 0 ? (
-          <div className="card w-96 bg-neutral">
-            <div className="card-body items-center text-center">
-              <h2 className="card-title">No properties</h2>
+        {!loading &&
+          (properties.length === 0 ? (
+            <div className="card w-96 bg-neutral">
+              <div className="card-body items-center text-center">
+                <h2 className="card-title">No properties</h2>
+              </div>
             </div>
-          </div>
-        ) : (
-          properties.map(property => <PropertyCard key={property.id} property={property} />)
-        )}
+          ) : (
+            properties.map(property => <PropertyCard key={property.id} property={property} />)
+          ))}
       </div>
       {loading && <span className="loading loading-bars loading-lg my-8"></span>}
     </div>

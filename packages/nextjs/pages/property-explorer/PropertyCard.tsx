@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
+import { PropertyTypeOptions } from "~~/constants";
 import { PropertyModel } from "~~/models/property.model";
 
 interface Props {
@@ -8,13 +10,17 @@ interface Props {
 }
 
 const PropertyCard = ({ property }: Props) => {
+  const propertyTypeLabel = useMemo(
+    () => PropertyTypeOptions.find(x => x.value === property.type)?.title,
+    [property.type],
+  );
   return (
     <>
       {property && (
         <Link href={`/registration/${property.id}`}>
           <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] max-w-full w-[350px]">
             <Image
-              src={property.photos[0]}
+              src={property.pictures[0]}
               alt="Picture"
               height={400}
               width={350}
@@ -44,7 +50,7 @@ const PropertyCard = ({ property }: Props) => {
               </div>
               <div className="flex flex-col">
                 <div className="text-secondary-content">TYPE</div>
-                <div>{property.type}</div>
+                <div>{propertyTypeLabel}</div>
               </div>
               <div className="flex flex-col">
                 <div className="text-secondary-content">ZONING</div>
