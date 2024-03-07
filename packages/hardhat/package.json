@@ -19,6 +19,8 @@
     "verify:sepolia": "yarn verify --network sepolia"
   },
   "devDependencies": {
+    "@chainlink/contracts": "^0.8.0",
+    "@chainlink/contracts-ccip": "^1.2.1",
     "@eth-optimism/hardhat-ovm": "^0.2.4",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.1",

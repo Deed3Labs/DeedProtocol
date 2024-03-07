@@ -2,6 +2,24 @@
   "sepolia": {
     "manager": "0xD30aee396a54560581a3265Fd2194B0edB787525",
     "deed-proxy": "0xEA6015008c7926E84C76b70344EbD31a48A6fd2c",
-    "access-manager-proxy": "0xd0A50194CeFf1A33E2a831F80EBfa2b11aC44B78"
+    "access-manager-proxy": "0xd0A50194CeFf1A33E2a831F80EBfa2b11aC44B78",
+    "clRouter": "0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59",
+    "clToken": ""
+  },
+  "mumbai": {
+    "manager": "0xD30aee396a54560581a3265Fd2194B0edB787525",
+    "deed-proxy": "",
+    "access-manager-proxy": "",
+    "clRouter": "0x1035CabC275068e0F4b745A29CEDf38E13aF41b1",
+    "clToken": "",
+    "clBase": true
+  },
+  "binanceSmartChain": {
+
+  },
+  "base": {
+    "manager": "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24",
+    "deed-proxy": "0x0f4ee9631f4be0a637565151f78a3a8d000f6f9a",
+    "access-manager-proxy": "0x0f4ee9631f4be0a637565151f78a3a8d000f6f9a"
   }
 }
