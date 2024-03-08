@@ -15,11 +15,24 @@ export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   // const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-  const { primaryWallet, isVerificationInProgress } = useDynamicContext();
+  const { primaryWallet } = useDynamicContext();
   const { query, pathname, replace } = useRouter();
   const { id } = query;
   const searchRef = useRef<HTMLInputElement>(null);
-
+  const connectBtnRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (connectBtnRef.current && !primaryWallet) {
+      setTimeout(() => {
+        const el =
+          connectBtnRef.current?.children[0]?.shadowRoot?.querySelector<HTMLButtonElement>(
+            "button",
+          );
+        if (el) {
+          el.click();
+        }
+      }, 100);
+    }
+  }, [primaryWallet, connectBtnRef.current]);
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
@@ -133,7 +146,7 @@ export const Header = () => {
             </div>
           </div>
         </div>
-        <div className="navbar-end flex-grow mr-4">
+        <div className="navbar-end flex-grow mr-4" ref={connectBtnRef}>
           <DynamicWidget
             buttonClassName="btn btn-neutral"
             innerButtonComponent={<div className="btn btn-neutral">Connect</div>}
