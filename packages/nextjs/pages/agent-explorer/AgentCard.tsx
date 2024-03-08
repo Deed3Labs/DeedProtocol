@@ -27,7 +27,7 @@ const AgentCard = ({ agent }: Props) => {
     <>
       {agent && (
         <figure
-          className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] w-[500px] max-w-full"
+          className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 w-[500px] max-w-full"
           key={agent.id}
         >
           <div

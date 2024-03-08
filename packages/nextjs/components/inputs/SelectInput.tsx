@@ -30,14 +30,14 @@ export const SelectInput = <TParent,>({
   return (
     <div className={`flex flex-col  ${className ? className : ""}`}>
       <label className="justify-start items-center inline-flex mb-3" htmlFor="state">
-        <div className="text-base font-bold font-['Montserrat']">{label}</div>
+        <div className="text-base font-bold">{label}</div>
         {info && (
           <span className="text-center text-xs font-normal font-['Inter'] leading-none ml-1">
             info
           </span>
         )}
         {optional && (
-          <span className="text-xs font-semibold uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-2 mb-[-4px] mt-[-4px]">
+          <span className="text-xs text-secondary uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-2 mb-[-4px] mt-[-4px]">
             Optional
           </span>
         )}

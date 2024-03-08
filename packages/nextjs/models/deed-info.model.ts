@@ -49,7 +49,6 @@ export interface PropertyDetailsModel {
 }
 
 export interface OtherInformationModel {
-  blockchain: ValueExtractor<typeof BlockchainOptions>;
   wrapper: ValueExtractor<typeof WrapperOptions>;
 }
 

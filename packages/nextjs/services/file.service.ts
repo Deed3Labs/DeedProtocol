@@ -36,9 +36,9 @@ export async function uploadFiles(
         }
 
         // @ts-ignore when array, key[2] is the index
-        if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = fileId;
+        if (key[2] !== undefined) payload[key[0]][key[1]][key[2]].fileId = fileId;
         // @ts-ignore
-        else payload[key[0]][key[1]] = fileId;
+        else payload[key[0]][key[1]].fileId = fileId;
       }),
   ).catch(error => {
     throw error;
@@ -71,11 +71,6 @@ export async function fetchFileInfos(deedData: DeedInfoModel, authToken?: string
 }
 
 function getSupportedFiles(data: DeedInfoModel, old?: DeedInfoModel, publish: boolean = false) {
-  console.log({
-    data,
-    old,
-    publish,
-  });
   const files: {
     key: [
       keyof DeedInfoModel,
@@ -107,39 +102,42 @@ function getSupportedFiles(data: DeedInfoModel, old?: DeedInfoModel, publish: bo
       value: data.ownerInformation.proofBill,
     });
   }
-  if (
-    data.ownerInformation.articleIncorporation &&
-    (!old ||
-      old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation)
-  ) {
-    files.push({
-      key: ["ownerInformation", "articleIncorporation"],
-      label: "Article of Incorporation",
-      value: data.ownerInformation.articleIncorporation,
-    });
-  }
 
-  if (
-    data.ownerInformation.operatingAgreement &&
-    (!old || old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement)
-  ) {
-    files.push({
-      key: ["ownerInformation", "operatingAgreement"],
-      label: "Operating Agreement",
-      value: data.ownerInformation.operatingAgreement,
-    });
-  }
+  if (data.ownerInformation.ownerType === "legal") {
+    if (
+      data.ownerInformation.articleIncorporation &&
+      (!old ||
+        old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation)
+    ) {
+      files.push({
+        key: ["ownerInformation", "articleIncorporation"],
+        label: "Article of Incorporation",
+        value: data.ownerInformation.articleIncorporation,
+      });
+    }
 
-  if (data.ownerInformation.supportingDoc?.length) {
-    data.ownerInformation.supportingDoc.forEach((doc, index) => {
-      if (!old || old.ownerInformation.supportingDoc?.[index] !== doc) {
-        files.push({
-          key: ["ownerInformation", "supportingDoc", index],
-          label: "Any other Supporting Documents #" + index,
-          value: doc,
-        });
-      }
-    });
+    if (
+      data.ownerInformation.operatingAgreement &&
+      (!old || old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement)
+    ) {
+      files.push({
+        key: ["ownerInformation", "operatingAgreement"],
+        label: "Operating Agreement",
+        value: data.ownerInformation.operatingAgreement,
+      });
+    }
+
+    if (data.ownerInformation.supportingDoc?.length) {
+      data.ownerInformation.supportingDoc.forEach((doc, index) => {
+        if (!old || old.ownerInformation.supportingDoc?.[index] !== doc) {
+          files.push({
+            key: ["ownerInformation", "supportingDoc", index],
+            label: "Any other Supporting Documents #" + index,
+            value: doc,
+          });
+        }
+      });
+    }
   }
 
   // Property details files

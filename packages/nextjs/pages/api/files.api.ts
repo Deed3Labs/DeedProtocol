@@ -37,8 +37,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<string>) => {
       return await uploadFile(req, res);
     }
   } else if (req.method === "GET") {
-    if (req.query.download === "true") {
-      return await download(req, res);
+    if (req.query.download) {
+      return await getFile(req, res);
     } else {
       return await getFileInfo(req, res);
     }
@@ -86,8 +86,7 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
           pinataMetadata: {
             name: file.fileName![0],
             description: `
-            - Owner ${file.owner}
-            - DB File ID ${file.fileId}
+            - Owner ${walletAddress}
             - Timestamp ${new Date().toISOString()}`,
           },
         };
@@ -144,8 +143,8 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   return res.status(200).send(ipfsHash);
 };
 
-const download = async (req: NextApiRequest, res: NextApiResponse<string>) => {
-  const { fileId } = req.query;
+const getFile = async (req: NextApiRequest, res: NextApiResponse<string>) => {
+  const { fileId, download } = req.query;
   let stream: Readable;
   let fileInfo: FileModel;
 
@@ -175,10 +174,15 @@ const download = async (req: NextApiRequest, res: NextApiResponse<string>) => {
     stream = data;
   }
 
-  res.setHeader("Content-Type", fileInfo.mimetype ?? "application/octet-stream");
-  res.setHeader("Content-Disposition", `attachment; filename=${fileInfo.fileName}`);
-
-  return stream.pipe(res);
+  if (download === "true") {
+    res.setHeader("Content-Type", fileInfo.mimetype ?? "application/octet-stream");
+    res.setHeader("Content-Disposition", `attachment; filename=${fileInfo.fileName}`);
+    return stream.pipe(res);
+  } else {
+    // Return the result without downloading
+    res.setHeader("Content-Disposition", `inline; filename=${fileInfo.fileName}`);
+    return stream.pipe(res);
+  }
 };
 
 export const getFileInfo = async (req: NextApiRequest, res: NextApiResponse<string>) => {

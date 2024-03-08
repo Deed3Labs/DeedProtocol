@@ -18,7 +18,7 @@ const PropertyCard = ({ property }: Props) => {
     <>
       {property && (
         <Link href={`/registration/${property.id}`}>
-          <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 font-['Montserrat'] max-w-full w-[350px]">
+          <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 max-w-full w-[350px]">
             <Image
               src={property.pictures[0]}
               alt="Picture"

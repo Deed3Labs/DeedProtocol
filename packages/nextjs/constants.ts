@@ -100,9 +100,8 @@ export const PropertyTypeOptions = [
   {
     title: "Vehicle",
     value: "vehicle",
-    tag: "Comming soon",
+    tag: "Trending",
     subtitle: "RVs, motorcycles, etc.",
-    disabled: true,
   },
   {
     title: "Equipment",
@@ -184,22 +183,23 @@ export const PaymentOptions = [
   },
 ] as const;
 
-export const WrapperOptions = [
-  {
-    title: "Nominee Trust",
-    tag: "Recomanded",
-    subtitle: `Recommended for most situations. This type of property wrapper is ideal for those who desire an additional layer of anonymity, while offering legal protections and benefits similar to LLCs.
-      \n\n
-      Estimated cost to deploy contract: $499.97`,
-    value: "trust",
-  },
-  {
-    title: "Limited Liability Company",
-    tag: "Multi-Layered",
-    subtitle: `Formed in combination with a Nominee Trust. This type of property wrapper is generally more expensive to deploy but perfect for revenue-generating properties with multiple owners.
-      \n\n
-      Estimated cost to deploy contract: $1499.97
+export const WrapperOptions = (prices: string[]) =>
+  [
+    {
+      title: "Nominee Trust",
+      tag: "Recomanded",
+      subtitle: `Recommended for most situations. This type of property wrapper is ideal for those who desire an additional layer of anonymity, while offering legal protections and benefits similar to LLCs.
+      
+    Estimated cost to deploy contract: ${prices[0]}`,
+      value: "trust",
+    },
+    {
+      title: "Limited Liability Company",
+      tag: "Multi-Layered",
+      subtitle: `Formed in combination with a Nominee Trust. This type of property wrapper is generally more expensive to deploy but perfect for revenue-generating properties with multiple owners.
+      
+    Estimated cost to deploy contract: ${prices[1]}
     `,
-    value: "llc",
-  },
-] as const;
+      value: "llc",
+    },
+  ] as const;

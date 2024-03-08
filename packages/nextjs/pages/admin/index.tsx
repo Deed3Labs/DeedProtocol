@@ -83,8 +83,8 @@ const Page = () => {
         </div>
       ) : (
         <div className="flex flex-col gap-6 mt-6">
-          <div className="text-2xl font-['KronaOne'] leading-10">Restricted</div>
-          <div className="text-base font-normal font-['Montserrat'] leading-normal">
+          <div className="text-2xl leading-10">Restricted</div>
+          <div className="text-base font-normal leading-normal">
             Thi section is restricted to admin users only.
           </div>
         </div>

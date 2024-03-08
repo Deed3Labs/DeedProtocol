@@ -86,7 +86,7 @@ export const testEncryption = async (res: NextApiResponse) => {
 };
 
 export const getDecodedToken = (req: NextApiRequest) => {
-  const authorizationHeader = req.headers.authorization;
+  const authorizationHeader = req.headers.authorization ?? (req.query.authorization as string);
   if (authorizationHeader) {
     const publicKey = process.env.NEXT_DYNAMIC_PUBLIC_KEY!;
     try {
