@@ -3,13 +3,10 @@ import PropertyFilters from "./PropertyFilters";
 import { NextPage } from "next";
 import { execute } from "~~/.graphclient";
 import deed3Query from "~~/clients/deed3.query";
-import { PropertyTypeOptions } from "~~/constants";
-import { PropertyType } from "~~/models/deed-info.model";
 import { MapIconModel } from "~~/models/map-icon.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { PropertyModel } from "~~/models/property.model";
 import PropertyCard from "~~/pages/property-explorer/PropertyCard";
-import { indexOfLiteral } from "~~/utils/extract-values";
 
 const propertyIcon: MapIconModel = {
   className: "property-icon",

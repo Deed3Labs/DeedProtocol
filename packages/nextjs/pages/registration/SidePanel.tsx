@@ -219,7 +219,7 @@ const SidePanel = ({
               </svg>
               Deed3 (The Deed Protocol)
             </div>
-            {!deedData.id && quoteDetails && (
+            {deedData && !deedData.id && quoteDetails && (
               <>
                 <div className="text-5xl font-['Coolvetica'] font-condensed uppercase">
                   STANDARD PROPERTY LISTING
@@ -307,7 +307,7 @@ const SidePanel = ({
         </div>
 
         <div className="my-8">
-          {deedData.id ? (
+          {deedData && deedData.id ? (
             <>
               {(isValidator || isOwner) && (
                 <div className="text-xl mb-4">
@@ -386,7 +386,7 @@ const SidePanel = ({
                   <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
                     Save
                   </button>
-                  {!deedData.paymentInformation.receipt && deedData.id && (
+                  {!deedData.paymentInformation.receipt && deedData?.id && (
                     <button
                       onClick={() => handlePayment(deedData.id!)}
                       className="btn btn-lg bg-gray-600"
