@@ -221,90 +221,94 @@ const SidePanel = ({
               </svg>
               Deed3 (The Deed Protocol)
             </div>
-            {deedData && !deedData.id && quoteDetails && (
-              <>
-                <div className="text-5xl font-['Coolvetica'] font-condensed uppercase">
-                  STANDARD PROPERTY LISTING
-                </div>
-                <QuoteDetail
-                  title="Legal Wrapper"
-                  secondary="NOMINEE TRUST WRAPPER"
-                  price={quoteDetails.legalWrapperFees}
-                />
-                <QuoteDetail
-                  title="Document Notarization"
-                  secondary="ONLINE DOCUMENT SIGNING"
-                  price={quoteDetails.documentNotarizationFees}
-                />
-                <QuoteDetail
-                  title="State & County Filing Fees"
-                  secondary="GRANT DEED-COUNTY CLERK"
-                  price={quoteDetails.stateAndCountyFees}
-                />
-                <QuoteDetail
-                  title="Preliminary Title Report"
-                  secondary="PROPERTY HISTORY VERIFICATION"
-                  price={quoteDetails.titleReportFees}
-                />
-
-                <div className="border p-6 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
-                  <QuoteDetail
-                    title="Advanced Plan"
-                    secondary="BILLED YEARLY"
-                    price={quoteDetails.advancedPlan}
-                  />
-                  <hr />
-                  <div className="text-sm flex flex-row gap-2">
-                    <input
-                      type="checkbox"
-                      className="toggle toggle-success rounded-lg"
-                      value={advancedPlan.toString()}
-                      onChange={ev => setAdvancedPlan(ev.target.value === "true")}
-                    />
-                    <span className="text-[#f0f0f0]">
-                      SUBSCRIBE TODAY TO
-                      <span className="mx-1 p-1 bg-[#cbf4c9] text-[#0e6245]">SAVE 50%</span> ON
-                      LISTINGS.
-                    </span>
+            {deedData &&
+              !deedData.id &&
+              (quoteDetails ? (
+                <>
+                  <div className="text-5xl font-['Coolvetica'] font-condensed uppercase">
+                    STANDARD PROPERTY LISTING
                   </div>
-                </div>
+                  <QuoteDetail
+                    title="Legal Wrapper"
+                    secondary="NOMINEE TRUST WRAPPER"
+                    price={quoteDetails.legalWrapperFees}
+                  />
+                  <QuoteDetail
+                    title="Document Notarization"
+                    secondary="ONLINE DOCUMENT SIGNING"
+                    price={quoteDetails.documentNotarizationFees}
+                  />
+                  <QuoteDetail
+                    title="State & County Filing Fees"
+                    secondary="GRANT DEED-COUNTY CLERK"
+                    price={quoteDetails.stateAndCountyFees}
+                  />
+                  <QuoteDetail
+                    title="Preliminary Title Report"
+                    secondary="PROPERTY HISTORY VERIFICATION"
+                    price={quoteDetails.titleReportFees}
+                  />
 
-                <div className="text-end">
-                  <Link
-                    href="https://docs.deedprotocol.org/general-information/fees-and-service-charges"
-                    target="_blank"
-                    className="opacity-90"
-                  >
-                    Pricing information
-                  </Link>
-                </div>
-
-                <QuoteDetail title="Subtotal" price={quoteDetails.total} />
-
-                <hr></hr>
-
-                <QuoteDetail title="Total due today" price={quoteDetails.total / 2} />
-
-                <div className="border py-6 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
-                  <span className="mx-6 text-[#a6a6a6] uppercase">Add to your order</span>
-                  <hr className="opacity-25" />
-                  <div className="mx-6 text-sm flex flex-row gap-2 justify-between align-top">
-                    <div className="flex flex-col">
-                      <span className="font-normal text-[#f0f0f0]">Appraisal and inspection</span>
-                      <span className="text-secondary">
-                        {USDollar.format(quoteDetails.appraisalAndInspectionFees)}
+                  <div className="border p-6 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
+                    <QuoteDetail
+                      title="Advanced Plan"
+                      secondary="BILLED YEARLY"
+                      price={quoteDetails.advancedPlan}
+                    />
+                    <hr />
+                    <div className="text-sm flex flex-row gap-2">
+                      <input
+                        type="checkbox"
+                        className="toggle toggle-success rounded-lg"
+                        value={advancedPlan.toString()}
+                        onChange={ev => setAdvancedPlan(ev.target.value === "true")}
+                      />
+                      <span className="text-[#f0f0f0]">
+                        SUBSCRIBE TODAY TO
+                        <span className="mx-1 p-1 bg-[#cbf4c9] text-[#0e6245]">SAVE 50%</span> ON
+                        LISTINGS.
                       </span>
                     </div>
-                    <button
-                      onClick={() => setAppraisalInspection(!appraisalInspection)}
-                      className="btn btn-link no-underline"
-                    >
-                      + Add
-                    </button>
                   </div>
-                </div>
-              </>
-            )}
+
+                  <div className="text-end">
+                    <Link
+                      href="https://docs.deedprotocol.org/general-information/fees-and-service-charges"
+                      target="_blank"
+                      className="opacity-90"
+                    >
+                      Pricing information
+                    </Link>
+                  </div>
+
+                  <QuoteDetail title="Subtotal" price={quoteDetails.total} />
+
+                  <hr></hr>
+
+                  <QuoteDetail title="Total due today" price={quoteDetails.total / 2} />
+
+                  <div className="border py-6 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
+                    <span className="mx-6 text-[#a6a6a6] uppercase">Add to your order</span>
+                    <hr className="opacity-25" />
+                    <div className="mx-6 text-sm flex flex-row gap-2 justify-between align-top">
+                      <div className="flex flex-col">
+                        <span className="font-normal text-[#f0f0f0]">Appraisal and inspection</span>
+                        <span className="text-secondary">
+                          {USDollar.format(quoteDetails.appraisalAndInspectionFees)}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setAppraisalInspection(!appraisalInspection)}
+                        className="btn btn-link no-underline"
+                      >
+                        + Add
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <span className="loading loading-bars loading-lg m-auto my-8"></span>
+              ))}
           </div>
         </div>
 
@@ -403,6 +407,7 @@ const SidePanel = ({
             <button
               onClick={handleSubmit}
               className="btn btn-lg w-full font-normal btn-primary uppercase"
+              disabled={!quoteDetails}
             >
               Submit form
             </button>
