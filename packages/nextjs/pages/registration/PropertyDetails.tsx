@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
@@ -28,13 +29,26 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
     });
   };
   return (
-    <div className="flex flex-col gap-6 mt-6">
-      <div className="text-2xl font-['KronaOne'] leading-10">2. Property Details</div>
+    <div className="flex flex-col mt-6 gap-6">
+      <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
+        2. Property Details
+      </div>
       <RadioBoxesInput
         name="propertyType"
-        options={PropertyTypeOptions}
         label="Select Property Type"
+        description={
+          <>
+            <Link
+              href="https://docs.deedprotocol.org/how-it-works/property-registration-guide#step-2-submit-property-details"
+              target="_blank"
+            >
+              Learn more
+            </Link>
+            &nbsp; about Property Types.
+          </>
+        }
         info
+        options={PropertyTypeOptions}
         optionsClassName="w-[180px] h-[210px]"
         onChange={handleChange}
         value={value?.propertyType}
@@ -101,14 +115,18 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       </div>
       <div>
         <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-bold font-['Montserrat'] leading-normal">
-            Property Image
-          </div>
+          <div className="text-base font-bold leading-normal">Property Image</div>
           <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
+        </div>
+        <div className="text-secondary">
+          Upload image -&nbsp;
+          <Link href="w" target="_blank">
+            Learn more
+          </Link>
         </div>
         <FileUploaderInput
           name="propertyImages"
-          label="Upload images of your property"
+          label="Property Image"
           subtitle="You may change this after registering your property"
           optional
           multiple
@@ -118,12 +136,19 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
           isRestricted={isDraft}
         />
       </div>
-      <div>
+      <div className="flex flex-col">
         <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-bold font-['Montserrat'] leading-normal">
-            Proof of Ownership
-          </div>
+          <div className="text-base font-bold leading-normal">Proof of Ownership</div>
           <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
+        </div>
+        <div className="text-secondary">
+          <Link
+            href="https://docs.deedprotocol.org/how-it-works/property-registration-guide#step-3-provide-proof-of-ownership"
+            target="_blank"
+          >
+            Learn more
+          </Link>
+          &nbsp;about property ownership validation.
         </div>
         <FileUploaderInput
           name="propertyDeedOrTitle"

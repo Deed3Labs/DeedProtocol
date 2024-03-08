@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useFileClient from "~~/clients/file.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { FileModel } from "~~/models/file.model";
@@ -43,7 +43,7 @@ export const FileUploaderInput = <TParent,>({
   useEffect(() => {
     if (value) {
       const values = Array.isArray(value) ? value : [value];
-      setFiles(values);
+      setFiles([...values]);
     } else {
       setFiles([]);
     }
@@ -74,7 +74,11 @@ export const FileUploaderInput = <TParent,>({
   };
 
   const download = async (hash: string) => {
-    await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString());
+    await fileClient.authentify(authToken ?? "").getFile(hash, name.toString(), true);
+  };
+
+  const openFile = async (hash: string) => {
+    await fileClient.authentify(authToken ?? "").getFile(hash, name.toString(), false);
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
@@ -104,10 +108,10 @@ export const FileUploaderInput = <TParent,>({
   };
 
   return (
-    <div className={`mt-3 w-[600px] max-w-full ${className ? className : ""} `}>
+    <div className={`mt-3 max-w-full ${className ? className : ""} `}>
       <label
         htmlFor={name as string}
-        className={`flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-36 cursor-pointer hover:bg-base-100 border border-opacity-10 ${
+        className={`flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-min-36 cursor-pointer hover:bg-base-100 border border-opacity-20 border-secondary ${
           readOnly ? "pointer-events-none border-none" : ""
         }`}
         tabIndex={0}
@@ -139,53 +143,56 @@ export const FileUploaderInput = <TParent,>({
           </div>
         )}
         <div className="flex flex-col flex-wrap gap-2 pointer-events-none">
-          <div className="text-base font-bold font-['Montserrat'] mb-3">
+          <div className="text-base font-bold mb-3">
             {label}
             {optional && (
-              <span className="text-xs font-semibold uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3">
+              <span className="text-xs uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3 text-secondary">
                 Optional
               </span>
             )}
           </div>
           {files.length > 0 && (
-            <ul className="line-clamp-3" title={files.map(x => x.fileName).join("\n")}>
-              {/* If file is string then its was not successfully fetched */}
-              {files.map((file, i) =>
-                typeof file === "string" ? (
-                  <li key={file}>Loading</li>
-                ) : (
-                  <li key={file.fileId ?? i} className="flex items-center gap-2">
-                    <div>
-                      {file.fileName} (
-                      <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
-                        {file.size / 1000} KB
-                      </span>
-                      )
-                    </div>
-                    {file.fileId &&
-                      (!isRestricted || isValidator || file.owner === primaryWallet?.address) && (
+            <div className="" title={files.map(x => x.fileName).join("\n")}>
+              {files.map(file => (
+                <div key={`${file.fileId}-${file.size}-`} className="flex items-center gap-2">
+                  <div>
+                    {file.fileName} (
+                    <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
+                      {file.size / 1000} KB
+                    </span>
+                    )
+                  </div>
+                  {file.fileId &&
+                    (!isRestricted || isValidator || file.owner === primaryWallet?.address) && (
+                      <div className="flex">
                         <button
-                          className="btn btn-square pointer-events-auto"
+                          className="btn btn-sm btn-square pointer-events-auto"
+                          onClick={() => openFile(file.fileId!)}
+                        >
+                          <ExternalLinkIcon />
+                        </button>
+                        <button
+                          className="btn btn-sm btn-square pointer-events-auto"
                           onClick={() => download(file.fileId!)}
                         >
                           <DownloadLogo />
                         </button>
-                      )}
-                  </li>
-                ),
-              )}
-            </ul>
+                      </div>
+                    )}
+                </div>
+              ))}
+            </div>
           )}
           {files.length === 0 &&
             (readOnly ? (
               "-"
             ) : (
               <>
-                <div className="text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
+                <div className="text-zinc-400 text-sm font-normal leading-tight max">
                   {subtitle}
                 </div>
                 {
-                  <div className=" text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
+                  <div className=" text-zinc-400 text-sm font-normal leading-tight max">
                     Max File Size: 500 kilobytes. {/*File types: PDF, TXT, DOC, or CSV, Images. */}
                   </div>
                 }

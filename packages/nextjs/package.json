@@ -38,6 +38,7 @@
     "finity-ui": "^0.0.2",
     "formidable": "^3.5.1",
     "graphql": "^16.8.1",
+    "helia": "^4.0.2",
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "lodash-es": "^4.17.21",

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
+import { DynamicContextProvider, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";

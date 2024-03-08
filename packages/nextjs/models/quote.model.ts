@@ -5,5 +5,6 @@ export interface QuoteModel {
   titleReportFees: number;
   appraisalAndInspectionFees: number;
   promoCodeReduction: number;
+  advancedPlan: number;
   total: number;
 }

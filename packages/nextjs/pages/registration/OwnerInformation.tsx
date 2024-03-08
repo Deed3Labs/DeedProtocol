@@ -21,14 +21,28 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 mt-6">
-      <div className="text-2xl font-['KronaOne'] leading-10">1. Owner Information</div>
+    <div className="flex flex-col mt-6 gap-6">
+      <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
+        1. Owner Information
+      </div>
+
       <RadioBoxesInput
         name="ownerType"
-        options={OwnerTypeOptions}
-        optionsClassName="w-[180px] h-[180px]"
         label="Current Owner Type"
         info
+        description={
+          <>
+            How do you currently hold this property? -&nbsp;
+            <Link
+              href="https://docs.deedprotocol.org/legal-framework/identity-verification"
+              target="_blank"
+            >
+              Learn more
+            </Link>
+          </>
+        }
+        options={OwnerTypeOptions}
+        optionsClassName="w-[180px] h-[180px]"
         onChange={handleChange}
         value={value?.ownerType}
         readOnly={readOnly}
@@ -87,14 +101,13 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
       )}
       <div className="mt-8">
         <label className="justify-start items-center inline-flex mb-3">
-          <div className="text-base font-bold font-['Montserrat']">Identity Verification</div>
+          <div className="text-base font-bold">Identity Verification</div>
           <span className="text-center text-xs font-normal font-['Inter'] leading-none ml-1">
             info
           </span>
         </label>
-        <div>
+        <div className="text-secondary">
           <Link
-            className="link link-accent"
             href="https://docs.deedprotocol.org/legal-framework/identity-verification#organizations-traditional-or-hybrid"
             target="_blank"
           >
@@ -122,54 +135,55 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           isRestricted={true}
         />
       </div>
-      <div className="mt-8">
-        <label className="justify-start items-center inline-flex mb-3">
-          <div className="text-base font-bold font-['Montserrat']">Entity Verification</div>
-          <span className="text-center text-xs font-normal font-['Inter'] leading-none ml-1">
-            info
-          </span>
-        </label>
-        <div>
-          <Link
-            className="link link-accent"
-            href="https://docs.deedprotocol.org/legal-framework/identity-verification"
-            target="_blank"
-          >
-            Learn more
-          </Link>
-          &nbsp;about Entity Verification.
+      {value?.ownerType === "legal" && (
+        <div className="mt-8">
+          <label className="justify-start items-center inline-flex mb-3">
+            <div className="text-base font-bold">Entity Verification</div>
+            <span className="text-center text-xs font-normal font-['Inter'] leading-none ml-1">
+              info
+            </span>
+          </label>
+          <div className="text-secondary">
+            <Link
+              href="https://docs.deedprotocol.org/legal-framework/identity-verification"
+              target="_blank"
+            >
+              Learn more
+            </Link>
+            &nbsp;about Entity Verification.
+          </div>
+          <FileUploaderInput
+            name="articleIncorporation"
+            label="Articles of Incorporation"
+            subtitle="This document is submited securely off-chain."
+            value={value?.articleIncorporation}
+            onChange={handleChange}
+            readOnly={readOnly}
+            isRestricted={true}
+          />
+          <FileUploaderInput
+            name="operatingAgreement"
+            label="Operating Agreement"
+            subtitle="This document is submited securely off-chain."
+            optional
+            value={value?.operatingAgreement}
+            onChange={handleChange}
+            readOnly={readOnly}
+            isRestricted={true}
+          />
+          <FileUploaderInput
+            name="supportingDoc"
+            label="Any other Supporting Documents"
+            subtitle="This document is submited securely off-chain."
+            optional
+            multiple
+            value={value?.supportingDoc}
+            onChange={handleChange}
+            readOnly={readOnly}
+            isRestricted={true}
+          />
         </div>
-        <FileUploaderInput
-          name="articleIncorporation"
-          label="Articles of Incorporation"
-          subtitle="This document is submited securely off-chain."
-          value={value?.articleIncorporation}
-          onChange={handleChange}
-          readOnly={readOnly}
-          isRestricted={true}
-        />
-        <FileUploaderInput
-          name="operatingAgreement"
-          label="Operating Agreement"
-          subtitle="This document is submited securely off-chain."
-          optional
-          value={value?.operatingAgreement}
-          onChange={handleChange}
-          readOnly={readOnly}
-          isRestricted={true}
-        />
-        <FileUploaderInput
-          name="supportingDoc"
-          label="Any other Supporting Documents"
-          subtitle="This document is submited securely off-chain."
-          optional
-          multiple
-          value={value?.supportingDoc}
-          onChange={handleChange}
-          readOnly={readOnly}
-          isRestricted={true}
-        />
-      </div>
+      )}
     </div>
   );
 };

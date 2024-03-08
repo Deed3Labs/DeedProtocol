@@ -7,31 +7,40 @@ import { notification } from "~~/utils/scaffold-eth";
 // LINK ../pages/api/files.api.ts
 
 export class FileClient extends HttpClient {
-  public async downloadFile(fileId: string, name: string) {
-    const toastId = notification.loading("Downloading file ...");
+  public async getFile(fileId: string, name: string, download: boolean = false, token?: string) {
+    const toastId = notification.loading(download ? "Downloading file ..." : "Opening file ...");
     const fileInfo = await this.getFileInfo(fileId);
     if (!fileInfo) {
       notification.error("Error downloading file " + name);
       return;
     }
-    const url = `/api/files?download=true&fileId=${fileId}&chainId=${this.chainId}`;
+    const url = `/api/files?download=${download}&fileId=${fileId}&chainId=${this.chainId}`;
 
-    const response = await fetch(url, {
-      headers: [["authorization", this.authorizationToken ?? ""]],
-    });
-    notification.remove(toastId);
-    if (response.status !== 200) {
-      notification.error("Error downloading file " + name);
-      logger.error({ message: "Error downloading file", details: await response.text() });
-      return;
+    if (download) {
+      const response = await fetch(url, {
+        headers: [["authorization", this.authorizationToken ?? ""]],
+      });
+      notification.remove(toastId);
+      if (response.status !== 200) {
+        notification.error("Error downloading file " + name);
+        logger.error({ message: "Error downloading file", details: await response.text() });
+        return;
+      }
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileInfo.fileName;
+      link.click();
+      URL.revokeObjectURL(blobUrl);
+    } else {
+      const urlObj = new URL(url, window.location.href);
+      if (this.authorizationToken) {
+        urlObj.searchParams.append("authorization", this.authorizationToken);
+      }
+      window.open(urlObj.toString(), "_blank");
+      notification.remove(toastId);
     }
-    const blob = await response.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = fileInfo.fileName;
-    link.click();
-    URL.revokeObjectURL(blobUrl);
   }
 
   public async uploadFile(file: FileModel, fieldLabel: string) {

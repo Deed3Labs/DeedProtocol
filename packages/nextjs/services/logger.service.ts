@@ -22,13 +22,13 @@ const handleLog = (payload: any, level: "debug" | "info" | "warn" | "error") => 
   // eslint-disable-next-line no-console
   console[level](payload);
   // If browser side
-  if (window) {
+  if (global.window) {
     fetch(`/api/logger?level=${level}`, {
       method: "POST",
       body: JSON.stringify({
         context: {
           wallet: currentWallet ?? "No wallet",
-          // browser: navigator.userAgent,
+          // browser: navigator.userAgent,si
         },
         ...payload,
       }),
