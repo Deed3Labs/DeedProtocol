@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
+import Layout from "./Layout";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DynamicContextProvider, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import NextNProgress from "nextjs-progressbar";
-import { Toaster } from "react-hot-toast";
 import { useDarkMode } from "usehooks-ts";
-import { BackToTop } from "~~/components/BackToTop";
-import ErrorBoundary from "~~/components/ErrorBoundary";
-import { Footer } from "~~/components/Footer";
-import { Header } from "~~/components/Header";
 import CONFIG from "~~/config";
 import "~~/styles/globals.scss";
 
 config.autoAddCss = false;
 
-const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
+const ScaffoldEthApp = (props: AppProps) => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const { isDarkMode } = useDarkMode();
 
@@ -48,17 +44,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
         }}
       >
         <DynamicWagmiConnector>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="relative flex flex-col flex-1">
-              <ErrorBoundary>
-                <Component {...pageProps} />
-              </ErrorBoundary>
-            </main>
-            <Footer />
-          </div>
-          <Toaster />
-          <BackToTop />
+          <Layout {...props} />
         </DynamicWagmiConnector>
       </DynamicContextProvider>
     </>

@@ -87,12 +87,6 @@ const Page = ({ router }: WithRouterProps) => {
     return deedData.owner === primaryWallet?.address || !id;
   }, [deedData.owner, primaryWallet, id]);
 
-  useEffect(() => { 
-    if (!authToken) {
-      
-    }
-  }, [authToken])
-
   useEffect(() => {
     if (router.isReady) {
       if (id) {
