@@ -11,7 +11,7 @@ interface Props {
 
 const PropertyCard = ({ property }: Props) => {
   const propertyTypeLabel = useMemo(
-    () => PropertyTypeOptions.find(x => x.value === property.type)?.title,
+    () => PropertyTypeOptions.find(x => x.value === property?.type)?.title,
     [property.type],
   );
   return (
