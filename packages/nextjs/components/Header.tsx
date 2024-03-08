@@ -15,7 +15,7 @@ export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   // const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet, isVerificationInProgress } = useDynamicContext();
   const { query, pathname, replace } = useRouter();
   const { id } = query;
   const searchRef = useRef<HTMLInputElement>(null);

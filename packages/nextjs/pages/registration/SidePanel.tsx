@@ -83,9 +83,11 @@ const SidePanel = ({
       if (response.ok && response.value) {
         if (!deedData.id) {
           // await handlePayment(response.value);
+          await router.push(`/registration/${response.value}`);
+        } else {
+          notification.success("Successfully updated");
+          refetchDeedInfo();
         }
-        notification.success("Successfully updated");
-        refetchDeedInfo();
       } else {
         notification.error("Error saving registration");
       }
