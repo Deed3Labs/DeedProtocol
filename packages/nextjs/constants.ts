@@ -1,6 +1,6 @@
 import { IconBitcoin, IconDollar, IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
 
-export const defaultPage = "property-explorer";
+export const defaultPage = "registration/new";
 
 export const OwnerTypeOptions = [
   {
