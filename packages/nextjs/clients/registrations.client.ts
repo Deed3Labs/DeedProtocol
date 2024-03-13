@@ -19,10 +19,10 @@ export class RegistrationClient extends HttpClient {
   }
 
   async getRegistration(id: string, isRestricted: boolean = false) {
-    if (isRestricted && !this.authorizationToken) {
-      notification.error("Please connect");
-      return { status: 401, error: "Unauthorized", value: undefined, ok: false };
-    }
+    // if (isRestricted && !this.authorizationToken) {
+    //   notification.error("Please connect");
+    //   return { status: 401, error: "Unauthorized", value: undefined, ok: false };
+    // }
     const result = await this.get<DeedInfoModel>(
       `/api/registrations?id=${id}&isRestricted=${isRestricted}`,
     );

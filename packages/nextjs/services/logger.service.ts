@@ -33,7 +33,8 @@ const handleLog = (payload: any, level: "debug" | "info" | "warn" | "error") => 
         ...payload,
       }),
     }).catch(() => {
-      "Something went wrong";
+      // eslint-disable-next-line no-console
+      console.error("Something went wrong while sending logs to the server");
     });
   }
 };

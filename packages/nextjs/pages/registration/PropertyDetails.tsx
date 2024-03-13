@@ -57,9 +57,9 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
         <TextInput
           name="propertyAddress"
-          label="APN # and Street Address"
+          label="APN #, Street Address and Zip Code"
           info
-          placeholder="e.g. 123 Main Street"
+          placeholder="e.g. 123 Main Street, US 92346"
           value={value?.propertyAddress}
           onChange={handleChange}
           readOnly={readOnly}

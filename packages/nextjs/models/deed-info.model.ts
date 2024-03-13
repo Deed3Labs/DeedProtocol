@@ -1,4 +1,4 @@
-import { FileModel } from "./file.model";
+import { FileModel, FileValidationState } from "./file.model";
 import { Address } from "viem";
 import {
   BlockchainOptions,
@@ -42,10 +42,17 @@ export interface PropertyDetailsModel {
   propertyState: ValueExtractor<typeof StateOptions>;
   propertySize?: string;
   propertyZoning?: ValueExtractor<typeof PropertyZoningOptions>;
+  propertyBedrooms?: string;
+  propertyBathrooms?: string;
+  propertyBuildYear?: string;
+  propertyHouseType?: string;
+  propertySquareFootage?: string;
 
   propertyImages?: FileModel[];
   propertyDeedOrTitle: FileModel;
   propertyPurchaseContract?: FileModel;
+
+  stateFillings?: FileModel[];
 }
 
 export interface OtherInformationModel {
@@ -89,4 +96,7 @@ export interface DeedInfoModel {
 
   //4. Payment Information
   paymentInformation: PaymentInformationModel;
+
+  process?: FileModel;
+  agreement?: FileModel;
 }

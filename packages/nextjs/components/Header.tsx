@@ -13,26 +13,13 @@ import logger from "~~/services/logger.service";
  */
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  // const [search, setSearch] = useState<string | undefined>();
+  const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const { primaryWallet } = useDynamicContext();
   const { query, pathname, replace } = useRouter();
   const { id } = query;
   const searchRef = useRef<HTMLInputElement>(null);
-  const connectBtnRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (connectBtnRef.current && !primaryWallet) {
-      setTimeout(() => {
-        const el =
-          connectBtnRef.current?.children[0]?.shadowRoot?.querySelector<HTMLButtonElement>(
-            "button",
-          );
-        if (el) {
-          el.click();
-        }
-      }, 100);
-    }
-  }, [primaryWallet, connectBtnRef.current]);
+
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
@@ -59,7 +46,7 @@ export const Header = () => {
   const nav = useMemo(
     () => (
       <>
-        {/* <div className="flex lg:flex-grow lg:items-center w-full lg:pr-14">
+        <div className="flex lg:flex-grow lg:items-center w-full lg:pr-14">
           <input
             ref={searchRef}
             className="input input-bordered border-1 w-full lg:w-80"
@@ -70,7 +57,7 @@ export const Header = () => {
           <kbd className="lg:flex bd bg-neutral-focus -ml-14 justify-center items-center w-10 h-10 rounded-xl">
             /
           </kbd>
-        </div> */}
+        </div>
         <Link
           className={`link-default ${
             pathname.includes("registration/[id]") && id === "new"
@@ -146,7 +133,7 @@ export const Header = () => {
             </div>
           </div>
         </div>
-        <div className="navbar-end flex-grow mr-4" ref={connectBtnRef}>
+        <div className="navbar-end flex-grow mr-4">
           <DynamicWidget
             buttonClassName="btn btn-neutral"
             innerButtonComponent={<div className="btn btn-neutral">Connect</div>}
