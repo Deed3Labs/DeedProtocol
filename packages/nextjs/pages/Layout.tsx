@@ -8,24 +8,24 @@ import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
 
 const Layout = ({ pageProps, Component }: AppProps) => {
-  const connectBtnRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    setInterval(() => {
-      const connected = document
-        .querySelector("#dynamic-widget")
-        ?.shadowRoot?.querySelector('[data-testid="AccountControl"]');
-      if (connected) return;
-      const modal = document
-        .querySelector('[data-testid="dynamic-modal-shadow"]')
-        ?.shadowRoot?.querySelector(".modal");
-      if (modal) return;
-      const el =
-        connectBtnRef?.current?.children[0]?.shadowRoot?.querySelector<HTMLButtonElement>("button");
-      if (el) {
-        el.click();
-      }
-    }, 500);
-  }, []);
+  // const connectBtnRef = useRef<HTMLInputElement>(null);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     const connected = document
+  //       .querySelector("#dynamic-widget")
+  //       ?.shadowRoot?.querySelector('[data-testid="AccountControl"]');
+  //     if (connected) return;
+  //     const modal = document
+  //       .querySelector('[data-testid="dynamic-modal-shadow"]')
+  //       ?.shadowRoot?.querySelector(".modal");
+  //     if (modal) return;
+  //     const el =
+  //       connectBtnRef?.current?.children[0]?.shadowRoot?.querySelector<HTMLButtonElement>("button");
+  //     if (el) {
+  //       el.click();
+  //     }
+  //   }, 500);
+  // }, []);
   return (
     <>
       <div className="flex flex-col min-h-screen">
@@ -39,7 +39,7 @@ const Layout = ({ pageProps, Component }: AppProps) => {
       </div>
       <Toaster />
       <BackToTop />
-      <div className="container pt-10 !hidden" ref={connectBtnRef}>
+      <div className="container pt-10 !hidden">
         <DynamicWidget
           buttonClassName="btn btn-neutral"
           innerButtonComponent={<div className="btn btn-neutral">Connect</div>}

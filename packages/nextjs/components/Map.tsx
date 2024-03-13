@@ -22,32 +22,32 @@ interface Marker {
 const Map = ({ markers }: Props) => {
   const [resolvedMarkers, setResolvedMarkers] = useState<Marker[]>();
 
-  useEffect(() => {
-    (async () => {
-      setResolvedMarkers(
-        await Promise.all(
-          markers.map(async marker => {
-            const response = await fetch(
-              `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(
-                marker,
-              )}.json?access_token=${mapboxToken}`,
-            );
-            if (!response.ok) throw new Error("Failed to fetch");
-            const data = await response.json();
+  // useEffect(() => {
+  //   (async () => {
+  //     setResolvedMarkers(
+  //       await Promise.all(
+  //         markers.map(async marker => {
+  //           const response = await fetch(
+  //             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(
+  //               marker,
+  //             )}.json?access_token=${mapboxToken}`,
+  //           );
+  //           if (!response.ok) throw new Error("Failed to fetch");
+  //           const data = await response.json();
 
-            const markerData = data.features[0];
-            return {
-              id: markerData.id,
-              lat: markerData.geometry.coordinates[1],
-              lng: markerData.geometry.coordinates[0],
-            };
-          }),
-        ),
-      );
-    })().catch(err => {
-      logger.error(err);
-    });
-  }, [markers]);
+  //           const markerData = data.features[0];
+  //           return {
+  //             id: markerData.id,
+  //             lat: markerData.geometry.coordinates[1],
+  //             lng: markerData.geometry.coordinates[0],
+  //           };
+  //         }),
+  //       ),
+  //     );
+  //   })().catch(err => {
+  //     logger.error(err);
+  //   });
+  // }, [markers]);
 
   return (
     <main className={classes.mainStyle}>
@@ -62,9 +62,9 @@ const Map = ({ markers }: Props) => {
         //   zoom: 10,
         // }}
       >
-        {resolvedMarkers?.map(marker => (
+        {/* {resolvedMarkers?.map(marker => (
           <Marker key={marker.id} latitude={marker.lat} longitude={marker.lng}></Marker>
-        ))}
+        ))} */}
       </Mapbox>
       {/* )} */}
     </main>
