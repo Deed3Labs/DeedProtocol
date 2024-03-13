@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useIsMounted } from "usehooks-ts";
 import { usePublicClient } from "wagmi";
 import CONFIG from "~~/config";
+import logger from "~~/services/logger.service";
 import {
   Contract,
   ContractCodeStatus,
@@ -29,13 +30,21 @@ export const useDeployedContractInfo = <TContractName extends ContractName>(
         setStatus(ContractCodeStatus.NOT_FOUND);
         return;
       }
-      const code = await publicClient.getBytecode({
-        address: deployedContract.address,
-      });
 
       if (!isMounted()) {
         return;
       }
+
+      let code;
+      try {
+        code = await publicClient.getBytecode({
+          address: deployedContract.address,
+        });
+      } catch (error) {
+        logger.error("Something went wrong while getting bytecode.");
+        return;
+      }
+
       // If contract code is `0x` => no contract deployed on that address
       if (code === "0x") {
         setStatus(ContractCodeStatus.NOT_FOUND);

@@ -172,7 +172,9 @@ a:not(.link-default) {
 }
 
 html,
-* {
+*,
+.btn-outline {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--b3)) hsl(var(--b1));
+  scrollbar-color: #212121 #171717;
+  border-color: #262626;
 }

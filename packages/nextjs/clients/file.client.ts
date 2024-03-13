@@ -12,6 +12,7 @@ export class FileClient extends HttpClient {
     const fileInfo = await this.getFileInfo(fileId);
     if (!fileInfo) {
       notification.error("Error downloading file " + name);
+      notification.remove(toastId);
       return;
     }
     const url = `/api/files?download=${download}&fileId=${fileId}&chainId=${this.chainId}`;

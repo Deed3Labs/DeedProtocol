@@ -13,6 +13,7 @@ interface TAddressProps {
   disableAddressLink?: boolean;
   format?: "short" | "long";
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
+  label?: string;
 }
 
 const blockieSizeMap = {
@@ -28,7 +29,13 @@ const blockieSizeMap = {
 /**
  * Displays an address (or ENS) with a Blockie image and option to copy address.
  */
-export const Address = ({ address, disableAddressLink, format, size = "base" }: TAddressProps) => {
+export const Address = ({
+  address,
+  disableAddressLink,
+  format,
+  size = "base",
+  label,
+}: TAddressProps) => {
   const [ens, setEns] = useState<string | undefined>();
   const [ensAvatar, setEnsAvatar] = useState<string | undefined>();
   const [addressCopied, setAddressCopied] = useState(false);
@@ -66,68 +73,75 @@ export const Address = ({ address, disableAddressLink, format, size = "base" }: 
     );
   }
 
-  if (!isAddress(address)) {
-    return <span className="text-error">Wrong address</span>;
-  }
+  // if (!isAddress(address)) {
+  //   return <span className="text-error">Wrong address</span>;
+  // }
+  const isValidAddress = address && isAddress(address);
+  const blockExplorerAddressLink = isValidAddress
+    ? getBlockExplorerAddressLink(address)
+    : undefined;
+  let displayAddress = isValidAddress ? address?.slice(0, 5) + "..." + address?.slice(-4) : address;
 
-  const blockExplorerAddressLink = getBlockExplorerAddressLink(address);
-  let displayAddress = address?.slice(0, 5) + "..." + address?.slice(-4);
-
-  if (ens) {
+  if (isValidAddress && ens) {
     displayAddress = ens;
   } else if (format === "long") {
     displayAddress = address;
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-3 my-3">
       <div className="flex-shrink-0">
         <BlockieAvatar
           address={address}
           ensImage={ensAvatar}
-          size={(blockieSizeMap[size] * 24) / blockieSizeMap["base"]}
+          size={(blockieSizeMap[size] * 36) / blockieSizeMap["base"]}
         />
       </div>
-      {disableAddressLink ? (
-        <span className={`ml-1.5 text-${size} font-normal`}>{displayAddress}</span>
-      ) : getTargetNetwork().id === hardhat.id ? (
-        <span className={`ml-1.5 text-${size} font-normal`}>
-          <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
-        </span>
-      ) : (
-        <a
-          className={`ml-1.5 text-${size} font-normal`}
-          target="_blank"
-          href={blockExplorerAddressLink}
-          rel="noopener noreferrer"
-        >
-          {displayAddress}
-        </a>
-      )}
-      {addressCopied ? (
-        <CheckCircleIcon
-          className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
-          aria-hidden="true"
-        />
-      ) : (
-        <CopyToClipboard
-          text={address}
-          onCopy={() => {
-            notification.info("Copied to clipboard", {
-              position: "bottom-right",
-            });
-            setAddressCopied(true);
-            setTimeout(() => {
-              setAddressCopied(false);
-            }, 800);
-          }}
-        >
-          <DocumentDuplicateIcon
-            className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
-            aria-hidden="true"
-          />
-        </CopyToClipboard>
-      )}
+      <div className="flex flex-col">
+        {label && <div className="text-secondary">{label}</div>}
+        <div className="flex flex-row">
+          {disableAddressLink || !blockExplorerAddressLink ? (
+            <span className={`text-${size} font-normal`}>{displayAddress}</span>
+          ) : getTargetNetwork().id === hardhat.id ? (
+            <span className={`text-${size} font-normal`}>
+              <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
+            </span>
+          ) : (
+            <a
+              className={`text-${size} font-normal`}
+              target="_blank"
+              href={blockExplorerAddressLink}
+              rel="noopener noreferrer"
+            >
+              {displayAddress}
+            </a>
+          )}
+          {addressCopied ? (
+            <CheckCircleIcon
+              className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
+              aria-hidden="true"
+            />
+          ) : (
+            <CopyToClipboard
+              text={address}
+              onCopy={() => {
+                notification.info("Copied to clipboard", {
+                  position: "bottom-right",
+                });
+                setAddressCopied(true);
+                setTimeout(() => {
+                  setAddressCopied(false);
+                }, 800);
+              }}
+            >
+              <DocumentDuplicateIcon
+                className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
+                aria-hidden="true"
+              />
+            </CopyToClipboard>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
