@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { AppProps } from "next/app";
-import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { Toaster } from "react-hot-toast";
 import { BackToTop } from "~~/components/BackToTop";
 import ErrorBoundary from "~~/components/ErrorBoundary";
@@ -9,23 +9,23 @@ import { Header } from "~~/components/Header";
 
 const Layout = ({ pageProps, Component }: AppProps) => {
   const connectBtnRef = useRef<HTMLInputElement>(null);
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     const connected = document
-  //       .querySelector("#dynamic-widget")
-  //       ?.shadowRoot?.querySelector('[data-testid="AccountControl"]');
-  //     if (connected) return;
-  //     const modal = document
-  //       .querySelector('[data-testid="dynamic-modal-shadow"]')
-  //       ?.shadowRoot?.querySelector(".modal");
-  //     if (modal) return;
-  //     const el =
-  //       connectBtnRef?.current?.children[0]?.shadowRoot?.querySelector<HTMLButtonElement>("button");
-  //     if (el) {
-  //       el.click();
-  //     }
-  //   }, 500);
-  // }, []);
+  useEffect(() => {
+    setInterval(() => {
+      const connected = document
+        .querySelector("#dynamic-widget")
+        ?.shadowRoot?.querySelector('[data-testid="AccountControl"]');
+      if (connected) return;
+      const modal = document
+        .querySelector('[data-testid="dynamic-modal-shadow"]')
+        ?.shadowRoot?.querySelector(".modal");
+      if (modal) return;
+      const el =
+        connectBtnRef?.current?.children[0]?.shadowRoot?.querySelector<HTMLButtonElement>("button");
+      if (el) {
+        el.click();
+      }
+    }, 500);
+  }, []);
   return (
     <>
       <div className="flex flex-col min-h-screen">
