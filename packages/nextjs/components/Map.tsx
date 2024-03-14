@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import classes from "./Page.module.css";
 import "mapbox-gl/dist/mapbox-gl.css";
-import Mapbox, { Marker, useMap } from "react-map-gl";
-import logger from "~~/services/logger.service";
+import Mapbox, { Marker } from "react-map-gl";
 
 const mapboxToken =
   "pk.eyJ1IjoiY29yYW50aW4iLCJhIjoiY2xtdjZiZTV4MGlibDJsbXM5ZzM1dHg0OCJ9.cv78ncZxEq8TE2exs5vvIA";
@@ -55,6 +54,7 @@ const Map = ({ markers }: Props) => {
       <Mapbox
         mapboxAccessToken={mapboxToken}
         mapStyle="mapbox://styles/mapbox/streets-v12"
+        // @ts-ignore
         style={classes.mapStyle}
         // initialViewState={{
         //   latitude: resolvedMarkers[0].lat,

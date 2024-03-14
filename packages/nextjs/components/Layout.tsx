@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { AppProps } from "next/app";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { Toaster } from "react-hot-toast";

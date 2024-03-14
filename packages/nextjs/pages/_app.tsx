@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import Layout from "./Layout";
+import Layout from "../components/Layout";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";

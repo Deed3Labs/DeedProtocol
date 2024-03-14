@@ -9,12 +9,10 @@ import useQuoteClient from "~~/clients/quote.client";
 import useRegistrationClient from "~~/clients/registrations.client";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
-import CONFIG from "~~/config";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
-import useCryptoPayement from "~~/hooks/useCryptoPayment.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { QuoteModel } from "~~/models/quote.model";
 import { uploadFiles } from "~~/services/file.service";
@@ -46,7 +44,7 @@ const SidePanel = ({
   const { writeValidateAsync } = useDeedValidate();
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => refetchDeedInfo());
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
-  const { writeAsync: writeCryptoPayement } = useCryptoPayement();
+  // const { writeAsync: writeCryptoPayement } = useCryptoPayement();
   const { primaryWallet, authToken } = useDynamicContext();
   const [quoteDetails, setQuoteDetails] = useState<QuoteModel>();
   const [appraisalInspection, setAppraisalInspection] = useState(false);
@@ -99,31 +97,31 @@ const SidePanel = ({
     }
   };
 
-  const handlePayment = async (_id: string) => {
-    if (!authToken) {
-      notification.error("Please connect your wallet");
-      return;
-    }
+  // const handlePayment = async (_id: string) => {
+  //   if (!authToken) {
+  //     notification.error("Please connect your wallet");
+  //     return;
+  //   }
 
-    if (deedData.paymentInformation.paymentType === "crypto") {
-      const toastId = notification.loading("Submiting payment...");
-      const hash = await writeCryptoPayement();
-      if (!hash) {
-        notification.remove(toastId);
-        return;
-      }
-      const response = await registrationClient
-        .authentify(authToken!)
-        .savePaymentReceipt(_id, hash?.toString());
-      notification.remove(toastId);
-      if (!response.ok) {
-        notification.error("Error submiting receipt");
-      }
-      await router.push(`/registration/${_id}`);
-    } else if (deedData.paymentInformation.paymentType === "fiat") {
-      location.href = `${CONFIG.paymentLink}?client_reference_id=${_id}`;
-    }
-  };
+  //   if (deedData.paymentInformation.paymentType === "crypto") {
+  //     const toastId = notification.loading("Submiting payment...");
+  //     const hash = await writeCryptoPayement();
+  //     if (!hash) {
+  //       notification.remove(toastId);
+  //       return;
+  //     }
+  //     const response = await registrationClient
+  //       .authentify(authToken!)
+  //       .savePaymentReceipt(_id, hash?.toString());
+  //     notification.remove(toastId);
+  //     if (!response.ok) {
+  //       notification.error("Error submiting receipt");
+  //     }
+  //     await router.push(`/registration/${_id}`);
+  //   } else if (deedData.paymentInformation.paymentType === "fiat") {
+  //     location.href = `${CONFIG.paymentLink}?client_reference_id=${_id}`;
+  //   }
+  // };
 
   const onDeedMinted = async (txnReceipt: TransactionReceipt) => {
     const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");

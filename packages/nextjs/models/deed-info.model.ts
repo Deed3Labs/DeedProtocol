@@ -1,7 +1,6 @@
-import { FileModel, FileValidationState } from "./file.model";
+import { FileFieldKeyLabel, FileModel, FileValidationState } from "./file.model";
 import { Address } from "viem";
 import {
-  BlockchainOptions,
   EntityTypeOptions,
   OwnerTypeOptions,
   PaymentOptions,
@@ -99,4 +98,6 @@ export interface DeedInfoModel {
 
   process?: FileModel;
   agreement?: FileModel;
+
+  validations?: FileFieldKeyLabel[];
 }

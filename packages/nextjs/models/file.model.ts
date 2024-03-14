@@ -15,7 +15,6 @@ export interface FileModel {
   size: number;
   timestamp: Date;
   restricted?: boolean;
-  state?: FileValidationState;
 }
 
 export type FileFieldKey = [
@@ -28,9 +27,24 @@ export type FileFieldKey = [
   ),
 ];
 
-export interface FileKeyValueLabel {
-  key: FileFieldKey;
-  label: string;
-  value: FileModel[];
+export class FileFieldKeyLabel {
+  key!: FileFieldKey;
+  label!: string;
   restricted?: boolean;
+  multiple?: boolean;
+  state?: FileValidationState;
+
+  constructor(data: Omit<FileFieldKeyLabel, "getFile">) {
+    Object.assign(this, data);
+  }
+
+  getFile = (deed: DeedInfoModel): FileModel[] => {
+    const [key, subKey] = this.key;
+    if (subKey !== undefined) {
+      // @ts-ignore
+      return deed[key][subKey];
+    }
+    // @ts-ignore
+    return deed[key] as FileModel[];
+  };
 }
