@@ -2,8 +2,9 @@ import React, { ChangeEventHandler, useEffect, useMemo, useState } from "react";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { flatMap } from "lodash-es";
 import useFileClient from "~~/clients/file.client";
+import { DeedInfoModel } from "~~/models/deed-info.model";
 import {
-  FileKeyValueLabel as FileFieldModel,
+  FileFieldKeyLabel as FileFieldModel,
   FileModel,
   FileValidationState,
 } from "~~/models/file.model";
@@ -13,15 +14,23 @@ interface Props {
   label: string;
   description?: string;
   button?: React.ReactNode;
+  deedData: DeedInfoModel;
   onStateChanged?: (state: FileValidationState) => void;
 }
-const FileValidation = ({ fileFields, label, description, button, onStateChanged }: Props) => {
+const FileValidation = ({
+  fileFields,
+  label,
+  description,
+  button,
+  onStateChanged,
+  deedData,
+}: Props) => {
   const { authToken } = useDynamicContext();
   const fileClient = useFileClient();
   const [isBadgeEdit, setIsBadgeEdit] = useState(false);
   const [allFiles, setAllFiles] = useState<FileModel[]>([]);
   const stateBadge = useMemo(() => {
-    switch (fileFields?.[0]?.value[0].state) {
+    switch (fileFields?.[0].state) {
       case "Completed":
         return "success";
       case "Needs Review":
@@ -32,14 +41,14 @@ const FileValidation = ({ fileFields, label, description, button, onStateChanged
       default:
         return "neutral";
     }
-  }, [fileFields?.[0]?.value[0].state]);
+  }, [fileFields?.[0].state]);
 
   useEffect(() => {
     if (fileFields) {
       setAllFiles(
         flatMap(
           fileFields.filter(x => !!x),
-          field => field?.value,
+          field => field?.getFile(deedData),
         ),
       );
     }
@@ -65,7 +74,7 @@ const FileValidation = ({ fileFields, label, description, button, onStateChanged
         {stateBadge && isBadgeEdit ? (
           <select
             className="select w-full max-w-xs"
-            value={fileFields?.[0]?.value[0].state}
+            value={fileFields?.[0].state}
             onChange={handleStateChanged}
           >
             <option value="Not Started">Not Started</option>
@@ -80,7 +89,7 @@ const FileValidation = ({ fileFields, label, description, button, onStateChanged
             } rounded-lg `}
             onDoubleClick={() => setIsBadgeEdit(x => !x)}
           >
-            {fileFields?.[0]?.value[0].state ?? "Not started"}
+            {fileFields?.[0].state ?? "Not started"}
           </div>
         )}
         {button ? (

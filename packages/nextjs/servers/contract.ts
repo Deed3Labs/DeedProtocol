@@ -3,6 +3,7 @@ import { gnosis, goerli } from "viem/chains";
 import { mainnet, sepolia } from "wagmi";
 import CONFIG from "~~/config";
 import deployedContracts from "~~/contracts/deployedContracts";
+import logger from "~~/services/logger.service";
 
 export const getClient = (chainId: number | string) => {
   let chain;
@@ -37,10 +38,10 @@ export const getDeedOwner = async (id: number, chainId: number) => {
     return await contract.read.ownerOf([id as any]);
   } catch (error: any) {
     if (error.toString().includes("ERC721NonexistentToken")) {
-      console.error({ message: `Error: Deed ${id} not found in chain`, error });
+      logger.error({ message: `Error: Deed ${id} not found in chain`, error });
       return undefined;
     } else {
-      console.error({ message: "Error while fetching deed in chain", error });
+      logger.error({ message: "Error while fetching deed in chain", error });
       return undefined;
     }
   }

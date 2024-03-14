@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FileValidation from "./FileValidation";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { FileFieldKey, FileKeyValueLabel, FileValidationState } from "~~/models/file.model";
+import { FileFieldKey, FileFieldKeyLabel, FileValidationState } from "~~/models/file.model";
 import { getSupportedFiles } from "~~/services/file.service";
 
 interface Props {
@@ -10,23 +10,27 @@ interface Props {
 }
 
 const ValidationProcedures = ({ deedData, onSave }: Props) => {
-  const [supportedFiles, setSupportedFiles] = useState<Map<string, FileKeyValueLabel>>();
+  const [supportedFiles, setSupportedFiles] = useState<Map<string, FileFieldKeyLabel>>();
   useEffect(() => {
-    const map = new Map<string, FileKeyValueLabel>();
+    const map = new Map<string, FileFieldKeyLabel>();
     getSupportedFiles(deedData, undefined, false, true).forEach(x => {
       map.set(x.label, x);
     });
     setSupportedFiles(map);
   }, [deedData]);
 
-  const handleStateChange = (key: FileFieldKey, state: FileValidationState) => {
-    if (key[1]) {
-      // @ts-ignore
-      deedData[key[0]][key[1]].state = state;
+  const handleStateChange = (label: string, state: FileValidationState) => {
+    const field = supportedFiles!.get(label)!;
+    if (!deedData.validations) deedData.validations = [];
+    const validation = deedData.validations.find(
+      x => x.key[0] + x.key[1] === field.key[0] + field.key[1],
+    );
+    if (!validation) {
+      deedData.validations.push(new FileFieldKeyLabel({ key: field.key, state, label }));
     } else {
-      // @ts-ignore
-      deedData[key[0]].state = state;
+      validation.state = state;
     }
+
     onSave(deedData);
   };
 
@@ -79,9 +83,8 @@ const ValidationProcedures = ({ deedData, onSave }: Props) => {
                     supportedFiles.get("Operating Agreement")!,
                     supportedFiles.get("Any other Supporting Documents")!,
                   ]}
-                  onStateChanged={state =>
-                    handleStateChange(supportedFiles.get("ID or Passport")!.key, state)
-                  }
+                  onStateChanged={state => handleStateChange("ID or Passport", state)}
+                  deedData={deedData}
                 ></FileValidation>
               </div>
             </td>
@@ -93,9 +96,8 @@ const ValidationProcedures = ({ deedData, onSave }: Props) => {
                   label="Entity Verification"
                   description="Complete KYB Procedures"
                   fileFields={[supportedFiles.get("Property Images")!]}
-                  onStateChanged={state =>
-                    handleStateChange(supportedFiles.get("Property Images")!.key, state)
-                  }
+                  onStateChanged={state => handleStateChange("Property Images", state)}
+                  deedData={deedData}
                 ></FileValidation>
               </div>
             </td>
@@ -110,9 +112,8 @@ const ValidationProcedures = ({ deedData, onSave }: Props) => {
                     supportedFiles.get("Deed or Title")!,
                     supportedFiles.get("Purchase Contract")!,
                   ]}
-                  onStateChanged={state =>
-                    handleStateChange(supportedFiles.get("Deed or Title")!.key, state)
-                  }
+                  onStateChanged={state => handleStateChange("Deed or Title", state)}
+                  deedData={deedData}
                 ></FileValidation>
               </div>
             </td>
@@ -138,9 +139,8 @@ const ValidationProcedures = ({ deedData, onSave }: Props) => {
                       View Agreements
                     </button>
                   }
-                  onStateChanged={state =>
-                    handleStateChange(supportedFiles.get("Agreement")!.key, state)
-                  }
+                  onStateChanged={state => handleStateChange("Agreement", state)}
+                  deedData={deedData}
                 ></FileValidation>
               </div>
             </td>
@@ -155,16 +155,13 @@ const ValidationProcedures = ({ deedData, onSave }: Props) => {
                   button={
                     <button
                       className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase"
-                      onClick={() =>
-                        handleStateChange(supportedFiles.get("Process")!.key, "Processing")
-                      }
+                      onClick={() => handleStateChange("Process", "Processing")}
                     >
                       Begin Process
                     </button>
                   }
-                  onStateChanged={state =>
-                    handleStateChange(supportedFiles.get("Agreement")!.key, state)
-                  }
+                  onStateChanged={state => handleStateChange("Agreement", state)}
+                  deedData={deedData}
                 ></FileValidation>
               </div>
             </td>
@@ -176,9 +173,8 @@ const ValidationProcedures = ({ deedData, onSave }: Props) => {
                   label="State & County Fillings"
                   description="Complete KYB Procedures"
                   fileFields={[supportedFiles.get("State & County Fillings")!]}
-                  onStateChanged={state =>
-                    handleStateChange(supportedFiles.get("State & County Fillings")!.key, state)
-                  }
+                  onStateChanged={state => handleStateChange("State & County Fillings", state)}
+                  deedData={deedData}
                 ></FileValidation>
               </div>
             </td>
@@ -205,6 +201,7 @@ const ValidationProcedures = ({ deedData, onSave }: Props) => {
                       Click to sign
                     </button>
                   }
+                  deedData={deedData}
                 ></FileValidation>
               </div>
             </td>

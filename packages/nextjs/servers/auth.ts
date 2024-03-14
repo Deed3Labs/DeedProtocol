@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Address, getContract } from "viem";
 import deployedContracts from "~~/contracts/deployedContracts";
 import AuthToken from "~~/models/auth-token";
+import logger from "~~/services/logger.service";
 
 type Role = "Validator" | "Admin";
 type Constraint = Address | Role;
@@ -83,7 +84,7 @@ export const getDecodedToken = (req: NextApiRequest) => {
         algorithms: ["RS256"],
       }) as AuthToken;
     } catch (error) {
-      console.warn("Failed to decode jwt token: ", error);
+      logger.warn("Failed to decode jwt token: ", error);
     }
   }
   return undefined;

@@ -7,7 +7,7 @@ import { notification } from "~~/utils/scaffold-eth";
 // LINK ../pages/api/files.api.ts
 
 export class FileClient extends HttpClient {
-  public async getFile(fileId: string, name: string, download: boolean = false, token?: string) {
+  public async getFile(fileId: string, name: string, download: boolean = false) {
     const toastId = notification.loading(download ? "Downloading file ..." : "Opening file ...");
     const fileInfo = await this.getFileInfo(fileId);
     if (!fileInfo) {

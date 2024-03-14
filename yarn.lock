@@ -1289,7 +1289,6 @@ __metadata:
     react-leaflet: ^4.2.1
     react-leaflet-div-icon: ^1.1.0
     react-map-gl: ^7.1.7
-    react-mapbox-gl: ^5.1.1
     sass: ^1.68.0
     sharp: ^0.33.0
     stream: ^0.0.2
@@ -6489,29 +6488,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/bbox@npm:4.7.3":
-  version: 4.7.3
-  resolution: "@turf/bbox@npm:4.7.3"
-  dependencies:
-    "@turf/meta": ^4.7.3
-  checksum: b4f54ca72eda64efd9a7c2c52561fe8fa5f3d9d3d29e6ea3895ffe9d11f64102be8b13c784f08c1c3d1f910127fb13629ae5636a683abfa8daddcc984564a8b9
-  languageName: node
-  linkType: hard
-
-"@turf/helpers@npm:4.7.3":
-  version: 4.7.3
-  resolution: "@turf/helpers@npm:4.7.3"
-  checksum: 2e316372d1fc46275d24476df1b62509ae78042e222e1d9aa0bb94d9895f3e638f7cc3e04f46e41d081d9d695b06771f633dac403a06594d73004701c7b10d38
-  languageName: node
-  linkType: hard
-
-"@turf/meta@npm:^4.7.3":
-  version: 4.7.4
-  resolution: "@turf/meta@npm:4.7.4"
-  checksum: ed1efc56a65e21e07beb18414d5eafedbd9ee2e10fbd0ac7b50af55d351a72ca168465cfe0e72b95778ff13755293eeff57b2650aa5a55df9a6aaad151dd9161
-  languageName: node
-  linkType: hard
-
 "@turnkey/api-key-stamper@npm:0.3.1":
   version: 0.3.1
   resolution: "@turnkey/api-key-stamper@npm:0.3.1"
@@ -7172,15 +7148,6 @@ __metadata:
   version: 8.1.5
   resolution: "@types/sinonjs__fake-timers@npm:8.1.5"
   checksum: 7e3c08f6c13df44f3ea7d9a5155ddf77e3f7314c156fa1c5a829a4f3763bafe2f75b1283b887f06e6b4296996a2f299b70f64ff82625f9af5885436e2524d10c
-  languageName: node
-  linkType: hard
-
-"@types/supercluster@npm:^5.0.1":
-  version: 5.0.3
-  resolution: "@types/supercluster@npm:5.0.3"
-  dependencies:
-    "@types/geojson": "*"
-  checksum: 34d652dfbbf6ff7712447fa3a94736adea3700bcbfdb09281f06ec681116561b82780ddaf256c73497a00d6c2d66848c4754335c12e621b98ba55cae119d159e
   languageName: node
   linkType: hard
 
@@ -11535,13 +11502,6 @@ __metadata:
   dependencies:
     type-detect: ^4.0.0
   checksum: e14ec4065a38d89e48dee9c79c43c45c48bb0932e2be01898874517892ea15e20619d9c570019d6086ed74ea5557cc03ba4fab11878d20922d548221979b8d94
-  languageName: node
-  linkType: hard
-
-"deep-equal@npm:1.0.1":
-  version: 1.0.1
-  resolution: "deep-equal@npm:1.0.1"
-  checksum: 5af8cbfcebf190491878a498caccc7dc9592f8ebd1685b976eacc3825619d222b5e929923163b92c4f414494e2b884f7ebf00c022e8198e8292deb70dd9785f4
   languageName: node
   linkType: hard
 
@@ -17349,13 +17309,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kdbush@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "kdbush@npm:3.0.0"
-  checksum: bc5fa433958e42664a8a92457e4f0d1db55b3b8e36956aac0102964adb2eab043bdbff156570dc8d867144ceff588fb7a1c6e099ba9be068cd1767a73e1ace92
-  languageName: node
-  linkType: hard
-
 "kdbush@npm:^4.0.1, kdbush@npm:^4.0.2":
   version: 4.0.2
   resolution: "kdbush@npm:4.0.2"
@@ -21257,24 +21210,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-mapbox-gl@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "react-mapbox-gl@npm:5.1.1"
-  dependencies:
-    "@turf/bbox": 4.7.3
-    "@turf/helpers": 4.7.3
-    "@types/supercluster": ^5.0.1
-    deep-equal: 1.0.1
-    supercluster: ^7.0.0
-  peerDependencies:
-    mapbox-gl: ^1.12.0
-    prop-types: ^15.6.2
-    react: ^16.11.0
-    react-dom: ^16.11.0
-  checksum: c81554c5ac9144bfdc321e83121db8fcd019990a5d9daf994202f2d629412ab6f364087d77472b4cbf0a1350ca8eabb2aaeb9974ba14301821d306ec873ef219
-  languageName: node
-  linkType: hard
-
 "react-native-fetch-api@npm:^3.0.0":
   version: 3.0.0
   resolution: "react-native-fetch-api@npm:3.0.0"
@@ -23168,15 +23103,6 @@ __metadata:
     sucrase: bin/sucrase
     sucrase-node: bin/sucrase-node
   checksum: 61860063bdf6103413698e13247a3074d25843e91170825a9752e4af7668ffadd331b6e99e92fc32ee5b3c484ee134936f926fa9039d5711fafff29d017a2110
-  languageName: node
-  linkType: hard
-
-"supercluster@npm:^7.0.0":
-  version: 7.1.5
-  resolution: "supercluster@npm:7.1.5"
-  dependencies:
-    kdbush: ^3.0.0
-  checksum: 69863238870093b96617135884721b6343746e14f396b2d67d6b55c52c362ec0516c5e386aa21815e75a9cef2054e831ac34023d0d8b600091d28cea0794f027
   languageName: node
   linkType: hard
 

@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash-es";
 import { FileClient } from "~~/clients/file.client";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { FileKeyValueLabel } from "~~/models/file.model";
+import { FileFieldKeyLabel } from "~~/models/file.model";
 
 const fileClient = new FileClient();
 
@@ -20,15 +20,16 @@ export async function uploadFiles(
 
   await Promise.all(
     toBeUploaded
-      .filter(x => !!x.value && (!x.restricted || !publish))
-      .map(async ({ key, label, value: files }) => {
+      .filter(x => !!x.getFile(data) && (!x.restricted || !publish))
+      .map(async x => {
+        const files = x.getFile(data);
         return Promise.all(
           files.map(async fileDatum => {
             let fileId;
             if (publish) {
-              fileId = await fileClient.publish(fileDatum, label);
+              fileId = await fileClient.publish(fileDatum, x.label);
             } else {
-              fileId = await fileClient.uploadFile(fileDatum, label);
+              fileId = await fileClient.uploadFile(fileDatum, x.label);
             }
 
             // @ts-ignore when array, key[2] is the index
@@ -73,31 +74,35 @@ export function getSupportedFiles(
   old?: DeedInfoModel,
   publish: boolean = false,
   isDraft: boolean = false,
-): FileKeyValueLabel[] {
-  const files: FileKeyValueLabel[] = [];
+): FileFieldKeyLabel[] {
+  const files: FileFieldKeyLabel[] = [];
 
   // Owner informations files
   if (
     data.ownerInformation.ids &&
     (!old || old.ownerInformation.ids !== data.ownerInformation.ids)
   ) {
-    files.push({
-      key: ["ownerInformation", "ids"],
-      label: "ID or Passport",
-      value: [data.ownerInformation.ids],
-      restricted: true,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["ownerInformation", "ids"],
+        label: "ID or Passport",
+        multiple: true,
+        restricted: true,
+      }),
+    );
   }
   if (
     data.ownerInformation.proofBill &&
     (!old || old.ownerInformation.proofBill !== data.ownerInformation.proofBill)
   ) {
-    files.push({
-      key: ["ownerInformation", "proofBill"],
-      label: "Utility Bill or Other Document",
-      value: [data.ownerInformation.proofBill],
-      restricted: true,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["ownerInformation", "proofBill"],
+        label: "Utility Bill or Other Document",
+        multiple: false,
+        restricted: true,
+      }),
+    );
   }
 
   if (data.ownerInformation.ownerType === "legal") {
@@ -106,36 +111,42 @@ export function getSupportedFiles(
       (!old ||
         old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation)
     ) {
-      files.push({
-        key: ["ownerInformation", "articleIncorporation"],
-        label: "Article of Incorporation",
-        value: [data.ownerInformation.articleIncorporation],
-        restricted: true,
-      });
+      files.push(
+        new FileFieldKeyLabel({
+          key: ["ownerInformation", "articleIncorporation"],
+          label: "Article of Incorporation",
+          multiple: false,
+          restricted: true,
+        }),
+      );
     }
 
     if (
       data.ownerInformation.operatingAgreement &&
       (!old || old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement)
     ) {
-      files.push({
-        key: ["ownerInformation", "operatingAgreement"],
-        label: "Operating Agreement",
-        value: [data.ownerInformation.operatingAgreement],
-        restricted: true,
-      });
+      files.push(
+        new FileFieldKeyLabel({
+          key: ["ownerInformation", "operatingAgreement"],
+          label: "Operating Agreement",
+          multiple: false,
+          restricted: true,
+        }),
+      );
     }
 
     if (
       data.ownerInformation.supportingDoc?.length &&
       (data.ownerInformation.supportingDoc.find(x => !x.fileId) || !old)
     ) {
-      files.push({
-        key: ["ownerInformation", "supportingDoc"],
-        label: "Any other Supporting Documents",
-        value: data.ownerInformation.supportingDoc,
-        restricted: true,
-      });
+      files.push(
+        new FileFieldKeyLabel({
+          key: ["ownerInformation", "supportingDoc"],
+          label: "Any other Supporting Documents",
+          multiple: false,
+          restricted: true,
+        }),
+      );
     }
   }
 
@@ -144,24 +155,28 @@ export function getSupportedFiles(
     data.propertyDetails.propertyImages?.length &&
     (data.propertyDetails.propertyImages.find(x => !x.fileId) || !old)
   ) {
-    files.push({
-      key: ["propertyDetails", "propertyImages"],
-      label: "Property Images",
-      value: data.propertyDetails.propertyImages,
-      restricted: publish ? false : isDraft,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "propertyImages"],
+        label: "Property Images",
+        multiple: true,
+        restricted: publish ? false : isDraft,
+      }),
+    );
   }
 
   if (
     data.propertyDetails.propertyDeedOrTitle &&
     (!old || old.propertyDetails.propertyDeedOrTitle !== data.propertyDetails.propertyDeedOrTitle)
   )
-    files.push({
-      key: ["propertyDetails", "propertyDeedOrTitle"],
-      label: "Deed or Title",
-      value: [data.propertyDetails.propertyDeedOrTitle],
-      restricted: true,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "propertyDeedOrTitle"],
+        label: "Deed or Title",
+        multiple: false,
+        restricted: true,
+      }),
+    );
 
   if (
     data.propertyDetails.propertyPurchaseContract &&
@@ -169,42 +184,50 @@ export function getSupportedFiles(
       old.propertyDetails.propertyPurchaseContract !==
         data.propertyDetails.propertyPurchaseContract)
   ) {
-    files.push({
-      key: ["propertyDetails", "propertyPurchaseContract"],
-      label: "Purchase Contract",
-      value: [data.propertyDetails.propertyPurchaseContract],
-      restricted: true,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "propertyPurchaseContract"],
+        label: "Purchase Contract",
+        multiple: false,
+        restricted: true,
+      }),
+    );
   }
 
   if (
     data.propertyDetails.stateFillings &&
     data.propertyDetails.stateFillings.find(x => x.fileId)
   ) {
-    files.push({
-      key: ["propertyDetails", "stateFillings"],
-      label: "State & County Fillings",
-      value: data.propertyDetails.stateFillings,
-      restricted: true,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "stateFillings"],
+        label: "State & County Fillings",
+        multiple: true,
+        restricted: true,
+      }),
+    );
   }
 
   if (data.agreement && (!old || old.agreement !== data.agreement)) {
-    files.push({
-      key: ["agreement", undefined],
-      label: "Agreement",
-      value: [data.agreement],
-      restricted: true,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["agreement", undefined],
+        label: "Agreement",
+        multiple: false,
+        restricted: true,
+      }),
+    );
   }
 
   if (data.process && (!old || old.process !== data.process)) {
-    files.push({
-      key: ["process", undefined],
-      label: "Process",
-      value: [data.process],
-      restricted: true,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["process", undefined],
+        label: "Process",
+        multiple: false,
+        restricted: true,
+      }),
+    );
   }
 
   return files;
