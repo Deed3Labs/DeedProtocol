@@ -4,6 +4,7 @@ import {
   OwnerInformationModel,
   PropertyDetailsModel,
 } from "./deed-info.model";
+import { isArray } from "lodash-es";
 
 export type FileValidationState = "Completed" | "Not started" | "Needs Review" | "Processing";
 
@@ -40,11 +41,15 @@ export class FileFieldKeyLabel {
 
   getFile = (deed: DeedInfoModel): FileModel[] => {
     const [key, subKey] = this.key;
+    let files;
     if (subKey !== undefined) {
       // @ts-ignore
-      return deed[key][subKey];
+      files = deed[key][subKey];
+    } else {
+      // @ts-ignore
+      files = deed[key] as FileModel[];
     }
-    // @ts-ignore
-    return deed[key] as FileModel[];
+
+    return isArray(files) ? files : [files];
   };
 }

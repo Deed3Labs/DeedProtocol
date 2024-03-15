@@ -107,12 +107,12 @@ const PropertyOverview = ({ deedData, isOwner, refresh }: Props) => {
                     <path
                       d="M15.39 9.82125C15.39 13.05 12.6337 15.8062 9.24748 15.8062C5.86123 15.8062 3.10498 13.05 3.10498 9.82125C3.10498 6.51375 5.86123 3.83625 9.24748 3.83625H12.0037"
                       stroke="#A0A0A0"
-                      stroke-width="0.7875"
+                      strokeWidth="0.7875"
                     />
                     <path
                       d="M8.91016 1.15875L12.6902 3.915L8.91016 6.67125"
                       stroke="#A0A0A0"
-                      stroke-width="0.7875"
+                      strokeWidth="0.7875"
                     />
                   </svg>
                   Refresh

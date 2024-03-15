@@ -168,8 +168,8 @@ const Page = ({ router }: WithRouterProps) => {
               </button>
             </div>
           ) : (
-            <div className="flex flex-row w-full flex-wrap gap-6">
-              <div className="flex flex-col gap-4">
+            <div className="flex flex-row flex-wrap gap-6 w-full">
+              <div className="flex flex-col gap-4 w-full 2xl:w-fit">
                 <div className="flex flex-row items-center w-full justify-between">
                   <div className="text-2xl">Validation History</div>
                   <div className="flex flex-row gap-4">
@@ -239,6 +239,7 @@ const Page = ({ router }: WithRouterProps) => {
                 <ValidationProcedures
                   deedData={deedData}
                   onSave={handleSave}
+                  onRefresh={() => fetchDeedInfo(deedData!.id!)}
                 ></ValidationProcedures>
               </div>
             </div>

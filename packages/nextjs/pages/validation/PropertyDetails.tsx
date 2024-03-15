@@ -196,7 +196,7 @@ const PropertyDetails = ({ propertyDetail, isOwner, onChange, refresh, onSave }:
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <g clip-path="url(#clip0_2054_786)">
+                <g clipPath="url(#clip0_2054_786)">
                   <path d="M2 4.5L9 7.5L16 4.5" stroke="#A0A0A0" />
                   <path d="M9 7V17" stroke="#A0A0A0" />
                   <path

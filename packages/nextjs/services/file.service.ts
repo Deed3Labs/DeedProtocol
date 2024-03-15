@@ -24,7 +24,7 @@ export async function uploadFiles(
       .map(async x => {
         const files = x.getFile(data);
         return Promise.all(
-          files.map(async fileDatum => {
+          files.map(async (fileDatum, i) => {
             let fileId;
             if (publish) {
               fileId = await fileClient.publish(fileDatum, x.label);
@@ -32,10 +32,10 @@ export async function uploadFiles(
               fileId = await fileClient.uploadFile(fileDatum, x.label);
             }
 
-            // @ts-ignore when array, key[2] is the index
-            if (key[2] !== undefined) payload[key[0]][key[1]][key[2]].fileId = fileId;
             // @ts-ignore
-            else payload[key[0]][key[1]].fileId = fileId;
+            if (x.multiple) payload[x.key[0]][x.key[1]][i].fileId = fileId;
+            // @ts-ignore
+            else payload[x.key[0]][x.key[1]].fileId = fileId;
           }),
         );
       }),
@@ -74,13 +74,14 @@ export function getSupportedFiles(
   old?: DeedInfoModel,
   publish: boolean = false,
   isDraft: boolean = false,
+  includeAll: boolean = false,
 ): FileFieldKeyLabel[] {
   const files: FileFieldKeyLabel[] = [];
 
   // Owner informations files
   if (
-    data.ownerInformation.ids &&
-    (!old || old.ownerInformation.ids !== data.ownerInformation.ids)
+    includeAll ||
+    (data.ownerInformation.ids && (!old || old.ownerInformation.ids !== data.ownerInformation.ids))
   ) {
     files.push(
       new FileFieldKeyLabel({
@@ -92,8 +93,9 @@ export function getSupportedFiles(
     );
   }
   if (
-    data.ownerInformation.proofBill &&
-    (!old || old.ownerInformation.proofBill !== data.ownerInformation.proofBill)
+    includeAll ||
+    (data.ownerInformation.proofBill &&
+      (!old || old.ownerInformation.proofBill !== data.ownerInformation.proofBill))
   ) {
     files.push(
       new FileFieldKeyLabel({
@@ -107,9 +109,10 @@ export function getSupportedFiles(
 
   if (data.ownerInformation.ownerType === "legal") {
     if (
-      data.ownerInformation.articleIncorporation &&
-      (!old ||
-        old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation)
+      includeAll ||
+      (data.ownerInformation.articleIncorporation &&
+        (!old ||
+          old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation))
     ) {
       files.push(
         new FileFieldKeyLabel({
@@ -122,8 +125,10 @@ export function getSupportedFiles(
     }
 
     if (
-      data.ownerInformation.operatingAgreement &&
-      (!old || old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement)
+      includeAll ||
+      (data.ownerInformation.operatingAgreement &&
+        (!old ||
+          old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement))
     ) {
       files.push(
         new FileFieldKeyLabel({
@@ -136,8 +141,9 @@ export function getSupportedFiles(
     }
 
     if (
-      data.ownerInformation.supportingDoc?.length &&
-      (data.ownerInformation.supportingDoc.find(x => !x.fileId) || !old)
+      includeAll ||
+      (data.ownerInformation.supportingDoc?.length &&
+        (data.ownerInformation.supportingDoc.find(x => !x.fileId) || !old))
     ) {
       files.push(
         new FileFieldKeyLabel({
@@ -152,8 +158,9 @@ export function getSupportedFiles(
 
   // Property details files
   if (
-    data.propertyDetails.propertyImages?.length &&
-    (data.propertyDetails.propertyImages.find(x => !x.fileId) || !old)
+    includeAll ||
+    (data.propertyDetails.propertyImages?.length &&
+      (data.propertyDetails.propertyImages.find(x => !x.fileId) || !old))
   ) {
     files.push(
       new FileFieldKeyLabel({
@@ -166,8 +173,10 @@ export function getSupportedFiles(
   }
 
   if (
-    data.propertyDetails.propertyDeedOrTitle &&
-    (!old || old.propertyDetails.propertyDeedOrTitle !== data.propertyDetails.propertyDeedOrTitle)
+    includeAll ||
+    (data.propertyDetails.propertyDeedOrTitle &&
+      (!old ||
+        old.propertyDetails.propertyDeedOrTitle !== data.propertyDetails.propertyDeedOrTitle))
   )
     files.push(
       new FileFieldKeyLabel({
@@ -179,10 +188,11 @@ export function getSupportedFiles(
     );
 
   if (
-    data.propertyDetails.propertyPurchaseContract &&
-    (!old ||
-      old.propertyDetails.propertyPurchaseContract !==
-        data.propertyDetails.propertyPurchaseContract)
+    includeAll ||
+    (data.propertyDetails.propertyPurchaseContract &&
+      (!old ||
+        old.propertyDetails.propertyPurchaseContract !==
+          data.propertyDetails.propertyPurchaseContract))
   ) {
     files.push(
       new FileFieldKeyLabel({
@@ -195,8 +205,8 @@ export function getSupportedFiles(
   }
 
   if (
-    data.propertyDetails.stateFillings &&
-    data.propertyDetails.stateFillings.find(x => x.fileId)
+    includeAll ||
+    (data.propertyDetails.stateFillings && data.propertyDetails.stateFillings.find(x => x.fileId))
   ) {
     files.push(
       new FileFieldKeyLabel({
@@ -208,23 +218,23 @@ export function getSupportedFiles(
     );
   }
 
-  if (data.agreement && (!old || old.agreement !== data.agreement)) {
+  if (includeAll || (data.agreement && (!old || old.agreement !== data.agreement))) {
     files.push(
       new FileFieldKeyLabel({
         key: ["agreement", undefined],
         label: "Agreement",
-        multiple: false,
+        multiple: true,
         restricted: true,
       }),
     );
   }
 
-  if (data.process && (!old || old.process !== data.process)) {
+  if (includeAll || (data.process && (!old || old.process !== data.process))) {
     files.push(
       new FileFieldKeyLabel({
         key: ["process", undefined],
         label: "Process",
-        multiple: false,
+        multiple: true,
         restricted: true,
       }),
     );
