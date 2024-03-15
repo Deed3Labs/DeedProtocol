@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
-import OtherInformations from "./OtherInformations";
-import OwnerInformation from "./OwnerInformation";
-import PaymentInformation from "./PaymentInformation";
-import PropertyDetails from "./PropertyDetails";
+import OtherInformations from "../../components/OtherInformations";
+import OwnerInformation from "../../components/OwnerInformation";
+import PaymentInformation from "../../components/PaymentInformation";
+import PropertyDetails from "../../components/RegPropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useRegistrationClient from "~~/clients/registrations.client";
 import SidePanel from "~~/components/SidePanel";
@@ -38,8 +38,7 @@ const fakeData: DeedInfoModel = {
     propertySubType: "land",
   } as PropertyDetailsModel,
   otherInformation: {
-    blockchain: "gnosis",
-    wrapper: "llc",
+    wrapper: "trust",
   },
   paymentInformation: {
     paymentType: isDev() ? "crypto" : "fiat",
@@ -51,8 +50,7 @@ const defaultData: DeedInfoModel = false
   ? fakeData
   : ({
       otherInformation: {
-        blockchain: "gnosis",
-        wrapper: "llc",
+        wrapper: "trust",
       },
       ownerInformation: {
         ownerType: "individual",
@@ -80,7 +78,7 @@ const Page = ({ router }: WithRouterProps) => {
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const isDraft = useMemo(() => {
     return !id || Number.isNaN(+id);
-  }, [id, router.isReady]);
+  }, [id, router.isReady, deedData]);
   const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
   const registrationClient = useRegistrationClient();
@@ -116,9 +114,10 @@ const Page = ({ router }: WithRouterProps) => {
     async (id: string) => {
       const resp = await registrationClient.authentify(authToken!).getRegistration(id, !!isDraft);
       setErrorCode(undefined);
-      if (resp.ok) {
+      setIsLoading(false);
+      if (resp.ok && resp.value) {
         setInitialData(resp.value);
-        setDeedData(resp.value!);
+        setDeedData(resp.value);
       } else {
         if (resp?.status === 404) setErrorCode("notFound");
         else if (resp?.status === 401) setErrorCode("unauthorized");
@@ -126,7 +125,6 @@ const Page = ({ router }: WithRouterProps) => {
           setErrorCode("unexpected");
         }
       }
-      setIsLoading(false);
     },
     [id, isDraft, chainId, authToken],
   );
@@ -141,7 +139,7 @@ const Page = ({ router }: WithRouterProps) => {
     }
   };
 
-  const validateForm = () => {
+  const _validateForm = () => {
     if (!deedData.ownerInformation.ids) {
       notification.error("Owner Information ids is required", { duration: 3000 });
       return false;
@@ -186,7 +184,7 @@ const Page = ({ router }: WithRouterProps) => {
       {!isLoading ? (
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
-            <div className="text-2xl font-['KronaOne'] leading-10">
+            <div className="text-2xl leading-10">
               {errorCode === "unexpected" ? (
                 "Oops, something went wrong"
               ) : (
@@ -194,7 +192,7 @@ const Page = ({ router }: WithRouterProps) => {
               )}
             </div>
             {errorCode !== "unexpected" && (
-              <div className="text-base font-normal font-['Montserrat'] leading-normal">
+              <div className="text-base font-normal leading-normal">
                 {errorCode === "notFound" ? (
                   <>The property you are looking for does not exist.</>
                 ) : (
@@ -212,21 +210,20 @@ const Page = ({ router }: WithRouterProps) => {
             </button>
           </div>
         ) : (
-          <div className="flex flex-row flex-wrap-reverse gap-8 lg:flex-nowrap lg:justify-evenly w-full px-8 xl:px-32">
-            <div className="flex flex-col w-full lg:w-fit lg:ml-64">
+          <div className="flex flex-row flex-wrap gap-8 lg:flex-nowrap lg:justify-evenly w-full px-8 xl:px-32">
+            <div className="flex flex-col w-full lg:w-2/3">
               {!id && (
                 <>
-                  <div className="text-3xl font-normal font-['KronaOne']">
+                  <div className="text-5xl font-['Coolvetica'] font-condensed uppercase">
                     First, we’ll need to <br />
                     collect some information
                   </div>
-                  <div className="text-base font-normal font-['Montserrat'] mt-3">
+                  <div className="mt-3 text-secondary">
                     You’ll need to complete the form below in order to register, transfer and mint
                     the new
                     <br />
                     Digital Deed that will now represent your property.&nbsp;
                     <Link
-                      className="link link-accent"
                       href="https://docs.deedprotocol.org/how-it-works/property-registration-guide"
                       target="_blank"
                     >
@@ -242,31 +239,36 @@ const Page = ({ router }: WithRouterProps) => {
                   onChange={handleChange}
                   readOnly={!isOwner}
                 />
+                <hr className="my-12 opacity-10" />
                 <PropertyDetails
                   value={deedData.propertyDetails}
                   onChange={handleChange}
                   readOnly={!isOwner}
                   isDraft={isDraft}
                 />
+                <hr className="my-12 opacity-10" />
                 <OtherInformations
                   value={deedData.otherInformation}
                   onChange={handleChange}
                   readOnly={!isOwner}
                 />
+                <hr className="my-12 opacity-10" />
                 {router.isReady && (
                   <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
                 )}
               </div>
             </div>
-            <SidePanel
-              isOwner={isOwner}
-              isDraft={isDraft}
-              stableCoinAddress={stableCoinAddress}
-              deedData={deedData}
-              initialData={initialData}
-              refetchDeedInfo={_id => fetchDeedInfo(_id ?? (id as string))}
-              router={router}
-            />
+            <div className="w-full lg:w-1/3">
+              <SidePanel
+                isOwner={isOwner}
+                isDraft={isDraft}
+                stableCoinAddress={stableCoinAddress}
+                deedData={deedData}
+                initialData={initialData}
+                refetchDeedInfo={_id => fetchDeedInfo(_id ?? (id as string))}
+                router={router}
+              />
+            </div>
           </div>
         )
       ) : (

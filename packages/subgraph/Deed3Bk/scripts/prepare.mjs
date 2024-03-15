@@ -5,14 +5,14 @@ import minimist from 'minimist';
 var argv = minimist(process.argv.slice(2));
 const network = argv['_'][0] || argv['network'] || argv['n'];
 
-const TEMPLATE_FOLDER_PATH = './templates/';
+const TEMPLATE_FOLDER_PATH = './templates';
 
 // Read the configuration file synchronously
 const configData = fs.readFileSync('networks.json', 'utf8');
 const config = JSON.parse(configData)[network];
 
 // Read the main template file synchronously
-const mainTemplateData = fs.readFileSync(TEMPLATE_FOLDER_PATH + 'subgraph.template.yaml', 'utf8');
+const mainTemplateData = fs.readFileSync(`${TEMPLATE_FOLDER_PATH}/subgraph.template.yaml`, 'utf8');
 
 // Render the main template
 let output = mustache.render(mainTemplateData, config);
@@ -20,7 +20,7 @@ let output = mustache.render(mainTemplateData, config);
 for (const dataSourceKey in config) {
   const dataSourceConfig = {...config[dataSourceKey], network: network};
   // Read the subtemplate file based on the configuration variable
-  const subTemplateData = fs.readFileSync(TEMPLATE_FOLDER_PATH + dataSourceConfig.template, 'utf8');
+  const subTemplateData = fs.readFileSync(`${TEMPLATE_FOLDER_PATH}/${dataSourceKey}.template.yaml`, 'utf8');
   // Register the subtemplate with Mustache.js
   const dataSourceRendered = mustache.render(subTemplateData, dataSourceConfig);
   

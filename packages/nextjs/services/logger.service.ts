@@ -19,17 +19,24 @@ const logger = {
 };
 
 const handleLog = (payload: any, level: "debug" | "info" | "warn" | "error") => {
+  // eslint-disable-next-line no-console
   console[level](payload);
-  fetch(`/api/logger?level=${level}`, {
-    method: "POST",
-    body: JSON.stringify({
-      context: {
-        wallet: currentWallet ?? "No wallet",
-        // browser: navigator.userAgent,
-      },
-      ...payload,
-    }),
-  });
+  // If browser side
+  if (global.window) {
+    fetch(`/api/logger?level=${level}`, {
+      method: "POST",
+      body: JSON.stringify({
+        context: {
+          wallet: currentWallet ?? "No wallet",
+          // browser: navigator.userAgent,si
+        },
+        ...payload,
+      }),
+    }).catch(() => {
+      // eslint-disable-next-line no-console
+      console.error("Something went wrong while sending logs to the server");
+    });
+  }
 };
 
 export default logger;

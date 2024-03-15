@@ -1,14 +1,7 @@
-import logger from "./logger.service";
 import { cloneDeep } from "lodash-es";
 import { FileClient } from "~~/clients/file.client";
-import {
-  DeedInfoModel,
-  OtherInformationModel,
-  OwnerInformationModel,
-  PropertyDetailsModel,
-} from "~~/models/deed-info.model";
-import { FileModel } from "~~/models/file.model";
-import { notification } from "~~/utils/scaffold-eth";
+import { DeedInfoModel } from "~~/models/deed-info.model";
+import { FileFieldKeyLabel } from "~~/models/file.model";
 
 const fileClient = new FileClient();
 
@@ -17,28 +10,34 @@ export async function uploadFiles(
   data: DeedInfoModel,
   old?: DeedInfoModel,
   publish: boolean = false,
+  isDraft: boolean = false,
 ) {
   fileClient.authentify(authToken);
 
-  const toBeUploaded = getSupportedFiles(data, old);
+  const toBeUploaded = getSupportedFiles(data, old, publish, isDraft);
 
   const payload = cloneDeep(data);
 
   await Promise.all(
     toBeUploaded
-      .filter(x => !!x.value && (!x.value.restricted || !publish))
-      .map(async ({ key, label, value }) => {
-        let fileId;
-        if (publish) {
-          fileId = await fileClient.publish(value, label);
-        } else {
-          fileId = await fileClient.uploadFile(value, label);
-        }
+      .filter(x => !!x.getFile(data) && (!x.restricted || !publish))
+      .map(async x => {
+        const files = x.getFile(data);
+        return Promise.all(
+          files.map(async (fileDatum, i) => {
+            let fileId;
+            if (publish) {
+              fileId = await fileClient.publish(fileDatum, x.label);
+            } else {
+              fileId = await fileClient.uploadFile(fileDatum, x.label);
+            }
 
-        // @ts-ignore when array, key[2] is the index
-        if (key[2] !== undefined) payload[key[0]][key[1]][key[2]] = fileId;
-        // @ts-ignore
-        else payload[key[0]][key[1]] = fileId;
+            // @ts-ignore
+            if (x.multiple) payload[x.key[0]][x.key[1]][i].fileId = fileId;
+            // @ts-ignore
+            else payload[x.key[0]][x.key[1]].fileId = fileId;
+          }),
+        );
       }),
   ).catch(error => {
     throw error;
@@ -47,130 +46,198 @@ export async function uploadFiles(
   return cleanObject(payload) as DeedInfoModel;
 }
 
-export async function fetchFileInfos(deedData: DeedInfoModel, authToken?: string) {
-  const files = getSupportedFiles(deedData);
-  await Promise.all(
-    files.map(async ({ key, label, value }) => {
-      try {
-        const fileId = typeof value === "string" ? value : value.fileId;
-        const info = await fileClient.authentify(authToken).getFileInfo(fileId);
-        if (!info) throw new Error(`File ${label} not found`);
-        // @ts-ignore when array, key[2] is the index
-        if (key[2] !== undefined) deedData[key[0]][key[1]][key[2]] = info;
-        // @ts-ignore
-        else deedData[key[0]][key[1]] = info;
-      } catch (error) {
-        const message = "Error getting file info for " + label;
-        notification.error(message);
-        logger.error({ message: "Error getting file info for " + label, error });
-      }
-    }),
-  );
+// export async function fetchFileInfos(deedData: DeedInfoModel, authToken?: string) {
+//   const files = getSupportedFiles(deedData);
+//   await Promise.all(
+//     files.map(async ({ key, label, value }) => {
+//       try {
+//         const fileId = typeof value === "string" ? value : value.fileId;
+//         const info = await fileClient.authentify(authToken).getFileInfo(fileId);
+//         if (!info) throw new Error(`File ${label} not found`);
+//         // @ts-ignore when array, key[2] is the index
+//         if (key[2] !== undefined) deedData[key[0]][key[1]][key[2]] = info;
+//         // @ts-ignore
+//         else deedData[key[0]][key[1]] = info;
+//       } catch (error) {
+//         const message = "Error getting file info for " + label;
+//         notification.error(message);
+//         logger.error({ message: "Error getting file info for " + label, error });
+//       }
+//     }),
+//   );
 
-  return deedData;
-}
+//   return deedData;
+// }
 
-function getSupportedFiles(data: DeedInfoModel, old?: DeedInfoModel) {
-  const files: {
-    key: [
-      keyof DeedInfoModel,
-      keyof OwnerInformationModel | keyof PropertyDetailsModel | keyof OtherInformationModel,
-      number?,
-    ];
-    label: string;
-    value: FileModel;
-  }[] = [];
+export function getSupportedFiles(
+  data: DeedInfoModel,
+  old?: DeedInfoModel,
+  publish: boolean = false,
+  isDraft: boolean = false,
+  includeAll: boolean = false,
+): FileFieldKeyLabel[] {
+  const files: FileFieldKeyLabel[] = [];
 
   // Owner informations files
   if (
-    data.ownerInformation.ids &&
-    (!old || old.ownerInformation.ids !== data.ownerInformation.ids)
+    includeAll ||
+    (data.ownerInformation.ids && (!old || old.ownerInformation.ids !== data.ownerInformation.ids))
   ) {
-    files.push({
-      key: ["ownerInformation", "ids"],
-      label: "ID or Passport",
-      value: data.ownerInformation.ids,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["ownerInformation", "ids"],
+        label: "ID or Passport",
+        multiple: false,
+        restricted: true,
+      }),
+    );
   }
   if (
-    data.ownerInformation.proofBill &&
-    (!old || old.ownerInformation.proofBill !== data.ownerInformation.proofBill)
+    includeAll ||
+    (data.ownerInformation.proofBill &&
+      (!old || old.ownerInformation.proofBill !== data.ownerInformation.proofBill))
   ) {
-    files.push({
-      key: ["ownerInformation", "proofBill"],
-      label: "Utility Bill or Other Document",
-      value: data.ownerInformation.proofBill,
-    });
-  }
-  if (
-    data.ownerInformation.articleIncorporation &&
-    (!old ||
-      old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation)
-  ) {
-    files.push({
-      key: ["ownerInformation", "articleIncorporation"],
-      label: "Article of Incorporation",
-      value: data.ownerInformation.articleIncorporation,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["ownerInformation", "proofBill"],
+        label: "Utility Bill or Other Document",
+        multiple: false,
+        restricted: true,
+      }),
+    );
   }
 
-  if (
-    data.ownerInformation.operatingAgreement &&
-    (!old || old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement)
-  ) {
-    files.push({
-      key: ["ownerInformation", "operatingAgreement"],
-      label: "Operating Agreement",
-      value: data.ownerInformation.operatingAgreement,
-    });
-  }
+  if (data.ownerInformation.ownerType === "legal") {
+    if (
+      includeAll ||
+      (data.ownerInformation.articleIncorporation &&
+        (!old ||
+          old.ownerInformation.articleIncorporation !== data.ownerInformation.articleIncorporation))
+    ) {
+      files.push(
+        new FileFieldKeyLabel({
+          key: ["ownerInformation", "articleIncorporation"],
+          label: "Article of Incorporation",
+          multiple: false,
+          restricted: true,
+        }),
+      );
+    }
 
-  if (data.ownerInformation.supportingDoc && data.ownerInformation.supportingDoc.length) {
-    data.ownerInformation.supportingDoc.forEach((doc, index) => {
-      if (!old || old.ownerInformation.supportingDoc?.[index] !== doc) {
-        files.push({
+    if (
+      includeAll ||
+      (data.ownerInformation.operatingAgreement &&
+        (!old ||
+          old.ownerInformation.operatingAgreement !== data.ownerInformation.operatingAgreement))
+    ) {
+      files.push(
+        new FileFieldKeyLabel({
+          key: ["ownerInformation", "operatingAgreement"],
+          label: "Operating Agreement",
+          multiple: false,
+          restricted: true,
+        }),
+      );
+    }
+
+    if (
+      includeAll ||
+      (data.ownerInformation.supportingDoc?.length &&
+        (data.ownerInformation.supportingDoc.find(x => !x.fileId) || !old))
+    ) {
+      files.push(
+        new FileFieldKeyLabel({
           key: ["ownerInformation", "supportingDoc"],
-          label: "Any other Supporting Documents #" + index,
-          value: doc,
-        });
-      }
-    });
+          label: "Any other Supporting Documents",
+          multiple: false,
+          restricted: true,
+        }),
+      );
+    }
   }
 
   // Property details files
-  if (data.propertyDetails.propertyImages?.length) {
-    data.propertyDetails.propertyImages.forEach((image, index) => {
-      if (!old || old.propertyDetails.propertyImages?.[index] !== image) {
-        files.push({
-          key: ["propertyDetails", "propertyImages", index],
-          label: "Property Images #" + index,
-          value: image,
-        });
-      }
-    });
+  if (
+    includeAll ||
+    (data.propertyDetails.propertyImages?.length &&
+      (data.propertyDetails.propertyImages.find(x => !x.fileId) || !old))
+  ) {
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "propertyImages"],
+        label: "Property Images",
+        multiple: true,
+        restricted: publish ? false : isDraft,
+      }),
+    );
   }
 
   if (
-    data.propertyDetails.propertyDeedOrTitle &&
-    (!old || old.propertyDetails.propertyDeedOrTitle !== data.propertyDetails.propertyDeedOrTitle)
+    includeAll ||
+    (data.propertyDetails.propertyDeedOrTitle &&
+      (!old ||
+        old.propertyDetails.propertyDeedOrTitle !== data.propertyDetails.propertyDeedOrTitle))
   )
-    files.push({
-      key: ["propertyDetails", "propertyDeedOrTitle"],
-      label: "Deed or Title",
-      value: data.propertyDetails.propertyDeedOrTitle,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "propertyDeedOrTitle"],
+        label: "Deed or Title",
+        multiple: false,
+        restricted: true,
+      }),
+    );
 
   if (
-    data.propertyDetails.propertyPurchaseContract &&
-    (!old ||
-      old.propertyDetails.propertyPurchaseContract !==
-        data.propertyDetails.propertyPurchaseContract)
+    includeAll ||
+    (data.propertyDetails.propertyPurchaseContract &&
+      (!old ||
+        old.propertyDetails.propertyPurchaseContract !==
+          data.propertyDetails.propertyPurchaseContract))
   ) {
-    files.push({
-      key: ["propertyDetails", "propertyPurchaseContract"],
-      label: "Purchase Contract",
-      value: data.propertyDetails.propertyPurchaseContract,
-    });
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "propertyPurchaseContract"],
+        label: "Purchase Contract",
+        multiple: false,
+        restricted: true,
+      }),
+    );
+  }
+
+  if (
+    includeAll ||
+    (data.propertyDetails.stateFillings && data.propertyDetails.stateFillings.find(x => x.fileId))
+  ) {
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["propertyDetails", "stateFillings"],
+        label: "State & County Fillings",
+        multiple: true,
+        restricted: true,
+      }),
+    );
+  }
+
+  if (includeAll || (data.agreement && (!old || old.agreement !== data.agreement))) {
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["agreement", undefined],
+        label: "Agreement",
+        multiple: true,
+        restricted: true,
+      }),
+    );
+  }
+
+  if (includeAll || (data.process && (!old || old.process !== data.process))) {
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["process", undefined],
+        label: "Process",
+        multiple: true,
+        restricted: true,
+      }),
+    );
   }
 
   return files;

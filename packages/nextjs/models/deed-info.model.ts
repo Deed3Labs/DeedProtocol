@@ -1,7 +1,6 @@
-import { FileModel } from "./file.model";
+import { FileFieldKeyLabel, FileModel, FileValidationState } from "./file.model";
 import { Address } from "viem";
 import {
-  BlockchainOptions,
   EntityTypeOptions,
   OwnerTypeOptions,
   PaymentOptions,
@@ -32,22 +31,30 @@ export interface OwnerInformationModel {
   supportingDoc?: FileModel[];
 }
 
+export type PropertyType = ValueExtractor<typeof PropertyTypeOptions>;
+
 export interface PropertyDetailsModel {
-  propertyType: ValueExtractor<typeof PropertyTypeOptions>;
+  propertyType: PropertyType;
   propertySubType?: ValueExtractor<typeof PropertySubtypeOptions>;
   propertyAddress: string;
   propertyCity: string;
   propertyState: ValueExtractor<typeof StateOptions>;
   propertySize?: string;
   propertyZoning?: ValueExtractor<typeof PropertyZoningOptions>;
+  propertyBedrooms?: string;
+  propertyBathrooms?: string;
+  propertyBuildYear?: string;
+  propertyHouseType?: string;
+  propertySquareFootage?: string;
 
   propertyImages?: FileModel[];
   propertyDeedOrTitle: FileModel;
   propertyPurchaseContract?: FileModel;
+
+  stateFillings?: FileModel[];
 }
 
 export interface OtherInformationModel {
-  blockchain: ValueExtractor<typeof BlockchainOptions>;
   wrapper: ValueExtractor<typeof WrapperOptions>;
 }
 
@@ -88,4 +95,10 @@ export interface DeedInfoModel {
 
   //4. Payment Information
   paymentInformation: PaymentInformationModel;
+
+  process?: FileModel;
+  agreement?: FileModel;
+
+  validations?: [string, FileValidationState][];
+  signatureTx: string | undefined;
 }

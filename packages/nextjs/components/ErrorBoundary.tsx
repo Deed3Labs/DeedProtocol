@@ -10,11 +10,13 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  currentNotifError?: string;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
+    currentNotifError: undefined,
   };
 
   public static getDerivedStateFromError(_: Error): State {
@@ -23,7 +25,10 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    notification.error("An error occured");
+    if (this.state.currentNotifError) {
+      notification.remove(this.state.currentNotifError);
+    }
+    // this.setState({ currentNotifError: notification.error("An error occured") });
     logger.error({ error, errorInfo });
   }
 

@@ -14,23 +14,24 @@ module.exports = {
       {
         scaffoldEthDark: {
           primary: "#F9FBFF",
-          "primary-content": "#ffffff",
-          secondary: "#b3b3b3",
+          "primary-content": "#000000",
+          secondary: "#454444",
           "secondary-content": "#9f9f9f",
-          accent: "#4969A6",
+          accent: "#92b8ff",
           "accent-content": "#252525",
           neutral: "#171717",
           "neutral-content": "#385183",
           "neutral-focus": "#242424",
           "base-100": "#171717",
           "base-200": "#0e0e0e",
-          "base-300": "#212638",
+          "base-300": "#141414",
           "base-content": "#F9FBFF",
           info: "#385183",
           success: "#34EEB6",
           warning: "#FFCF72",
           error: "#cf1f1f",
 
+          "--text-accent": "#92b8ff",
           "--rounded-box": "0", // border radius rounded-box utility class, used in card and other large boxes
           "--rounded-btn": "0", // border radius rounded-btn utility class, used in buttons and similar element
           "--rounded-badge": "0", // border radius rounded-badge utility class, used in badges and similar

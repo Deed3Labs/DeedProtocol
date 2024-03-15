@@ -6,6 +6,7 @@ interface Props<TParent> {
   options: RadioBoxOption[] | Readonly<RadioBoxOption[]>;
   value?: TParent[keyof TParent];
   label?: string;
+  description?: string | React.ReactNode;
   info?: boolean;
   optionsClassName?: string;
   onChange?: (value: LightChangeEvent<TParent>) => void;
@@ -23,6 +24,7 @@ export interface RadioBoxOption {
 
 export const RadioBoxesInput = <TParent,>({
   name,
+  description,
   label,
   info,
   options,
@@ -41,10 +43,13 @@ export const RadioBoxesInput = <TParent,>({
   };
   return (
     <div>
-      <div className="justify-start items-center inline-flex mt-3">
-        <div className="text-base font-bold font-['Montserrat'] leading-normal">{label}</div>
-        {info && <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>}
-      </div>
+      {label && (
+        <div className="justify-start items-center inline-flex mt-3">
+          <div className="text-base font-bold leading-normal">{label}</div>
+          {info && <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>}
+        </div>
+      )}
+      {description && <div className="text-secondary">{description}</div>}
       <div className="flex flex-row flex-wrap justify-start gap-4 mt-2">
         {options.map(option => {
           if (readOnly && option.value !== value) return <div key={option.value}></div>;
@@ -80,11 +85,11 @@ export const RadioBoxesInput = <TParent,>({
                 <span className="text-xl font-bold mt-2">{option.title}</span>
                 {option.tag && !readOnly && (
                   <div className="p-2 bg-white bg-opacity-5 rounded-lg w-fit">
-                    <div className="text-xs font-['Montserrat']">{option.tag}</div>
+                    <div className="text-xs uppercase text-secondary">{option.tag}</div>
                   </div>
                 )}
                 {option.subtitle && (
-                  <div className="text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight">
+                  <div className="text-zinc-400 text-sm font-normal leading-tight whitespace-pre-line">
                     {option.subtitle}
                   </div>
                 )}

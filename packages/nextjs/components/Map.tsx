@@ -1,57 +1,73 @@
 "use client";
 
-import { useEffect } from "react";
-import { DivIcon } from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { IMarker } from "~~/models/marker.model";
+import { useState } from "react";
+import classes from "./Page.module.css";
+import "mapbox-gl/dist/mapbox-gl.css";
+import Mapbox, { Marker } from "react-map-gl";
+
+const mapboxToken =
+  "pk.eyJ1IjoiY29yYW50aW4iLCJhIjoiY2xtdjZiZTV4MGlibDJsbXM5ZzM1dHg0OCJ9.cv78ncZxEq8TE2exs5vvIA";
 
 interface Props {
-  markers: IMarker[];
+  markers: Array<string>;
 }
 
-const defaultIcon = new DivIcon({
-  className: "property-icon",
-  html: `<div class="marker-pin"></div>`,
-  iconSize: [30, 42],
-  iconAnchor: [15, 42],
-  popupAnchor: [-3, -76],
-});
+interface Marker {
+  id: string;
+  lat: number;
+  lng: number;
+}
 
 const Map = ({ markers }: Props) => {
-  useEffect(() => {
-    console.log(window);
-    const map = document.getElementById("map");
-    // Scroll only if needed
-    if (map && window.scrollY + map.offsetTop + map.offsetHeight >= window.screen.height) {
-      window.scrollTo({ top: map.offsetTop, behavior: "smooth" });
-    }
-  }, []);
+  const [resolvedMarkers, setResolvedMarkers] = useState<Marker[]>();
+
+  // useEffect(() => {
+  //   (async () => {
+  //     setResolvedMarkers(
+  //       await Promise.all(
+  //         markers.map(async marker => {
+  //           const response = await fetch(
+  //             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(
+  //               marker,
+  //             )}.json?access_token=${mapboxToken}`,
+  //           );
+  //           if (!response.ok) throw new Error("Failed to fetch");
+  //           const data = await response.json();
+
+  //           const markerData = data.features[0];
+  //           return {
+  //             id: markerData.id,
+  //             lat: markerData.geometry.coordinates[1],
+  //             lng: markerData.geometry.coordinates[0],
+  //           };
+  //         }),
+  //       ),
+  //     );
+  //   })().catch(err => {
+  //     logger.error(err);
+  //   });
+  // }, [markers]);
+
   return (
-    <>
-      <MapContainer
-        center={[40, -100]}
-        zoom={5}
-        style={{
-          height: 750,
-          width: "calc(100%-32px)",
-          maxHeight: "calc(100vh - 130px)",
-          margin: "16px",
-        }}
-        id="map"
+    <main className={classes.mainStyle}>
+      {/* {resolvedMarkers?.length && ( */}
+      <Mapbox
+        mapboxAccessToken={mapboxToken}
+        mapStyle="mapbox://styles/mapbox/streets-v12"
+        // @ts-ignore
+        style={classes.mapStyle}
+        // initialViewState={{
+        //   latitude: resolvedMarkers[0].lat,
+        //   longitude: resolvedMarkers[0].lng,
+        //   zoom: 10,
+        // }}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" noWrap={true} />
-        {markers.map(marker => (
-          <Marker
-            key={"marker-" + marker.id}
-            position={[marker.latitude, marker.longitude]}
-            icon={new DivIcon(marker.icon) ?? defaultIcon}
-          >
-            {marker.popupContent && <Popup className="marker-popup">{marker.popupContent}</Popup>}
-          </Marker>
-        ))}
-      </MapContainer>
-    </>
+        {/* {resolvedMarkers?.map(marker => (
+          <Marker key={marker.id} latitude={marker.lat} longitude={marker.lng}></Marker>
+        ))} */}
+      </Mapbox>
+      {/* )} */}
+    </main>
   );
 };
 

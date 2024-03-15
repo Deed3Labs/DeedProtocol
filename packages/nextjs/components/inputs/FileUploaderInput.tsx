@@ -1,6 +1,6 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useFileClient from "~~/clients/file.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { FileModel } from "~~/models/file.model";
@@ -10,7 +10,7 @@ import { IconLightningSolid } from "~~/styles/Icons";
 interface Props<TParent> {
   label: string;
   name: keyof TParent;
-  subtitle: string;
+  subtitle?: string;
   optional?: boolean;
   className?: string;
   value?: FileModel | FileModel[];
@@ -18,6 +18,7 @@ interface Props<TParent> {
   maxFileSizeKb?: number;
   readOnly?: boolean;
   isRestricted?: boolean;
+  inline?: boolean;
   onChange?: (file: LightChangeEvent<TParent>) => void;
 }
 
@@ -27,6 +28,7 @@ export const FileUploaderInput = <TParent,>({
   subtitle,
   optional,
   className,
+  inline,
   onChange,
   multiple,
   value,
@@ -36,16 +38,18 @@ export const FileUploaderInput = <TParent,>({
 }: Props<TParent>) => {
   const fileClient = useFileClient();
   const { authToken, primaryWallet } = useDynamicContext();
-  const files = useMemo(() => {
-    if (value) {
-      return Array.isArray(value) ? value : [value];
-    }
-    return [];
-  }, [value]);
-
+  const [files, setFiles] = useState<FileModel[]>([]);
   const isValidator = useIsValidator();
-
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (value) {
+      const values = Array.isArray(value) ? value : [value];
+      setFiles([...values]);
+    } else {
+      setFiles([]);
+    }
+  }, [value, authToken]);
 
   const handleKeyDown = (ev: React.KeyboardEvent<HTMLLabelElement>) => {
     if (ev.key === "Enter") {
@@ -55,14 +59,13 @@ export const FileUploaderInput = <TParent,>({
 
   const handleFileChange = (files: FileList | null) => {
     if (files) {
-      const newValues = Array.from(files).map(
-        x =>
-          ({
-            fileName: x.name,
-            restricted: isRestricted,
-            metadata: x,
-          } satisfies Omit<FileModel, "fileId" | "owner" | "timestamp">),
-      );
+      const newValues = Array.from(files).map(x => ({
+        fileName: x.name,
+        restricted: isRestricted,
+        size: x.size,
+        mimetype: x.type,
+        metadata: x,
+      }));
 
       // If multiple files are allowed, convert the FileList to an array
       onChange?.({
@@ -73,7 +76,11 @@ export const FileUploaderInput = <TParent,>({
   };
 
   const download = async (hash: string) => {
-    await fileClient.authentify(authToken ?? "").downloadFile(hash, name.toString());
+    await fileClient.authentify(authToken ?? "").getFile(hash, name.toString(), true);
+  };
+
+  const openFile = async (hash: string) => {
+    await fileClient.authentify(authToken ?? "").getFile(hash, name.toString(), false);
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
@@ -103,94 +110,108 @@ export const FileUploaderInput = <TParent,>({
   };
 
   return (
-    <div className={`mt-3 w-[600px] max-w-full ${className ? className : ""} `}>
-      <label
-        htmlFor={name as string}
-        className={`flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-36 cursor-pointer hover:bg-base-100 border border-opacity-10 ${
-          readOnly ? "pointer-events-none border-none" : ""
-        }`}
-        tabIndex={0}
-        onKeyDown={ev => handleKeyDown(ev)}
-        onDrop={ev => handleDrop(ev)}
-        onDragOver={ev => handleDragOver(ev)}
-        onDragEnter={ev => handleDragEnter(ev)}
-        onDragLeave={ev => handleDragLeave(ev)}
-      >
-        <input
-          ref={inputRef}
-          id={name as string}
-          name={name as string}
-          type="file"
-          className="hidden"
-          onChange={ev => handleFileChange(ev.target.files)}
-          multiple={multiple}
-          readOnly={readOnly}
-          value={""}
-          // accept=".pdf,.txt,.doc,.csv"
-        />
-        {!readOnly && (
-          <div className="w-12 h-12 lg:w-24 lg:h-24 mb-2 p-1 lg:p-6 border border-white border-opacity-10 border-dashed justify-start items-center inline-flex pointer-events-none">
-            <div className="grow shrink basis-0 self-stretch p-1 bg-neutral-900 rounded flex-col justify-center items-center inline-flex">
-              <div className="self-stretch grow shrink basis-0 pl-1 pr-0.5 pt-px flex-col justify-center items-center flex">
-                <IconLightningSolid />
+    <div className={`max-w-full ${className ? className : ""} `}>
+      <input
+        ref={inputRef}
+        id={name as string}
+        name={name as string}
+        type="file"
+        className="hidden"
+        onChange={ev => handleFileChange(ev.target.files)}
+        multiple={multiple}
+        readOnly={readOnly}
+        value={""}
+        // accept=".pdf,.txt,.doc,.csv"
+      />
+      {inline ? (
+        <label
+          htmlFor={name as string}
+          className="text-base font-bold leading-normal w-full cursor-pointer block"
+        >
+          {label}
+        </label>
+      ) : (
+        <label
+          htmlFor={name as string}
+          className={`mt-3 flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-min-36 cursor-pointer hover:bg-base-100 border border-opacity-20 border-secondary ${
+            readOnly ? "pointer-events-none border-none" : ""
+          }`}
+          tabIndex={0}
+          onKeyDown={ev => handleKeyDown(ev)}
+          onDrop={ev => handleDrop(ev)}
+          onDragOver={ev => handleDragOver(ev)}
+          onDragEnter={ev => handleDragEnter(ev)}
+          onDragLeave={ev => handleDragLeave(ev)}
+        >
+          {!readOnly && (
+            <div className="w-12 h-12 lg:w-24 lg:h-24 mb-2 p-1 lg:p-6 border border-white border-opacity-10 border-dashed justify-start items-center inline-flex pointer-events-none">
+              <div className="grow shrink basis-0 self-stretch p-1 bg-neutral-900 rounded flex-col justify-center items-center inline-flex">
+                <div className="self-stretch grow shrink basis-0 pl-1 pr-0.5 pt-px flex-col justify-center items-center flex">
+                  <IconLightningSolid />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <div className="flex flex-col flex-wrap gap-2 pointer-events-none">
-          <div className="text-base font-bold font-['Montserrat'] mb-3">
-            {label}
-            {optional && (
-              <span className="text-xs font-semibold uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3">
-                Optional
-              </span>
-            )}
-          </div>
-          {files.length > 0 && (
-            <ul className="line-clamp-3" title={files.map(x => x.fileName).join("\n")}>
-              {/* If file is string then its was not successfully fetched */}
-              {files
-                .filter(x => typeof x !== "string")
-                .map(file => (
-                  <li key={file.fileName} className="flex items-center gap-2">
+          )}
+          <div className="flex flex-col flex-wrap gap-2 pointer-events-none">
+            <div className="text-base font-bold mb-3">
+              {label}
+              {optional && (
+                <span className="text-xs uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3 text-secondary">
+                  Optional
+                </span>
+              )}
+            </div>
+            {files.length > 0 && (
+              <div className="" title={files.map(x => x.fileName).join("\n")}>
+                {files.map(file => (
+                  <div key={`${file.fileId}-${file.size}-`} className="flex items-center gap-2">
                     <div>
                       {file.fileName} (
-                      <span
-                        className={file.metadata.size / 1024 > maxFileSizeKb ? "text-error" : ""}
-                      >
-                        {file.metadata.size / 1000} KB
+                      <span className={file.size / 1024 > maxFileSizeKb ? "text-error" : ""}>
+                        {file.size / 1000} KB
                       </span>
                       )
                     </div>
-                    {file.fileId && (isValidator || file.owner === primaryWallet?.address) && (
-                      <button
-                        className="btn btn-square pointer-events-auto"
-                        onClick={() => download(file.fileId!)}
-                      >
-                        <DownloadLogo />
-                      </button>
-                    )}
-                  </li>
-                ))}
-            </ul>
-          )}
-          {files.length === 0 &&
-            (readOnly ? (
-              "-"
-            ) : (
-              <>
-                <div className="text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
-                  {subtitle}
-                </div>
-                {
-                  <div className=" text-zinc-400 text-sm font-normal font-['Montserrat'] leading-tight max">
-                    Max File Size: 500 kilobytes. {/*File types: PDF, TXT, DOC, or CSV, Images. */}
+                    {file.fileId &&
+                      (!isRestricted || isValidator || file.owner === primaryWallet?.address) && (
+                        <div className="flex">
+                          <button
+                            className="btn btn-sm btn-square pointer-events-auto"
+                            onClick={() => openFile(file.fileId!)}
+                          >
+                            <ExternalLinkIcon />
+                          </button>
+                          <button
+                            className="btn btn-sm btn-square pointer-events-auto"
+                            onClick={() => download(file.fileId!)}
+                          >
+                            <DownloadLogo />
+                          </button>
+                        </div>
+                      )}
                   </div>
-                }
-              </>
-            ))}
-        </div>
-      </label>
+                ))}
+              </div>
+            )}
+            {files.length === 0 &&
+              (readOnly ? (
+                "-"
+              ) : (
+                <>
+                  <div className="text-zinc-400 text-sm font-normal leading-tight max">
+                    {subtitle}
+                  </div>
+                  {
+                    <div className=" text-zinc-400 text-sm font-normal leading-tight max">
+                      Max File Size: 500 kilobytes.{" "}
+                      {/*File types: PDF, TXT, DOC, or CSV, Images. */}
+                    </div>
+                  }
+                </>
+              ))}
+          </div>
+        </label>
+      )}
     </div>
   );
 };

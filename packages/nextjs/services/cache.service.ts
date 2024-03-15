@@ -6,7 +6,6 @@ import { getContractInstance } from "~~/servers/contract";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { sleepAsync } from "~~/utils/sleepAsync";
 
-const cacheVersion = 1;
 let cacheActivated = true;
 
 let cacheMap: Map<

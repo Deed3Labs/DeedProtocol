@@ -1,52 +1,61 @@
-specVersion: 0.0.7
+specVersion: 1.0.0
+indexerHints:
+    prune: auto
+features:
+  - nonFatalErrors
 schema:
     file: ./schema.graphql
 templates:
   - name: DeedMetadata
     kind: file/ipfs
     mapping:
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/deed-nft.ts
-      handler: handleMetadata
-      entities:
-        - DeedMetadata
-      abis:
-        - name: DeedNFT
-          file: ./abis/DeedNFT.json
+        apiVersion: 0.0.7
+        language: wasm/assemblyscript
+        file: ./src/deed-metadata.mapping.ts
+        handler: handleMetadata
+        entities:
+            - DeedMetadata
+            - DeedMetadata
+            - FileInfo
+        abis:
+            - name: DeedNFT
+              file: ./abis/DeedNFT.json
 dataSources:
   - kind: ethereum
     name: DeedNFT
-    network: goerli
+    network: sepolia
     source:
-        address: "0xF3dC56410C8C6070cfa1361278c5e2C42Be4e171"
+        address: "0xEA6015008c7926E84C76b70344EbD31a48A6fd2c"
         abi: DeedNFT
-        startBlock: 10206707
+        startBlock: 5336526
     mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - DeedNFTAssetTypeSet
-        - DeedNFTAssetValidationSet
-        - DeedNFTBurned
-        - DeedNFTIpfsDetailsSet
-        - DeedNFTMinted
-        - Transfer
-      abis:
-        - name: DeedNFT
-          file: ./abis/DeedNFT.json
-      eventHandlers:
-        - event: DeedNFTAssetTypeSet(uint256,uint8)
-          handler: handleDeedNFTAssetTypeSet
-        - event: DeedNFTAssetValidationSet(uint256,bool)
-          handler: handleDeedNFTAssetValidationSet
-        - event: DeedNFTBurned(uint256)
-          handler: handleDeedNFTBurned
-        - event: DeedNFTIpfsDetailsSet(uint256,string)
-          handler: handleDeedNFTIpfsDetailsSet
-        - event: DeedNFTMinted(uint256,(uint8,bool),address)
-          handler: handleDeedNFTMinted
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: ./src/deed-nft.ts
+        kind: ethereum/events
+        apiVersion: 0.0.7
+        language: wasm/assemblyscript
+        entities:
+            - Approval
+            - ApprovalForAll
+            - DeedEntity
+            - DeedMetadata
+            - Transfer
+        abis:
+            - name: DeedNFT
+              file: ./abis/DeedNFT.json
+        eventHandlers:
+            - event: Approval(indexed address,indexed address,indexed uint256)
+              handler: handleApproval
+            - event: ApprovalForAll(indexed address,indexed address,bool)
+              handler: handleApprovalForAll
+            - event: DeedNFTAssetTypeChanged(uint256,uint8)
+              handler: handleDeedNFTAssetValidationSet
+            - event: DeedNFTBurned(uint256)
+              handler: handleDeedNFTBurned
+            - event: DeedNFTMinted(uint256,(uint8,bool),address,string)
+              handler: handleDeedNFTMinted
+            - event: DeedNFTUriChanged(uint256,string)
+              handler: handleDeedNFTUriChanged
+            - event: DeedNFTValidatedChanged(uint256,bool)
+              handler: handleDeedNFTValidatedChanged
+            - event: Transfer(indexed address,indexed address,indexed uint256)
+              handler: handleTransfer
+        file: ./src/deed-nft.mapping.ts

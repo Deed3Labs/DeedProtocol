@@ -8,6 +8,7 @@ import { FilesDb } from "~~/databases/files.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { FileModel } from "~~/models/file.model";
 import { authentify, getWalletAddressFromToken } from "~~/servers/auth";
+import logger from "~~/services/logger.service";
 
 if (!process.env.NEXT_PINATA_GATEWAY_KEY) {
   throw new Error("Missing NEXT_PINATA_GATEWAY_KEY env var");
@@ -35,8 +36,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<string>) => {
       return await uploadFile(req, res);
     }
   } else if (req.method === "GET") {
-    if (req.query.download === "true") {
-      return await download(req, res);
+    if (req.query.download) {
+      return await getFile(req, res);
     } else {
       return await getFileInfo(req, res);
     }
@@ -60,18 +61,20 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
   form.parse(req, async (error, fields, files) => {
     try {
       if (error) {
-        console.error(error);
+        logger.error(error);
         return res.status(500).send("Upload Error");
       }
       const file: FileModel = fields.payload ? JSON.parse(fields.payload[0]) : {};
-      const metadata = files.file![0];
-      const stream = fs.createReadStream(metadata.filepath);
+      const fileInfo = files.file![0];
+
+      const stream = fs.createReadStream(fileInfo.filepath);
       let response;
       if (file.restricted) {
         // Push the file to the database
         response = await FilesDb.createFile(stream, {
           fileName: file.fileName,
-          metadata: metadata,
+          mimetype: fileInfo.mimetype,
+          size: fileInfo.size,
           owner: walletAddress,
           restricted: file.restricted,
           timestamp: new Date(),
@@ -80,23 +83,26 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
         // Push the file to IPFS
         const options = {
           pinataMetadata: {
-            name: fields.name![0],
-            description: fields.description![0],
+            name: file.fileName![0],
+            description: `
+            - Owner ${walletAddress}
+            - Timestamp ${new Date().toISOString()}`,
           },
         };
         response = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
-        FilesDb.saveFileInfo({
-          metadata: metadata,
-          fileName: fields.name![0],
+        await FilesDb.saveFileInfo({
+          mimetype: fileInfo.mimetype,
+          fileName: file.fileName,
           owner: walletAddress,
+          size: fileInfo.size,
           fileId: response,
           timestamp: new Date(),
         });
       }
-      fs.unlinkSync(metadata.filepath);
+      fs.unlinkSync(fileInfo.filepath);
       return res.status(200).send(response);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return res.status(500).send("Server Error");
     }
   });
@@ -114,11 +120,7 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   const file = JSON.parse(Buffer.from(req.read()).toString()) as FileModel;
   const dbFile = await FilesDb.downloadFile(file.fileId);
   const stream = dbFile.stream;
-  if (
-    !authentify(req, res, {
-      requireValidator: true,
-    })
-  ) {
+  if (!authentify(req, res, ["Validator"])) {
     return;
   }
 
@@ -135,13 +137,13 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   // await FilesDb.deleteFile(dbFile.fileInfo);
 
   // Update the file in database
-  FilesDb.saveFileInfo({ ...dbFile.fileInfo, fileId: ipfsHash, restricted: false });
+  await FilesDb.saveFileInfo({ ...dbFile.fileInfo, fileId: ipfsHash, restricted: false });
 
   return res.status(200).send(ipfsHash);
 };
 
-const download = async (req: NextApiRequest, res: NextApiResponse<string>) => {
-  const { fileId } = req.query;
+const getFile = async (req: NextApiRequest, res: NextApiResponse<string>) => {
+  const { fileId, download } = req.query;
   let stream: Readable;
   let fileInfo: FileModel;
 
@@ -156,31 +158,30 @@ const download = async (req: NextApiRequest, res: NextApiResponse<string>) => {
     const response = await FilesDb.downloadFile(fileId);
     stream = response.stream;
     fileInfo = response.fileInfo;
-    if (
-      !authentify(req, res, {
-        requireSpecificAddress: fileInfo.owner,
-        requireValidator: true,
-      })
-    ) {
+    if (!authentify(req, res, [fileInfo.owner, "Validator"])) {
       return;
     }
   } else {
-    const filePath = `${process.env.NEXT_PINATA_GATEWAY}/ipfs/${fileId}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
+    let gateway = process.env.NEXT_PINATA_GATEWAY;
+    if (!gateway?.endsWith("/")) {
+      gateway += "/";
+    }
+    const filePath = `${gateway}ipfs/${fileId}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
     const { data } = await axios.get<Readable>(filePath, {
       responseType: "stream",
     });
     stream = data;
   }
 
-  let fileType;
-  if ("mimetype" in fileInfo.metadata) fileType = fileInfo.metadata.mimetype;
-  else if ("type" in fileInfo.metadata) fileType = fileInfo.metadata.type;
-  if (!fileType) fileType = "application/octet-stream";
-
-  res.setHeader("Content-Type", fileType);
-  res.setHeader("Content-Disposition", `attachment; filename=${fileInfo.fileName}`);
-
-  return stream.pipe(res);
+  if (download === "true") {
+    res.setHeader("Content-Type", fileInfo.mimetype ?? "application/octet-stream");
+    res.setHeader("Content-Disposition", `attachment; filename=${fileInfo.fileName}`);
+    return stream.pipe(res);
+  } else {
+    // Return the result without downloading
+    res.setHeader("Content-Disposition", `inline; filename=${fileInfo.fileName}`);
+    return stream.pipe(res);
+  }
 };
 
 export const getFileInfo = async (req: NextApiRequest, res: NextApiResponse<string>) => {
@@ -191,16 +192,6 @@ export const getFileInfo = async (req: NextApiRequest, res: NextApiResponse<stri
   }
 
   const fileInfo = await FilesDb.getFileInfo(fileId);
-
-  if (
-    fileInfo.restricted &&
-    !authentify(req, res, {
-      requireSpecificAddress: fileInfo.owner,
-      requireValidator: true,
-    })
-  ) {
-    return;
-  }
 
   if ("_id" in fileInfo) {
     delete fileInfo._id;

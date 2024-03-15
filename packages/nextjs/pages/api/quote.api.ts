@@ -29,6 +29,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     titleReportFees,
     appraisalAndInspectionFees,
     promoCodeReduction: promoCode ? 100 : 0,
+    advancedPlan: 99,
     total:
       legalWrapperFees +
       documentNotarizationFees +

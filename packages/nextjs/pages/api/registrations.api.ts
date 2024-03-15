@@ -6,6 +6,7 @@ import { DeedInfoModel } from "~~/models/deed-info.model";
 import { authentify, getWalletAddressFromToken } from "~~/servers/auth";
 import { getContractInstance, getDeedOwner } from "~~/servers/contract";
 import { getFileFromHash } from "~~/servers/ipfs";
+import logger from "~~/services/logger.service";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Check if the request method is GET.
@@ -27,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(405).send("Method not allowed");
     }
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     return res.status(500).send("Server Error");
   }
 };
@@ -90,14 +91,9 @@ async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResp
     return res.status(404).send(`Error: Deed ${id} not found in drafts`);
   }
 
-  if (
-    !(await authentify(req, res, {
-      requireSpecificAddress: registration.owner,
-      requireValidator: true,
-    }))
-  ) {
-    return;
-  }
+  // if (!(await authentify(req, res, [registration.owner!, "Validator"]))) {
+  //   return;
+  // }
 
   return res.status(200).json(registration);
 }
@@ -115,6 +111,13 @@ async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
 
   if (!validate()) {
     return res.status(400).send("Error: deedInfo is invalid");
+  }
+
+  if (deedInfo.id) {
+    const reg = await RegistrationsDb.getRegistration(deedInfo.id);
+    if (!(await authentify(req, res, [reg!.owner!]))) {
+      return;
+    }
   }
 
   deedInfo.owner = walletAddress;
@@ -140,12 +143,7 @@ async function savePaymentReceipt(req: NextApiRequest, res: NextApiResponse) {
     return res.status(404).send(`Error: Deed ${id} not found`);
   }
 
-  if (
-    !(await authentify(req, res, {
-      requireSpecificAddress: deedInfo.owner,
-      requireValidator: true,
-    }))
-  ) {
+  if (!(await authentify(req, res, [deedInfo.owner!, "Validator"]))) {
     return;
   }
 
