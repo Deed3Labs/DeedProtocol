@@ -99,5 +99,6 @@ export interface DeedInfoModel {
   process?: FileModel;
   agreement?: FileModel;
 
-  validations?: FileFieldKeyLabel[];
+  validations?: [string, FileValidationState][];
+  signatureTx: string | undefined;
 }
