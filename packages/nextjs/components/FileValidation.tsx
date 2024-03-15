@@ -110,7 +110,7 @@ const FileValidation = ({
         notification.remove(toastId);
       });
 
-    onSave(deedData).then(onRefresh);
+    onSave(deedData);
   };
 
   const openFile = async (file: FileModel) => {

@@ -87,7 +87,7 @@ export function getSupportedFiles(
       new FileFieldKeyLabel({
         key: ["ownerInformation", "ids"],
         label: "ID or Passport",
-        multiple: true,
+        multiple: false,
         restricted: true,
       }),
     );

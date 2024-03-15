@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import AgentCard from "./AgentCard";
-import AgentFilters from "./AgentFilters";
+import AgentCard from "../../components/AgentCard";
+import AgentFilters from "../../components/AgentFilters";
 import { debounce } from "lodash";
 import { NextPage } from "next";
 import { AgentModel } from "~~/models/agent.model";
