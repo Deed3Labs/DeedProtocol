@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import PropertyFilters from "./PropertyFilters";
+import PropertyFilters from "../../components/PropertyFilters";
 import { NextPage } from "next";
+import PropertyCard from "~~/components/PropertyCard";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 import { MapIconModel } from "~~/models/map-icon.model";
 import { PropertyModel } from "~~/models/property.model";
-import PropertyCard from "~~/pages/property-explorer/PropertyCard";
 
 const propertyIcon: MapIconModel = {
   className: "property-icon",

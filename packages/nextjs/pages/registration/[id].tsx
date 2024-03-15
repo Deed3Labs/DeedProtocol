@@ -2,19 +2,19 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
-import OtherInformations from "./OtherInformations";
-import OwnerInformation from "./OwnerInformation";
-import PaymentInformation from "./PaymentInformation";
-import PropertyDetails from "./PropertyDetails";
+import OtherInformations from "../../components/OtherInformations";
+import OwnerInformation from "../../components/OwnerInformation";
+import PaymentInformation from "../../components/PaymentInformation";
+import PropertyDetails from "../../components/RegPropertyDetails";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useRegistrationClient from "~~/clients/registrations.client";
+import SidePanel from "~~/components/SidePanel";
 import {
   DeedInfoModel,
   OwnerInformationModel,
   PropertyDetailsModel,
 } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import SidePanel from "~~/pages/registration/SidePanel";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 

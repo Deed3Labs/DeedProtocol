@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { NextRouter } from "next/router";
-import QuoteDetail, { USDollar } from "../../components/scaffold-eth/QuoteDetail";
-import MarketLogo from "./assets/MarketLogo";
+import MarketLogo from "../pages/registration/assets/MarketLogo";
+import QuoteDetail, { USDollar } from "./scaffold-eth/QuoteDetail";
 import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
 import useQuoteClient from "~~/clients/quote.client";
