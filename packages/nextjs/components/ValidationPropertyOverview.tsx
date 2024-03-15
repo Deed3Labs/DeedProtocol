@@ -7,6 +7,7 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
@@ -15,11 +16,13 @@ import { notification } from "~~/utils/scaffold-eth";
 interface Props {
   deedData: DeedInfoModel;
   isOwner?: boolean;
+  isValidator?: boolean;
   refresh: () => void;
 }
 
-const PropertyOverview = ({ deedData, isOwner, refresh }: Props) => {
+const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) => {
   const router = useRouter();
+  const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
 
   const handleChatClick = () => {
     if (isOwner) {
@@ -35,7 +38,7 @@ const PropertyOverview = ({ deedData, isOwner, refresh }: Props) => {
   };
 
   const handleMint = async () => {
-    // await writeMintDeedAsync(deedData);
+    await writeMintDeedAsync(deedData);
   };
 
   const onDeedMinted = async (txnReceipt: TransactionReceipt) => {
@@ -131,11 +134,13 @@ const PropertyOverview = ({ deedData, isOwner, refresh }: Props) => {
                       Edit
                     </Link>
                   </li>
+                  {/* {isValidator && ( */}
                   <li>
                     <a onClick={() => handleMint()} className="link-default">
                       Mint
                     </a>
                   </li>
+                  {/* )} */}
                 </ul>
               </div>
             </div>

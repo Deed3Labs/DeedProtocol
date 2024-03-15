@@ -240,6 +240,17 @@ export function getSupportedFiles(
     );
   }
 
+  if (includeAll || (data.process && (!old || old.process !== data.process))) {
+    files.push(
+      new FileFieldKeyLabel({
+        key: ["documentNotorization", undefined],
+        label: "Document Notorization",
+        multiple: true,
+        restricted: true,
+      }),
+    );
+  }
+
   return files;
 }
 

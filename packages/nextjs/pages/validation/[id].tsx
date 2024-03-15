@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
-import PropertyDetails from "../../components/PropertyDetails";
-import PropertyOverview from "../../components/PropertyOverview";
 import ValidationProcedures from "../../components/ValidationProcedures";
+import PropertyDetails from "../../components/ValidationPropertyDetails";
+import PropertyOverview from "../../components/ValidationPropertyOverview";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useRegistrationClient from "~~/clients/registrations.client";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -46,6 +47,7 @@ const Page = ({ router }: WithRouterProps) => {
     return !id || Number.isNaN(+id);
   }, [id, router.isReady, deedData]);
   const { id: chainId } = getTargetNetwork();
+  const isValidator = useIsValidator();
 
   const registrationClient = useRegistrationClient();
 
@@ -230,6 +232,7 @@ const Page = ({ router }: WithRouterProps) => {
                 <PropertyDetails
                   propertyDetail={deedData.propertyDetails}
                   isOwner={isOwner}
+                  isValidator={isValidator}
                   onChange={handleChange}
                   refresh={() => fetchDeedInfo(deedData!.id!)}
                   onSave={handleSave}
@@ -239,6 +242,7 @@ const Page = ({ router }: WithRouterProps) => {
                 <ValidationProcedures
                   deedData={deedData}
                   onSave={handleSave}
+                  isDraft={isDraft}
                   onRefresh={() => fetchDeedInfo(deedData!.id!)}
                 ></ValidationProcedures>
               </div>
