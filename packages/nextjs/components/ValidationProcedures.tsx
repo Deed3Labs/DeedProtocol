@@ -4,21 +4,21 @@ import { useSignMessage } from "wagmi";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { FileFieldKeyLabel, FileValidationState } from "~~/models/file.model";
 import { getSupportedFiles } from "~~/services/file.service";
-import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   deedData: DeedInfoModel;
+  isDraft: boolean;
   onSave: (deed: DeedInfoModel) => Promise<void>;
   onRefresh: () => void;
 }
 
-const ValidationProcedures = ({ deedData, onSave, onRefresh }: Props) => {
+const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) => {
   const [supportedFiles, setSupportedFiles] = useState<Map<string, FileFieldKeyLabel>>();
-  const { data: signMessageData, signMessageAsync, error, isLoading, variables } = useSignMessage();
+  const { data: signMessageData, signMessageAsync } = useSignMessage();
 
   useEffect(() => {
     const map = new Map<string, FileFieldKeyLabel>();
-    getSupportedFiles(deedData, undefined, false, true, true).forEach(x => {
+    getSupportedFiles(deedData, undefined, false, isDraft, true).forEach(x => {
       map.set(x.label, x);
     });
     setSupportedFiles(map);
@@ -155,10 +155,10 @@ const ValidationProcedures = ({ deedData, onSave, onRefresh }: Props) => {
             <td className="border">
               <div className="py-8 px-4">
                 <FileValidation
-                  id="LegalWrapper"
-                  label="Legal Wrapper"
+                  id="Agreement"
+                  label="Agreement"
                   description="Complete KYB Procedures"
-                  fileLabels={["Legal Wrapper"]}
+                  fileLabels={["Agreement"]}
                   button={
                     <button className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase">
                       View Agreements
@@ -182,12 +182,16 @@ const ValidationProcedures = ({ deedData, onSave, onRefresh }: Props) => {
                   description="Complete KYB Procedures"
                   fileLabels={["Document Notorization"]}
                   button={
-                    <button
-                      className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase"
-                      onClick={() => handleStateChange("DocumentNotorization", "Processing")}
-                    >
-                      Begin Process
-                    </button>
+                    // @ts-ignore
+                    deedData.validations?.find(x => x[0] === "DocumentNotorization")?.[1] !==
+                    "Not Started" ? undefined : (
+                      <button
+                        className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase"
+                        onClick={() => handleStateChange("DocumentNotorization", "Processing")}
+                      >
+                        Begin Process
+                      </button>
+                    )
                   }
                   supportedFiles={supportedFiles}
                   onStateChanged={handleStateChange}

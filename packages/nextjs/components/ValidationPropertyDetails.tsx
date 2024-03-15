@@ -6,13 +6,21 @@ import { LightChangeEvent } from "~~/models/light-change-event";
 
 interface Props {
   propertyDetail: PropertyDetailsModel;
-  isOwner?: boolean;
+  isOwner: boolean;
+  isValidator: boolean;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
   refresh: () => void;
   onSave: () => void;
 }
 
-const PropertyDetails = ({ propertyDetail, isOwner, onChange, refresh, onSave }: Props) => {
+const PropertyDetails = ({
+  propertyDetail,
+  isOwner,
+  isValidator,
+  onChange,
+  refresh,
+  onSave,
+}: Props) => {
   const [viewMode, setViewMode] = useState(true);
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...propertyDetail, [ev.name]: ev.value };
@@ -37,11 +45,15 @@ const PropertyDetails = ({ propertyDetail, isOwner, onChange, refresh, onSave }:
         <div className="border-2">
           <div className="flex flex-row justify-between items-center px-2 pt-2">
             <div className="pl-4">Property Details</div>
-            {/* {isOwner && ( */}
-            <button className="btn btn-link" onClick={handleViewModeToggle}>
-              {viewMode ? <PencilIcon className="w-4" /> : <CheckIcon className="w-4"></CheckIcon>}
-            </button>
-            {/* )} */}
+            {(isOwner || isValidator) && (
+              <button className="btn btn-link" onClick={handleViewModeToggle}>
+                {viewMode ? (
+                  <PencilIcon className="w-4" />
+                ) : (
+                  <CheckIcon className="w-4"></CheckIcon>
+                )}
+              </button>
+            )}
           </div>
           <div className="flex flex-row justify-between w-full gap-6 p-6 flex-wrap">
             {/* First col */}

@@ -75,15 +75,22 @@ const FileValidation = ({
     if (!isArray(files.value)) {
       files.value = [files.value];
     }
+    if (field.multiple) {
+      if (field.key[1]) {
+        // @ts-ignore
+        deedData[field.key[0]][field.key[1]] = [];
+      } else {
+        // @ts-ignore
+        deedData[field.key[0]] = [];
+      }
+    }
     const toastId = notification.loading("Uploading documents...");
     await Promise.all(
       files.value.map(async (file: FileModel, index: number) => {
         const fileId = await fileClient.authentify(authToken ?? "").uploadFile(file, field.label);
-        files.value.fileId = fileId;
+        file.fileId = fileId;
         if (!field.key[1]) {
           if (field.multiple) {
-            // @ts-ignore
-            if (!deedData[field.key[0]]) deedData[field.key[0]] = [];
             // @ts-ignore
             deedData[field.key[0]][index] = file;
           } else {
@@ -92,8 +99,6 @@ const FileValidation = ({
           }
         } else {
           if (field.multiple) {
-            // @ts-ignore
-            if (!deedData[field.key[0]][field.key[1]]) deedData[field.key[0]][field.key[1]] = [];
             // @ts-ignore
             deedData[field.key[0]][field.key[1]][index] = file;
           } else {
@@ -110,7 +115,7 @@ const FileValidation = ({
         notification.remove(toastId);
       });
 
-    onSave(deedData);
+    onSave(deedData).then(onRefresh);
   };
 
   const openFile = async (file: FileModel) => {
@@ -168,23 +173,23 @@ const FileValidation = ({
             </div>
             <ul
               tabIndex={0}
-              className="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 list-none"
+              className="dropdown-content z-[1] p-4 shadow bg-base-100 rounded-box w-52 list-none"
             >
               {allFiles.map(field => (
                 <li key={field.label}>
-                  <div className="pointer-events-none">{field.label}</div>
+                  <div className="pointer-events-none font-bold">{field.label}</div>
                   <div className="flex flex-col flex-nowrap">
                     {field.files?.map(file =>
                       file ? (
                         <button
-                          className="hover:bg-secondary w-full p-2 text-left pl-2"
+                          className="hover:bg-secondary w-full p-2 text-left pl-4"
                           key={file?.fileId}
                           onClick={() => openFile(file)}
                         >
                           {file.fileName}
                         </button>
                       ) : (
-                        <span className="w-full p-2 text-left pl-2 text-secondary italic cursor-default">
+                        <span className="w-full p-2 text-left pl-4 text-secondary italic cursor-default">
                           No file
                         </span>
                       ),
@@ -192,7 +197,7 @@ const FileValidation = ({
                     <div className="w-full text-left">
                       <FileUploaderInput
                         inline
-                        className="p-2 hover:bg-secondary"
+                        className="p-2 pl-4 hover:bg-secondary opacity-50"
                         name={field.label}
                         label={"Upload"}
                         multiple={field.multiple}

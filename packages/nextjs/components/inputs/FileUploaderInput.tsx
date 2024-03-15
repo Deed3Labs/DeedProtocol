@@ -126,7 +126,7 @@ export const FileUploaderInput = <TParent,>({
       {inline ? (
         <label
           htmlFor={name as string}
-          className="text-base font-bold leading-normal w-full cursor-pointer block"
+          className="text-base leading-normal w-full cursor-pointer block"
         >
           {label}
         </label>

@@ -96,9 +96,10 @@ export interface DeedInfoModel {
   //4. Payment Information
   paymentInformation: PaymentInformationModel;
 
-  process?: FileModel;
-  agreement?: FileModel;
+  process?: FileModel[];
+  agreement?: FileModel[];
+  documentNotorization?: FileModel[];
 
   validations?: [string, FileValidationState][];
-  signatureTx: string | undefined;
+  signatureTx?: string;
 }
