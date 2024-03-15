@@ -173,7 +173,7 @@ const Page = ({ router }: WithRouterProps) => {
             <div className="flex flex-row flex-wrap gap-6 w-full">
               <div className="flex flex-col gap-4 w-full 2xl:w-fit">
                 <div className="flex flex-row items-center w-full justify-between">
-                  <div className="text-2xl">Validation History</div>
+                  <div className="text-2xl">Property Details</div>
                   <div className="flex flex-row gap-4">
                     <div className="btn btn-outline m-1 btn-square rounded-lg">
                       <svg
