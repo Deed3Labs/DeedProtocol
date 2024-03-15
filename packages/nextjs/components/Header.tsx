@@ -60,11 +60,9 @@ export const Header = () => {
         </div>
         <Link
           className={`link-default ${
-            pathname.includes("registration/[id]") && id === "new"
-              ? "opacity-40 pointer-events-none"
-              : ""
+            pathname.includes("explorer") ? "opacity-40 pointer-events-none" : ""
           }`}
-          href="/registration/new"
+          href="/property-explorer?type=all"
         >
           Register
         </Link>
