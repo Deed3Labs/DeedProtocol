@@ -106,14 +106,14 @@ export const PropertyTypeOptions = [
   {
     title: "Equipment",
     value: "equipment",
-    tag: "Comming soon",
+    tag: "Coming soon",
     subtitle: "Tech, machines, etc.",
     disabled: true,
   },
   {
     title: "More Options",
     value: "more",
-    tag: "Comming soon",
+    tag: "Coming soon",
     subtitle: "IP, trademarks, etc.",
     disabled: true,
   },
@@ -121,7 +121,7 @@ export const PropertyTypeOptions = [
 
 export const PropertySubtypeOptions = [
   { label: "House", value: "house" },
-  { label: "Appartement", value: "appartement" },
+  { label: "Apartment", value: "appartement" },
   { label: "Bachelor", value: "bachelor" },
   { label: "Condo", value: "condo" },
   { label: "Land", value: "land" },
