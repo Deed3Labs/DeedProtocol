@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline"; // Use appropriate icons based on your setup
-import { ChevronDownIcon } from "@heroicons/react/24/outline"; // Dropdown icon
+import ExplorerLinks from "./ExplorerLinks";
+import { MapIcon } from "@heroicons/react/24/outline";
+import { MapIcon as MapIconSolid, AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon, SearchIcon } from "@heroicons/react/24/outline";
+import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
-import { PropertyTypeOptions } from "~~/constants";
 import { PropertyType } from "~~/models/deed-info.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { ListingType, PropertyModel } from "~~/models/property.model";
@@ -26,6 +28,13 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
 
   const debouncedSearch = useDebouncer(search, 500);
 
+  const Map = useMemo(
+    () => dynamic(() => import("~~/components/Map"), {
+        loading: () => <div className="w-full flex justify-center"><span>Loading...</span></div>,
+        ssr: false,
+      }), [properties]
+  );
+
   useEffect(() => {
     if (debouncedSearch) {
       applyFilter({ search: debouncedSearch });
@@ -34,7 +43,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
 
   useEffect(() => {
     onFilter(filter);
-  }, [filter, listingType]);
+  }, [filter]);
 
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
@@ -42,69 +51,47 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     onFilter(newFilter);
   };
 
-  useKeyboardShortcut(["Enter"], () => {
-    onFilter(filter);
-  });
-
-  // Dynamically importing the Map component with SSR disabled
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("~~/components/Map"), {
-        loading: () => (
-          <div className="w-full flex flex-row justify-center">
-            <span className="loading loading-bars loading-lg"></span>
-          </div>
-        ),
-        ssr: false,
-      }),
-    [properties],
-  );
+  useKeyboardShortcut(["Enter"], () => onFilter(filter));
 
   return (
-    <div className="w-full bg-stone-950 text-white flex flex-col p-7 items-center justify-center">
-      <div className="flex w-full justify-between items-center gap-6">
-        <div className="text-5xl font-black">ALL PROPERTIES</div>
-        <div className="text-5xl font-black text-opacity-30">FOR SALE</div>
-        <div className="text-5xl font-black text-opacity-30">FOR LEASE</div>
-        <div className="text-5xl font-black text-opacity-30">AGENT DIRECTORY</div>
-      </div>
-      <div className="flex w-full mt-7 items-center gap-3.5">
-        {/* More Filters */}
-        <button className="flex items-center justify-center gap-2 bg-neutral-900 border border-white border-opacity-20 p-1.5">
-          <AdjustmentsHorizontalIcon className="w-5 h-5" />
-          <span>More Filters</span>
-        </button>
-
-        {/* Featured Toggle */}
-        <div className="flex items-center">
-          <label className="switch">
-            <input type="checkbox" onChange={(ev) => applyFilter({ featured: ev.target.checked })} />
-            <span className="slider round"></span>
-          </label>
-          <span className="ml-2">Featured?</span>
+    <div className="flex flex-col w-full mb-8">
+      <ExplorerLinks />
+      {/* Adjusted for Coolvetica font and modified layout */}
+      <div className="flex justify-between items-center text-white my-4" style={{ fontFamily: "Coolvetica, sans-serif", fontSize: "20px" }}>
+        {/* Example tab, replicate as needed */}
+        <h1 className="font-bold">ALL PROPERTIES</h1>
+        <div className="flex gap-4">
+          <div style={{ opacity: 0.5 }}>FOR SALE</div>
+          <div style={{ opacity: 0.5 }}>FOR LEASE</div>
+          <div style={{ opacity: 0.5 }}>AGENT DIRECTORY</div>
         </div>
-
-        {/* Search Input */}
-        <div className="flex-grow flex items-center bg-neutral-900 border border-white border-opacity-20 p-1.5">
+      </div>
+      <div className="flex gap-2 items-center">
+        <button className="flex items-center gap-2 bg-neutral-900 p-2 border border-white border-opacity-20">
+          <AdjustmentsHorizontalIcon className="w-6 h-6" />
+          More Filters
+        </button>
+        <label className="flex items-center gap-2 bg-neutral-900 p-2 border border-white border-opacity-20">
+          <input type="checkbox" className="toggle toggle-primary" onChange={(ev) => applyFilter({ featured: ev.target.checked })} />
+          Featured?
+        </label>
+        <div className="flex-grow flex items-center bg-neutral-900 p-2 border border-white border-opacity-20">
+          <SearchIcon className="w-5 h-5" />
           <input
-            className="w-full bg-transparent text-white placeholder-white::placeholder"
+            className="bg-transparent w-full ml-2"
             placeholder="Enter a city, state, address or ZIP code"
             onChange={(ev) => setSearch(ev.target.value)}
           />
         </div>
-
-        {/* Property Type Selector */}
-        <div className="flex items-center bg-neutral-900 border border-white border-opacity-20 p-1.5">
+        <div className="flex items-center bg-neutral-900 p-2 border border-white border-opacity-20">
           <select
-            className="bg-transparent text-white outline-none"
+            className="bg-transparent text-white"
             value={filter.propertyType}
             onChange={(ev) => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
             <option disabled value="">Property Type</option>
             {PropertyTypeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.title}
-              </option>
+              <option key={option.value} value={option.value}>{option.title}</option>
             ))}
           </select>
           <ChevronDownIcon className="w-5 h-5" />
