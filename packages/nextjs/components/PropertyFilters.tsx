@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
-import { MapIcon, AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
-import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
+import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
@@ -48,7 +47,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
 
   useEffect(() => {
     onFilter(filter);
-  }, [filter, listingType]);
+  }, [listingType]);
 
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
@@ -61,28 +60,34 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   });
 
   return (
-    <div className="w-full mb-8 flex flex-col">
+    <div className="flex flex-col w-full mb-8 space-y-4">
       <ExplorerLinks />
-      <div className="flex flex-wrap justify-evenly items-center gap-8 w-full">
-        <button className="btn btn-lg btn-outline" onClick={() => setMapOpened(!mapOpened)}>
-          {mapOpened ? <MapIconSolid className="w-6 h-6" /> : <MapIcon className="w-6 h-6" />}
-          <span className="ml-2">Toggle Map</span>
-        </button>
-        <div className="form-control w-auto flex-none">
-          <input type="checkbox" className="toggle toggle-primary" onChange={ev => applyFilter({ featured: ev.target.checked })} />
-          <span className="label-text mx-2">Featured?</span>
-        </div>
-        <input type="text" className="input input-lg input-bordered w-full max-w-xs" placeholder="Enter a city, state, address or ZIP code" onChange={ev => setSearch(ev.target.value)} />
-        <select className="select select-lg select-bordered max-w-xs" value={filter.propertyType || ''} onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}>
-          <option value="">Property Type</option>
-          {PropertyTypeOptions.map(option => (
-            <option key={option.value} value={option.value}>{option.title}</option>
-          ))}
-        </select>
-        <button className="btn btn-lg btn-outline" onClick={() => applyFilter({})}>
+      <div className="flex justify-between items-center w-full px-4">
+        <button className="flex items-center gap-2 text-white bg-neutral-900 py-2 px-4 rounded">
           <AdjustmentsHorizontalIcon className="w-6 h-6" />
-          <span className="ml-2">More Filters</span>
+          More Filters
         </button>
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="toggle toggle-primary" onChange={e => applyFilter({ featured: e.target.checked })} />
+            Featured?
+          </label>
+          <input
+            type="text"
+            placeholder="Enter a city, state, address or ZIP code"
+            className="input input-bordered w-full max-w-xs"
+            onChange={e => setSearch(e.target.value)}
+          />
+          <select className="select select-bordered" onChange={e => applyFilter({ propertyType: e.target.value as PropertyType })}>
+            <option disabled>Property Type</option>
+            {PropertyTypeOptions.map(option => (
+              <option key={option.value} value={option.value}>{option.title}</option>
+            ))}
+          </select>
+          <button onClick={() => setMapOpened(!mapOpened)} className="btn btn-square btn-outline">
+            {mapOpened ? <MapIconSolid className="w-6 h-6" /> : <MapIcon className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
       {mapOpened && <Map />}
     </div>
