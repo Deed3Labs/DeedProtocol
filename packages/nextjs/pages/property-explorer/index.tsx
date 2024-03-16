@@ -99,18 +99,23 @@ const PropertyExplorer: NextPage = () => {
   };
 
   return (
-    <div className="container" ref={containerRef}>
+    <div className="container mx-auto p-4">
       <PropertyFilters properties={properties} onFilter={onFilter} />
 
-      <div className="flex flex-wrap gap-8 items-center justify-center max-w-full">
+      {/* Adjusted for responsive design */}
+      <div className="flex flex-wrap -mx-2">
         {properties.length === 0 ? (
-          <div className="card w-96 bg-neutral">
+          <div className="card w-full lg:w-1/2 px-2 bg-neutral">
             <div className="card-body items-center text-center">
               <h2 className="card-title">No properties</h2>
             </div>
           </div>
         ) : (
-          properties.map(property => <PropertyCard key={property.id} property={property} />)
+          properties.map(property => (
+            <div key={property.id} className="w-full sm:w-1/2 lg:w-1/3 px-2 mb-4">
+              <PropertyCard property={property} />
+            </div>
+          ))
         )}
       </div>
       {loading && <span className="loading loading-bars loading-lg my-8"></span>}
