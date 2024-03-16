@@ -23,7 +23,7 @@ const PropertyCard = ({ property }: Props) => {
               height={350}
               width={350}
               style={{
-                maxWidth: "100%",
+                maxWidth: "265px",
               }}
             />
             <div className="m-4">
