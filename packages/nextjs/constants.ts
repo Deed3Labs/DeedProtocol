@@ -176,7 +176,7 @@ export const PaymentOptions = [
     icon: IconDollar,
   },
   {
-    title: "DAI",
+    title: "Crypto Currency",
     subtitle: "Stablecoin",
     value: "crypto",
     icon: IconBitcoin,
