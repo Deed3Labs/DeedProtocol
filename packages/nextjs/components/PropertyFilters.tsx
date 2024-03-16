@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid"; // Adjustments icon
-import { MapIcon, MapIconSolid } from "@heroicons/react/24/solid"; // Map icons for toggling
+import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline"; // Use appropriate icons based on your setup
+import { ChevronDownIcon } from "@heroicons/react/24/outline"; // Dropdown icon
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { PropertyTypeOptions } from "~~/constants";
@@ -61,57 +61,55 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   );
 
   return (
-    <div className="Wrapper flex flex-col w-full mb-8">
-      {/* Filters Container */}
-      <div className="filters w-full h-14 justify-start items-center gap-3.5 inline-flex bg-neutral-900 border border-white border-opacity-20">
-        {/* More Filters Button */}
-        <button className="btn flex items-center justify-center gap-2 p-3 text-white" onClick={() => {}}>
+    <div className="w-full bg-stone-950 text-white flex flex-col p-7 items-center justify-center">
+      <div className="flex w-full justify-between items-center gap-6">
+        <div className="text-5xl font-black">ALL PROPERTIES</div>
+        <div className="text-5xl font-black text-opacity-30">FOR SALE</div>
+        <div className="text-5xl font-black text-opacity-30">FOR LEASE</div>
+        <div className="text-5xl font-black text-opacity-30">AGENT DIRECTORY</div>
+      </div>
+      <div className="flex w-full mt-7 items-center gap-3.5">
+        {/* More Filters */}
+        <button className="flex items-center justify-center gap-2 bg-neutral-900 border border-white border-opacity-20 p-1.5">
           <AdjustmentsHorizontalIcon className="w-5 h-5" />
-          More filters
+          <span>More Filters</span>
         </button>
-        
+
         {/* Featured Toggle */}
-        <div className="form-control flex items-center">
-          <label className="cursor-pointer label flex items-center gap-2">
-            <input type="checkbox" className="toggle toggle-primary" onChange={(ev) => applyFilter({ featured: ev.target.checked })} />
-            <span className="label-text text-white">Featured?</span>
+        <div className="flex items-center">
+          <label className="switch">
+            <input type="checkbox" onChange={(ev) => applyFilter({ featured: ev.target.checked })} />
+            <span className="slider round"></span>
           </label>
+          <span className="ml-2">Featured?</span>
         </div>
-        
+
         {/* Search Input */}
-        <div className="form-control flex-grow">
+        <div className="flex-grow flex items-center bg-neutral-900 border border-white border-opacity-20 p-1.5">
           <input
-            className="input input-lg input-bordered w-full bg-neutral-900 text-white placeholder-white::placeholder"
+            className="w-full bg-transparent text-white placeholder-white::placeholder"
             placeholder="Enter a city, state, address or ZIP code"
             onChange={(ev) => setSearch(ev.target.value)}
           />
         </div>
-        
+
         {/* Property Type Selector */}
-        <div className="form-select">
+        <div className="flex items-center bg-neutral-900 border border-white border-opacity-20 p-1.5">
           <select
-            className="select select-lg select-bordered bg-neutral-900 text-white"
+            className="bg-transparent text-white outline-none"
             value={filter.propertyType}
             onChange={(ev) => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
-            <option disabled value="">
-              Property type
-            </option>
+            <option disabled value="">Property Type</option>
             {PropertyTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.title}
               </option>
             ))}
           </select>
+          <ChevronDownIcon className="w-5 h-5" />
         </div>
-        
-        {/* Map Toggle */}
-        <button className="btn btn-square btn-outline" onClick={() => setMapOpened(!mapOpened)}>
-          {mapOpened ? <MapIconSolid className="w-6 h-6 text-white" /> : <MapIcon className="w-6 h-6 text-white" />}
-        </button>
       </div>
-
-      {/* Map Component */}
       {mapOpened && <Map markers={properties} />}
     </div>
   );
