@@ -18,24 +18,24 @@ const AgentCard = ({ agent }: Props) => {
   }, [agent?.followers]);
 
   return (
-    <div className="w-80 h-60 p-2 bg-stone-950 border border-white border-opacity-10 flex-col justify-start items-start inline-flex">
-      <div className="self-stretch h-36 bg-neutral-900 flex-col justify-start items-start flex">
-        <div className="h-14 p-0.5 border border-white border-opacity-10 flex justify-center items-center">
-          <Image src={agent.profile} alt="Agent Profile" height={56} width={56} layout="fixed" className="" />
-          <CheckBadgeIcon className="absolute text-yellow-400 w-5 h-5" style={{ right: '1.25rem', bottom: '0.125rem' }} />
+    <div className="relative w-80 h-60 p-2 bg-stone-950 border border-white border-opacity-10 flex flex-col justify-end items-start">
+      {/* Content container for name, followers, and follow button */}
+      <div className="px-4 pt-4 flex-1 z-10">
+        <div className="flex items-center gap-1">
+          <span className="text-white text-xl font-bold">{agent.name}</span>
+          <CheckBadgeIcon className="w-5 h-5 text-yellow-400" />
         </div>
+        <div className="text-white text-opacity-60">{followers} Followers</div>
       </div>
-      <div className="self-stretch px-4 pt-7 pb-2.5 justify-start items-center gap-4 inline-flex">
-        <div className="flex-col justify-start items-start">
-          <div className="text-white text-xs font-bold font-['Montserrat']">{agent.name}</div>
-          <div className="text-white text-opacity-60 text-xs font-medium font-['Montserrat']">{agent.location}</div>
-          <div className="text-white text-opacity-60 text-xs font-medium font-['Montserrat']">{followers} Followers</div>
-        </div>
-        <Link href={`/agent/${agent.id}`} passHref>
-          <a className="btn btn-neutral btn-xs self-stretch flex justify-center items-center">
-            FOLLOW
-          </a>
-        </Link>
+
+      {/* Follow Button */}
+      <Link href={`/agent/${agent.id}`} passHref>
+        <a className="btn btn-neutral btn-xs mb-2 mr-2 self-end z-10">FOLLOW</a>
+      </Link>
+
+      {/* Absolute positioned Profile Image at the bottom left */}
+      <div className="absolute bottom-2 left-2 w-14 h-14">
+        <Image src={agent.profile} alt="Agent Profile" layout="fill" objectFit="cover" className="bg-neutral-900" />
       </div>
     </div>
   );
