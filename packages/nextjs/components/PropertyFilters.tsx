@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { AdjustmentsHorizontalIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
+import ExplorerLinks from "./ExplorerLinks"; // Assumed to handle tab/page switching
+import { MapIcon, MapIcon as MapIconSolid, AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
+import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
+import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
+import { PropertyType } from "~~/models/deed-info.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
-import { PropertyModel } from "~~/models/property.model";
+import { ListingType, PropertyModel } from "~~/models/property.model";
 
 interface Props {
   properties: PropertyModel[];
@@ -12,47 +16,61 @@ interface Props {
 }
 
 const PropertyFilters = ({ properties, onFilter }: Props) => {
-  const [searchParams] = useSearchParams();
-  const [search, setSearch] = useState('');
-  const debouncedSearch = useDebouncer(search, 500);
-  
-  useEffect(() => {
-    const newFilter = { search: debouncedSearch };
-    onFilter(newFilter);
-  }, [debouncedSearch, onFilter]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [mapOpened, setMapOpened] = useState(false);
+  const [search, setSearch] = useState<string | undefined>();
+  const listingType = searchParams.get("listingType");
+  const [filter, setFilter] = useState<PropertiesFilterModel>({
+    listingType: listingType ? (listingType as ListingType) : "All",
+  });
 
+  const debouncedSearch = useDebouncer(search, 500);
+  const Map = useMemo(() => dynamic(() => import("~~/components/Map"), { ssr: false }), [properties]);
+
+  useEffect(() => {
+    if (debouncedSearch) applyFilter({ search: debouncedSearch });
+  }, [debouncedSearch]);
+
+  useEffect(() => onFilter(filter), [filter, onFilter]);
+
+  const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
+    const newFilter = { ...filter, ...partialFilter };
+    setFilter(newFilter);
+    onFilter(newFilter);
+  };
+
+  useKeyboardShortcut(["Enter"], () => onFilter(filter));
+
+  // Adjusted styling to match the Figma design while retaining functionality
   return (
-    <div style={{ width: '100%', padding: '28px', backgroundColor: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'end', width: '100%', gap: '28px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: '24px', width: '100%' }}>
-          <h1 style={{ color: 'white', fontSize: '40px', fontWeight: '700', fontFamily: 'Coolvetica, sans-serif' }}>ALL PROPERTIES</h1>
-          <h2 style={{ color: 'white', fontSize: '40px', fontWeight: '700', fontFamily: 'Coolvetica, sans-serif', opacity: '0.3' }}>FOR SALE</h2>
-          <h2 style={{ color: 'white', fontSize: '40px', fontWeight: '700', fontFamily: 'Coolvetica, sans-serif', opacity: '0.3' }}>FOR LEASE</h2>
-          <h2 style={{ color: 'white', fontSize: '40px', fontWeight: '700', fontFamily: 'Coolvetica, sans-serif', opacity: '0.3' }}>AGENT DIRECTORY</h2>
+    <div className="flex flex-col w-full mb-8" style={{ padding: '28px', backgroundColor: '#1E293B' }}>
+      <ExplorerLinks /> {/* Handles tab/page switching */}
+      <div className="flex flex-wrap justify-evenly items-center gap-8 w-full">
+        <button className="btn btn-lg btn-outline" onClick={() => setMapOpened(!mapOpened)}>
+          <AdjustmentsHorizontalIcon className="w-4" />
+          More filters
+        </button>
+        <div className="form-control">
+          <label className="cursor-pointer label">
+            <input type="checkbox" className="toggle toggle-primary" onChange={(ev) => applyFilter({ featured: ev.target.checked })} />
+            <span className="label-text mx-4">Featured?</span>
+          </label>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
-          <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', backgroundColor: '#1F2937', border: '1px solid white', borderRadius: '8px', padding: '8px 16px' }}>
-            <AdjustmentsHorizontalIcon className="w-5 h-5 text-white" />
-            <span style={{ color: 'white', fontSize: '14px', fontWeight: '600' }}>More Filters</span>
-          </button>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#1F2937', border: '1px solid white', borderRadius: '9999px', padding: '4px 12px' }}>
-            <input type="checkbox" onChange={(e) => console.log(e.target.checked)} />
-            <span style={{ color: 'white', fontSize: '14px', marginLeft: '8px' }}>Featured?</span>
-          </div>
-          <input 
-            type="text" 
-            placeholder="Enter a city, state, address or ZIP code" 
-            onChange={(e) => setSearch(e.target.value)} 
-            style={{ flexGrow: 1, backgroundColor: '#1F2937', color: 'white', border: '1px solid white', borderRadius: '8px', padding: '8px 16px' }} 
-          />
-          <select style={{ backgroundColor: '#1F2937', color: 'white', border: '1px solid white', borderRadius: '8px', padding: '8px 16px' }}>
-            <option>Real Estate</option>
-          </select>
-          <ChevronDownIcon className="w-5 h-5 text-white" />
+        <input className="input input-lg input-bordered w-full" placeholder="Enter a city, state, address or ZIP code" onChange={(ev) => setSearch(ev.target.value)} />
+        <select className="select select-lg select-bordered" value={filter.propertyType} onChange={(ev) => applyFilter({ propertyType: ev.target.value as PropertyType })}>
+          <option disabled value="">Property type</option>
+          {PropertyTypeOptions.map((option) => (
+            <option key={option.value} value={option.value}>{option.title}</option>
+          ))}
+        </select>
+        <div>
+          {mapOpened ? <MapIconSolid className="w-4 h-4" /> : <MapIcon className="w-4 h-4" />}
         </div>
       </div>
+      {mapOpened && <Map markers={properties} />}
     </div>
   );
 };
 
 export default PropertyFilters;
+
