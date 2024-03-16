@@ -8,54 +8,66 @@ interface Props {
 }
 
 const PropertyCard = ({ property }: Props) => {
-  // const propertyTypeLabel = useMemo(
-  //   () => PropertyTypeOptions.find(x => x.value === property?.type)?.title,
-  //   [property.type],
-  // );
   return (
     <>
       {property && (
         <Link href={`/validation/${property.id}`} className="link-default">
-          <figure className="card bg-base-100 shadow-xl p-2 border border-white border-opacity-10 max-w-full w-[350px]">
-            <Image
-              src={property.pictures[0]}
-              alt="Picture"
-              height={400}
-              width={350}
-              style={{
-                maxWidth: "100%",
-              }}
-            />
-            <div className="m-4">
-              <span className="flex flex-h w-fit gap-2">
-                <span className="text-secondary-content">Username.eth</span>
-                <CheckBadgeIcon className="w-4" />
-              </span>
-              <h2 className="text-2xl font-bold truncate" title={property.address}>
-                {property.address}
-              </h2>
-            </div>
-            <div className="bg-neutral p-4 flex flex-row justify-evenly border border-white border-opacity-25 flex-wrap">
-              <div className="flex flex-col">
-                <span className="text-secondary-content">PRICE</span>
-                <span>
-                  {property.price.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    maximumFractionDigits: 0,
-                  })}
-                </span>
-              </div>
-              {/* <div className="flex flex-col">
-                <div className="text-secondary-content">TYPE</div>
-                <div>{property.type}</div>
-              </div> */}
-              <div className="flex flex-col">
-                <div className="text-secondary-content">ZONING</div>
-                <div>Residential</div>
+          <div class="w-64 h-96 p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
+            <div class="self-stretch h-60 bg-white bg-opacity-5 flex-col justify-start items-start flex relative">
+              <Image src={property.pictures[0]} alt="Property Image" layout="fill" objectFit="cover" />
+              <div class="w-7 h-7 p-1 bg-zinc-900 bg-opacity-40 rounded-3xl border border-white border-opacity-10 flex-col justify-center items-center flex absolute bottom-0 right-0 m-2">
+                <CheckBadgeIcon className="text-white w-5 h-5" />
               </div>
             </div>
-          </figure>
+            <div class="self-stretch h-32 flex-col justify-start items-start gap-3 flex">
+              <div class="self-stretch h-11 px-2 flex-col justify-center items-start gap-0.5 flex">
+                <div class="pr-16 justify-start items-center inline-flex">
+                  <div class="justify-start items-center gap-1 flex">
+                    <div class="h-5 flex-col justify-center items-start inline-flex">
+                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">USERNAME.ETH</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="self-stretch pr-24 justify-start items-center inline-flex">
+                  <div class="text-white text-base font-bold font-['Montserrat'] leading-snug">{property.address}</div>
+                </div>
+              </div>
+              <div class="self-stretch h-16 px-3 pt-2.5 pb-3 bg-neutral-900 border border-white border-opacity-10 flex-col justify-center items-start flex">
+                <div class="self-stretch justify-start items-start gap-5 inline-flex">
+                  <div class="flex-col justify-start items-start inline-flex">
+                    <div class="self-stretch h-4 flex-col justify-start items-start flex">
+                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">PRICE</div>
+                    </div>
+                    <div class="self-stretch justify-start items-start gap-0.5 inline-flex">
+                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">
+                        {property.price.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                          maximumFractionDigits: 0,
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-col justify-start items-start inline-flex">
+                    <div class="self-stretch h-4 flex-col justify-start items-start flex">
+                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">TYPE</div>
+                    </div>
+                    <div class="self-stretch justify-start items-start inline-flex">
+                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">{property.type}</div>
+                    </div>
+                  </div>
+                  <div class="flex-col justify-start items-start inline-flex">
+                    <div class="self-stretch h-4 flex-col justify-start items-start flex">
+                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">ZONING</div>
+                    </div>
+                    <div class="justify-start items-start inline-flex">
+                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">Residential</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </Link>
       )}
     </>
