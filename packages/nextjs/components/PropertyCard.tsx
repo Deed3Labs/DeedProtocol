@@ -14,7 +14,7 @@ const PropertyCard = ({ property }: Props) => {
         <Link href={`/validation/${property.id}`} className="link-default">
           <div class="w-64 h-96 p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
             <div class="self-stretch h-60 bg-white bg-opacity-5 flex-col justify-start items-start flex relative">
-              <Image src={property.pictures[0]} alt="Property Image" layout="fill" objectFit="cover" className="rounded-lg" />
+              <Image src={property.pictures[0]} alt="Property Image" layout="fill" objectFit="cover" />
               <div class="w-7 h-7 p-1 bg-zinc-900 bg-opacity-40 rounded-3xl border border-white border-opacity-10 flex-col justify-center items-center flex absolute bottom-0 right-0 m-2">
                 <CheckBadgeIcon className="text-white w-5 h-5" />
               </div>
