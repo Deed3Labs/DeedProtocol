@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { AgentModel } from "~~/models/agent.model";
-import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   agent: AgentModel;
@@ -17,38 +17,26 @@ const AgentCard = ({ agent }: Props) => {
     return agent.followers.toString();
   }, [agent?.followers]);
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    notification.info("Copied to clipboard", {
-      position: "bottom-right",
-    });
-  };
-
   return (
-    <div className="w-80 h-60 p-2 bg-stone-950 border border-white border-opacity-10 flex-col justify-start items-start inline-flex">
-      <div className="self-stretch h-36 bg-neutral-900 flex-col justify-start items-start flex">
-        <div className="relative h-14 w-full flex justify-center items-center">
-          <Image src={agent.profile} alt="Agent Profile" height={56} width={56} className="rounded-full" />
-          <CheckBadgeIcon className="absolute bottom-0 right-0 w-6 h-6 text-yellow-400" />
-        </div>
+    <div className="w-80 h-60 p-2 bg-stone-950 border border-white border-opacity-10 flex flex-row justify-start items-center gap-4">
+      <div className="w-14 h-14 relative flex-shrink-0">
+        <Image src={agent.profile} alt="Agent Profile" layout="fill" objectFit="cover" className="" />
       </div>
-      <div className="self-stretch px-4 pt-7 pb-2.5 justify-start items-center gap-4 inline-flex">
-        <div className="w-40 flex-col justify-start items-start inline-flex">
-          <div className="self-stretch h-5 flex-col justify-center items-start">
-            <div className="text-white text-xs font-bold font-['Montserrat'] leading-tight">{agent.name}</div>
-          </div>
-          <div className="self-stretch h-5 flex-col justify-start items-start">
-            <div className="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-tight">{agent.location}</div>
-          </div>
+      <div className="flex flex-col justify-center">
+        <div className="flex items-center gap-2">
+          <span className="text-xl font-bold">{agent.name}</span>
+          <CheckBadgeIcon className="w-5 h-5 text-yellow-400" />
         </div>
-        <div className="grow shrink basis-0 self-stretch pl-3.5 pr-4 pt-px bg-neutral-900 border border-white border-opacity-10 flex justify-center items-center">
-          <button className="flex justify-center items-center gap-2 text-white text-xs font-medium font-['Montserrat'] leading-9 tracking-wider" onClick={() => copyToClipboard(agent.address)}>
-            <div>FOLLOW</div>
-          </button>
-        </div>
+        <span className="text-secondary-content">{followers} Followers</span>
+        <Link href={`/agent/${agent.id}`} passHref>
+          <a className="btn btn-neutral btn-xs mt-2">
+            Follow
+          </a>
+        </Link>
       </div>
     </div>
   );
 };
 
 export default AgentCard;
+
