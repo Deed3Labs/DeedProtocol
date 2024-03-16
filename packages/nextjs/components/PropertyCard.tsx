@@ -20,8 +20,8 @@ const PropertyCard = ({ property }: Props) => {
             <Image
               src={property.pictures[0]}
               alt="Picture"
-              height={220}
-              width={220}
+              height={350}
+              width={350}
               style={{
                 maxWidth: "100%",
               }}
