@@ -1,6 +1,6 @@
 import { IconBitcoin, IconDollar, IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
 
-export const defaultPage = "registration/new";
+export const defaultPage = "property-explorer?type=all";
 
 export const OwnerTypeOptions = [
   {
@@ -187,7 +187,7 @@ export const WrapperOptions = (prices: string[]) =>
   [
     {
       title: "Nominee Trust",
-      tag: "Recomanded",
+      tag: "Recommended",
       subtitle: `Recommended for most situations. This type of property wrapper is ideal for those who desire an additional layer of anonymity, while offering legal protections and benefits similar to LLCs.
       
     Estimated cost to deploy contract: ${prices[0]}`,
