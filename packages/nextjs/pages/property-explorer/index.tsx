@@ -102,7 +102,7 @@ const PropertyExplorer: NextPage = () => {
     <div className="container" ref={containerRef}>
       <PropertyFilters properties={properties} onFilter={onFilter} />
 
-      <div className="flex flex-wrap gap-8 items-start justify-center max-w-full">
+      <div className="flex flex-wrap gap-8 items-start justify-start max-w-full">
         {properties.length === 0 ? (
           <div className="card w-96 bg-neutral">
             <div className="card-body items-center text-center">
