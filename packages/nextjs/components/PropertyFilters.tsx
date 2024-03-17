@@ -2,9 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
-import { MapIcon } from "@heroicons/react/24/outline";
-import { MapIconSolid } from "@heroicons/react/24/solid"; // Adjusted import for consistency
-import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import { MapIcon, AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
+import { MapIconSolid } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
@@ -20,7 +19,7 @@ interface Props {
 const PropertyFilters = ({ properties, onFilter }: Props) => {
   const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
-  const [search, setSearch] = useState<string | undefined>();
+  const [search, setSearch] = useState("");
   const listingType = searchParams.get("listingType");
   const [filter, setFilter] = useState<PropertiesFilterModel>({
     listingType: listingType ? (listingType as ListingType) : "All",
@@ -31,11 +30,6 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   const Map = useMemo(
     () =>
       dynamic(() => import("~~/components/Map"), {
-        loading: () => (
-          <div className="w-full flex flex-row justify-center">
-            <span className="loading loading-bars loading-lg"></span>
-          </div>
-        ),
         ssr: false,
       }),
     [properties],
@@ -54,23 +48,21 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
     setFilter(newFilter);
-    onFilter(newFilter); // Fixed to use newFilter
+    onFilter(newFilter);
   };
 
-  useKeyboardShortcut(["Enter"], () => {
-    onFilter(filter);
-  });
+  useKeyboardShortcut(["Enter"], () => onFilter(filter));
 
   return (
     <div className="Wrapper flex flex-col w-full mb-8">
       <ExplorerLinks />
-      <div className="filters bg-gray-800 text-white p-4 rounded-lg"> {/* Adjusted for styling */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8 w-full ">
-          <button className="btn btn-md md:btn-lg btn-primary flex items-center gap-2">
+      <div className="filters bg-gray-800 text-white p-4 rounded-lg">
+        <div className="flex flex-row flex-wrap justify-between items-center gap-2 w-full">
+          <button className="btn btn-md flex items-center gap-2">
             <AdjustmentsHorizontalIcon className="h-5 w-5" />
             More filters
           </button>
-          <div className="form-control flex-grow">
+          <div className="form-control">
             <label className="cursor-pointer label flex items-center gap-2">
               <input
                 type="checkbox"
@@ -82,28 +74,24 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             </label>
           </div>
           <input
-            className="input input-md md:input-lg input-bordered w-full"
-            placeholder="Enter a city, state, address or ZIP code"
+            className="input input-md input-bordered flex-grow"
+            placeholder="Enter a city, state, address"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
           <select
-            className="select select-md md:select-lg select-primary w-full"
+            className="select select-md select-primary"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
             <option disabled value={0}>Property type</option>
             {PropertyTypeOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.title}
-              </option>
+              <option key={option.value} value={option.value}>{option.title}</option>
             ))}
           </select>
-          <div className="flex space-x-2">
-            <button className="btn btn-square btn-outline" onClick={() => setMapOpened(!mapOpened)}>
-              {mapOpened ? <MapIconSolid className="w-5 h-5" /> : <MapIcon className="w-5 h-5" />}
-            </button>
-          </div>
+          <button className="btn btn-square btn-outline" onClick={() => setMapOpened(!mapOpened)}>
+            {mapOpened ? <MapIconSolid className="w-5 h-5" /> : <MapIcon className="w-5 h-5" />}
+          </button>
         </div>
       </div>
       {mapOpened && <Map markers={properties} />}
