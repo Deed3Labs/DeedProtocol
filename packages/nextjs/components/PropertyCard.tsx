@@ -12,7 +12,7 @@ const PropertyCard = ({ property }: Props) => {
     <>
       {property && (
         <Link href={`/validation/${property.id}`} className="link-default">
-          <div class="w-40 h-64 sm:w-64 sm:h-96 p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
+          <div class="w-48 h-72 sm:w-64 sm:h-96 p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
             <div class="self-stretch h-60 bg-white bg-opacity-5 flex-col justify-start items-start flex relative">
               <Image src={property.pictures[0]} alt="Property Image" layout="fill" objectFit="cover" />
               <div class="w-7 h-7 p-1 bg-zinc-900 bg-opacity-40 rounded-3xl border border-white border-opacity-10 flex-col justify-center items-center flex absolute bottom-0 right-0 m-2">
@@ -24,7 +24,7 @@ const PropertyCard = ({ property }: Props) => {
                 <div class="pr-16 justify-start items-center inline-flex">
                   <div class="justify-start items-center gap-1 flex">
                     <div class="h-5 flex-col justify-center items-start inline-flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">USERNAME.ETH</div>
+                      <div class="text-white text-opacity-60 text-[9px] sm:text-xs font-medium font-['Montserrat'] leading-none tracking-wider">USERNAME.ETH</div>
                     </div>
                   </div>
                 </div>
@@ -36,10 +36,10 @@ const PropertyCard = ({ property }: Props) => {
                 <div class="self-stretch justify-start items-start gap-5 inline-flex">
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">PRICE</div>
+                      <div class="text-white text-opacity-60 text-[9px] sm:text-xs font-medium font-['Montserrat'] leading-none tracking-wider">PRICE</div>
                     </div>
                     <div class="self-stretch justify-start items-start gap-0.5 inline-flex">
-                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">
+                      <div class="text-white text-[9px] sm:text-xs font-semibold font-['Montserrat'] leading-none">
                         {property.price.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
@@ -50,18 +50,18 @@ const PropertyCard = ({ property }: Props) => {
                   </div>
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">TYPE</div>
+                      <div class="text-white text-opacity-60 text-[9px] sm:text-xs font-medium font-['Montserrat'] leading-none tracking-wider">TYPE</div>
                     </div>
                     <div class="self-stretch justify-start items-start inline-flex">
-                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">{property.type}</div>
+                      <div class="text-white text-[9px] sm:text-xs font-semibold font-['Montserrat'] leading-none">{property.type}</div>
                     </div>
                   </div>
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">ZONING</div>
+                      <div class="text-white text-opacity-60 text-[9px] sm:text-xs font-medium font-['Montserrat'] leading-none tracking-wider">ZONING</div>
                     </div>
                     <div class="justify-start items-start inline-flex">
-                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">Residential</div>
+                      <div class="text-white text-[9px] sm:text-xs font-semibold font-['Montserrat'] leading-none">Residential</div>
                     </div>
                   </div>
                 </div>
