@@ -56,7 +56,7 @@ const PropertyCard = ({ property }: Props) => {
                       <div class="text-white text-[10px] sm:text-xs font-semibold font-['Montserrat'] leading-none">{property.type}</div>
                     </div>
                   </div>
-                  <div class="flex-col justify-start items-start inline-flex">
+                  <div class="flex-col hidden justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
                       <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium font-['Montserrat'] leading-none tracking-wider">ZONING</div>
                     </div>
