@@ -12,7 +12,7 @@ const PropertyCard = ({ property }: Props) => {
     <>
       {property && (
         <Link href={`/validation/${property.id}`} className="link-default">
-          <div class="max-w-[100%] sm:w-48 md:w-[100%] h-72 sm:h-72 md:h-96 p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
+          <div class="max-w-[192px] sm:w-48 md:w-[100%] h-72 sm:h-72 md:h-96 p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
             <div class="self-stretch h-60 bg-white bg-opacity-5 flex-col justify-start items-start flex relative">
               <Image src={property.pictures[0]} alt="Property Image" layout="fill" objectFit="cover" />
               <div class="w-7 h-7 p-1 bg-zinc-900 bg-opacity-40 rounded-3xl border border-white border-opacity-10 flex-col justify-center items-center flex absolute bottom-0 right-0 m-2">
@@ -56,7 +56,7 @@ const PropertyCard = ({ property }: Props) => {
                       <div class="text-white text-[10px] sm:text-xs font-semibold font-['Montserrat'] leading-none">{property.type}</div>
                     </div>
                   </div>
-                  <div class="flex-col hidden justify-start items-start inline-flex">
+                  <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
                       <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium font-['Montserrat'] leading-none tracking-wider">ZONING</div>
                     </div>
