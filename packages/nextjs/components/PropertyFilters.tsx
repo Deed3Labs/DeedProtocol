@@ -56,9 +56,9 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   return (
     <div className="Wrapper flex flex-col w-full mb-8">
       <ExplorerLinks />
-      <div className="filters bg-gray-800 text-white btn-outline p-4 rounded-lg">
+      <div className="filters bg-gray-800 text-white p-4 rounded-lg">
         <div className="flex flex-row flex-wrap justify-between items-center gap-2 w-full">
-          <button className="btn btn-md flex items-center gap-2">
+          <button className="btn btn-md btn-outline flex items-center gap-2">
             <AdjustmentsHorizontalIcon className="h-5 w-5" />
             More filters
           </button>
