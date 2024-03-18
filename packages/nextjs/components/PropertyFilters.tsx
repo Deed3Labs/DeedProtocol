@@ -57,16 +57,29 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     <div className="Wrapper flex flex-col w-full mb-8">
       <ExplorerLinks />
       <div className="filters bg-gray-800 text-white p-4 rounded-lg">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 w-full">
-          <div className="order-2 md:order-none w-full md:w-auto">
-            <input
-              className="input input-md input-bordered w-full"
-              placeholder="Enter a city, state, address"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-wrap md:flex-nowrap gap-2 justify-between md:justify-start items-center w-full md:w-auto order-3 md:order-none">
+        <div className="flex md:flex-row flex-col-reverse md:flex-wrap justify-between items-center gap-2 md:gap-2 w-full">
+          <input
+            className="input input-md input-bordered w-full mb-2 md:mb-0 md:flex-grow"
+            placeholder="Enter a city, state, address"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <div className="flex flex-wrap gap-2 justify-between items-center w-full md:w-auto">
+            <button className="btn btn-md btn-bordered flex items-center gap-2 w-full md:w-auto">
+              <AdjustmentsHorizontalIcon className="h-5 w-5" />
+              More filters
+            </button>
+            <div className="form-control md:hidden w-full">
+              <label className="cursor-pointer label flex items-center gap-2 justify-between">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={filter.featured}
+                  onChange={ev => applyFilter({ featured: ev.target.checked })}
+                />
+                <span className="label-text">Featured?</span>
+              </label>
+            </div>
             <select
               className="select select-md select-bordered w-full md:w-auto"
               value={filter.propertyType}
@@ -77,24 +90,9 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
                 <option key={option.value} value={option.value}>{option.title}</option>
               ))}
             </select>
-            <button className="btn btn-square btn-outline" onClick={() => setMapOpened(!mapOpened)}>
+            <button className="btn btn-square btn-outline w-full md:w-auto" onClick={() => setMapOpened(!mapOpened)}>
               {mapOpened ? <MapIconSolid className="w-5 h-5" /> : <MapIcon className="w-5 h-5" />}
             </button>
-            <button className="btn btn-md btn-bordered flex items-center gap-2 hidden md:flex">
-              <AdjustmentsHorizontalIcon className="h-5 w-5" />
-              More filters
-            </button>
-          </div>
-          <div className="form-control md:hidden w-full order-1">
-            <label className="cursor-pointer label flex items-center justify-between">
-              <span className="label-text">Featured?</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={filter.featured}
-                onChange={ev => applyFilter({ featured: ev.target.checked })}
-              />
-            </label>
           </div>
         </div>
       </div>
@@ -104,5 +102,3 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
 };
 
 export default PropertyFilters;
-
-
