@@ -33,7 +33,7 @@ const PropertyCard = ({ property }: Props) => {
                 </div>
               </div>
               <div class="self-stretch h-16 px-3 pt-2.5 pb-3 bg-neutral-900 border border-white border-opacity-10 flex-col justify-center items-start flex">
-                <div class="self-stretch justify-start items-start gap-1.5 inline-flex">
+                <div class="self-stretch justify-start items-start gap-2.5 inline-flex">
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
                       <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium font-['Montserrat'] leading-none tracking-wider">PRICE</div>
