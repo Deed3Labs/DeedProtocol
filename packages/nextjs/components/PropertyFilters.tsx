@@ -55,14 +55,25 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
 
   return (
     <div className="Wrapper flex flex-col w-full mb-8">
-     <div className="ExplorerLinksContainer flex flex-row justify-around items-center mb-4">
+     <div className="ExplorerLinksContainer flex flex-row justify-around items-center mb-4"> 
       <ExplorerLinks />
       <div className="filters bg-gray-800 text-white p-4 rounded-lg">
-        <div className="flex flex-row flex-wrap justify-start items-start gap-2 w-full">
+        <div className="flex flex-row flex-wrap justify-between items-center gap-2 w-full">
           <button className="btn btn-md btn-bordered flex items-center gap-2">
             <AdjustmentsHorizontalIcon className="h-5 w-5" />
             More filters
           </button>
+          <div className="form-control">
+            <label className="cursor-pointer label flex items-center gap-2">
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={filter.featured}
+                onChange={ev => applyFilter({ featured: ev.target.checked })}
+              />
+              <span className="label-text">Featured?</span>
+            </label>
+          </div>
           <input
             className="input input-md input-bordered flex-grow"
             placeholder="Enter a city, state, address"
