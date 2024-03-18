@@ -12,57 +12,40 @@ const PropertyCard = ({ property }: Props) => {
     <>
       {property && (
         <Link href={`/validation/${property.id}`} className="link-default">
-          <div class="w-64 h-96 p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
-            <div class="self-stretch h-60 bg-white bg-opacity-5 flex-col justify-start items-start flex relative">
+          {/* Adjusted class names for responsive sizing */}
+          <div className="w-full sm:w-64 h-60 sm:h-96 p-2 border border-white border-opacity-10 flex flex-col justify-start items-start gap-2.5">
+            <div className="relative self-stretch flex-grow bg-white bg-opacity-5">
               <Image src={property.pictures[0]} alt="Property Image" layout="fill" objectFit="cover" />
-              <div class="w-7 h-7 p-1 bg-zinc-900 bg-opacity-40 rounded-3xl border border-white border-opacity-10 flex-col justify-center items-center flex absolute bottom-0 right-0 m-2">
+              <div className="absolute bottom-2 right-2 p-1 bg-zinc-900 bg-opacity-40 rounded-full border border-white border-opacity-10 flex justify-center items-center w-7 h-7">
                 <CheckBadgeIcon className="text-white w-5 h-5" />
               </div>
             </div>
-            <div class="self-stretch h-32 flex-col justify-start items-start gap-3 flex">
-              <div class="self-stretch h-11 px-2 flex-col justify-center items-start gap-0.5 flex">
-                <div class="pr-16 justify-start items-center inline-flex">
-                  <div class="justify-start items-center gap-1 flex">
-                    <div class="h-5 flex-col justify-center items-start inline-flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">USERNAME.ETH</div>
-                    </div>
-                  </div>
+            <div className="self-stretch flex flex-col justify-start items-start gap-3">
+              <div className="self-stretch flex flex-col justify-center gap-0.5 px-2">
+                <div className="flex justify-start items-center">
+                  <span className="text-white text-opacity-60 text-xs font-medium tracking-wider">USERNAME.ETH</span>
                 </div>
-                <div class="self-stretch pr-24 justify-start items-center inline-flex">
-                  <div class="text-white text-base font-bold font-['Montserrat'] leading-snug">{property.address}</div>
-                </div>
+                <div className="text-white text-base font-bold">{property.address}</div>
               </div>
-              <div class="self-stretch h-16 px-3 pt-2.5 pb-3 bg-neutral-900 border border-white border-opacity-10 flex-col justify-center items-start flex">
-                <div class="self-stretch justify-start items-start gap-5 inline-flex">
-                  <div class="flex-col justify-start items-start inline-flex">
-                    <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">PRICE</div>
-                    </div>
-                    <div class="self-stretch justify-start items-start gap-0.5 inline-flex">
-                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">
-                        {property.price.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                          maximumFractionDigits: 0,
-                        })}
-                      </div>
-                    </div>
+              <div className="self-stretch flex flex-col justify-center bg-neutral-900 border border-white border-opacity-10 px-3 pt-2.5 pb-3">
+                <div className="flex justify-start items-start gap-5">
+                  <div className="flex flex-col">
+                    <span className="text-white text-opacity-60 text-xs font-medium tracking-wider">PRICE</span>
+                    <span className="text-white text-xs font-semibold">
+                      {property.price.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                        maximumFractionDigits: 0,
+                      })}
+                    </span>
                   </div>
-                  <div class="flex-col justify-start items-start inline-flex">
-                    <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">TYPE</div>
-                    </div>
-                    <div class="self-stretch justify-start items-start inline-flex">
-                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">{property.type}</div>
-                    </div>
+                  <div className="flex flex-col">
+                    <span className="text-white text-opacity-60 text-xs font-medium tracking-wider">TYPE</span>
+                    <span className="text-white text-xs font-semibold">{property.type}</span>
                   </div>
-                  <div class="flex-col justify-start items-start inline-flex">
-                    <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-xs font-medium font-['Montserrat'] leading-none tracking-wider">ZONING</div>
-                    </div>
-                    <div class="justify-start items-start inline-flex">
-                      <div class="text-white text-xs font-semibold font-['Montserrat'] leading-none">Residential</div>
-                    </div>
+                  <div className="flex flex-col">
+                    <span className="text-white text-opacity-60 text-xs font-medium tracking-wider">ZONING</span>
+                    <span className="text-white text-xs font-semibold">Residential</span>
                   </div>
                 </div>
               </div>
@@ -75,3 +58,4 @@ const PropertyCard = ({ property }: Props) => {
 };
 
 export default PropertyCard;
+
