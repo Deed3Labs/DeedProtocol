@@ -57,41 +57,43 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     <div className="Wrapper flex flex-col w-full mb-8">
       <ExplorerLinks />
       <div className="filters bg-gray-800 text-white p-4 rounded-lg">
-        <div className="flex flex-row flex-wrap justify-between items-center gap-2 w-full">
-          <button className="btn btn-md btn-bordered flex items-center gap-2">
-            <AdjustmentsHorizontalIcon className="h-5 w-5" />
-            More filters
-          </button>
-          <div className="form-control">
-            <label className="cursor-pointer label flex items-center gap-2">
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={filter.featured}
-                onChange={ev => applyFilter({ featured: ev.target.checked })}
-              />
-              <span className="label-text">Featured?</span>
-            </label>
-          </div>
+        <div className="flex flex-col md:flex-row flex-wrap md:flex-nowrap justify-between items-center gap-2 md:gap-4 w-full">
           <input
-            className="input input-md input-bordered flex-grow"
+            className="input input-md input-bordered flex-grow md:flex-grow-0 w-full md:w-auto"
             placeholder="Enter a city, state, address"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <select
-            className="select select-md select-bordered"
-            value={filter.propertyType}
-            onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
-          >
-            <option disabled value={0}>Property type</option>
-            {PropertyTypeOptions.map(option => (
-              <option key={option.value} value={option.value}>{option.title}</option>
-            ))}
-          </select>
-          <button className="btn btn-square btn-outline" onClick={() => setMapOpened(!mapOpened)}>
-            {mapOpened ? <MapIconSolid className="w-5 h-5" /> : <MapIcon className="w-5 h-5" />}
-          </button>
+          <div className="flex flex-wrap gap-2 justify-between w-full md:w-auto md:flex-nowrap">
+            <button className="btn btn-md btn-bordered flex items-center gap-2 md:order-2">
+              <AdjustmentsHorizontalIcon className="h-5 w-5" />
+              More filters
+            </button>
+            <div className="form-control hidden md:flex">
+              <label className="cursor-pointer label flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={filter.featured}
+                  onChange={ev => applyFilter({ featured: ev.target.checked })}
+                />
+                <span className="label-text">Featured?</span>
+              </label>
+            </div>
+            <select
+              className="select select-md select-bordered md:order-1"
+              value={filter.propertyType}
+              onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
+            >
+              <option disabled value={0}>Property type</option>
+              {PropertyTypeOptions.map(option => (
+                <option key={option.value} value={option.value}>{option.title}</option>
+              ))}
+            </select>
+            <button className="btn btn-square btn-outline md:order-3" onClick={() => setMapOpened(!mapOpened)}>
+              {mapOpened ? <MapIconSolid className="w-5 h-5" /> : <MapIcon className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
       {mapOpened && <Map markers={properties} />}
@@ -100,3 +102,4 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
 };
 
 export default PropertyFilters;
+
