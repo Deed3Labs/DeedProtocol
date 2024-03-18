@@ -75,4 +75,3 @@ const PropertyCard = ({ property }: Props) => {
 };
 
 export default PropertyCard;
-
