@@ -56,7 +56,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   return (
     <div className="Wrapper flex flex-col w-full mb-8">
       <ExplorerLinks />
-      <div className="filters bg-gray-800 text-white p-4 rounded-lg">
+      <div className="filters bg-gray-800 text-white btn-outline p-4 rounded-lg">
         <div className="flex flex-row flex-wrap justify-between items-center gap-2 w-full">
           <button className="btn btn-md flex items-center gap-2">
             <AdjustmentsHorizontalIcon className="h-5 w-5" />
@@ -80,7 +80,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             onChange={e => setSearch(e.target.value)}
           />
           <select
-            className="select select-md select-primary"
+            className="select select-md select-bordered"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
