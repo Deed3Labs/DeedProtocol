@@ -49,7 +49,7 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         }
         info
         options={PropertyTypeOptions}
-        optionsClassName="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-3 items-start justify-start"
+        optionsClassName="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-3 items-start justify-start w-full auto-rows-auto"
         onChange={handleChange}
         value={value?.propertyType}
         readOnly={readOnly}
