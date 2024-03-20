@@ -210,7 +210,7 @@ const Page = ({ router }: WithRouterProps) => {
             </button>
           </div>
         ) : (
-          <div className="flex flex-row flex-wrap gap-8 lg:flex-nowrap lg:justify-evenly w-full px-8 xl:px-32">
+          <div className="flex flex-row flex-wrap gap-8 lg:flex-nowrap lg:justify-evenly w-full px-3 xl:px-32">
             <div className="flex flex-col w-full lg:w-2/3">
               {!id && (
                 <>
