@@ -22,8 +22,8 @@ const OtherInformation = ({ value, onChange, readOnly }: Props) => {
       <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
         3. Other Information
       </div>
-      {/* Container that limits width and changes layout for this specific instance */}
-      <div className="custom-radio-layout">
+      {/* Adjust RadioBoxesInput to fill the grid row */}
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
         <RadioBoxesInput
           name="wrapper"
           label="Customize your Wrapper type"
@@ -39,8 +39,6 @@ const OtherInformation = ({ value, onChange, readOnly }: Props) => {
             </>
           }
           options={WrapperOptions(["$225.00", "$450.00"])}
-          optionsClassName="w-full" // Ensure this class allows for full width
-          value={value?.wrapper}
           onChange={handleChange}
           readOnly={readOnly}
         />
@@ -50,4 +48,3 @@ const OtherInformation = ({ value, onChange, readOnly }: Props) => {
 };
 
 export default OtherInformation;
-
