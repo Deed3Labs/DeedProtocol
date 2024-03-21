@@ -45,7 +45,7 @@ export const SelectInput = <TParent,>({
       <select
         id={name as string}
         name={name as string}
-        className={`select ${large ? "select-lg" : ""} select-bordered w-full max-w-xs ${
+        className={`select ${large ? "select-lg" : ""} select-bordered w-full ${
           readOnly ? "bg-none !cursor-text select-text" : ""
         }`}
         onChange={ev => onChange?.({ name, value: ev.target.value })}
