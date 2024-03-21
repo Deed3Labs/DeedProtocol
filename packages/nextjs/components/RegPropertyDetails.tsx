@@ -49,7 +49,7 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         }
         info
         options={PropertyTypeOptions}
-        optionsClassName="w-auto h-[210px]"
+        optionsClassName="w-auto h-[220px]"
         onChange={handleChange}
         value={value?.propertyType}
         readOnly={readOnly}
