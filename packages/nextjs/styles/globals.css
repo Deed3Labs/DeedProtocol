@@ -30,3 +30,9 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+.single-column-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
