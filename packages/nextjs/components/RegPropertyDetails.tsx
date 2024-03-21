@@ -57,7 +57,7 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       <div className="grid grid-cols-3 sm:grid-cols-3 gap-1.5 sm:gap-3 justify-start w-full">
         <TextInput
           name="propertyAddress"
-          label="APN #, Street Address and Zip Code"
+          label="APN # or Street Address"
           info
           placeholder="e.g. 123 Main Street, US 92346"
           value={value?.propertyAddress}
