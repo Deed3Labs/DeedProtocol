@@ -36,7 +36,7 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
           </>
         }
         options={WrapperOptions(["$225.00", "$450.00"])}
-        optionsClassName="flex flex-col gap-1.5 sm:gap-3 items-start justify-start w-full"
+        optionsClassName="grid grid-cols-1 gap-1.5 sm:gap-3 items-start justify-start w-full"
         value={value?.wrapper}
         onChange={handleChange}
         readOnly={readOnly}
