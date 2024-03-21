@@ -10,7 +10,7 @@ interface Props<TParent> {
   description?: string | React.ReactNode;
   info?: boolean;
   optionsClassName?: string;
-  gridTemplate?: string; // New prop for controlling the grid layout
+  gridTemplate?: string;  // New prop for controlling the grid layout
   onChange?: (value: LightChangeEvent<TParent>) => void;
   readOnly?: boolean;
 }
@@ -20,7 +20,7 @@ export interface RadioBoxOption {
   tag?: string;
   subtitle?: string;
   value: string;
-  icon?: React.ReactNode;
+  icon?: React.ReactNode;  // Ensure this is correctly typed to accept React nodes
   disabled?: boolean;
 }
 
@@ -32,7 +32,7 @@ export const RadioBoxesInput = <TParent,>({
   options,
   value,
   optionsClassName,
-  gridTemplate, // Utilize the new prop
+  gridTemplate,  // Utilize the new prop
   onChange,
   readOnly,
 }: Props<TParent>) => {
@@ -77,7 +77,9 @@ export const RadioBoxesInput = <TParent,>({
                 tabIndex={option.disabled ? undefined : 0}
                 onKeyDown={ev => handleKeyDown(ev, option.value as TParent[keyof TParent])}
               >
-                {!readOnly && option.icon && <div className="w-8 h-8 px-1 pt-px bg-white bg-opacity-5 rounded-full">{option.icon}</div>}
+                {option.icon && (
+                  <div className="icon-container">{option.icon}</div>  // Ensure this contains your icon
+                )}
                 <span className="text-xl font-bold mt-2">{option.title}</span>
                 {option.tag && !readOnly && (
                   <div className="p-2 bg-white bg-opacity-5 rounded-lg w-fit">
@@ -95,3 +97,4 @@ export const RadioBoxesInput = <TParent,>({
     </div>
   );
 };
+
