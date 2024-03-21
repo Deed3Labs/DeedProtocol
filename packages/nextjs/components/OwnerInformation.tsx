@@ -47,7 +47,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
         value={value?.ownerType}
         readOnly={readOnly}
       ></RadioBoxesInput>
-      <div className="flex flex-row flex-wrap gap-3 justify-start w-full">
+      <div className="flex flex-row flex-wrap gap-3 justify-start w-full h-[180px]">
         {value?.ownerType === "legal" && (
           <TextInput
             name="entityName"
