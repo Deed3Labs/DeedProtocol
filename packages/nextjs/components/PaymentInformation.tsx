@@ -36,7 +36,7 @@ const PaymentInformation = ({ value, onChange }: Props) => {
           </>
         }
         options={PaymentOptions}
-        optionsClassName="w-[180px] h-[220px]"
+        optionsClassName="w-auto h-auto"
         value={value?.paymentType}
         onChange={handleChange}
       />
