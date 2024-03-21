@@ -11,18 +11,18 @@ interface Props {
   readOnly?: boolean;
 }
 
-const OtherInformations = ({ value, onChange, readOnly }: Props) => {
+const OtherInformation = ({ value, onChange, readOnly }: Props) => {
   const handleChange = (ev: LightChangeEvent<OtherInformationModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({ name: "otherInformation", value: updatedValue });
   };
-  
+
   return (
     <div className="flex flex-col gap-6 mt-6">
       <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
         3. Other Information
       </div>
-      <div className="flex flex-col"> {/* This wrapper applies the flex-col layout */}
+      <div className="single-column-radio-inputs"> {/* Use the custom class here */}
         <RadioBoxesInput
           name="wrapper"
           label="Customize your Wrapper type"
@@ -38,7 +38,6 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
             </>
           }
           options={WrapperOptions(["$225.00", "$450.00"])}
-          optionsClassName="w-full"
           value={value?.wrapper}
           onChange={handleChange}
           readOnly={readOnly}
@@ -48,4 +47,4 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
   );
 };
 
-export default OtherInformations;
+export default OtherInformation;
