@@ -42,7 +42,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           </>
         }
         options={OwnerTypeOptions}
-        optionsClassName="w-auto h-[180px]"
+        optionsClassName="w-auto h-[190px]"
         onChange={handleChange}
         value={value?.ownerType}
         readOnly={readOnly}
