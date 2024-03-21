@@ -197,7 +197,7 @@ const Page = ({ router }: WithRouterProps) => {
                         className="join-item p-2 text-[#626262] cursor-default"
                         title="Comming Soon"
                       >
-                        Property Viewer
+                        Property Overview
                       </div>
                       <div className="join-item p-2 bg-base-300 cursor-pointer">
                         Validation History
