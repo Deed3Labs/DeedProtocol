@@ -146,7 +146,7 @@ const SidePanel = ({
   };
 
   return (
-    <div className="bg-base-100 w-[500] min-h-fit relative lg:sticky lg:top-32 p-9">
+    <div className="bg-base-100 w-[500] min-h-fit relative lg:sticky lg:top-32 py-9">
       <div className=" m-9">
         <div className="flex flex-row gap-2">
           <div className="w-full flex flex-col gap-4">
