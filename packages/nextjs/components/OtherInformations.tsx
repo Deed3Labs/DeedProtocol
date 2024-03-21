@@ -16,6 +16,11 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({ name: "otherInformation", value: updatedValue });
   };
+
+  // Use optionsClassName to pass custom class names for the grid layout
+  // Ensure your global styles or component styles include definitions for these classes
+  const customGridClass = "grid-cols-1"; // Ensures a single column layout
+
   return (
     <div className="flex flex-col gap-6 mt-6">
       <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
@@ -36,7 +41,7 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
           </>
         }
         options={WrapperOptions(["$225.00", "$450.00"])}
-        optionsClassName="w-full"
+        optionsClassName={`w-full ${customGridClass}`} // Apply custom grid class along with full width
         value={value?.wrapper}
         onChange={handleChange}
         readOnly={readOnly}
