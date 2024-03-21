@@ -22,26 +22,45 @@ const OtherInformation = ({ value, onChange, readOnly }: Props) => {
       <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
         3. Other Information
       </div>
-      {/* Adjust RadioBoxesInput to fill the grid row */}
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
-        <RadioBoxesInput
-          name="wrapper"
-          label="Customize your Wrapper type"
-          description={
-            <>
-              <Link
-                href="https://docs.deedprotocol.org/legal-framework/property-wrappers"
-                target="_blank"
-              >
-                Learn more
-              </Link>
-              &nbsp;about each Wrapper type.
-            </>
-          }
-          options={WrapperOptions(["$225.00", "$450.00"])}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
+      <RadioBoxesInput
+        name="wrapper"
+        label="Customize your Wrapper type"
+        description={
+          <>
+            <Link
+              href="https://docs.deedprotocol.org/legal-framework/property-wrappers"
+              target="_blank"
+            >
+              Learn more
+            </Link>
+            &nbsp;about each Wrapper type.
+          </>
+        }
+        options={WrapperOptions(["$225.00", "$450.00"])}
+        value={value?.wrapper}
+        onChange={handleChange}
+        readOnly={readOnly}
+      />
+      {/* The grid setup for the RadioBoxesInput's options should be modified as per the suggestion */}
+      <div className="grid grid-cols-1 gap-4 mt-2">
+        {WrapperOptions(["$225.00", "$450.00"]).map((option, index) => (
+          <div key={index} className="border border-gray-700 p-4 rounded-lg bg-gray-800">
+            <input
+              id={`wrapper_option_${option.value}`}
+              name="wrapper"
+              type="radio"
+              value={option.value}
+              checked={value?.wrapper === option.value}
+              onChange={() => handleChange({ value: option.value, name: "wrapper" })}
+              className="hidden"
+            />
+            <label htmlFor={`wrapper_option_${option.value}`} className="block w-full cursor-pointer">
+              <div className="text-lg font-bold text-white">{option.title}</div>
+              <div className="text-white">{option.subtitle}</div>
+              <div className="text-gray-400">{option.tag}</div>
+            </label>
+          </div>
+        ))}
       </div>
     </div>
   );
