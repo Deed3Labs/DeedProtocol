@@ -1,5 +1,5 @@
 import React from 'react';
-import { LightChangeEvent } from '~~/models/light-change-event';
+import { LightChangeEvent } from "~~/models/light-change-event";
 
 interface Props<TParent> {
   name: keyof TParent;
@@ -10,7 +10,7 @@ interface Props<TParent> {
   description?: string | React.ReactNode;
   info?: boolean;
   optionsClassName?: string;
-  gridTemplate?: string; // New prop for grid template customization
+  gridTemplate?: string; // New prop for controlling the grid layout
   onChange?: (value: LightChangeEvent<TParent>) => void;
   readOnly?: boolean;
 }
@@ -32,18 +32,18 @@ export const RadioBoxesInput = <TParent,>({
   options,
   value,
   optionsClassName,
-  gridTemplate = 'grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-3', // Default grid template
+  gridTemplate, // Utilize the new prop
   onChange,
   readOnly,
 }: Props<TParent>) => {
-  const handleKeyDown = (
-    ev: React.KeyboardEvent<HTMLLabelElement>,
-    newValue: TParent[keyof TParent],
-  ) => {
+  const handleKeyDown = (ev: React.KeyboardEvent<HTMLLabelElement>, newValue: TParent[keyof TParent]) => {
     if (ev.key === "Enter") {
       onChange?.({ value: newValue, name });
     }
   };
+
+  // Apply the custom gridTemplate if provided, otherwise fallback to the default grid layout
+  const gridLayout = gridTemplate || 'grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-3';
 
   return (
     <div>
@@ -54,34 +54,46 @@ export const RadioBoxesInput = <TParent,>({
         </div>
       )}
       {description && <div className="text-secondary">{description}</div>}
-      <div className={`grid ${gridTemplate} items-start justify-start w-full mt-2`}>
-        {options.map((option, index) => (
-          <div key={index} title={option.disabled ? "Coming soon" : undefined}>
-            <input
-              id={`option_${option.value}`}
-              name={String(name)}
-              type="radio"
-              value={option.value ?? ""}
-              checked={value === option.value}
-              onChange={() => onChange?.({ value: option.value as TParent[keyof TParent], name })}
-              className="peer hidden"
-              readOnly={readOnly}
-            />
-            <label
-              htmlFor={`option_${option.value}`}
-              className={`flex flex-col gap-2 justify-between p-4 border-2 border-white border-opacity-10 cursor-pointer peer-checked:border-red-500 hover:bg-base-100 ${
-                optionsClassName || ''
-              } ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onKeyDown={(ev) => handleKeyDown(ev, option.value as TParent[keyof TParent])}
-            >
-              {option.icon}
-              <span className="text-xl font-bold">{option.title}</span>
-              {option.subtitle && <span className="text-sm">{option.subtitle}</span>}
-            </label>
-          </div>
-        ))}
+      <div className={`${gridLayout} items-start justify-start w-full mt-2`}>
+        {options.map(option => {
+          if (readOnly && option.value !== value) return null;
+          return (
+            <div key={option.value} title={option.disabled ? "Coming soon" : undefined}>
+              <input
+                id={`option_${option.value}`}
+                name={name as string}
+                type="radio"
+                value={option.value ?? ""}
+                checked={value === option.value}
+                onChange={() => onChange?.({ value: option.value as TParent[keyof TParent], name })}
+                className="peer hidden"
+                readOnly={readOnly}
+              />
+              <label
+                htmlFor={`option_${option.value}`}
+                className={`flex flex-col gap-2 justify-between p-4 border-2 border-white border-opacity-10 cursor-pointer px-4 py-6 peer-checked:border-red-100 hover:bg-base-100 ${
+                  option.disabled && "pointer-events-none opacity-50"
+                } ${readOnly && "pointer-events-none border-none !py-0"} ${optionsClassName}`}
+                tabIndex={option.disabled ? undefined : 0}
+                onKeyDown={ev => handleKeyDown(ev, option.value as TParent[keyof TParent])}
+              >
+                {!readOnly && option.icon && <div className="w-8 h-8 px-1 pt-px bg-white bg-opacity-5 rounded-full">{option.icon}</div>}
+                <span className="text-xl font-bold mt-2">{option.title}</span>
+                {option.tag && !readOnly && (
+                  <div className="p-2 bg-white bg-opacity-5 rounded-lg w-fit">
+                    <div className="text-xs uppercase text-secondary">{option.tag}</div>
+                  </div>
+                )}
+                {option.subtitle && (
+                  <div className="text-zinc-400 text-sm font-normal leading-tight whitespace-pre-line">{option.subtitle}</div>
+                )}
+              </label>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
+
 
