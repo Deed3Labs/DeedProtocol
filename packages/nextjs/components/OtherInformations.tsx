@@ -17,12 +17,19 @@ const OtherInformation = ({ value, onChange, readOnly }: Props) => {
     onChange?.({ name: "otherInformation", value: updatedValue });
   };
 
+  // Inline style for the grid layout
+  const radioInputGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: '1fr', // Ensures single-column layout
+    gap: '20px', // Space between options
+  };
+
   return (
     <div className="flex flex-col gap-6 mt-6">
       <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
         3. Other Information
       </div>
-      <div className="single-column-radio-inputs"> {/* Use the custom class here */}
+      <div style={radioInputGridStyle}> {/* Apply the inline style here */}
         <RadioBoxesInput
           name="wrapper"
           label="Customize your Wrapper type"
