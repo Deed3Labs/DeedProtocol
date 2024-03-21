@@ -70,16 +70,22 @@ export const RadioBoxesInput = <TParent,>({
                 readOnly={readOnly}
               />
               <label
-                htmlFor={`option_${option.value}`}
-                className={`flex flex-col gap-2 justify-between p-4 border-2 border-white border-opacity-10 cursor-pointer px-4 py-6 peer-checked:border-red-100 hover:bg-base-100 ${
+                className={`flex flex-col gap-2 justify-between p-4 border-2 border-white border-opacity-10 cursor-pointer px-4 py-6 peer-checked:border-red-100 hover:bg-base-100 max-w-7xl ${
                   option.disabled && "pointer-events-none opacity-50"
-                } ${readOnly && "pointer-events-none border-none !py-0"} ${optionsClassName}`}
+                } ${readOnly && "pointer-events-none border-none !py-0"} ${
+                  optionsClassName && !readOnly ? optionsClassName : ""
+                }`}
+                htmlFor={`option_${option.value}`}
                 tabIndex={option.disabled ? undefined : 0}
                 onKeyDown={ev => handleKeyDown(ev, option.value as TParent[keyof TParent])}
               >
-                {option.icon && (
-                  <div className="icon-container">{option.icon}</div>  // Ensure this contains your icon
-                )}
+                 {!readOnly &&
+                  (option.icon ? (
+                    option.icon
+                  ) : (
+                    <div className="w-8 h-8 px-1 pt-px bg-white bg-opacity-5 rounded-full"></div>
+                  ))}
+                
                 <span className="text-xl font-bold mt-2">{option.title}</span>
                 {option.tag && !readOnly && (
                   <div className="p-2 bg-white bg-opacity-5 rounded-lg w-fit">
