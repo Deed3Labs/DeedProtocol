@@ -31,7 +31,7 @@ p {
   @apply shadow-none;
 }
 
-.single-column-layout {
+.single-column-radio-inputs {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
