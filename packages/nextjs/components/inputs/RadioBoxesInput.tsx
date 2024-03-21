@@ -50,7 +50,7 @@ export const RadioBoxesInput = <TParent,>({
         </div>
       )}
       {description && <div className="text-secondary">{description}</div>}
-      <div className="flex flex-row flex-wrap justify-start gap-4 mt-2">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-3 items-start justify-start w-full mt-2">
         {options.map(option => {
           if (readOnly && option.value !== value) return <div key={option.value}></div>;
           return (
