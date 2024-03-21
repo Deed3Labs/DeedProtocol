@@ -18,30 +18,33 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
   };
   return (
     <div className="flex flex-col gap-6 mt-6">
-      <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
-        3. Other Information
-      </div>
-      <RadioBoxesInput
-        name="wrapper"
-        label="Customize your Wrapper type"
-        description={
-          <>
-            <Link
-              href="https://docs.deedprotocol.org/legal-framework/property-wrappers"
-              target="_blank"
-            >
-              Learn more
-            </Link>
-            &nbsp;about each Wrapper type.
-          </>
-        }
-        options={WrapperOptions(["$225.00", "$450.00"])}
-        optionsClassName="grid grid-cols-1 gap-1.5 sm:gap-3 items-start justify-start w-full"
-        value={value?.wrapper}
-        onChange={handleChange}
-        readOnly={readOnly}
-      />
-    </div>
+  <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
+    3. Other Information
+  </div>
+
+  {/* Wrapper for RadioBoxesInput with conditional styling */}
+  <div className="max-w-4xl mx-auto">
+    <RadioBoxesInput
+      name="wrapper"
+      label="Customize your Wrapper type"
+      description={
+        <>
+          <Link
+            href="https://docs.deedprotocol.org/legal-framework/property-wrappers"
+            target="_blank"
+          >
+            Learn more
+          </Link>
+          &nbsp;about each Wrapper type.
+        </>
+      }
+      options={WrapperOptions(["$225.00", "$450.00"])}
+      value={value?.wrapper}
+      onChange={handleChange}
+      readOnly={readOnly}
+    />
+  </div>
+</div>
   );
 };
 
