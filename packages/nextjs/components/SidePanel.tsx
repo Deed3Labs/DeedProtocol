@@ -158,7 +158,7 @@ const SidePanel = ({
               !deedData.id &&
               (quoteDetails ? (
                 <>
-                  <div className="text-5xl font-['Coolvetica'] font-condensed uppercase">
+                  <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
                     STANDARD PROPERTY LISTING
                   </div>
                   <QuoteDetail
