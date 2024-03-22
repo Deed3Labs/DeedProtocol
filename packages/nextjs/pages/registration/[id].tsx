@@ -218,7 +218,7 @@ const Page = ({ router }: WithRouterProps) => {
                     First, we’ll need to <br />
                     collect some information
                   </div>
-                  <div className="mt-3 text-secondary">
+                  <div className="mt-3 text-zinc-400">
                     You’ll need to complete the form below in order to register, transfer and mint
                     the new
                     <br />
