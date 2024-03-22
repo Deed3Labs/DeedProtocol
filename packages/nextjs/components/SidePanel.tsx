@@ -159,7 +159,8 @@ const SidePanel = ({
               (quoteDetails ? (
                 <>
                   <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
-                    STANDARD PROPERTY LISTING
+                    STANDARD <br /> 
+                    PROPERTY LISTING
                   </div>
                   <QuoteDetail
                     title="Legal Wrapper"
