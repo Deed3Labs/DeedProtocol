@@ -90,6 +90,7 @@ module.exports = {
     // Extend Tailwind classes (e.g. font-bai-jamjuree, animate-grow)
     extend: {
       fontFamily: {
+        "coolvetica": ["Coolvetica", "sans-serif"],
         "bai-jamjuree": ["Bai Jamjuree", "sans-serif"],
       },
       keyframes: {
