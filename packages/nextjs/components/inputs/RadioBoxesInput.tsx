@@ -49,8 +49,8 @@ export const RadioBoxesInput = <TParent,>({
     <div>
       {label && (
         <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-bold leading-normal">{label}</div>
-          {info && <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>}
+          <div className="text-base font-normal leading-normal">{label}</div>
+          {info && <div className="text-center text-xs font-['Coolvetica'] leading-none ml-1">info</div>}
         </div>
       )}
       {description && <div className="text-secondary">{description}</div>}
