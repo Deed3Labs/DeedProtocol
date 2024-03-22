@@ -53,7 +53,7 @@ export const RadioBoxesInput = <TParent,>({
           {info && <div className="text-center text-xs font-['Coolvetica'] leading-none ml-1">info</div>}
         </div>
       )}
-      {description && <div className="font-['Coolvetica'] text-zinc-400">{description}</div>}
+      {description && <div className="font-normal text-zinc-400">{description}</div>}
       <div className={`${gridLayout} items-start justify-start w-full mt-2`}>
         {options.map(option => {
           if (readOnly && option.value !== value) return null;
