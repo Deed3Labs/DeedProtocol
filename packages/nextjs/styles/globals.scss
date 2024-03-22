@@ -152,9 +152,12 @@ p {
 @layer utilities {
   .font-condensed {
     font-stretch: condensed;
-    font-stretch: extra-condensed;
   }
 
+  .font-extra-condensed {
+    font-stretch: extra-condensed;
+  }
+  
   .text-5xl {
     font-size: 3rem;
   }
