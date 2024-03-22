@@ -6,7 +6,7 @@ const ExplorerLinks = () => {
   const pathname = usePathname();
   const type = searchParams.get("type");
   return (
-    <div className="grid auto-cols-min grid-cols-4 px-1 gap-2 lg:gap-6 text-4xl sm:text-6xl m-8 font-['Coolvetica'] font-extra-condensed font-bold uppercase">
+    <div className="grid grid-flow-col auto-cols-auto px-1 gap-2 lg:gap-6 text-4xl sm:text-6xl m-8 font-['Coolvetica'] font-extra-condensed font-bold uppercase">
       <Link
         className={`${
           (type !== "all" && type) || pathname === "/agent-explorer" ? "opacity-40" : ""
