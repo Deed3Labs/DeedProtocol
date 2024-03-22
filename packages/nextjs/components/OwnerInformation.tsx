@@ -29,7 +29,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
       <RadioBoxesInput
         name="ownerType"
         label="Current Owner Type"
-        labelClassName="font-['Coolvetica'] font-condensed"
+        labelClassName="font-['Coolvetica'] font-normal"
         info
         description={
           <>
