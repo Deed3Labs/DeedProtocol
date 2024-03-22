@@ -17,7 +17,7 @@ const PaymentInformation = ({ value, onChange }: Props) => {
   };
   return (
     <div className="flex flex-col gap-6 mt-6">
-      <div className="text-4xl font-['Coolvetica'] font-condensed uppercase">
+      <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
         4. Payment Information
       </div>
       <RadioBoxesInput
