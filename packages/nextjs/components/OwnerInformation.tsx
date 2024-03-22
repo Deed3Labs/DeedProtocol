@@ -22,7 +22,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
 
   return (
     <div className="flex flex-col mt-6 gap-6">
-      <div className="text-4xl sm:text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
+      <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
         1. Owner Information
       </div>
 
