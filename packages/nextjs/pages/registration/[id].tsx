@@ -214,7 +214,7 @@ const Page = ({ router }: WithRouterProps) => {
             <div className="flex flex-col w-full lg:w-2/3">
               {!id && (
                 <>
-                  <div className="text-[44px] sm:text-7xl font-['Coolvetica'] font-condensed font-bold uppercase">
+                  <div className="text-[40px]/1 sm:text-6xl font-['Coolvetica'] font-condensed font-bold uppercase">
                     First, we’ll need to <br />
                     collect some information
                   </div>
