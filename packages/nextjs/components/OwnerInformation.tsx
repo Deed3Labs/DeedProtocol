@@ -101,12 +101,12 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
       )}
       <div className="mt-8">
         <label className="justify-start items-center inline-flex mb-3">
-          <div className="text-base font-bold">Identity Verification</div>
-          <span className="text-center text-xs font-normal font-['Inter'] leading-none ml-1">
+          <div className="text-base font-normal">Identity Verification</div>
+          <span className="text-center text-xs font-normal font-['General_Sans'] leading-none ml-1">
             info
           </span>
         </label>
-        <div className="text-secondary">
+        <div className="text-zinc-400">
           <Link
             href="https://docs.deedprotocol.org/legal-framework/identity-verification#organizations-traditional-or-hybrid"
             target="_blank"
@@ -138,12 +138,12 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
       {value?.ownerType === "legal" && (
         <div className="mt-8">
           <label className="justify-start items-center inline-flex mb-3">
-            <div className="text-base font-bold">Entity Verification</div>
-            <span className="text-center text-xs font-normal font-['Inter'] leading-none ml-1">
+            <div className="text-base font-normal">Entity Verification</div>
+            <span className="text-center text-xs font-normal font-['General_Sans'] leading-none ml-1">
               info
             </span>
           </label>
-          <div className="text-secondary">
+          <div className="text-zinc-400">
             <Link
               href="https://docs.deedprotocol.org/legal-framework/identity-verification"
               target="_blank"
