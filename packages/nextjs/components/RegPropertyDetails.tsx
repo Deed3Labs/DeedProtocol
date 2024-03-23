@@ -138,10 +138,10 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       </div>
       <div className="flex flex-col">
         <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-semibold leading-normal">Proof of Ownership</div>
+          <div className="text-base font-normal leading-normal">Proof of Ownership</div>
           <div className="text-center text-xs font-['General_Sans'] leading-none ml-1">info</div>
         </div>
-        <div className="text-secondary">
+        <div className="text-zinc-400">
           <Link
             href="https://docs.deedprotocol.org/how-it-works/property-registration-guide#step-3-provide-proof-of-ownership"
             target="_blank"
