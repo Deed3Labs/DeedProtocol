@@ -115,10 +115,10 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       </div>
       <div>
         <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-bold leading-normal">Property Image</div>
-          <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
+          <div className="text-base font-normal leading-normal">Property Image</div>
+          <div className="text-center text-xs font-['General_Sans'] leading-none ml-1">info</div>
         </div>
-        <div className="text-secondary">
+        <div className="text-zinc-400">
           Upload image -&nbsp;
           <Link href="w" target="_blank">
             Learn more
@@ -138,8 +138,8 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       </div>
       <div className="flex flex-col">
         <div className="justify-start items-center inline-flex mt-3">
-          <div className="text-base font-bold leading-normal">Proof of Ownership</div>
-          <div className="text-center text-xs font-['Inter'] leading-none ml-1">info</div>
+          <div className="text-base font-semibold leading-normal">Proof of Ownership</div>
+          <div className="text-center text-xs font-['General_Sans'] leading-none ml-1">info</div>
         </div>
         <div className="text-secondary">
           <Link
