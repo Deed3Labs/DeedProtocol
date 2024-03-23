@@ -39,7 +39,7 @@ const TextInput = <TParent,>({
             </div>
           )}
           {optional && (
-            <span className="text-xs uppercase rounded-lg bg-white text-secondary bg-opacity-5 p-2 ml-2 mb-[-4px] mt-[-4px]">
+            <span className="text-[10px] uppercase rounded-lg bg-white text-zinc-400 bg-opacity-5 p-2 ml-2 mb-[-4px] mt-[-4px]">
               Optional
             </span>
           )}
