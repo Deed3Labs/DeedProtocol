@@ -126,7 +126,7 @@ export const FileUploaderInput = <TParent,>({
       {inline ? (
         <label
           htmlFor={name as string}
-          className="text-base leading-normal w-full cursor-pointer block"
+          className="text-base font-normal leading-normal w-full cursor-pointer block"
         >
           {label}
         </label>
@@ -153,10 +153,10 @@ export const FileUploaderInput = <TParent,>({
             </div>
           )}
           <div className="flex flex-col flex-wrap gap-2 pointer-events-none">
-            <div className="text-base font-bold mb-3">
+            <div className="text-base font-normal mb-3">
               {label}
               {optional && (
-                <span className="text-xs uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3 text-secondary">
+                <span className="text-[10px] uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3 text-zinc-400">
                   Optional
                 </span>
               )}
