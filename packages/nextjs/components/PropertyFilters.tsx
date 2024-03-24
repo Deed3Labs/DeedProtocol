@@ -90,7 +90,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             />
           </div>
           <select
-            className="select select-lg select-bordered"
+            className="select select-md select-bordered"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
