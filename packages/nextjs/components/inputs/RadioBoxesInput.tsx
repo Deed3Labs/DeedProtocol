@@ -89,7 +89,7 @@ export const RadioBoxesInput = <TParent,>({
                 <span className="text-lg font-normal mt-2">{option.title}</span>
                 {option.tag && !readOnly && (
                   <div className="p-2 bg-white bg-opacity-5 rounded-lg w-fit">
-                    <div className="text-[10px] tracking-wide	uppercase text-zinc-400">{option.tag}</div>
+                    <div className="text-[10px] tracking-wide	uppercase text-zinc-400 tracking-widest">{option.tag}</div>
                   </div>
                 )}
                 {option.subtitle && (
