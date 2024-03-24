@@ -79,7 +79,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
         />
       </div>
       {value?.ownerType === "legal" && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-3 justify-start w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
           <TextInput
             name="ownerPosition"
             label="Position"
