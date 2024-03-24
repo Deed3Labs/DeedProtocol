@@ -67,17 +67,17 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
       <div className="filters">
         <div className="flex flex-row flex-wrap sm:flex-nowrap justify-between items-center gap-2 md:gap-4 w-full">
           <button className="btn btn-md btn-bordered bg-neutral-900 flex items-center gap-2">
-            <AdjustmentsHorizontalIcon className="text-base h-5 w-5" />
+            <AdjustmentsHorizontalIcon className="text-base sm:text-xl h-5 w-5" />
             Filters
           </button>
           <input
-            className="input input-md input-bordered flex-grow"
+            className="input input-md sm:input-lg input-bordered flex-grow"
             placeholder="Enter a city, state, address"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
           <select
-            className="select select-md select-bordered"
+            className="select select-md sm:select-lg select-bordered"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
