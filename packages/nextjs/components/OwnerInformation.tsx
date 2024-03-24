@@ -100,7 +100,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
         </div>
       )}
       <div className="mt-8">
-        <label className="justify-start items-center inline-flex mb-3">
+        <label className="justify-start items-center inline-flex">
           <div className="text-base font-normal">Identity Verification</div>
           <span className="text-center text-xs font-normal font-['General_Sans'] leading-none ml-1">
             info
@@ -137,7 +137,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
       </div>
       {value?.ownerType === "legal" && (
         <div className="mt-8">
-          <label className="justify-start items-center inline-flex mb-3">
+          <label className="justify-start items-center inline-flex">
             <div className="text-base font-normal">Entity Verification</div>
             <span className="text-center text-xs font-normal font-['General_Sans'] leading-none ml-1">
               info
