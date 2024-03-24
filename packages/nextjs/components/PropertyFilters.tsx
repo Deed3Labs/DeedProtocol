@@ -84,7 +84,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
           </div>
           <div className="flex-grow flex items-center">
             <input
-              className="input input-lg input-bordered border-1 col-span-3"
+              className="input input-md input-bordered border-1"
               placeholder="Search by City, State or ZIP code"
               onChange={val => setSearch(val.target.value)}
             />
