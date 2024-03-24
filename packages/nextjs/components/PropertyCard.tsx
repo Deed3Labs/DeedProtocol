@@ -29,7 +29,7 @@ const PropertyCard = ({ property }: Props) => {
                   </div>
                 </div>
                 <div class="self-stretch justify-start items-center w-full">
-                  <div class="text-white text-base font-bold w-full leading-snug">{property.address}</div>
+                  <div class="text-white text-base font-normal w-full leading-snug">{property.address}</div>
                 </div>
               </div>
               <div class="self-stretch h-16 px-3 pt-2.5 pb-3 bg-neutral-900 border border-white border-opacity-10 flex-col justify-center items-start flex">
