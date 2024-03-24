@@ -72,9 +72,9 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 font-normal flex items-center gap-2 h-full">
+          <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 text-sm sm:text-base font-normal capitalize flex items-center gap-2 h-full">
             <AdjustmentsHorizontalIcon className="h-auto w-5" />
-            Filters
+            More Filters
           </button>
           <select
             className="select select-md sm:select-lg select-bordered"
