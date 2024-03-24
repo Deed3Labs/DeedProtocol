@@ -62,7 +62,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   });
 
   return (
-    <div className="Wrapper flex flex-col w-full mb-8">
+    <div className="Wrapper flex flex-col space-y-3 w-full mb-8">
       <ExplorerLinks />
       <div className="filters">
         <div className="flex flex-row flex-wrap sm:flex-nowrap justify-between items-center gap-2 md:gap-4 w-full">
