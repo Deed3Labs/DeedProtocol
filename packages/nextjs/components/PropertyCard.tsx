@@ -28,7 +28,7 @@ const PropertyCard = ({ property }: Props) => {
                     </div>
                   </div>
                 </div>
-                <div class="self-stretch pr-24 justify-start items-center w-full">
+                <div class="self-stretch justify-start items-center w-full">
                   <div class="text-white text-base font-bold w-full leading-snug">{property.address}</div>
                 </div>
               </div>
@@ -39,7 +39,7 @@ const PropertyCard = ({ property }: Props) => {
                       <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium leading-none tracking-wider">PRICE</div>
                     </div>
                     <div class="self-stretch justify-start items-start gap-0.5 inline-flex">
-                      <div class="text-white text-[1.8vw] sm:text-xs font-medium uppercase leading-none">
+                      <div class="text-white text-[2vw] sm:text-xs font-medium uppercase leading-none">
                         {property.price.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
