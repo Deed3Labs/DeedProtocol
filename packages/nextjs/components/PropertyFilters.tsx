@@ -62,45 +62,28 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   });
 
   return (
-    <div className="Wrapper flex flex-col w-full mb-8">
+    <div className="Wrapper flex flex-col w-full mb-6">
       <ExplorerLinks />
       <div className="filters">
         <div className="flex flex-row flex-nowrap justify-between items-center gap-2 md:gap-4 w-full">
-          <button className="btn btn-md bg-neutral-900 border-opacity-10 flex items-center gap-2">
+          <button className="btn btn-md btn-bordered bg-neutral-900 flex items-center gap-2">
             <AdjustmentsHorizontalIcon className="text-base h-5 w-5" />
             More filters
           </button>
-          <div className="form-control">
-            <label className="cursor-pointer label">
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                onChange={ev => {
-                  return applyFilter({ featured: ev.target.checked });
-                }}
-              />
-              <span className="label-text mx-4">Featured?</span>
-            </label>
-          </div>
-          <div className="flex-grow flex items-center">
-            <input
-              className="input input-md input-bordered border-1 flex-grow"
-              placeholder="Search by City, State or ZIP code"
-              onChange={val => setSearch(val.target.value)}
-            />
-          </div>
+          <input
+            className="input input-md input-bordered flex-grow"
+            placeholder="Enter a city, state, address"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
           <select
             className="select select-md select-bordered"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
-            <option disabled value={0}>
-              Property type
-            </option>
+            <option disabled value={0}>Property type</option>
             {PropertyTypeOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.title}
-              </option>
+              <option key={option.value} value={option.value}>{option.title}</option>
             ))}
           </select>
           <div className="join">
