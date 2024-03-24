@@ -59,7 +59,7 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
           name="propertyAddress"
           label="APN # or Street Address"
           info
-          placeholder="e.g. 123 Main Street, US 92346"
+          placeholder="e.g. 123 Main Street"
           value={value?.propertyAddress}
           onChange={handleChange}
           readOnly={readOnly}
