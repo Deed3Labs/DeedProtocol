@@ -62,10 +62,10 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   });
 
   return (
-    <div className="Wrapper flex flex-col w-full mb-6">
+    <div className="Wrapper flex flex-col w-full mb-2">
       <ExplorerLinks />
       <div className="filters">
-        <div className="flex flex-row flex-nowrap justify-between items-center gap-2 md:gap-4 w-full">
+        <div className="flex flex-row flex-wrap sm:flex-nowrap justify-between items-center gap-2 md:gap-4 w-full">
           <button className="btn btn-md btn-bordered bg-neutral-900 flex items-center gap-2">
             <AdjustmentsHorizontalIcon className="text-base h-5 w-5" />
             Filters
