@@ -65,7 +65,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     <div className="Wrapper flex flex-col w-full mb-8">
       <ExplorerLinks />
       <div className="filters">
-        <div className="grid grid-cols-5 justify-evenly items-center gap-8 w-full ">
+        <div className="grid grid-cols-5 justify-evenly items-center gap-8 w-full">
           <button className="btn btn-md btn-bordered flex items-center gap-2">
             <AdjustmentsHorizontalIcon className="h-5 w-5" />
             More filters
