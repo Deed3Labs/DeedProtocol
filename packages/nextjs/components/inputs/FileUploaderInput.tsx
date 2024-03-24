@@ -156,7 +156,7 @@ export const FileUploaderInput = <TParent,>({
             <div className="text-base font-normal mb-3">
               {label}
               {optional && (
-                <span className="text-[10px] uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3 text-zinc-400">
+                <span className="text-[10px] uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-3 text-zinc-400 tracking-widest">
                   Optional
                 </span>
               )}
