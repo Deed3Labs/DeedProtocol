@@ -37,7 +37,7 @@ export const SelectInput = <TParent,>({
           </span>
         )}
         {optional && (
-          <span className="text-[10px] text-zinc-400 uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-2 mb-[-4px] mt-[-4px]">
+          <span className="text-[10px] text-zinc-400 uppercase rounded-lg bg-white bg-opacity-5 p-2 ml-2 mb-[-4px] mt-[-4px] tracking-widest">
             Optional
           </span>
         )}
