@@ -39,7 +39,7 @@ const PropertyCard = ({ property }: Props) => {
                       <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium leading-none tracking-wider">PRICE</div>
                     </div>
                     <div class="self-stretch justify-start items-start gap-0.5 inline-flex">
-                      <div class="text-white text-[4vw] sm:text-xs font-semibold uppercase leading-none">
+                      <div class="text-white text-[1.5vw] sm:text-xs font-medium uppercase leading-none">
                         {property.price.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
@@ -50,18 +50,18 @@ const PropertyCard = ({ property }: Props) => {
                   </div>
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium font-['General_Sans'] leading-none tracking-wider">TYPE</div>
+                      <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium leading-none tracking-wider">TYPE</div>
                     </div>
                     <div class="self-stretch justify-start items-start inline-flex">
-                      <div class="text-white text-[10px] sm:text-xs font-semibold font-['General_Sans'] leading-none">{property.type}</div>
+                      <div class="text-white text-[1.5vw] sm:text-xs font-medium leading-none">{property.type}</div>
                     </div>
                   </div>
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium font-['General_Sans'] leading-none tracking-wider">ZONING</div>
+                      <div class="text-white text-opacity-60 text-[8px] sm:text-xs font-medium leading-none tracking-wider">ZONING</div>
                     </div>
                     <div class="justify-start items-start inline-flex">
-                      <div class="text-white text-[10px] sm:text-xs font-semibold font-['General_Sans'] leading-none">Residential</div>
+                      <div class="text-white text-[1.5vw] sm:text-xs font-medium leading-none">Residential</div>
                     </div>
                   </div>
                 </div>
