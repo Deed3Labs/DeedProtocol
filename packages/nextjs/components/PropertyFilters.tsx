@@ -65,9 +65,9 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     <div className="Wrapper flex flex-col w-full mb-8">
       <ExplorerLinks />
       <div className="filters">
-        <div className="flex flex-wrap justify-evenly items-center gap-8 w-full ">
-          <button className="btn btn-lg btn-outline">
-            <AdjustmentsHorizontalIcon className="w-4" />
+        <div className="grid grid-cols-7 justify-evenly items-center gap-8 w-full ">
+          <button className="btn btn-md btn-bordered flex items-center gap-2">
+            <AdjustmentsHorizontalIcon className="h-5 w-5" />
             More filters
           </button>
           <div className="form-control">
@@ -84,8 +84,8 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
           </div>
           <div className="flex-grow flex items-center">
             <input
-              className="input input-lg input-bordered border-1 w-full"
-              placeholder="Enter a city, state, address or ZIP code"
+              className="input input-lg input-bordered border-1 col-span-3"
+              placeholder="Search by City, State or ZIP code"
               onChange={val => setSearch(val.target.value)}
             />
           </div>
