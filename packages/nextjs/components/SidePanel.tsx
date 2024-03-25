@@ -147,9 +147,9 @@ const SidePanel = ({
 
   return (
     <div className="bg-base-100 w-[500] min-h-fit relative lg:sticky lg:top-32 py-2 border border-white border-opacity-10">
-      <div className=" m-8">
+      <div className="m-8">
         <div className="flex flex-row gap-2">
-          <div className="w-full flex flex-col gap-0">
+          <div className="w-full flex flex-col gap-4">
             <div className="flex flex-row gap-1 items-center">
               <MarketLogo />
               Deed3 (The Deed Protocol)
@@ -166,16 +166,19 @@ const SidePanel = ({
                     title="Legal Wrapper"
                     secondary="NOMINEE TRUST WRAPPER"
                     price={quoteDetails.legalWrapperFees}
+                    className="mb-2"
                   />
                   <QuoteDetail
                     title="Document Notarization"
                     secondary="ONLINE DOCUMENT SIGNING"
                     price={quoteDetails.documentNotarizationFees}
+                    className="mb-2"
                   />
                   <QuoteDetail
                     title="State & County Filing Fees"
                     secondary="GRANT DEED-COUNTY CLERK"
                     price={quoteDetails.stateAndCountyFees}
+                    className="mb-2"
                   />
                   <QuoteDetail
                     title="Preliminary Title Report"
