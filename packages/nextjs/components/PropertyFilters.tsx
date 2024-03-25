@@ -65,14 +65,14 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-8">
       <ExplorerLinks />
       <div className="filters">
-        <div className="flex flex-row flex-wrap sm:flex-nowrap justify-between items-center gap-2 md:gap-4 w-full">
+        <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full">
           <input
             className="input input-md sm:input-lg input-bordered w-full sm:flex-grow"
             placeholder="Search by City, State, or Zip code"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 text-sm sm:text-base font-normal capitalize flex items-center gap-2 w-auto h-full">
+          <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 text-sm sm:text-base font-normal capitalize flex items-center gap-2 w-full h-full">
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             More Filters
           </button>
