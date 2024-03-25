@@ -93,7 +93,7 @@ const AgentExplorer: NextPage = () => {
   return (
     <div className="container" ref={containerRef}>
       <AgentFilters onFilter={onFilter} agents={agents} />
-      <div className="flex flex-wrap gap-2 lg:gap-8 items-center justify-center max-w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-1.5 sm:gap-3 items-start justify-start w-full">
         {agents.map(agent => (
           <AgentCard key={agent.id} agent={agent} />
         ))}
