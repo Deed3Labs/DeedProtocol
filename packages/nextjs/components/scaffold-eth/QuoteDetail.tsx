@@ -12,10 +12,10 @@ const QuoteDetails = ({ price, title, secondary }: Props) => {
   return (
     <div className="flex flex-col my-2 text-xl">
       <div className="flex flex-row h-fit items-center mb-0 justify-between">
-        <span className="font-normal">{title}</span>
+        <span className="text-sm font-normal">{title}</span>
         <span className="">{USDollar.format(price)}</span>
       </div>
-      {secondary && <span className="text-secondary text-sm uppercase">{secondary}</span>}
+      {secondary && <span className="text-secondary text-[10px] uppercase tracking-widest">{secondary}</span>}
     </div>
   );
 };
