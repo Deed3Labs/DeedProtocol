@@ -4,7 +4,7 @@ import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
-import { EntityTypeOptions, OwnerTypeOptions } from "~~/constants";
+import { EntityTypeOptions, OwnerTypeOptions, StateOptions } from "~~/constants";
 import { DeedInfoModel, OwnerInformationModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 
