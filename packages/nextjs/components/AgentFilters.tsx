@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
@@ -44,10 +44,6 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
       applyFilter({ search: debouncedSearch });
     }
   }, [debouncedSearch]);
-
-  useEffect(() => {
-    onFilter(filter);
-  }, [listingType]);
 
   const applyFilter = (partialFilter: Partial<FilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
