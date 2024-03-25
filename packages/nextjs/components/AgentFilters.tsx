@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const AgentFilters = ({ onFilter, agents }: Props) => {
-  const searchRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
   const [filter, setFilter] = useState<FilterModel>();
   const [search, setSearch] = useState<string | undefined>();
@@ -44,6 +45,10 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
     }
   }, [debouncedSearch]);
 
+  useEffect(() => {
+    onFilter(filter);
+  }, [listingType]);
+
   const applyFilter = (partialFilter: Partial<FilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
     setFilter(newFilter);
@@ -65,21 +70,16 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
       <ExplorerLinks />
       <div className="filters">
         <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full">
-          <div className="flex-grow flex items-center">
-            <input
-              ref={searchRef}
-              className="input input-md sm:input-lg input-bordered w-full sm:flex-grow"
-              placeholder="Search by City, State, or Zip code"
-              onChange={() => setSearch(searchRef.current?.value)}
-              value={search}
-            />
-             <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 text-sm sm:text-base font-normal capitalize flex flex-grow items-center gap-2 h-full">
+          <input
+            className="input input-md sm:input-lg input-bordered w-full sm:flex-grow"
+            placeholder="Search by City, State, or Zip code"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 text-sm sm:text-base font-normal capitalize flex flex-grow items-center gap-2 h-full">
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             More Filters
           </button>
-            <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">
-              /
-            </kbd>
           <select
             className="select select-md sm:select-lg select-bordered flex flex-1"
             value={filter.propertyType}
@@ -89,8 +89,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
             {PropertyTypeOptions.map(option => (
               <option key={option.value} value={option.value}>{option.title}</option>
             ))}
-          </select>  
-
+          </select>
           <div className="join">
             <button className="join-item btn btn-square btn-outline">
               <svg
