@@ -21,7 +21,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
   const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
-  const [filter, setFilter] = useState<AgentFilterModel>({;
+  const [filter, setFilter] = useState<AgentFilterModel>({});
   const debouncedSearch = useDebouncer(search, 500);
 
   const Map = useMemo(
