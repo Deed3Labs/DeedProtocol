@@ -64,7 +64,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 text-sm sm:text-base font-normal capitalize flex flex-grow items-center gap-2 h-auto">
+          <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 font-normal capitalize flex flex-grow items-center gap-2 h-auto">
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             More Filters
           </button>
