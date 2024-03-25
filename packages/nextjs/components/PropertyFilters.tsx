@@ -29,7 +29,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     () =>
       dynamic(() => import("~~/components/Map"), {
         loading: () => (
-          <div className="w-full flex flex-row justify-center mt-6">
+          <div className="w-full flex flex-row justify-center">
             <span className="loading loading-bars loading-lg"></span>
           </div>
         ),
