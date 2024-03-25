@@ -4,6 +4,7 @@ import ExplorerLinks from "./ExplorerLinks";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { AgentModel } from "~~/models/agent.model";
@@ -89,7 +90,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
               <option key={option.value} value={option.value}>{option.title}</option>
             ))}
           </select>  
-          </div>
+
           <div className="join">
             <button className="join-item btn btn-square btn-outline">
               <svg
