@@ -162,30 +162,30 @@ const SidePanel = ({
                     STANDARD <br /> 
                     PROPERTY LISTING
                   </div>
-                  <QuoteDetail
-                    title="Legal Wrapper"
-                    secondary="NOMINEE TRUST WRAPPER"
-                    price={quoteDetails.legalWrapperFees}
-                    className="mb-9"
-                  />
-                  <QuoteDetail
-                    title="Document Notarization"
-                    secondary="ONLINE DOCUMENT SIGNING"
-                    price={quoteDetails.documentNotarizationFees}
-                    className="mb-2"
-                  />
-                  <QuoteDetail
-                    title="State & County Filing Fees"
-                    secondary="GRANT DEED-COUNTY CLERK"
-                    price={quoteDetails.stateAndCountyFees}
-                    className="mb-2"
-                  />
-                  <QuoteDetail
-                    title="Preliminary Title Report"
-                    secondary="PROPERTY HISTORY VERIFICATION"
-                    price={quoteDetails.titleReportFees}
-                  />
-
+                 
+                  <div className="quote-detail-container space-y-2">
+                    <QuoteDetail
+                      title="Legal Wrapper"
+                      secondary="NOMINEE TRUST WRAPPER"
+                      price={quoteDetails.legalWrapperFees}
+                    />
+                    <QuoteDetail
+                      title="Document Notarization"
+                      secondary="ONLINE DOCUMENT SIGNING"
+                      price={quoteDetails.documentNotarizationFees}
+                    />
+                    <QuoteDetail
+                      title="State & County Filing Fees"
+                      secondary="GRANT DEED-COUNTY CLERK"
+                      price={quoteDetails.stateAndCountyFees}
+                    />
+                    <QuoteDetail
+                      title="Preliminary Title Report"
+                      secondary="PROPERTY HISTORY VERIFICATION"
+                      price={quoteDetails.titleReportFees}
+                    />
+                  </div>
+                
                   <div className="border p-6 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
                     <QuoteDetail
                       title="Advanced Plan"
