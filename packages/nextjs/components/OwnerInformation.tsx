@@ -89,6 +89,15 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
             readOnly={readOnly}
           />
           <SelectInput
+          name="ownerEntityState"
+          label="State of Incorporation"
+          placeholder="Select State"
+          options={StateOptions}
+          value={value?.propertyState}
+          onChange={handleChange}
+          readOnly={readOnly}
+        />
+          <SelectInput
             name="ownerEntityType"
             label="Entity Type"
             options={EntityTypeOptions}
