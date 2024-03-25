@@ -13,7 +13,7 @@ import { AgentType } from "~~/models/agent-info.model";
 import { AgentFilterModel } from "~~/models/agent-filter.model";
 
 interface Props {
-  properties: AgentModel[];
+  agents: AgentModel[];
   onFilter: (filter?: AgentFilterModel) => void;
 }
 
