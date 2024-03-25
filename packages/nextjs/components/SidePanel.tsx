@@ -146,10 +146,10 @@ const SidePanel = ({
   };
 
   return (
-    <div className="bg-base-100 w-[500] min-h-fit relative lg:sticky lg:top-32 py-4 border border-white border-opacity-10">
-      <div className=" m-9">
+    <div className="bg-base-100 w-[500] min-h-fit relative lg:sticky lg:top-32 py-2 border border-white border-opacity-10">
+      <div className=" m-4">
         <div className="flex flex-row gap-2">
-          <div className="w-full flex flex-col gap-4">
+          <div className="w-full flex flex-col gap-2">
             <div className="flex flex-row gap-1 items-center">
               <MarketLogo />
               Deed3 (The Deed Protocol)
