@@ -44,10 +44,6 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     }
   }, [debouncedSearch]);
 
-  useEffect(() => {
-    onFilter(filter);
-  }, [listingType]);
-
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
     setFilter(newFilter);
