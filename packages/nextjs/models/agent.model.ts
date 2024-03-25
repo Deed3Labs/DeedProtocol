@@ -5,6 +5,7 @@ export interface AgentModel extends IMarker {
   name: string;
   address: string;
   profile: string;
+  type: PropertyType;
   cover: string;
   phone: string;
   email: string;
