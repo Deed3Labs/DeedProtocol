@@ -9,21 +9,21 @@ import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { AgentModel } from "~~/models/agent.model";
-
-interface FilterModel {
-  search?: string;
-}
+import { AgentType } from "~~/models/agent-info.model";
+import { AgentFilterModel } from "~~/models/agent-filter.model";
 
 interface Props {
-  onFilter: (filter?: FilterModel) => void;
-  agents: AgentModel[];
+  properties: AgentModel[];
+  onFilter: (filter?: AgentFilterModel) => void;
 }
 
-const AgentFilters = ({ onFilter, agents }: Props) => {
+const PropertyFilters = ({ properties, onFilter }: Props) => {
   const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
-  const [filter, setFilter] = useState<FilterModel>();
   const [search, setSearch] = useState<string | undefined>();
+  const listingType = searchParams.get("listingType");
+  const [filter, setFilter] = useState<PropertiesFilterModel>({
+
   const debouncedSearch = useDebouncer(search, 500);
 
   const Map = useMemo(
@@ -45,17 +45,11 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
     }
   }, [debouncedSearch]);
 
-  const applyFilter = (partialFilter: Partial<FilterModel>) => {
+  const applyFilter = (partialFilter: Partial<AgentFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
     setFilter(newFilter);
-    onFilter(newFilter);
+    onFilter(filter);
   };
-
-  useKeyboardShortcut(["/"], ev => {
-    if (ev.target === searchRef.current) return;
-    searchRef.current?.focus();
-    ev.preventDefault();
-  });
 
   useKeyboardShortcut(["Enter"], () => {
     onFilter(filter);
@@ -79,7 +73,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
           <select
             className="select select-md sm:select-lg select-bordered flex flex-1"
             value={filter.propertyType}
-            onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
+            onChange={ev => applyFilter({ agentType: ev.target.value as AgentType })}
           >
             <option disabled value={0}>Property type</option>
             {PropertyTypeOptions.map(option => (
