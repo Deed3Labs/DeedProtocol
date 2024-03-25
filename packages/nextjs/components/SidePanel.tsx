@@ -166,7 +166,7 @@ const SidePanel = ({
                     title="Legal Wrapper"
                     secondary="NOMINEE TRUST WRAPPER"
                     price={quoteDetails.legalWrapperFees}
-                    className="mb-2"
+                    className="mb-9"
                   />
                   <QuoteDetail
                     title="Document Notarization"
