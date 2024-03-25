@@ -60,25 +60,35 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
   });
 
   return (
-    <div className="Wrapper flex flex-col w-full mb-8">
+    <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-8">
       <ExplorerLinks />
       <div className="filters">
-        <div className="flex flex-wrap justify-evenly items-center gap-8 w-full ">
-          <button className="btn btn-lg btn-outline">
-            <AdjustmentsHorizontalIcon className="w-4" />
-            More filters
-          </button>
+        <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full">
           <div className="flex-grow flex items-center">
             <input
               ref={searchRef}
-              className="input input-lg input-bordered border-1 w-full"
-              placeholder="Agent name or username"
+              className="input input-md sm:input-lg input-bordered w-full sm:flex-grow"
+              placeholder="Search by City, State, or Zip code"
               onChange={() => setSearch(searchRef.current?.value)}
               value={search}
             />
+             <button className="btn btn-md sm:button-lg btn-outline bg-neutral-900 text-sm sm:text-base font-normal capitalize flex flex-grow items-center gap-2 h-full">
+            <AdjustmentsHorizontalIcon className="h-auto w-4" />
+            More Filters
+          </button>
             <kbd className="bd bg-neutral-focus -ml-14 flex justify-center items-center w-10 h-10 rounded-xl">
               /
             </kbd>
+          <select
+            className="select select-md sm:select-lg select-bordered flex flex-1"
+            value={filter.propertyType}
+            onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
+          >
+            <option disabled value={0}>Property type</option>
+            {PropertyTypeOptions.map(option => (
+              <option key={option.value} value={option.value}>{option.title}</option>
+            ))}
+          </select>  
           </div>
           <div className="join">
             <button className="join-item btn btn-square btn-outline">
