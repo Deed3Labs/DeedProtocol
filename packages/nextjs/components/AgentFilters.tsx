@@ -17,14 +17,12 @@ interface Props {
   onFilter: (filter?: AgentFilterModel) => void;
 }
 
-const PropertyFilters = ({ properties, onFilter }: Props) => {
+const AgentFilters = ({ agents, onFilter }: Props) => {
   const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
-  const listingType = searchParams.get("listingType");
-  const [filter, setFilter] = useState<PropertiesFilterModel>({
-
   const debouncedSearch = useDebouncer(search, 500);
+  const [filter, setFilter] = useState<AgentFilterModel>({
 
   const Map = useMemo(
     () =>
