@@ -21,7 +21,6 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
-  const listingType = searchParams.get("listingType");
   const [filter, setFilter] = useState<PropertiesFilterModel>({});
   const debouncedSearch = useDebouncer(search, 500);
 
