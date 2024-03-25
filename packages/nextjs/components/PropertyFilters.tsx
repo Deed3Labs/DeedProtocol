@@ -22,17 +22,14 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   const [mapOpened, setMapOpened] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
   const listingType = searchParams.get("listingType");
-  const [filter, setFilter] = useState<PropertiesFilterModel>({
-    listingType: listingType ? (listingType as ListingType) : "All",
-  });
-
+  const [filter, setFilter] = useState<PropertiesFilterModel>({});
   const debouncedSearch = useDebouncer(search, 500);
 
   const Map = useMemo(
     () =>
       dynamic(() => import("~~/components/Map"), {
         loading: () => (
-          <div className="w-full flex flex-row justify-center">
+          <div className="w-full flex flex-row justify-center mt-6">
             <span className="loading loading-bars loading-lg"></span>
           </div>
         ),
