@@ -64,12 +64,12 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="btn button-md sm:button-lg btn-outline bg-neutral-900 sm:text-5xl font-normal capitalize flex flex-grow items-center gap-2">
+          <button className="btn button-md sm:button-lg btn-outline bg-neutral-900 sm:text-3xl font-normal capitalize items-center gap-2 h-auto">
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             More Filters
           </button>
           <select
-            className="select select-md sm:select-lg select-bordered flex flex-1"
+            className="select select-md sm:select-lg select-bordered flex flex-grow"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
