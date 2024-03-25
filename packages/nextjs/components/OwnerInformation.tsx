@@ -101,7 +101,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
             name="ownerEntityType"
             label="Entity Type"
             options={EntityTypeOptions}
-            placeholder="e.g. LLC, Corporation, etc."
+            placeholder="e.g. Corporation"
             value={value?.ownerEntityType}
             onChange={handleChange}
             readOnly={readOnly}
