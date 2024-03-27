@@ -200,7 +200,7 @@ const SidePanel = ({
                         value={advancedPlan.toString()}
                         onChange={ev => setAdvancedPlan(ev.target.value === "true")}
                       />
-                      <span className="text-[10px] text-[#f0f0f0]">
+                      <span className="text-[10px] text-[#f0f0f0] tracking-widest">
                         SUBSCRIBE TODAY TO
                         <span className="mx-1 p-1 bg-[#cbf4c9] text-[10px] text-[#0e6245]">SAVE 50%</span> ON
                         LISTINGS.
