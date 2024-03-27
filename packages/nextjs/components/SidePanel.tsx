@@ -207,7 +207,7 @@ const SidePanel = ({
                     </div>
                   </div>
 
-                  <div className="text-end font-normal uppercase tracking-widest">
+                  <div className="text-end font-normal text-[10px] uppercase tracking-widest">
                     <Link
                       href="https://docs.deedprotocol.org/general-information/fees-and-service-charges"
                       target="_blank"
