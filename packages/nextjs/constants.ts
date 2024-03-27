@@ -181,6 +181,12 @@ export const PaymentOptions = [
     value: "crypto",
     icon: IconBitcoin,
   },
+  {
+    title: "More Options",
+    tag: "Coming soon",
+    value: "other",
+    disabled: true,
+  },
 ] as const;
 
 export const WrapperOptions = (prices: string[]) =>
