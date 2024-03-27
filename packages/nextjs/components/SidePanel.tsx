@@ -163,7 +163,7 @@ const SidePanel = ({
                     PROPERTY LISTING
                   </div>
                  
-                  <div className="quote-detail-container space-y-2">
+                  <div className="quote-detail-container space-y-3">
                     <QuoteDetail
                       title="Legal Wrapper"
                       secondary="NOMINEE TRUST WRAPPER"
