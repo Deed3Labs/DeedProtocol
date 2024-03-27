@@ -351,7 +351,7 @@ const SidePanel = ({
           )}
         </div>
 
-        <div className="flex flex-row text-secondary text-[2vw] justify-between">
+        <div className="flex flex-row text-secondary text-[9px] sm:text-[10px] justify-between">
           <div>
             <span className="opacity-75">Powered by</span>&nbsp;
             <span className="text-white">Deed3Labs</span>
