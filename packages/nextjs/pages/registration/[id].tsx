@@ -239,20 +239,20 @@ const Page = ({ router }: WithRouterProps) => {
                   onChange={handleChange}
                   readOnly={!isOwner}
                 />
-                <hr className="my-12 opacity-10" />
+                <hr className="my-12 opacity-20" />
                 <PropertyDetails
                   value={deedData.propertyDetails}
                   onChange={handleChange}
                   readOnly={!isOwner}
                   isDraft={isDraft}
                 />
-                <hr className="my-12 opacity-10" />
+                <hr className="my-12 opacity-20" />
                 <OtherInformations
                   value={deedData.otherInformation}
                   onChange={handleChange}
                   readOnly={!isOwner}
                 />
-                <hr className="my-12 opacity-10" />
+                <hr className="my-12 opacity-20" />
                 {router.isReady && (
                   <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
                 )}
