@@ -224,7 +224,7 @@ const SidePanel = ({
                   <QuoteDetail title="Total due today" price={quoteDetails.total / 2} />
 
                   <div className="border py-6 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
-                    <span className="mx-6 font-normal text-zinc-400 uppercase tracking-widest">Add to your order</span>
+                    <span className="mx-6 font-normal text-[10px] text-zinc-400 uppercase tracking-widest">Add to your order</span>
                     <hr className="opacity-25" />
                     <div className="mx-6 text-sm flex flex-row gap-2 justify-between align-top">
                       <div className="flex flex-col">
