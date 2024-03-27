@@ -202,7 +202,7 @@ const SidePanel = ({
                       />
                       <span className="text-[10px] text-[#f0f0f0] tracking-widest">
                         SUBSCRIBE TO GET
-                        <span className="mx-1 p-1 bg-[#cbf4c9] text-[10px] text-[#0e6245]">50% OFF</span> TODAY.
+                        <span className="mx-1 p-1 bg-[#cbf4c9] text-[10px] text-[#0e6245] tracking-normal">50% OFF</span> TODAY.
                       </span>
                     </div>
                   </div>
