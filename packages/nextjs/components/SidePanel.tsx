@@ -192,15 +192,15 @@ const SidePanel = ({
                       secondary="BILLED YEARLY"
                       price={quoteDetails.advancedPlan}
                     />
-                    <hr />
-                    <div className="text-sm flex flex-row gap-2">
+                    <hr className="opacity-25" />
+                    <div className="text-sm flex flex-row gap-3">
                       <input
                         type="checkbox"
-                        className="toggle toggle-success rounded-lg"
+                        className="toggle toggle-success rounded-full"
                         value={advancedPlan.toString()}
                         onChange={ev => setAdvancedPlan(ev.target.value === "true")}
                       />
-                      <span className="text-[10px] text-[#f0f0f0] tracking-widest">
+                      <span className="text-[10px] text-[#ffffff] tracking-widest">
                         SUBSCRIBE TO GET
                         <span className="mx-1 p-1 bg-[#cbf4c9] text-[10px] text-[#0e6245] tracking-normal">50% OFF</span> TODAY.
                       </span>
@@ -226,7 +226,7 @@ const SidePanel = ({
                   <div className="border py-4 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
                     <span className="mx-4 font-normal text-[10px] text-zinc-400 uppercase tracking-widest">Add to your order</span>
                     <hr className="opacity-25" />
-                    <div className="mx-3 text-sm flex flex-row gap-2 justify-between align-top">
+                    <div className="mx-3 text-sm flex flex-row gap-2 justify-between align-middle">
                       <div className="flex flex-col">
                         <span className="font-normal text-[#f0f0f0]">Appraisal and inspection</span>
                         <span className="text-secondary">
