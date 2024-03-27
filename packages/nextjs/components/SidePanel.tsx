@@ -342,7 +342,7 @@ const SidePanel = ({
           ) : (
             <button
               onClick={handleSubmit}
-              className="btn btn-md w-full font-normal btn-primary uppercase"
+              className="btn btn-md w-full font-normal btn-primary uppercase tracking-widest"
               disabled={!quoteDetails}
             >
               Submit form
