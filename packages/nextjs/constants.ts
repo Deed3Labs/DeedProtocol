@@ -171,13 +171,13 @@ export const BlockchainOptions = [
 export const PaymentOptions = [
   {
     title: "Debit or Credit",
-    subtitle: "Via stripe",
+    tag: "Via stripe",
     value: "fiat",
     icon: IconDollar,
   },
   {
     title: "Crypto Currency",
-    subtitle: "Stablecoin",
+    tag: "Stablecoin",
     value: "crypto",
     icon: IconBitcoin,
   },
