@@ -10,7 +10,7 @@ export const USDollar = new Intl.NumberFormat("en-US", {
 
 const QuoteDetails = ({ price, title, secondary }: Props) => {
   return (
-    <div className="flex flex-col my-0 text-base sm:text-lg>
+    <div className="flex flex-col my-0 text-base sm:text-lg">
       <div className="flex flex-row h-fit items-center mb-0 justify-between">
         <span className="font-normal">{title}</span>
         <span className="font-normal">{USDollar.format(price)}</span>
