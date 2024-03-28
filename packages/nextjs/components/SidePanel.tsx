@@ -188,8 +188,8 @@ const SidePanel = ({
                 
                   <div className="border p-4 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
                     <QuoteDetail
-                      title="Advanced Plan"
-                      secondary="BILLED YEARLY"
+                      title="Work with an Agent"
+                      secondary="ONE-TIME FEE"
                       price={quoteDetails.advancedPlan}
                     />
                     <hr className="opacity-25" />
