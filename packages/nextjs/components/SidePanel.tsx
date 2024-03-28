@@ -196,7 +196,7 @@ const SidePanel = ({
                     <div className="text-sm flex flex-row gap-3">
                       <input
                         type="checkbox"
-                        className="toggle toggle-success rounded-full"
+                        className="toggle toggle-sm toggle-success rounded-full"
                         value={advancedPlan.toString()}
                         onChange={ev => setAdvancedPlan(ev.target.value === "true")}
                       />
