@@ -27,7 +27,7 @@ const Layout = ({ pageProps, Component }: AppProps) => {
   // }, []);
   return (
     <>
-      <div className="flex flex-col min-h-screen bg-base-200">
+      <div className="flex flex-col min-h-screen">
         <Header />
         <main className="relative flex flex-col flex-1">
           <ErrorBoundary>
