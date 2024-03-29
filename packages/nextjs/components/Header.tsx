@@ -104,7 +104,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mx-2 mt-2 shadow bg-base-100 w-screen text-2xl gap-2"
+                className="menu menu-compact dropdown-content mt-0 shadow bg-base-100 w-screen text-2xl gap-2"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
