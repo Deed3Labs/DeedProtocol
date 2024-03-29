@@ -104,7 +104,7 @@ const PropertyExplorer: NextPage = () => {
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-3 items-start justify-start w-full">
         {properties.length === 0 ? (
-          <div className="card w-96 bg-neutral justify-center">
+          <div className="card w-full bg-neutral">
             <div className="card-body items-center text-center">
               <h2 className="card-title">No properties</h2>
             </div>
