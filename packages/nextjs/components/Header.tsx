@@ -46,7 +46,7 @@ export const Header = () => {
   const nav = useMemo(
     () => (
       <>
-        <div className="flex lg:flex-grow lg:items-center w-full lg:pr-8">
+        <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
           <input
             ref={searchRef}
             className="input input-bordered border-1 text-sm font-normal w-full lg:w-80"
@@ -113,7 +113,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-2 ml-4 mr-6">
+          <Link href="/" passHref className="lg:flex items-center gap-2 ml-4 mr-2">
             <svg
               width="121"
               height="34"
