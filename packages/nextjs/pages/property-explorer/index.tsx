@@ -106,7 +106,7 @@ const PropertyExplorer: NextPage = () => {
         {properties.length === 0 ? (
           <div className="card w-full bg-neutral">
             <div className="card-body items-center text-center">
-              <h2 className="card-title">No properties</h2>
+              <h2 className="card-title font-normal capitalize">No properties</h2>
             </div>
           </div>
         ) : (
