@@ -49,7 +49,7 @@ export const Header = () => {
         <div className="flex lg:flex-grow lg:items-center w-full lg:pr-14">
           <input
             ref={searchRef}
-            className="input input-bordered border-1 w-full lg:w-80"
+            className="input input-bordered border-1 text-sm font-normal w-full lg:w-80"
             placeholder="Quickly search the entire site"
             onChange={() => setSearch(searchRef.current?.value)}
             value={search}
@@ -87,7 +87,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="lg:sticky top-0 navbar bg-[#0d0d0d] flex-shrink-0 justify-between z-20 shadow-md shadow-neutral px-2">
+      <div className="lg:sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 px-2">
         <div className="navbar-start w-auto lg:w-1/2">
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
@@ -113,7 +113,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6">
+          <Link href="/" passHref className="lg:flex items-center gap-2 ml-4 mr-6">
             <svg
               width="121"
               height="34"
