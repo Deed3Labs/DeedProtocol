@@ -113,7 +113,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-2 ml-2 mr-0">
+          <Link href="/" passHref className="lg:flex items-center gap-2 ml-2 sm:ml-4 mr-0">
             <svg
               width="121"
               height="34"
