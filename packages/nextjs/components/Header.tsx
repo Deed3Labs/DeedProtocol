@@ -92,7 +92,7 @@ export const Header = () => {
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
               tabIndex={0}
-              className={`ml-0 btn btn-ghost ${
+              className={`ml-0 sm:ml-1 btn btn-ghost ${
                 isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
               }`}
               onClick={() => {
@@ -113,7 +113,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-2 ml-2 sm:ml-4 mr-0">
+          <Link href="/" passHref className="lg:flex items-center gap-2 ml-2 mr-0">
             <svg
               width="121"
               height="34"
