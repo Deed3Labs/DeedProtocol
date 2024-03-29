@@ -46,7 +46,7 @@ export const Header = () => {
   const nav = useMemo(
     () => (
       <>
-        <div className="flex lg:flex-grow lg:items-center w-full lg:pr-14">
+        <div className="flex lg:flex-grow lg:items-center w-full lg:pr-8">
           <input
             ref={searchRef}
             className="input input-bordered border-1 text-sm font-normal w-full lg:w-80"
@@ -87,7 +87,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="lg:sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 px-2">
+      <div className="lg:sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 py-4 px-2">
         <div className="navbar-start w-auto lg:w-1/2">
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
