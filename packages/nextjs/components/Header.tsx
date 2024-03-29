@@ -54,7 +54,7 @@ export const Header = () => {
             onChange={() => setSearch(searchRef.current?.value)}
             value={search}
           />
-          <kbd className="lg:flex bd bg-neutral-focus -ml-14 justify-center items-center w-10 h-10 rounded-xl">
+          <kbd className="lg:flex bd bg-neutral-focus -ml-14 justify-center items-center w-7 h-7 rounded-xl">
             /
           </kbd>
         </div>
