@@ -92,7 +92,7 @@ export const Header = () => {
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
               tabIndex={0}
-              className={`ml-1 btn btn-ghost ${
+              className={`ml-0 btn btn-ghost ${
                 isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
               }`}
               onClick={() => {
@@ -104,7 +104,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mt-0 shadow bg-base-100 w-screen text-2xl gap-2"
+                className="menu menu-compact dropdown-content mt-2 shadow bg-base-100 w-screen text-2xl gap-2"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
@@ -113,7 +113,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-2 ml-4 mr-0">
+          <Link href="/" passHref className="lg:flex items-center gap-2 ml-2 mr-0">
             <svg
               width="121"
               height="34"
