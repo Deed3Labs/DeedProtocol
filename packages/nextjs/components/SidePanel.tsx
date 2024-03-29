@@ -220,7 +220,7 @@ const SidePanel = ({
                   <QuoteDetail title="Subtotal" price={quoteDetails.total} />
 
                   <hr className="opacity-20" />
-                   <div className="my-[-8px] text-left font-normal text-[10px] uppercase tracking-widest">
+                   <div className="my-[-4px] text-left font-normal text-[10px] uppercase tracking-widest">
                     <Link
                       href=""
                       target="_blank"
