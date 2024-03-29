@@ -193,7 +193,7 @@ const SidePanel = ({
                       price={quoteDetails.advancedPlan}
                     />
                     <hr className="opacity-25" />
-                    <div className="text-sm flex flex-row gap-3">
+                    <div className="text-sm flex flex-row gap-2">
                       <input
                         type="checkbox"
                         className="toggle toggle-sm toggle-w-10 toggle-success rounded-full"
