@@ -219,8 +219,8 @@ const SidePanel = ({
 
                   <QuoteDetail title="Subtotal" price={quoteDetails.total} />
 
-                  <hr className="opacity-20" />
-                   <div className="my-[-6px] text-left font-normal text-[10px] uppercase tracking-widest">
+                  <hr className="opacity-25" />
+                   <div className="my-[-8px] text-left font-normal text-[10px] uppercase tracking-widest">
                     <Link
                       href=""
                       target="_blank"
@@ -229,7 +229,7 @@ const SidePanel = ({
                       Add Promo Code
                     </Link>
                   </div>
-                  <hr className="opacity-20" />
+                  <hr className="opacity-25" />
 
                   <QuoteDetail title="Total due today" price={quoteDetails.total / 2} />
 
