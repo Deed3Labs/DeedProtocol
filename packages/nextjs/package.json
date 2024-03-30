@@ -44,7 +44,7 @@
     "lodash-es": "^4.17.21",
     "mapbox-gl": "^3.2.0",
     "mongodb": "^6.3.0",
-    "next": "^13.1.6",
+    "next": "^13.5.0",
     "nextjs-progressbar": "^0.0.16",
     "node-fetch": "^3.3.2",
     "qrcode.react": "^3.1.0",
