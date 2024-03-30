@@ -87,7 +87,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 py-4 px-2">
+      <div className="sticky top-0 navbar bg-[#000000] flex-shrink-0 justify-between z-20 py-4 px-2">
         <div className="navbar-start w-auto lg:w-1/2">
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
