@@ -13,7 +13,7 @@ module.exports = {
     themes: [
       {
         scaffoldEthDark: {
-          primary: "#F9FBFF",
+          primary: "#0e0e0e",
           "primary-content": "#0e0e0e",
           secondary: "#454444",
           "secondary-content": "#9f9f9f",
