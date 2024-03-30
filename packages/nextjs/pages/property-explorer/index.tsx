@@ -99,7 +99,7 @@ const PropertyExplorer: NextPage = () => {
   };
 
   return (
-    <div className="container bg-[#0e0e0e]" ref={containerRef}>
+    <div className="container" ref={containerRef}>
       <PropertyFilters properties={properties} onFilter={onFilter} />
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-3 items-start justify-start w-full">
