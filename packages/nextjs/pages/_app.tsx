@@ -30,8 +30,7 @@ const ScaffoldEthApp = (props: AppProps) => {
   return (
     <>
       <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-        {/* Other meta tags */}
+        <meta name="viewport" content="initial-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" />
       </Head>
       <NextNProgress
         options={{
