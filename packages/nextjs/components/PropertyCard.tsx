@@ -33,13 +33,13 @@ const PropertyCard = ({ property }: Props) => {
                 </div>
               </div>
               <div class="self-stretch h-16 px-3 pt-2.5 pb-3 bg-neutral-900 border border-white border-opacity-10 flex-col justify-center items-start flex">
-                <div class="self-stretch justify-start items-start gap-2.5 inline-flex">
+                <div class="self-stretch justify-between items-start gap-2.5 inline-flex">
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-[1.8vw] sm:text-[2.2vw] font-medium leading-none tracking-wider">PRICE</div>
+                      <div class="text-white text-opacity-60 text-[1.8vw] sm:text-[0.95w] font-medium leading-none tracking-wider">PRICE</div>
                     </div>
                     <div class="self-stretch justify-start items-start gap-0.5 inline-flex">
-                      <div class="text-white text-[2vw] sm:text-xs font-[2.4vw] uppercase leading-none">
+                      <div class="text-white text-[2vw] sm:text-[0.95vw] font-medium uppercase leading-none">
                         {property.price.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
@@ -50,18 +50,18 @@ const PropertyCard = ({ property }: Props) => {
                   </div>
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-[1.8vw] sm:text-[2.2vw] font-medium leading-none tracking-wider">TYPE</div>
+                      <div class="text-white text-opacity-60 text-[1.8vw] sm:text-[0.95vw] font-medium leading-none tracking-wider">TYPE</div>
                     </div>
                     <div class="self-stretch justify-start items-start inline-flex">
-                      <div class="text-white text-[1.8vw] sm:text-[2.5vw] font-[2.4vw] uppercase leading-none">{property.type}</div>
+                      <div class="text-white text-[1.8vw] sm:text-[0.95vw] font-medium uppercase leading-none">{property.type}</div>
                     </div>
                   </div>
                   <div class="flex-col justify-start items-start inline-flex">
                     <div class="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div class="text-white text-opacity-60 text-[1.8vw] sm:text-[2.2vw] font-medium leading-none tracking-wider">ZONING</div>
+                      <div class="text-white text-opacity-60 text-[1.8vw] sm:text-[0.95vw] font-medium leading-none tracking-wider">ZONING</div>
                     </div>
                     <div class="justify-start items-start inline-flex">
-                      <div class="text-white text-[1.8vw] sm:text-xs font-[2.4vw] uppercase leading-none">Residential</div>
+                      <div class="text-white text-[1.8vw] sm:text-[0.95vw] font-medium uppercase leading-none">Residential</div>
                     </div>
                   </div>
                 </div>
