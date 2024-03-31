@@ -19,7 +19,7 @@ const PropertyCard = ({ property }: Props) => {
                 <CheckBadgeIcon className="text-white w-5 h-5" />
               </div>
             </div>
-            <div class="self-stretch h-32 flex-col justify-start items-start gap-3 flex">
+            <div class="self-stretch h-32 flex-col justify-center items-start gap-3 flex">
               <div class="self-stretch h-11 px-2 flex-col justify-center items-start gap-0.5 flex">
                 <div class="pr-16 justify-start items-center inline-flex">
                   <div class="justify-start items-center gap-1 flex">
