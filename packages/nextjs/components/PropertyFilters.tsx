@@ -69,7 +69,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             More Filters
           </button>
           <select
-            className="select select-md sm:select-lg select-bordered flex flex-grow"
+            className="select select-md sm:select-lg select-bordered sm:text-[16px] flex flex-grow"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
