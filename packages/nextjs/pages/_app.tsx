@@ -10,6 +10,7 @@ import NextNProgress from "nextjs-progressbar";
 import { useDarkMode } from "usehooks-ts";
 import CONFIG from "~~/config";
 import "~~/styles/globals.scss";
+import Head from 'next/head';
 
 config.autoAddCss = false;
 
