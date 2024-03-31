@@ -79,7 +79,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
             ))}
           </select>
           <div className="join">
-            <button className="join-item btn btn-square btn-outline">
+            <button className="join-item btn sm:btn-lg btn-square bg-base-300 btn-outline">
               <svg
                 width="13"
                 height="13"
@@ -96,7 +96,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
               </svg>
             </button>
             <button
-              className="join-item btn btn-square btn-outline"
+              className="join-item btn sm:btn-lg btn-square bg-base-300 btn-outline"
               onClick={() => setMapOpened(!mapOpened)}
             >
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
