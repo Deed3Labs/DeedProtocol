@@ -70,7 +70,7 @@ export const RadioBoxesInput = <TParent,>({
                 readOnly={readOnly}
               />
               <label
-                className={`flex flex-col gap-2 justify-between p-4 border-2 border-white border-opacity-10 cursor-pointer px-4 py-6 peer-checked:border-red-100 hover:bg-base-100 max-w-7xl ${
+                className={`flex flex-col gap-2 justify-between p-4 border-1 border-white border-opacity-10 cursor-pointer px-4 py-6 peer-checked:border-red-100 hover:bg-base-100 max-w-7xl ${
                   option.disabled && "pointer-events-none opacity-50"
                 } ${readOnly && "pointer-events-none border-none !py-0"} ${
                   optionsClassName && !readOnly ? optionsClassName : ""
