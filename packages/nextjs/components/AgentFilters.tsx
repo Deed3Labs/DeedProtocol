@@ -59,17 +59,17 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
       <div className="filters">
         <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full">
           <input
-            className="input input-md sm:input-lg input-bordered sm:text-[16px] w-full sm:flex-grow"
+            className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] w-full sm:flex-grow"
             placeholder="Search by City, State, or Zip code"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="btn btn-md sm:btn-lg btn-outline bg-neutral-900 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto">
+          <button className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto">
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             More Filters
           </button>
           <select
-            className="select select-md sm:select-lg select-bordered sm:text-[16px] flex flex-grow"
+            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-grow"
             value={filter.propertyType}
             onChange={ev => applyFilter({ agentType: ev.target.value as AgentType })}
           >
@@ -79,7 +79,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
             ))}
           </select>
           <div className="join">
-            <button className="join-item btn sm:btn-lg btn-square bg-base-300 btn-outline">
+            <button className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10">
               <svg
                 width="13"
                 height="13"
@@ -96,7 +96,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
               </svg>
             </button>
             <button
-              className="join-item btn sm:btn-lg btn-square bg-base-300 btn-outline"
+              className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10"
               onClick={() => setMapOpened(!mapOpened)}
             >
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
