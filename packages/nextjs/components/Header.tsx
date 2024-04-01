@@ -49,7 +49,7 @@ export const Header = () => {
         <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
           <input
             ref={searchRef}
-            className="input input-bordered border-1 text-sm font-normal w-full lg:w-80"
+            className="input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
             placeholder="Quickly search the entire site"
             onChange={() => setSearch(searchRef.current?.value)}
             value={search}
