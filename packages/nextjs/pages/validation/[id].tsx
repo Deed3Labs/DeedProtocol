@@ -175,7 +175,7 @@ const Page = ({ router }: WithRouterProps) => {
                 <div className="flex flex-row items-center w-full justify-between">
                   <div className="text-2xl">Property Details</div>
                   <div className="flex flex-row gap-4">
-                    <div className="btn btn-outline m-1 btn-square rounded-lg">
+                    <div className="btn border-white border-opacity-10 m-1 btn-square rounded-lg">
                       <svg
                         width="16"
                         height="15"
@@ -192,7 +192,7 @@ const Page = ({ router }: WithRouterProps) => {
                         />
                       </svg>
                     </div>
-                    <div className="join join-horizontal border p-2">
+                    <div className="join join-horizontal border border-white border-opacity-10 p-2">
                       <div
                         className="join-item p-2 text-[14px] text-[#626262] cursor-default"
                         title="Comming Soon"
@@ -207,13 +207,13 @@ const Page = ({ router }: WithRouterProps) => {
                       <div
                         tabIndex={0}
                         role="button"
-                        className="btn m-1 btn-outline btn-square rounded-lg"
+                        className="btn m-1 border-white border-opacity-10 btn-square rounded-lg"
                       >
                         <EllipsisHorizontalIcon className="h-6" />
                       </div>
                       <ul
                         tabIndex={0}
-                        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+                        className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
                       >
                         <li>
                           <Link href={`/registration/${deedData.id}`} className="link-default">
