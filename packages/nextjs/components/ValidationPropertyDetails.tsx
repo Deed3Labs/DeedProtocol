@@ -42,7 +42,7 @@ const PropertyDetails = ({
   return (
     <>
       {propertyDetail && (
-        <div className="border-2">
+        <div className="border border-white border-opacity-10">
           <div className="flex flex-row justify-between items-center px-2 pt-2">
             <div className="pl-4">Property Details</div>
             {(isOwner || isValidator) && (
