@@ -162,7 +162,6 @@ const Page = ({ router }: WithRouterProps) => {
                 />
                 </svg>
               </button>
-              <div className="flex flex-row gap-4">
                 <div className="join join-horizontal border border-white border-opacity-10 p-2">
                   <div
                     className="join-item p-2 text-[14px] text-[#626262] cursor-default"
@@ -174,7 +173,6 @@ const Page = ({ router }: WithRouterProps) => {
                     Validation History
                   </div>
                 </div>
-  
               <div className="dropdown dropdown-end">
                   <button
                     tabIndex={0}
