@@ -166,6 +166,23 @@ const Page = ({ router }: WithRouterProps) => {
                 <button
                   tabIndex={0}
                   className="btn m-1 border-white border-opacity-10 btn-square rounded-lg"
+               </div>
+                    <div className="join join-horizontal border border-white border-opacity-10 p-2">
+                      <div
+                        className="join-item p-2 text-[14px] text-[#626262] cursor-default"
+                        title="Comming Soon"
+                      >
+                        Property Overview
+                      </div>
+                      <div className="join-item p-2 text-[14px] bg-base-300 cursor-pointer">
+                        Validation History
+                      </div>
+                    </div>
+                    <div className="dropdown dropdown-end">
+                      <div
+                        tabIndex={0}
+                        role="button"
+                        className="btn m-1 border-white border-opacity-10 btn-square rounded-lg"   
                 >
                   <EllipsisHorizontalIcon className="h-6" />
                 </button>
