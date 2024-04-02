@@ -53,7 +53,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
     <table className="table-auto border">
       <thead>
         <tr>
-          <td colSpan={2} className="border">
+          <td colSpan={2} className="border border-white border-opacity-10">
             <div className="uppercase flex flex-row items-center gap-2 bg-base-300 p-8">
               <svg
                 width="16"
@@ -77,7 +77,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
       {supportedFiles && (
         <tbody>
           <tr>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="text-center py-8 px-2">01</div>
             </td>
             <td className="border">
@@ -85,8 +85,8 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border" rowSpan={3}></td>
-            <td className="border">
+            <td className="border border-white border-opacity-10" rowSpan={3}></td>
+            <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
                   id="IdentityVerification"
@@ -109,7 +109,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
                   id={"EntityVerification"}
@@ -126,7 +126,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
                   id="OwnershipVerification"
@@ -143,7 +143,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="text-center py-8 px-2">02</div>
             </td>
             <td className="border">
@@ -151,8 +151,8 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border" rowSpan={3}></td>
-            <td className="border">
+            <td className="border border-white border-opacity-10" rowSpan={3}></td>
+            <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
                   id="Agreement"
@@ -160,7 +160,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   description="Complete KYB Procedures"
                   fileLabels={["Agreement"]}
                   button={
-                    <button className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase">
+                    <button className="btn btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 uppercase">
                       View Agreements
                     </button>
                   }
@@ -186,7 +186,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                     deedData.validations?.find(x => x[0] === "DocumentNotorization")?.[1] !==
                     "Not Started" ? undefined : (
                       <button
-                        className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase"
+                        className="btn btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 uppercase"
                         onClick={() => handleStateChange("DocumentNotorization", "Processing")}
                       >
                         Begin Process
@@ -203,7 +203,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
                   id="StateCountyFillings"
@@ -229,8 +229,8 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
           </tr>
 
           <tr>
-            <td className="border" rowSpan={1}></td>
-            <td className="border">
+            <td className="border border-white border-opacity-10" rowSpan={1}></td>
+            <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
                   id="DigitalConfirmation"
@@ -239,7 +239,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   fileLabels={["Deed or Title"]}
                   button={
                     <button
-                      className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase"
+                      className="btn btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 uppercase"
                       onClick={handleSign}
                     >
                       Click to sign
