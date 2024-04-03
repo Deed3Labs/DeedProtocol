@@ -66,9 +66,9 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
           </div>
           <div className="flex flex-col gap-6 mt-4 flex-grow justify-between">
             <div className="flex flex-row">
-              <div className="text-secondary">Status</div>
-              <div className="ml-2 h-6 badge bg-[#ffdc19] text-primary-content rounded-xl">
-                Pending validation
+              <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">Status</div>
+              <div className="ml-2 h-7 badge bg-[#ffdc19] text-[10px] font-normal text-primary-content capitalize rounded-xl">
+                Pending Validation
               </div>
             </div>
 
