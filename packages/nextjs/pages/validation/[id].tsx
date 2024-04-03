@@ -145,7 +145,7 @@ const Page = ({ router }: WithRouterProps) => {
           <div className="flex flex-row w-full justify-between">
             <div className="text-2xl">Property Details</div>
             <div className="flex flex-row items-center gap-4">
-              <button className="btn border-white border-opacity-10 m-1 btn-square w-6 h-6 rounded-lg">
+              <button className="btn border-white border-opacity-10 m-1 btn-square h-5 rounded-lg">
                 <svg
                   width="16"
                   height="15"
@@ -176,9 +176,9 @@ const Page = ({ router }: WithRouterProps) => {
               <div className="dropdown dropdown-end">
                   <button
                     tabIndex={0}
-                    className="btn m-1 border-white border-opacity-10 btn-square w-6 h-6 rounded-lg"
+                    className="btn m-1 border-white border-opacity-10 btn-square h-5 rounded-lg"
                   >
-                    <EllipsisHorizontalIcon className="h-6" />
+                    <EllipsisHorizontalIcon className="h-5" />
                   </button>
                 <ul
                   tabIndex={0}
