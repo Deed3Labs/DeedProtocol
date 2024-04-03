@@ -98,7 +98,7 @@ export const Address = ({
         />
       </div>
       <div className="flex flex-col">
-        {label && <div className="text-secondary">{label}</div>}
+        {label && <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{label}</div>}
         <div className="flex flex-row">
           {disableAddressLink || !blockExplorerAddressLink ? (
             <span className={`text-${size} font-normal`}>{displayAddress}</span>
