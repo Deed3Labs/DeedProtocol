@@ -223,7 +223,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             <td className="border border-white border-opacity-10">
               <div className="text-center py-8 px-2">03</div>
             </td>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="text-secondary py-8 px-4 uppercase">Confirmation & Minting</div>
             </td>
           </tr>
