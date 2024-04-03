@@ -80,7 +80,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             <td className="border border-white border-opacity-10">
               <div className="text-center py-8 px-2">01</div>
             </td>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="text-secondary py-8 px-4 uppercase">Property validation</div>
             </td>
           </tr>
@@ -146,7 +146,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             <td className="border border-white border-opacity-10">
               <div className="text-center py-8 px-2">02</div>
             </td>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="text-secondary py-8 px-4 uppercase">PREP, FILING & NOTARIZATION</div>
             </td>
           </tr>
@@ -174,7 +174,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
                   id="DocumentNotorization"
@@ -220,7 +220,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border">
+            <td className="border border-white border-opacity-10">
               <div className="text-center py-8 px-2">03</div>
             </td>
             <td className="border">
