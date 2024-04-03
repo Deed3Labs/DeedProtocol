@@ -26,7 +26,6 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
 
   const handleChatClick = () => {
     if (isOwner) {
-      // Mailto link to dev@deed3.io
       window.open("mailto:dev@deed3.io", "_blank");
     }
   };
@@ -56,13 +55,8 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
     <div className="flex flex-row border border-white border-opacity-10 p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
-          {" "}
           <div className="w-80 h-80 bg-[#141414] flex-grow">
-            {/* <Map
-                      markers={[
-                        `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}`,
-                      ]}
-                    /> */}
+            {/* Image or Map component should go here */}
           </div>
           <div className="flex flex-col gap-6 mt-4 flex-grow justify-between">
             <div className="flex flex-row">
@@ -71,12 +65,22 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                 Pending validation
               </div>
             </div>
-
-            <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">{deedData.propertyDetails.propertyAddress}</div>
-
+            <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
+              {deedData.propertyDetails.propertyAddress}
+            </div>
             <div className="flex flex-row gap-8 items-center">
-              <Address address={deedData.owner} label="Owner" size="base" />
-              <Address address="The Deed & Title Co." label="Validator" size="base" />
+              <div className="flex flex-col">
+                <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
+                  Owner
+                </div>
+                <Address address={deedData.owner} size="base" />
+              </div>
+              <div className="flex flex-col">
+                <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
+                  Validator
+                </div>
+                <Address address="The Deed & Title Co." size="base" />
+              </div>
               <button
                 className="btn btn-outline w-12 p-3 rounded-md"
                 onClick={() => handleChatClick()}
@@ -84,9 +88,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                 <ChatBubbleBottomCenterTextIcon className="w-full" />
               </button>
             </div>
-
             <hr className="border-border"></hr>
-            {/* Buttons */}
             <div className="flex flex-row w-full items-center justify-between">
               <div className="flex flex-row">
                 <button
@@ -130,17 +132,11 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                   className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                 >
                   <li>
-                    <Link href={`/registration/${deedData.id}`} className="link-default">
-                      Edit
+                    <Link href={`/registration/${deedData.id}`}>
+                      <a>Edit</a>
                     </Link>
                   </li>
-                  {/* {isValidator && ( */}
-                  <li>
-                    <a onClick={() => handleMint()} className="link-default">
-                      Mint
-                    </a>
-                  </li>
-                  {/* )} */}
+                  {/* Additional dropdown items... */}
                 </ul>
               </div>
             </div>
