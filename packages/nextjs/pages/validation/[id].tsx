@@ -144,7 +144,7 @@ const Page = ({ router }: WithRouterProps) => {
         <div className="flex flex-col gap-4 w-full lg:w-2/3">
           <div className="flex flex-row items-center w-full justify-between">
             <div className="text-2xl">Property Details</div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row items-center gap-4">
               <button className="btn border-white border-opacity-10 m-1 btn-square rounded-lg">
                 <svg
                   width="16"
