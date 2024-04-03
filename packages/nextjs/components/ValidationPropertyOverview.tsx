@@ -83,7 +83,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
               </div>
               <button
                 className="btn btn-outline w-12 p-3 rounded-md"
-                onClick={() => handleChatClick()}
+                onClick={handleChatClick}
               >
                 <ChatBubbleBottomCenterTextIcon className="w-full" />
               </button>
@@ -93,14 +93,14 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
               <div className="flex flex-row">
                 <button
                   className="btn btn-link no-underline text-secondary"
-                  onClick={() => handleShare()}
+                  onClick={handleShare}
                 >
                   <ShareIcon className="h-4" />
                   Share
                 </button>
                 <button
                   className="btn btn-link no-underline text-secondary"
-                  onClick={() => refresh()}
+                  onClick={refresh}
                 >
                   <svg
                     width="18"
@@ -136,7 +136,13 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                       <a>Edit</a>
                     </Link>
                   </li>
-                  {/* Additional dropdown items... */}
+                  {isValidator && (
+                    <li>
+                      <a onClick={handleMint} className="link-default">
+                        Mint
+                      </a>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
