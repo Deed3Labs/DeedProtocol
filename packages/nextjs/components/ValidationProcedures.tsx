@@ -54,7 +54,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
       <thead>
         <tr>
           <td colSpan={2} className="border border-white border-opacity-10">
-            <div className="uppercase flex flex-row items-center gap-2 bg-base-300 p-8">
+            <div className="text-[12px] font-normal text-white uppercase flex flex-row items-center gap-2 bg-base-300 p-8">
               <svg
                 width="16"
                 height="16"
@@ -81,7 +81,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
               <div className="text-center py-8 px-2">01</div>
             </td>
             <td className="border border-white border-opacity-10">
-              <div className="text-secondary py-8 px-4 uppercase">Property validation</div>
+              <div className="text-[12px] font-normal text-zinc-400 py-5 px-4 uppercase">Property validation</div>
             </td>
           </tr>
           <tr>
@@ -147,7 +147,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
               <div className="text-center py-8 px-2">02</div>
             </td>
             <td className="border border-white border-opacity-10">
-              <div className="text-secondary py-8 px-4 uppercase">PREP, FILING & NOTARIZATION</div>
+              <div className="text-[12px] font-normal text-zinc-400 py-5 px-4 uppercase">PREP, FILING & NOTARIZATION</div>
             </td>
           </tr>
           <tr>
@@ -224,7 +224,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
               <div className="text-center py-8 px-2">03</div>
             </td>
             <td className="border border-white border-opacity-10">
-              <div className="text-secondary py-8 px-4 uppercase">Confirmation & Minting</div>
+              <div className="text-[12px] font-normal text-zinc-400 py-5 px-4 uppercase">Confirmation & Minting</div>
             </td>
           </tr>
 
