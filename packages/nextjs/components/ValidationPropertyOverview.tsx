@@ -78,10 +78,10 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
               <Address address={deedData.owner} label="Owner" size="base" />
               <Address address="The Deed & Title Co." label="Validator" size="base" />
               <button
-                className="btn btn-sm sm:btn-sm border border-white border-opacity-10 w-8 p-2 sm:p-0.5 rounded-md"
+                className="btn btn-sm sm:btn-sm border border-white border-opacity-10 w-8 p-2 sm:p-1.5 rounded-md"
                 onClick={() => handleChatClick()}
               >
-                <ChatBubbleBottomCenterTextIcon className="w-full sm:w-6" />
+                <ChatBubbleBottomCenterTextIcon className="w-full sm:w-5" />
               </button>
             </div>
 
