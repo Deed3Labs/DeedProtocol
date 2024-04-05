@@ -13,6 +13,7 @@ interface TAddressProps {
   disableAddressLink?: boolean;
   format?: "short" | "long";
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
+  mobilesize?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
   label?: string;
 }
 
@@ -89,59 +90,58 @@ export const Address = ({
   }
 
   return (
-    <div className="flex items-center gap-3 my-3">
-      <div className="flex-shrink-0">
-        <BlockieAvatar
-          address={address}
-          ensImage={ensAvatar}
-          size={(blockieSizeMap[size] * 36) / blockieSizeMap["base"]}
-        />
-      </div>
-      <div className="flex flex-col">
-        {label && <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{label}</div>}
-        <div className="flex flex-row">
-          {disableAddressLink || !blockExplorerAddressLink ? (
-            <span className={`text-${size} font-normal`}>{displayAddress}</span>
-          ) : getTargetNetwork().id === hardhat.id ? (
-            <span className={`text-${size} font-normal`}>
-              <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
-            </span>
-          ) : (
-            <a
-              className={`text-${size} font-normal`}
-              target="_blank"
-              href={blockExplorerAddressLink}
-              rel="noopener noreferrer"
-            >
-              {displayAddress}
-            </a>
-          )}
-          {addressCopied ? (
-            <CheckCircleIcon
+  <div className="flex items-center gap-3 my-3">
+    <div className="flex-shrink-0">
+      <BlockieAvatar
+        address={address}
+        ensImage={ensAvatar}
+        size={(blockieSizeMap[size] * 36) / blockieSizeMap["base"]}
+      />
+    </div>
+    <div className="flex flex-col">
+      {label && <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{label}</div>}
+      <div className="flex flex-row">
+        {disableAddressLink || !blockExplorerAddressLink ? (
+          <span className={`text-${mobilesize} sm:text-${size} font-normal`}>{displayAddress}</span>
+        ) : getTargetNetwork().id === hardhat.id ? (
+          <span className={`text-${mobilesize} sm:text-${size} font-normal`}>
+            <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
+          </span>
+        ) : (
+          <a
+            className={`text-${mobilesize} sm:text-${size} font-normal`}
+            target="_blank"
+            href={blockExplorerAddressLink}
+            rel="noopener noreferrer"
+          >
+            {displayAddress}
+          </a>
+        )}
+        {addressCopied ? (
+          <CheckCircleIcon
+            className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
+            aria-hidden="true"
+          />
+        ) : (
+          <CopyToClipboard
+            text={address}
+            onCopy={() => {
+              notification.info("Copied to clipboard", {
+                position: "bottom-right",
+              });
+              setAddressCopied(true);
+              setTimeout(() => {
+                setAddressCopied(false);
+              }, 800);
+            }}
+          >
+            <DocumentDuplicateIcon
               className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
               aria-hidden="true"
             />
-          ) : (
-            <CopyToClipboard
-              text={address}
-              onCopy={() => {
-                notification.info("Copied to clipboard", {
-                  position: "bottom-right",
-                });
-                setAddressCopied(true);
-                setTimeout(() => {
-                  setAddressCopied(false);
-                }, 800);
-              }}
-            >
-              <DocumentDuplicateIcon
-                className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
-                aria-hidden="true"
-              />
-            </CopyToClipboard>
-          )}
-        </div>
+          </CopyToClipboard>
+        )}
       </div>
     </div>
-  );
-};
+  </div>
+);
