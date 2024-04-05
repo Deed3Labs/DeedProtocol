@@ -59,12 +59,12 @@ const PropertyDetails = ({
             {/* First col */}
             <div className="flex flex-col flex-grow gap-4">
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-zinc-400 font-normal w-full">Bed / Bath: </div>
+                <div className="text-[3vw] sm:text-sm text-zinc-400 font-normal w-3/4">Bed / Bath: </div>
                 <div className="">
                   {viewMode ? (
                     <>
                       <TextInput
-                        className="input-sm"
+                        className="input-sm text-[3vw] sm:text-sm"
                         name="propertyBedrooms"
                         value={`${propertyDetail.propertyBedrooms ?? 0} Bed / ${
                           propertyDetail.propertyBathrooms ?? 0
@@ -77,14 +77,14 @@ const PropertyDetails = ({
                   ) : (
                     <div className="flex flex-col">
                       <TextInput
-                        className="input-sm"
+                        className="input-sm text-[3vw] sm:text-sm"
                         name="propertyBedrooms"
                         value={propertyDetail.propertyBedrooms}
                         placeholder="0"
                         onChange={handleChange}
                       ></TextInput>
                       <TextInput
-                        className="input-sm"
+                        className="input-sm text-[3vw] sm:text-sm"
                         name="propertyBathrooms"
                         value={propertyDetail.propertyBathrooms}
                         placeholder="0"
@@ -95,9 +95,9 @@ const PropertyDetails = ({
                 </div>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-zinc-400 font-normal w-full">Lot size:</div>
+                <div className="text-[3vw] sm:text-sm text-zinc-400 font-normal w-3/4">Lot size:</div>
                 <TextInput
-                  className="input-sm"
+                  className="input-sm text-[3vw] sm:text-sm"
                   name="propertySize"
                   value={propertyDetail.propertySize}
                   readOnly={viewMode}
@@ -105,9 +105,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-zinc-400 font-normal w-full">Square footage:</div>
+                <div className="text-[3vw] sm:text-sm text-zinc-400 font-normal w-3/4">Square footage:</div>
                 <TextInput
-                  className="input-sm"
+                  className="input-sm text-[3vw] sm:text-sm"
                   name="propertySquareFootage"
                   value={propertyDetail.propertySquareFootage}
                   readOnly={viewMode}
@@ -117,9 +117,9 @@ const PropertyDetails = ({
             </div>
             <div className="flex flex-col flex-grow">
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-zinc-400 font-normal w-full">Build Year:</div>
+                <div className="text-[3vw] sm:text-sm text-zinc-400 font-normal w-3/4">Build Year:</div>
                 <TextInput
-                  className="input-sm"
+                  className="input-sm text-[3vw] sm:text-sm"
                   name="propertyBuildYear"
                   value={propertyDetail.propertyBuildYear}
                   readOnly={viewMode}
@@ -127,9 +127,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-zinc-400 font-normal w-full">Location:</div>
+                <div className="text-[3vw] sm:text-sm text-zinc-400 font-normal w-3/4">Location:</div>
                 <TextInput
-                  className="input-sm"
+                  className="input-sm text-[3vw] sm:text-sm"
                   name="propertyCity"
                   value={propertyDetail.propertyCity}
                   readOnly={viewMode}
@@ -137,9 +137,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-zinc-400 font-normal w-full">Property Type:</div>
+                <div className="text-[3vw] sm:text-sm text-zinc-400 font-normal w-3/4">Property Type:</div>
                 <TextInput
-                  className="input-sm"
+                  className="input-sm text-[3vw] sm:text-sm"
                   name="propertyHouseType"
                   value={propertyDetail.propertyHouseType}
                   readOnly={viewMode}
@@ -168,7 +168,7 @@ const PropertyDetails = ({
                 </g>
                 <defs>
                   <clipPath id="clip0_2054_765">
-                    <rect width="18" height="18" fill="white" />
+                    <rect width="16" height="16" fill="white" />
                   </clipPath>
                 </defs>
               </svg>
@@ -194,7 +194,7 @@ const PropertyDetails = ({
                 </g>
                 <defs>
                   <clipPath id="clip0_2054_776">
-                    <rect width="18" height="18" fill="white" />
+                    <rect width="16" height="16" fill="white" />
                   </clipPath>
                 </defs>
               </svg>
@@ -220,7 +220,7 @@ const PropertyDetails = ({
                 </g>
                 <defs>
                   <clipPath id="clip0_2054_786">
-                    <rect width="16" height="18" fill="white" transform="translate(1)" />
+                    <rect width="16" height="16" fill="white" transform="translate(1)" />
                   </clipPath>
                 </defs>
               </svg>
