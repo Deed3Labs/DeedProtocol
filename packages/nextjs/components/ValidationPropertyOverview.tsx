@@ -81,7 +81,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                 className="btn btn-sm sm:btn-sm border border-white border-opacity-10 w-8 p-2 rounded-md"
                 onClick={() => handleChatClick()}
               >
-                <ChatBubbleBottomCenterTextIcon className="w-6 h-6" />
+                <ChatBubbleBottomCenterTextIcon className="w-auto" />
               </button>
             </div>
 
