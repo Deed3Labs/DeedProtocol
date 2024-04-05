@@ -167,9 +167,9 @@ const FileValidation = ({
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase"
+              className="btn btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
             >
-              View documents
+              View Documents
             </div>
             <ul
               tabIndex={0}
