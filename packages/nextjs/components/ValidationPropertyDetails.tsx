@@ -149,7 +149,7 @@ const PropertyDetails = ({
             </div>
           </div>
           <div className="flex flex-row">
-            <button className="btn btn-link no-underline font-normal text-secondary">
+            <button className="btn btn-link no-underline text-[9px] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
                 width="18"
                 height="18"
@@ -198,7 +198,7 @@ const PropertyDetails = ({
                   </clipPath>
                 </defs>
               </svg>
-              <div>Disclosure</div>
+              <div>Disclosures</div>
             </button>
             <button className="btn btn-link no-underline font-normal text-secondary">
               <svg
