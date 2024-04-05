@@ -148,12 +148,12 @@ const PropertyDetails = ({
               </div>
             </div>
           </div>
-          <div className="flex flex-row gap-2 sm:gap-4 pb-6">
+          <div className="flex flex-row gap-0.5 sm:gap-2.5 pb-6">
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -176,9 +176,9 @@ const PropertyDetails = ({
             </button>
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -202,9 +202,9 @@ const PropertyDetails = ({
             </button>
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -231,9 +231,9 @@ const PropertyDetails = ({
               onClick={refresh}
             >
               <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
