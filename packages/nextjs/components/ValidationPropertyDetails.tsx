@@ -148,7 +148,7 @@ const PropertyDetails = ({
               </div>
             </div>
           </div>
-          <div className="flex flex-row pb-6">
+          <div className="flex flex-row gap-2 sm:gap-4 pb-6">
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
                 width="18"
