@@ -160,7 +160,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   description="Complete KYB Procedures"
                   fileLabels={["Agreement"]}
                   button={
-                    <button className="btn btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest">
+                    <button className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest">
                       View Agreements
                     </button>
                   }
@@ -186,7 +186,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                     deedData.validations?.find(x => x[0] === "DocumentNotorization")?.[1] !==
                     "Not Started" ? undefined : (
                       <button
-                        className="btn btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
+                        className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
                         onClick={() => handleStateChange("DocumentNotorization", "Processing")}
                       >
                         Begin Process
@@ -239,7 +239,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   fileLabels={["Deed or Title"]}
                   button={
                     <button
-                      className="btn btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
+                      className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
                       onClick={handleSign}
                     >
                       Click to sign
