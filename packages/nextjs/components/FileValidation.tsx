@@ -137,7 +137,7 @@ const FileValidation = ({
       <div className="flex flex-row items-center">
         {stateBadge && isBadgeEdit ? (
           <select
-            className="select w-full max-w-xs"
+            className="select w-full max-w-xs h-6"
             value={state ?? "Not started"}
             onChange={handleStateChanged}
           >
@@ -154,7 +154,7 @@ const FileValidation = ({
                 : stateBadge === "warning"
                 ? "black"
                 : stateBadge
-            } capitalize rounded-lg text-[10px] font-normal tracking-widest py-2`}
+            } rounded-lg text-[10px] font-normal capitalize`}
             onDoubleClick={() => setIsBadgeEdit(x => !x)}
           >
             {state ?? "Not started"}
