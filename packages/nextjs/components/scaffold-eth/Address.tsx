@@ -118,7 +118,7 @@ export const Address = ({
         )}
         {addressCopied ? (
           <CheckCircleIcon
-            className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
+            className="ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
             aria-hidden="true"
           />
         ) : (
