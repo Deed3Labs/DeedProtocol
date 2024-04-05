@@ -131,7 +131,7 @@ const FileValidation = ({
   return (
     <div className="flex flex-row flex-wrap w-full justify-between items-center">
       <div className="flex flex-col gap-1">
-        <div className="text-base font-normal text-zinc-400 uppercase">{label}</div>
+        <div className="text-base font-normal text-white uppercase">{label}</div>
         <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{description}</div>
       </div>
       <div className="flex flex-row items-center">
