@@ -154,7 +154,7 @@ const FileValidation = ({
                 : stateBadge === "warning"
                 ? "black"
                 : stateBadge
-            } rounded-lg `}
+            } capitalize rounded-lg text-[10px] font-normal tracking-widest py-2`}
             onDoubleClick={() => setIsBadgeEdit(x => !x)}
           >
             {state ?? "Not started"}
