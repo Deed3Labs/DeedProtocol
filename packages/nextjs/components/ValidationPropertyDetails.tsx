@@ -59,7 +59,7 @@ const PropertyDetails = ({
             {/* First col */}
             <div className="flex flex-col flex-grow gap-4">
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Bed / Bath: </div>
+                <div className="text-zinc-400 font-normal w-auto">Bed / Bath: </div>
                 <div className="">
                   {viewMode ? (
                     <>
@@ -95,7 +95,7 @@ const PropertyDetails = ({
                 </div>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Lot size:</div>
+                <div className="text-zinc-400 font-normal w-auto">Lot size:</div>
                 <TextInput
                   className="input-sm"
                   name="propertySize"
@@ -105,7 +105,7 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Square footage:</div>
+                <div className="text-zinc-400 font-normal w-auto">Square footage:</div>
                 <TextInput
                   className="input-sm"
                   name="propertySquareFootage"
@@ -117,7 +117,7 @@ const PropertyDetails = ({
             </div>
             <div className="flex flex-col flex-grow">
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Build Year:</div>
+                <div className="text-zinc-400 font-normal w-auto">Build Year:</div>
                 <TextInput
                   className="input-sm"
                   name="propertyBuildYear"
@@ -127,7 +127,7 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Location:</div>
+                <div className="text-zinc-400 font-normal w-auto">Location:</div>
                 <TextInput
                   className="input-sm"
                   name="propertyCity"
@@ -137,7 +137,7 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Property Type:</div>
+                <div className="text-zinc-400 font-normal w-auto">Property Type:</div>
                 <TextInput
                   className="input-sm"
                   name="propertyHouseType"
