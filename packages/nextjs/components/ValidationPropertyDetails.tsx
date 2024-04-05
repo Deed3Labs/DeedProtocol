@@ -149,7 +149,7 @@ const PropertyDetails = ({
             </div>
           </div>
           <div className="flex flex-row">
-            <button className="btn btn-link no-underline text-[9px] sm:text-sm text-zinc-400 font-normal capitalize">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
                 width="18"
                 height="18"
@@ -174,7 +174,7 @@ const PropertyDetails = ({
               </svg>
               <div>MLS Data</div>
             </button>
-            <button className="btn btn-link no-underline font-normal text-secondary">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
                 width="18"
                 height="18"
@@ -200,7 +200,7 @@ const PropertyDetails = ({
               </svg>
               <div>Disclosures</div>
             </button>
-            <button className="btn btn-link no-underline font-normal text-secondary">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
                 width="18"
                 height="18"
@@ -227,7 +227,7 @@ const PropertyDetails = ({
               <div>Proof of title</div>
             </button>
             <button
-              className="btn btn-link no-underline font-normal text-secondary"
+              className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize"
               onClick={refresh}
             >
               <svg
