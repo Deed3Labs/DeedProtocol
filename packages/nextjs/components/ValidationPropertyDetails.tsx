@@ -43,7 +43,7 @@ const PropertyDetails = ({
     <>
       {propertyDetail && (
         <div className="border border-white border-opacity-10">
-          <div className="flex flex-row justify-between items-center px-2 pt-7">
+          <div className="flex flex-row justify-between items-center px-2 pt-8">
             <div className="pl-4">Property Details</div>
             {(isOwner || isValidator) && (
               <button className="btn btn-link" onClick={handleViewModeToggle}>
@@ -148,7 +148,7 @@ const PropertyDetails = ({
               </div>
             </div>
           </div>
-          <div className="flex flex-row pb-7">
+          <div className="flex flex-row pb-6">
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
                 width="18"
