@@ -75,7 +75,7 @@ const PropertyDetails = ({
                       ></TextInput>
                     </>
                   ) : (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-4">
                       <TextInput
                         className="text-[3.6vw] sm:text-sm h-4"
                         name="propertyBedrooms"
@@ -115,7 +115,7 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
             </div>
-            <div className="flex flex-col flex-grow">
+            <div className="flex flex-col flex-grow gap-4">
               <div className="flex flex-row gap-2 items-center">
                 <div className="text-[3.6vw] sm:text-sm text-zinc-400 font-normal w-3/4">Build Year:</div>
                 <TextInput
