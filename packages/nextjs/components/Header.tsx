@@ -59,7 +59,7 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={`link-default ${
+          className={`text-sm link-default ${
             pathname.includes("registration/[id]") && id === "new"
               ? "opacity-30 pointer-events-none"
               : ""
