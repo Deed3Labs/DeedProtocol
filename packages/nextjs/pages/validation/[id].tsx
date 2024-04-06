@@ -207,7 +207,7 @@ const Page = ({ router }: WithRouterProps) => {
             onSave={handleSave}
           />
         </div>
-        <div className="w-full lg:w-2/5">
+        <div className="w-full md:w-2/5">
           <ValidationProcedures
             deedData={deedData}
             onSave={handleSave}
