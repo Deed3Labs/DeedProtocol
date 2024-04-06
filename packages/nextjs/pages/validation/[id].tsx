@@ -141,7 +141,7 @@ const Page = ({ router }: WithRouterProps) => {
   return (
     <div className="container py-10">
       <div className="flex flex-col lg:flex-row gap-4 w-full">
-        <div className="flex flex-col gap-4 w-full lg:w-3/5">
+        <div className="flex flex-col gap-4 w-full lg:w-[63%]">
           <div className="flex flex-row w-full justify-between">
             <div className="text-2xl">Validation History</div>
             <div className="flex flex-row items-center gap-4">
@@ -207,7 +207,7 @@ const Page = ({ router }: WithRouterProps) => {
             onSave={handleSave}
           />
         </div>
-        <div className="w-full md:w-2/5">
+        <div className="w-full md:w-[37%]">
           <ValidationProcedures
             deedData={deedData}
             onSave={handleSave}
