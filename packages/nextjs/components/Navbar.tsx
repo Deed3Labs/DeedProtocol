@@ -15,13 +15,13 @@ const Navbar = () => {
       >
         All
       </Link>
-      <Link className={type !== "sale" ? "opacity-40" : ""} href="/property-explorer?type=sale">
+      <Link className={type !== "sale" ? "opacity-30" : ""} href="/property-explorer?type=sale">
         For Sale
       </Link>
-      <Link className={type !== "lease" ? "opacity-40" : ""} href="/property-explorer?type=lease">
+      <Link className={type !== "lease" ? "opacity-30" : ""} href="/property-explorer?type=lease">
         For Lease
       </Link>
-      <Link className={pathname !== "/agent-explorer" ? "opacity-40" : ""} href="/agent-explorer">
+      <Link className={pathname !== "/agent-explorer" ? "opacity-30" : ""} href="/agent-explorer">
         Agent Directory
       </Link>
     </div>
