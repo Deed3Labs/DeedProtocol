@@ -65,13 +65,13 @@ export const Header = () => {
               : ""
           }`}
           href="/registration/new"
-          id="registration/new"
+          id="/registration/new"
         >
           Register
         </Link>
         <Link
           className={`text-[11px] text-white/30 hover:text-white/70 uppercase tracking-widest link-default ${
-            pathname.includes("explorer") ? "id=property-explorer?type=all target:opacity-100 pointer-events-none" : ""
+            pathname.includes("explorer") ? "target:opacity-100 pointer-events-none" : ""
           }`}
           href="/property-explorer?type=all"
         >
