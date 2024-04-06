@@ -59,7 +59,7 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={`text-[15px] text-white/30 hover:text-white/70 link-default ${
+          className={`text-[12px] text-white/30 hover:text-white/70 uppercase tracking-widest link-default ${
             pathname.includes("registration/[id]") && id === "new"
               ? "target:opacity-100 pointer-events-none"
               : ""
@@ -69,14 +69,14 @@ export const Header = () => {
           Register
         </Link>
         <Link
-          className={`text-[15px] text-white/30 hover:text-white/70 link-default ${
+          className={`text-[12px] text-white/30 hover:text-white/70 uppercase tracking-widest link-default ${
             pathname.includes("explorer") ? "target:opacity-100 pointer-events-none" : ""
           }`}
           href="/property-explorer?type=all"
         >
           Explore
         </Link>
-        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[15px] text-white/30 hover:text-white/70 link-default">
+        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[12px] text-white/30 hover:text-white/70 uppercase tracking-widest link-default">
           Docs
         </Link>
         {/* <Link href="/property-explorer?type=lease">About</Link> */}
