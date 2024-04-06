@@ -50,7 +50,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
   };
 
   return (
-    <table className="table-auto border">
+    <table className="table-auto border w-full">
       <thead>
         <tr>
           <td colSpan={2} className="border border-white border-opacity-10">
