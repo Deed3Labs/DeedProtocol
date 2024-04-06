@@ -148,7 +148,7 @@ const PropertyDetails = ({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-[-10px] sm:gap-2 pb-6">
+          <div className="grid grid-cols-4 justify-start gap-[-10px] sm:gap-2 pb-6">
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
               <svg
                 width="14"
