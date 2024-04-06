@@ -57,7 +57,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
       {deedData?.propertyDetails && (
         <>
           {" "}
-          <div className="w-80 h-80 bg-[#141414] flex-grow">
+          <div className="min-w-70 min-h-70 bg-[#141414] flex-grow">
             {/* <Map
                       markers={[
                         `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}`,
