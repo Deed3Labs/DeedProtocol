@@ -69,14 +69,14 @@ export const Header = () => {
           Register
         </Link>
         <Link
-          className={`link-default ${
+          className={`text-sm link-default ${
             pathname.includes("explorer") ? "opacity-30 pointer-events-none" : ""
           }`}
           href="/property-explorer?type=all"
         >
           Explore
         </Link>
-        <Link target="_blank" href="https://docs.deedprotocol.org/" className="link-default">
+        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-sm link-default">
           Docs
         </Link>
         {/* <Link href="/property-explorer?type=lease">About</Link> */}
