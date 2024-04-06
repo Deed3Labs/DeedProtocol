@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <div className="MainFilterOptions justify-start items-center gap-6 inline-flex text-2xl">
       <Link
-        className={(type !== "all" && type) || pathname === "/agent-explorer" ? "opacity-40" : ""}
+        className={(type !== "all" && type) || pathname === "/agent-explorer" ? "opacity-30" : ""}
         href="/property-explorer?type=all"
       >
         All
