@@ -54,7 +54,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
       <thead>
         <tr>
           <td colSpan={2} className="border border-white border-opacity-10">
-            <div className="text-[12px] font-normal text-white uppercase tracking-widest flex flex-row items-center gap-2 bg-base-300 p-7">
+            <div className="text-[12px] font-normal text-white uppercase tracking-widest flex flex-row items-center gap-2 bg-base-300 py-8 px-6">
               <svg
                 width="16"
                 height="16"
