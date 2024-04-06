@@ -60,17 +60,16 @@ export const Header = () => {
             /
           </kbd>
         </div>
-        <Link href="/registration/new" passHref>
-        <a
+        <Link
           className={`text-[11px] uppercase tracking-widest link-default ${
             isActivePath("/registration/new")
               ? "text-white opacity-100 pointer-events-none"
               : "text-white/30 hover:text-white"
           }`}
-         >
+          href="/registration/new"
+        >
           Register
-        </a>
-      </Link>
+        </Link>
         <Link
           className={`text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default ${
             pathname.includes("explorer") ? "text-white text-opacity-100 pointer-events-none" : ""
