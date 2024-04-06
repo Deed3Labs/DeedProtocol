@@ -65,6 +65,7 @@ export const Header = () => {
               : ""
           }`}
           href="/registration/new"
+          id="registration/new"
         >
           Register
         </Link>
@@ -73,6 +74,7 @@ export const Header = () => {
             pathname.includes("explorer") ? "target:opacity-100 pointer-events-none" : ""
           }`}
           href="/property-explorer?type=all"
+          id="property-explorer?type=all"
         >
           Explore
         </Link>
