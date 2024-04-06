@@ -113,7 +113,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-2 ml-2 sm:ml-4 mr-0">
+          <Link href="/" passHref className="lg:flex items-center gap-2 ml-4 sm:ml-4 mr-0">
             <svg
               width="121"
               height="34"
@@ -133,7 +133,7 @@ export const Header = () => {
             </div>
           </div>
         </div>
-        <div className="navbar-end flex-grow mr-4">
+        <div className="navbar-end flex-grow mr-5">
           <DynamicWidget
             buttonClassName="btn btn-neutral"
             innerButtonComponent={<div className="btn btn-neutral">Login</div>}
