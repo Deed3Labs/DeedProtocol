@@ -43,6 +43,10 @@ export const Header = () => {
     }
   }, [pathname]);
 
+  const router = useRouter();
+  const { pathname } = router;
+  const isActivePath = (path: string) => pathname === path;
+
   const nav = useMemo(
     () => (
       <>
@@ -59,13 +63,12 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={`text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default ${
-            pathname.includes("registration/[id]") && id === "new"
-              ? "text-white text-opacity-100 pointer-events-none"
-              : ""
+          className={`text-[11px] uppercase tracking-widest link-default ${
+            isActivePath("/registration/new")
+              ? "text-white opacity-100 pointer-events-none"
+              : "text-white/30 hover:text-white"
           }`}
           href="/registration/new"
-          id="/registration/new"
         >
           Register
         </Link>
