@@ -160,7 +160,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   description="Complete KYB Procedures"
                   fileLabels={["Agreement"]}
                   button={
-                    <button className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[8px] font-normal uppercase tracking-widest">
+                    <button className="btn btn-sm btn-primary ml-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[8px] font-normal uppercase tracking-widest">
                       View Agreements
                     </button>
                   }
