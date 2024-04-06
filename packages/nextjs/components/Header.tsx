@@ -37,11 +37,14 @@ export const Header = () => {
     }
   }, [primaryWallet]);
 
-  const { primaryWallet } = useDynamicContext();
-  const router = useRouter();
-  const { query, pathname, replace } = router;
-  const { id } = query;
+  useEffect(() => {
+    if (pathname === "/") {
+      replace(defaultPage);
+    }
+  }, [pathname]);
 
+  const router = useRouter();
+  const { pathname } = router;
   const isActivePath = (path: string) => pathname === path;
 
   const nav = useMemo(
