@@ -43,8 +43,6 @@ export const Header = () => {
     }
   }, [pathname]);
 
-  const router = useRouter();
-  const { pathname } = router;
   const isActivePath = (path: string) => pathname === path;
 
   const nav = useMemo(
