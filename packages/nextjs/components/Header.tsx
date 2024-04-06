@@ -37,7 +37,6 @@ export const Header = () => {
     }
   }, [primaryWallet]);
 
-  const { primaryWallet } = useDynamicContext();
   const router = useRouter();
   const { query, pathname, replace } = router;
   const { id } = query;
