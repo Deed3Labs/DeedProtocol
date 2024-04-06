@@ -59,7 +59,7 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={`text-[15px] text-white/30 hover:text-white/70 link-default ${
+          className={`text-[15px] hover:text-white/70 link-default ${
             pathname.includes("registration/[id]") && id === "new"
               ? "opacity-100 pointer-events-none"
               : ""
@@ -69,7 +69,7 @@ export const Header = () => {
           Register
         </Link>
         <Link
-          className={`text-[15px] text-white/30 hover:text-white/70 link-default ${
+          className={`text-[15px] hover:text-white/70 link-default ${
             pathname.includes("explorer") ? "opacity-100 pointer-events-none" : ""
           }`}
           href="/property-explorer?type=all"
