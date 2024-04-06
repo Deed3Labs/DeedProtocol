@@ -87,7 +87,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 py-4 px-2">
+      <div className="sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 py-4 px-2 sm:pr-4">
         <div className="navbar-start w-auto lg:w-1/2">
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
@@ -113,7 +113,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-1 ml-6 sm:ml-4 mr-0">
+          <Link href="/" passHref className="lg:flex items-center gap-1 ml-2 sm:ml-4 mr-0">
             <svg
               width="121"
               height="34"
