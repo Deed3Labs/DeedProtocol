@@ -65,7 +65,7 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={`text-[12px] uppercase tracking-widest link-default ${
+          className={`text-[12px] sm:text-[11px] uppercase tracking-widest link-default ${
             isActive("/registration/new")
               ? "text-white pointer-events-none"
               : "text-white/30 hover:text-white"
@@ -76,7 +76,7 @@ export const Header = () => {
           Register
         </Link>
         <Link
-          className={`text-[12px] uppercase tracking-widest link-default ${
+          className={`text-[12px] sm:text-[11px] uppercase tracking-widest link-default ${
             isActive("explorer") 
               ? "text-white pointer-events-none" 
               : "text-white/30 hover:text-white"
@@ -86,7 +86,7 @@ export const Header = () => {
         >
           Explore
         </Link>
-        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
+        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[12px] sm:text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
           Docs
         </Link>
         {/* <Link href="/property-explorer?type=lease">About</Link> */}
