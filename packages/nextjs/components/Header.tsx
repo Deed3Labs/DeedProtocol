@@ -55,12 +55,12 @@ export const Header = () => {
         <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
           <input
             ref={searchRef}
-            className="invisible sm:visible input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
+            className="hidden sm:flex input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
             placeholder="Quickly search the entire site"
             onChange={() => setSearch(searchRef.current?.value)}
             value={search}
           />
-          <kbd className="invisible sm:visible lg:flex bd bg-neutral-focus -ml-14 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
+          <kbd className="hidden lg:flex bd bg-neutral-focus -ml-14 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
             /
           </kbd>
         </div>
@@ -98,7 +98,7 @@ export const Header = () => {
   return (
     <>
       <div className="sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 w-full py-4 px-2 sm:pl-5 sm:pr-4">
-        <div className="navbar-start w-full lg:w-1/2">
+        <div className="flex navbar-start w-full lg:w-1/2">
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
               tabIndex={0}
@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
+                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-full text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
