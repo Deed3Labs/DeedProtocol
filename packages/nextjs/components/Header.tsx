@@ -65,7 +65,7 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={`text-[11px] uppercase tracking-widest link-default ${
+          className={`text-[12px] uppercase tracking-widest link-default ${
             isActive("/registration/new")
               ? "text-white pointer-events-none"
               : "text-white/30 hover:text-white"
@@ -76,7 +76,7 @@ export const Header = () => {
           Register
         </Link>
         <Link
-          className={`text-[11px] uppercase tracking-widest link-default ${
+          className={`text-[12px] uppercase tracking-widest link-default ${
             isActive("explorer") 
               ? "text-white pointer-events-none" 
               : "text-white/30 hover:text-white"
