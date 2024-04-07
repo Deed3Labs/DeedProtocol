@@ -85,7 +85,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
               </button>
             </div>
 
-            <hr className="my-0 opacity-10" />
+            <hr className="my-0 border-white opacity-10" />
             {/* Buttons */}
             <div className="flex flex-row w-full items-center justify-between">
               <div className="flex flex-row">
