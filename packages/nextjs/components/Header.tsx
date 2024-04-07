@@ -55,7 +55,7 @@ export const Header = () => {
         <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
           <input
             ref={searchRef}
-            className="input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
+            className="invisible sm:visible input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
             placeholder="Quickly search the entire site"
             onChange={() => setSearch(searchRef.current?.value)}
             value={search}
@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-full max-w-screen-sm text-2xl gap-4 sm:gap-3"
+                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-full max-w-screen text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
