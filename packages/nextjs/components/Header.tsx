@@ -46,8 +46,8 @@ export const Header = () => {
   const router = useRouter();
 
    const isActive = (href: string) => {
-    return router.asPath === href;
-};
+    return router.asPath.includes(href); 
+  };
 
   const nav = useMemo(
     () => (
