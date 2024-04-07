@@ -60,7 +60,7 @@ export const Header = () => {
             onChange={() => setSearch(searchRef.current?.value)}
             value={search}
           />
-          <kbd className="lg:flex bd bg-neutral-focus -ml-14 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
+          <kbd className="invisible sm:visible lg:flex bd bg-neutral-focus -ml-14 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
             /
           </kbd>
         </div>
@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-full max-w-screen text-2xl gap-4 sm:gap-3"
+                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
