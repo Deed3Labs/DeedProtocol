@@ -46,8 +46,8 @@ export const Header = () => {
   const router = useRouter();
 
    const isActive = (href: string) => {
-    return router.pathname === href;
-  };
+    return router.asPath === href;
+};
 
   const nav = useMemo(
     () => (
@@ -64,27 +64,27 @@ export const Header = () => {
             /
           </kbd>
         </div>
-        <Link href="/registration/new" passHref>
-         <a
+        <Link
           className={`text-[11px] uppercase tracking-widest link-default ${
             isActive("/registration/new")
               ? "text-white pointer-events-none"
               : "text-white/30 hover:text-white"
           }`}
+          
+          href="/registration/new" 
         >
           Register
-         </a>
         </Link>
-        <Link href="/property-explorer?type=all" passHref>
-         <a
+        <Link
           className={`text-[11px] uppercase tracking-widest link-default ${
             isActive("explorer") 
               ? "text-white pointer-events-none" 
               : "text-white/30 hover:text-white"
           }`}
+
+          href="/property-explorer?type=all" 
         >
           Explore
-          </a>
         </Link>
         <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
           Docs
