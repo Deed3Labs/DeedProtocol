@@ -45,8 +45,8 @@ export const Header = () => {
 
   const router = useRouter();
 
-  const isActive = (path: string) => {
-    return router.pathname === path;
+   const isActive = (href: string) => {
+    return router.pathname === href;
   };
 
   const nav = useMemo(
@@ -64,7 +64,7 @@ export const Header = () => {
             /
           </kbd>
         </div>
-        <Link href="/registration/new">
+        <Link href="/registration/new" passHref>
          <a
           className={`text-[11px] uppercase tracking-widest link-default ${
             isActive("/registration/new")
@@ -75,7 +75,7 @@ export const Header = () => {
           Register
          </a>
         </Link>
-        <Link href="/property-explorer?type=all">
+        <Link href="/property-explorer?type=all" passHref>
          <a
           className={`text-[11px] uppercase tracking-widest link-default ${
             isActive("explorer") 
