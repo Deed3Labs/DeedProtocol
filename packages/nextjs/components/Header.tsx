@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
+                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-full max-w-screen-sm text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
@@ -138,7 +138,7 @@ export const Header = () => {
             </svg>
           </Link>
           <div className="hidden lg:block w-full">
-            <div className="flex px-1 text-opacity-60 gap-4 font-medium mx-8 items-center">
+            <div className="flex px-1 text-opacity-60 gap-6 font-medium mx-8 items-center">
               {nav}
             </div>
           </div>
