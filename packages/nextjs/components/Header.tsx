@@ -102,7 +102,7 @@ export const Header = () => {
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
             <label
               tabIndex={0}
-              className={`ml-0 btn btn-ghost ${
+              className={`ml-0 btn btn-base-200 ${
                 isDrawerOpen ? "hover:bg-base-300" : "hover:bg-base-300"
               }`}
               onClick={() => {
@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content left-0 mt-0 px-3.5 pb-2.5 border-y border-white border-opacity-10 bg-base-200 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
+                className="menu menu-compact dropdown-content left-0 mt-0 px-3.5 pb-2.5 border-b border-white border-opacity-10 bg-base-200 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
