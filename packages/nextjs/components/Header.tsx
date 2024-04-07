@@ -43,6 +43,8 @@ export const Header = () => {
     }
   }, [pathname]);
 
+  const isActivePath = (path: string) => pathname === path;
+
   const nav = useMemo(
     () => (
       <>
@@ -60,7 +62,7 @@ export const Header = () => {
         </div>
         <Link
           className={`text-[11px] uppercase tracking-widest link-default ${
-            pathname === "/registration/new"
+            isActivePath("/registration/new")
               ? "text-white opacity-100 pointer-events-none"
               : "text-white/30 hover:text-white"
           }`}
@@ -70,7 +72,7 @@ export const Header = () => {
         </Link>
         <Link
           className={`text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default ${
-            pathname === "/property-explorer?type=all" ? "text-white text-opacity-100 pointer-events-none" : ""
+            pathname.includes("explorer") ? "text-white text-opacity-100 pointer-events-none" : ""
           }`}
           href="/property-explorer?type=all"
         >
