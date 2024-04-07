@@ -66,25 +66,25 @@ export const Header = () => {
         </div>
         <Link
           className={`text-[12px] sm:text-[11px] uppercase tracking-widest link-default ${
-            isActive("/registration/new")
+            isActive("explorer")
               ? "text-white pointer-events-none"
               : "text-white/30 hover:text-white"
           }`}
           
-          href="/registration/new" 
+          href="/property-explorer?type=all" 
         >
-          Register
+          Explore
         </Link>
         <Link
           className={`text-[12px] sm:text-[11px] uppercase tracking-widest link-default ${
-            isActive("explorer") 
+            isActive("/registration/new") 
               ? "text-white pointer-events-none" 
               : "text-white/30 hover:text-white"
           }`}
 
-          href="/property-explorer?type=all" 
+          href="/registration/new"
         >
-          Explore
+          Register
         </Link>
         <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[12px] sm:text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
           Docs
@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-full text-2xl gap-4"
+                className="menu menu-compact dropdown-content left-0 mt-2 p-2 shadow bg-base-100 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
@@ -138,7 +138,7 @@ export const Header = () => {
             </svg>
           </Link>
           <div className="hidden lg:block w-full">
-            <div className="flex px-1 text-opacity-60 gap-6 font-medium mx-8 items-center">
+            <div className="flex px-1 text-opacity-60 gap-4 font-medium mx-8 items-center">
               {nav}
             </div>
           </div>
