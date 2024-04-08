@@ -122,7 +122,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                 </button>
               </div>
               <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn m-1">
+                <div tabIndex={0} role="button" className="btn bg-[#0e0e0e] m-1">
                   <EllipsisHorizontalIcon className="h-6" />
                 </div>
                 <ul
