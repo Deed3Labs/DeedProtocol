@@ -53,7 +53,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
   };
 
   return (
-    <div className="flex flex-row border border-white border-opacity-10 p-4 sm:p-6 gap-6 flex-wrap">
+    <div className="flex flex-row border border-white border-opacity-10 p-5 sm:p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
           {" "}
@@ -74,7 +74,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
 
             <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">{deedData.propertyDetails.propertyAddress}</div>
 
-            <div className="flex flex-row gap-5 items-center">
+            <div className="flex flex-row gap-4 items-center">
               <Address address={deedData.owner} label="Owner" size="base" />
               <Address address="The Deed & Title Co." label="Validator" size="base" />
               <button
