@@ -57,7 +57,7 @@ const PropertyDetails = ({
           </div>
           <div className="flex flex-row justify-between w-full gap-6 p-6 flex-wrap">
             {/* First col */}
-            <div className="flex flex-col flex-grow gap-4 w-full">
+            <div className="flex flex-col flex-grow gap-4">
               <div className="flex flex-row justify-between items-center gap-2 pb-2 w-full">
                 <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Bed / Bath: </div>
                 <div className="">
@@ -115,7 +115,7 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
             </div>
-            <div className="flex flex-col flex-grow gap-4 w-full">
+            <div className="flex flex-col flex-grow gap-4">
               <div className="flex flex-row justify-between items-center gap-2 pb-2 w-full">
                 <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Build Year:</div>
                 <TextInput
