@@ -99,7 +99,7 @@ export const Header = () => {
     <>
       <div className="sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 w-full py-4 px-2 sm:pl-5 sm:pr-4">
         <div className="flex navbar-start w-full lg:w-1/2">
-          <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+          <div className="lg:hidden dropdown border-0" ref={burgerMenuRef}>
             <label
               tabIndex={0}
               className={`ml-0 btn bg-[#0e0e0e] ${
