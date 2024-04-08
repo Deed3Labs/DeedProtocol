@@ -101,9 +101,9 @@ export const Address = ({
       {label && <div className="text-[2.2vw] sm:text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{label}</div>}
       <div className="flex flex-row">
         {disableAddressLink || !blockExplorerAddressLink ? (
-          <span className={`text-[2.8vw] w-full sm:text-${size} font-normal`}>{displayAddress}</span>
+          <span className={`text-[3vw] w-full sm:text-${size} font-normal`}>{displayAddress}</span>
         ) : getTargetNetwork().id === hardhat.id ? (
-          <span className={`text-[2.8vw] w-full sm:text-${size} font-normal`}>
+          <span className={`text-[3vw] w-full sm:text-${size} font-normal`}>
             <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
           </span>
         ) : (
