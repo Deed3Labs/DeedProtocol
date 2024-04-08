@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="left-0 menu menu-compact bg-[#0e0e0e] dropdown-content mt-2 px-3.5 pb-5.5 border-y border-white border-opacity-10 flex flex-col w-screen gap-y-4 sm:gap-3"
+                className="menu menu-compact bg-[#0e0e0e] dropdown-content left-0 mt-1 px-3.5 pb-5.5 border-y border-white border-opacity-10 flex flex-col w-screen gap-3 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
