@@ -145,8 +145,8 @@ export const Header = () => {
         </div>
         <div className="navbar-end flex-grow mr-2 sm:mr-5">
           <DynamicWidget
-            buttonClassName="btn btn-neutral"
-            innerButtonComponent={<div className="btn btn-neutral">Login</div>}
+            buttonClassName="btn btn-base-300"
+            innerButtonComponent={<div className="btn btn-base-300 text-[11px] font-normal uppercase tracking-widest">Login</div>}
           />
         </div>
       </div>
