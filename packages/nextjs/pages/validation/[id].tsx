@@ -142,9 +142,9 @@ const Page = ({ router }: WithRouterProps) => {
     <div className="container py-10">
       <div className="flex flex-col lg:flex-row gap-4 w-full">
         <div className="flex flex-col gap-4 w-full lg:w-[63%]">
-          <div className="flex flex-row w-full justify-between">
-            <div className="text-xl sm:text-2xl">Validation</div>
-            <div className="flex flex-row items-center gap-4">
+          <div className="flex flex-row w-full items-center justify-between">
+            <div className="text-xl sm:text-2xl">Validation History</div>
+            <div className="flex flex-row items-center gap-2.5 sm:gap-4">
               <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
                 <svg
                   width="16"
@@ -167,10 +167,10 @@ const Page = ({ router }: WithRouterProps) => {
                     className="join-item py-2 px-3 text-[2vw] sm:text-[12px] text-zinc-400 cursor-pointer"
                     title="Coming Soon"
                   >
-                    Property Overview
+                    Overview
                   </div>
                   <div className="join-item py-2 px-3 text-[2vw] sm:text-[12px] bg-base-300 cursor-default">
-                    Validation History
+                    Validation
                   </div>
                 </div>
               <div className="dropdown dropdown-end">
