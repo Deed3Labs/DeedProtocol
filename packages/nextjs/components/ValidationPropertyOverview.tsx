@@ -75,8 +75,8 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
             <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">{deedData.propertyDetails.propertyAddress}</div>
 
             <div className="flex flex-row gap-4 items-center">
-              <Address address={deedData.owner} label="Owner" size="sm" />
-              <Address address="The Deed & Title Co." label="Validator" size="sm" />
+              <Address address={deedData.owner} label="Owner" size="[15px]" />
+              <Address address="The Deed & Title Co." label="Validator" size="[15px]" />
               <button
                 className="btn btn-sm sm:btn-sm border border-white border-opacity-10 w-8 p-2 sm:p-1.5 rounded-md"
                 onClick={() => handleChatClick()}
@@ -90,14 +90,14 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
             <div className="flex flex-row w-full items-center justify-between">
               <div className="flex flex-row">
                 <button
-                  className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide"
+                  className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
                   onClick={() => handleShare()}
                 >
                   <ShareIcon className="h-4" />
                   Share
                 </button>
                 <button
-                  className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide"
+                  className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
                   onClick={() => refresh()}
                 >
                   <svg
