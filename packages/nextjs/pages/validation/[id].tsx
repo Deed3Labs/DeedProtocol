@@ -164,12 +164,12 @@ const Page = ({ router }: WithRouterProps) => {
               </button>
                 <div className="join join-horizontal border border-white border-opacity-10 p-1">
                   <div
-                    className="join-item py-2 px-3 text-[2.6vw] sm:text-[13px] font-normal text-zinc-400 cursor-pointer"
+                    className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal text-zinc-400 cursor-pointer"
                     title="Coming Soon"
                   >
                     Property Overview
                   </div>
-                  <div className="join-item py-2 px-3 text-[2.6vw] sm:text-[13px] font-normal bg-base-300 cursor-default">
+                  <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal bg-base-300 cursor-default">
                     Validation History
                   </div>
                 </div>
