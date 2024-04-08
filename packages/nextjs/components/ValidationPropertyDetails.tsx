@@ -100,6 +100,7 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySize"
                   value={propertyDetail.propertySize}
+                  placeholder="0.00 Acres"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -110,6 +111,7 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySquareFootage"
                   value={propertyDetail.propertySquareFootage}
+                  placeholder="0 SqFt"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -122,6 +124,7 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyBuildYear"
                   value={propertyDetail.propertyBuildYear}
+                  placeholder="N/A"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -132,6 +135,7 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyCity"
                   value={propertyDetail.propertyCity}
+                  placeholder="N/A"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -142,6 +146,7 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyHouseType"
                   value={propertyDetail.propertyHouseType}
+                  placeholder="N/A"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
