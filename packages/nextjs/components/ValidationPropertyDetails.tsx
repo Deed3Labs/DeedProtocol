@@ -200,7 +200,7 @@ const PropertyDetails = ({
               </svg>
               <div>Disclosures</div>
             </button>
-            <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal tracking-wide">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="14"
                 height="14"
