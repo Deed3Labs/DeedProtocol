@@ -103,7 +103,7 @@ export const Header = () => {
             <label
               tabIndex={0}
               className={`ml-0 btn bg-[#0e0e0e] ${
-                isDrawerOpen ? "hover:bg-base-300" : "hover:bg-base-300"
+                isDrawerOpen ? "hover:bg-[#0e0e0e]" : "hover:bg-[#0e0e0e]
               }`}
               onClick={() => {
                 setIsDrawerOpen(prevIsOpenState => !prevIsOpenState);
@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact bg-[#0e0e0e] dropdown-content left-0 mt-0 px-3.5 pb-3.5 border-b border-white border-opacity-10 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
+                className="menu menu-compact bg-[#0e0e0e] dropdown-content left-0 mt-2 px-3.5 pb-4.5 border-y border-white border-opacity-10 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
