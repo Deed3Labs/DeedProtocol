@@ -143,7 +143,7 @@ const Page = ({ router }: WithRouterProps) => {
       <div className="flex flex-col lg:flex-row gap-4 w-full">
         <div className="flex flex-col gap-4 w-full lg:w-[63%]">
           <div className="flex flex-row w-full items-center justify-between">
-            <div className="text-xl sm:text-2xl">Validation History</div>
+            <div className="text-xl sm:text-2xl">Validation</div>
             <div className="flex flex-row items-center gap-2.5 sm:gap-4">
               <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
                 <svg
@@ -164,12 +164,12 @@ const Page = ({ router }: WithRouterProps) => {
               </button>
                 <div className="join join-horizontal border border-white border-opacity-10 p-1">
                   <div
-                    className="join-item py-2 px-3 text-[2.2vw] sm:text-[12px] text-zinc-400 cursor-pointer"
+                    className="join-item py-2 px-3 text-[2.4vw] sm:text-[12px] text-zinc-400 cursor-pointer"
                     title="Coming Soon"
                   >
                     Overview
                   </div>
-                  <div className="join-item py-2 px-3 text-[2.2vw] sm:text-[12px] bg-base-300 cursor-default">
+                  <div className="join-item py-2 px-3 text-[2.4vw] sm:text-[12px] bg-base-300 cursor-default">
                     Validation
                   </div>
                 </div>
