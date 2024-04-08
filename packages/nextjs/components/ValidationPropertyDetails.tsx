@@ -100,7 +100,6 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySize"
                   value={propertyDetail.propertySize}
-                  placeholder="0.00 Acres"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -111,7 +110,6 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySquareFootage"
                   value={propertyDetail.propertySquareFootage}
-                  placeholder="0 SqFt"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -124,7 +122,6 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyBuildYear"
                   value={propertyDetail.propertyBuildYear}
-                  placeholder="N/A"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -135,7 +132,6 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyCity"
                   value={propertyDetail.propertyCity}
-                  placeholder="N/A"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -146,7 +142,6 @@ const PropertyDetails = ({
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyHouseType"
                   value={propertyDetail.propertyHouseType}
-                  placeholder="N/A"
                   readOnly={viewMode}
                   onChange={handleChange}
                 ></TextInput>
@@ -156,8 +151,8 @@ const PropertyDetails = ({
           <div className="grid grid-cols-4 auto-cols-min justify-items-start sm:gap-2 pb-6">
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
-                width="14"
-                height="14"
+                width="18"
+                height="18"
                 viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +168,7 @@ const PropertyDetails = ({
                 </g>
                 <defs>
                   <clipPath id="clip0_2054_765">
-                    <rect width="16" height="16" fill="white" />
+                    <rect width="18" height="18" fill="white" />
                   </clipPath>
                 </defs>
               </svg>
@@ -181,8 +176,8 @@ const PropertyDetails = ({
             </button>
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
-                width="14"
-                height="14"
+                width="18"
+                height="18"
                 viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +194,7 @@ const PropertyDetails = ({
                 </g>
                 <defs>
                   <clipPath id="clip0_2054_776">
-                    <rect width="16" height="16" fill="white" />
+                    <rect width="18" height="18" fill="white" />
                   </clipPath>
                 </defs>
               </svg>
@@ -207,9 +202,9 @@ const PropertyDetails = ({
             </button>
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
-                width="14"
-                height="14"
-                viewBox="0 0 16 16"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -225,7 +220,7 @@ const PropertyDetails = ({
                 </g>
                 <defs>
                   <clipPath id="clip0_2054_786">
-                    <rect width="16" height="16" fill="white" transform="translate(1)" />
+                    <rect width="18" height="18" fill="white" transform="translate(1)" />
                   </clipPath>
                 </defs>
               </svg>
@@ -236,8 +231,8 @@ const PropertyDetails = ({
               onClick={refresh}
             >
               <svg
-                width="14"
-                height="14"
+                width="18"
+                height="18"
                 viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
