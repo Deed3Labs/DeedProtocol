@@ -75,8 +75,8 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
             <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">{deedData.propertyDetails.propertyAddress}</div>
 
             <div className="flex flex-row gap-4 items-center">
-              <Address address={deedData.owner} label="Owner" size="base" />
-              <Address address="The Deed & Title Co." label="Validator" size="base" />
+              <Address address={deedData.owner} label="Owner" size="sm" />
+              <Address address="The Deed & Title Co." label="Validator" size="sm" />
               <button
                 className="btn btn-sm sm:btn-sm border border-white border-opacity-10 w-8 p-2 sm:p-1.5 rounded-md"
                 onClick={() => handleChatClick()}
