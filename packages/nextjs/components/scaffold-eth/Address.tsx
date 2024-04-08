@@ -118,12 +118,12 @@ export const Address = ({
         )}
         {addressCopied ? (
           <CheckCircleIcon
-            className="ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
+            className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
             aria-hidden="true"
           />
         ) : (
           <CopyToClipboard
-            className="ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
+            className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
             text={address}
             onCopy={() => {
               notification.info("Copied to clipboard", {
