@@ -90,14 +90,14 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
             <div className="flex flex-row w-full items-center justify-between">
               <div className="flex flex-row">
                 <button
-                  className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize"
+                  className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide"
                   onClick={() => handleShare()}
                 >
                   <ShareIcon className="h-4" />
                   Share
                 </button>
                 <button
-                  className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize"
+                  className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide"
                   onClick={() => refresh()}
                 >
                   <svg
