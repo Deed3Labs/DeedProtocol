@@ -65,7 +65,7 @@ export const Header = () => {
           </kbd>
         </div>
         <Link
-          className={`text-[12px] sm:text-[11px] uppercase tracking-widest link-default ${
+          className={`text-[11px] sm:text-[11px] uppercase tracking-widest link-default ${
             isActive("explorer")
               ? "text-white pointer-events-none"
               : "text-white/30 hover:text-white"
@@ -76,7 +76,7 @@ export const Header = () => {
           Explore
         </Link>
         <Link
-          className={`text-[12px] sm:text-[11px] uppercase tracking-widest link-default ${
+          className={`text-[11px] sm:text-[11px] uppercase tracking-widest link-default ${
             isActive("/registration/new") 
               ? "text-white pointer-events-none" 
               : "text-white/30 hover:text-white"
@@ -86,7 +86,7 @@ export const Header = () => {
         >
           Register
         </Link>
-        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[12px] sm:text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
+        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[11px] sm:text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
           Docs
         </Link>
         {/* <Link href="/property-explorer?type=lease">About</Link> */}
@@ -114,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content left-0 mt-0 px-3.5 pb-3.5 border-b border-white border-opacity-10 bg-base-200 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
+                className="menu menu-compact bg-base-200 dropdown-content left-0 mt-0 px-3.5 pb-3.5 border-b border-white border-opacity-10 flex flex-col w-screen text-2xl gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
