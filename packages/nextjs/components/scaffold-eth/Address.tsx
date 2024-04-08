@@ -103,12 +103,12 @@ export const Address = ({
         {disableAddressLink || !blockExplorerAddressLink ? (
           <span className={`text-[3vw] w-full sm:text-${size} font-normal`}>{displayAddress}</span>
         ) : getTargetNetwork().id === hardhat.id ? (
-          <span className={`text-[3vw] w-full sm:text-${size} font-normal`}>
+          <span className={`truncate text-[3vw] w-full sm:text-${size} font-normal`}>
             <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
           </span>
         ) : (
           <a
-            className={`text-[3vw] w-full sm:text-${size} font-normal`}
+            className={`truncate text-[3vw] w-full sm:text-${size} font-normal`}
             target="_blank"
             href={blockExplorerAddressLink}
             rel="noopener noreferrer"
