@@ -74,7 +74,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
 
             <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">{deedData.propertyDetails.propertyAddress}</div>
 
-            <div className="flex flex-row gap-8 items-center">
+            <div className="flex flex-row gap-5 items-center">
               <Address address={deedData.owner} label="Owner" size="base" />
               <Address address="The Deed & Title Co." label="Validator" size="base" />
               <button
