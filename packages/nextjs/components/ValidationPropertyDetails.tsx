@@ -149,7 +149,7 @@ const PropertyDetails = ({
             </div>
           </div>
           <div className="grid grid-cols-4 auto-cols-min justify-items-start sm:gap-2 pb-6">
-            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="14"
                 height="14"
@@ -174,7 +174,7 @@ const PropertyDetails = ({
               </svg>
               <div>MLS Data</div>
             </button>
-            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="14"
                 height="14"
@@ -200,7 +200,7 @@ const PropertyDetails = ({
               </svg>
               <div>Disclosures</div>
             </button>
-            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="14"
                 height="14"
@@ -227,7 +227,7 @@ const PropertyDetails = ({
               <div>Proof of title</div>
             </button>
             <button
-              className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal capitalize"
+              className="btn btn-link no-underline text-[2.2vw] sm:text-sm text-zinc-400 font-normal uppercase tracking-wide"
               onClick={refresh}
             >
               <svg
