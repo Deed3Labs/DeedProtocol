@@ -53,7 +53,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
   };
 
   return (
-    <div className="flex flex-row border border-white border-opacity-10 p-6 gap-6 flex-wrap">
+    <div className="flex flex-row border border-white border-opacity-10 p-4 sm:p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
           {" "}
