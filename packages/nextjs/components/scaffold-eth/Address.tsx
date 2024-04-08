@@ -94,7 +94,7 @@ export const Address = ({
       <BlockieAvatar
         address={address}
         ensImage={ensAvatar}
-        size={(blockieSizeMap[size] * 36) / blockieSizeMap["base"]}
+        size={(blockieSizeMap[size] * 32) / blockieSizeMap["base"]}
       />
     </div>
     <div className="flex flex-col">
@@ -108,7 +108,7 @@ export const Address = ({
           </span>
         ) : (
           <a
-            className={`text-[2.8vw] w-full sm:text-${size} font-normal`}
+            className={`text-[3vw] w-full sm:text-${size} font-normal`}
             target="_blank"
             href={blockExplorerAddressLink}
             rel="noopener noreferrer"
