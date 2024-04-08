@@ -44,7 +44,7 @@ const PropertyDetails = ({
       {propertyDetail && (
         <div className="border border-white border-opacity-10">
           <div className="flex flex-row justify-between items-center px-2 pt-8">
-            <div className="pl-4 text-sm font-normal uppercase tracking-widest">Property Details</div>
+            <div className="pl-4 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">Property Details</div>
             {(isOwner || isValidator) && (
               <button className="btn btn-link" onClick={handleViewModeToggle}>
                 {viewMode ? (
