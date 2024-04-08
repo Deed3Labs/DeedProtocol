@@ -94,21 +94,21 @@ export const Address = ({
       <BlockieAvatar
         address={address}
         ensImage={ensAvatar}
-        size={(blockieSizeMap[size] * 32) / blockieSizeMap["base"]}
+        size={(blockieSizeMap[size] * 34) / blockieSizeMap["base"]}
       />
     </div>
     <div className="flex flex-col">
       {label && <div className="text-[2.2vw] sm:text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{label}</div>}
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center w-full">
         {disableAddressLink || !blockExplorerAddressLink ? (
-          <span className={`text-[3vw] w-full sm:text-${size} font-normal`}>{displayAddress}</span>
+          <span className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}>{displayAddress}</span>
         ) : getTargetNetwork().id === hardhat.id ? (
-          <span className={`truncate text-[3vw] w-full sm:text-${size} font-normal`}>
+          <span className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}>
             <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
           </span>
         ) : (
           <a
-            className={`truncate text-[3vw] w-full sm:text-${size} font-normal`}
+            className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}
             target="_blank"
             href={blockExplorerAddressLink}
             rel="noopener noreferrer"
