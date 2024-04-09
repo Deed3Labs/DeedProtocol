@@ -57,8 +57,8 @@ const PropertyDetails = ({
           </div>
           <div className="flex flex-row justify-between w-full gap-6 p-6 flex-wrap">
             {/* First col */}
-            <div className="flex flex-col flex-grow gap-5">
-              <div className="flex flex-row justify-between items-center gap-3.5 pb-0 w-full">
+            <div className="flex flex-col flex-grow gap-6">
+              <div className="flex flex-row justify-between items-center gap-4 sm:gap-3.5 pb-0 w-full">
                 <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Bed / Bath: </div>
                 <div className="">
                   {viewMode ? (
@@ -115,7 +115,7 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
             </div>
-            <div className="flex flex-col flex-grow gap-5">
+            <div className="flex flex-col flex-grow gap-6">
               <div className="flex flex-row justify-between items-center gap-3 pb-0 w-full">
                 <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Build Year:</div>
                 <TextInput
@@ -148,7 +148,7 @@ const PropertyDetails = ({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 auto-cols-min justify-items-start sm:gap-2 pt-6 sm:pt-2.5 pb-6 sm:pb-4">
+          <div className="grid grid-cols-4 auto-cols-min justify-items-start sm:gap-2 pt-6 sm:pt-3.5 pb-6 sm:pb-3">
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="18"
