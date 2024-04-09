@@ -40,8 +40,8 @@ const Layout = ({ pageProps, Component }: AppProps) => {
       <BackToTop />
       <div className="container pt-10 !hidden">
         <DynamicWidget
-          buttonClassName="btn btn-base-300"
-          innerButtonComponent={<div className="btn btn-base-300">Connect</div>}
+          buttonClassName="dynamic-shadow-dom"
+          innerButtonComponent={<div className="dynamic-shadow-dom">Connect</div>}
         />
       </div>
     </>
