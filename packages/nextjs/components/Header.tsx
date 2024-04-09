@@ -146,7 +146,7 @@ export const Header = () => {
         <div className="navbar-end flex-grow mr-2 sm:mr-5">
           <DynamicWidget
             buttonClassName="dynamic-shadow-dom"
-            innerButtonComponent={<div className="btn btn-base-300 text-[11px] font-normal uppercase tracking-widest">Login</div>}
+            innerButtonComponent={<div className="dynamic-shadow-dom btn-base-300 text-[11px] font-normal uppercase tracking-widest">Login</div>}
           />
         </div>
       </div>
