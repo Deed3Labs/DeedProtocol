@@ -45,14 +45,14 @@ const FileValidation = ({
   const stateBadge = useMemo(() => {
     switch (state) {
       case "Completed":
-        return "success";
+        return "bg-green-500 text-white";
       case "Needs Review":
-        return "error";
+        return "bg-red-500 text-white";
       case "Processing":
-        return "warning";
+        return "bg-yellow-500 text-black";
       case "Not started":
       default:
-        return "neutral";
+        return "bg-base-300 text-zinc-400";
     }
   }, [state]);
 
@@ -148,13 +148,7 @@ const FileValidation = ({
           </select>
         ) : (
           <div
-            className={`badge badge-${stateBadge} text-${
-              stateBadge === "neutral"
-                ? "secondary"
-                : stateBadge === "warning"
-                ? "black"
-                : stateBadge
-            } h-6 rounded-lg text-[10px] font-normal capitalize`}
+            className={`badge badge-${stateBadge} pointer-events-auto	rounded-lg h-6 px-2 text-[10px] font-normal capitalize`}
             onDoubleClick={() => setIsBadgeEdit(x => !x)}
           >
             {state ?? "Not started"}
