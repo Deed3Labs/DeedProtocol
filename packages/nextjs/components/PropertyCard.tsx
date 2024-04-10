@@ -44,7 +44,7 @@ const PropertyCard = ({ property }: Props) => {
 
   // Function to select a random placeholder image based on property type
   const getRandomPlaceholderImage = (type) => {
-    const images = placeholderImages[type] || placeholderImages['default']; // Fallback to residential or any default
+    const images = placeholderImages[type.toLowerCase()] || placeholderImages['default']; // Fallback to default
     return images[Math.floor(Math.random() * images.length)];
   };
 
@@ -52,6 +52,10 @@ const PropertyCard = ({ property }: Props) => {
   const imageUrl = property.pictures && property.pictures.length > 0
     ? property.pictures[0]
     : getRandomPlaceholderImage(property.type);
+
+  // Debugging logs
+  console.log('Property Type:', property.type);
+  console.log('Image URL:', imageUrl);
 
   return (
     <>
