@@ -18,25 +18,25 @@ const PropertyCard = ({ property }: Props) => {
   // Placeholder images for different property types, each with multiple options
   const placeholderImages = {
     default: [
-      '/assets/images/placeholders/residential1.png',
+      '/images/placeholders/residential1.png',
       // Add more as needed
     ],
     realEstate: [
-      '/assets/images/placeholders/residential1.png',
-      '/assets/images/placeholders/residential2.png',
-      '/assets/images/placeholders/residential3.png',
-      '/assets/images/placeholders/residential4.png',
-      '/assets/images/placeholders/residential5.png',
-      '/assets/images/placeholders/residential6.png',
+      '/images/placeholders/residential1.png',
+      '/images/placeholders/residential2.png',
+      '/images/placeholders/residential3.png',
+      '/images/placeholders/residential4.png',
+      '/images/placeholders/residential5.png',
+      '/images/placeholders/residential6.png',
       // Add more as needed
     ],
     vehicle: [
-      '/assets/images/placeholders/residential1.png',
-      '/assets/images/placeholders/residential2.png',
-      '/assets/images/placeholders/residential3.png',
-      '/assets/images/placeholders/residential4.png',
-      '/assets/images/placeholders/residential5.png',
-      '/assets/images/placeholders/residential6.png',
+      '/images/placeholders/residential1.png',
+      '/images/placeholders/residential2.png',
+      '/images/placeholders/residential3.png',
+      '/images/placeholders/residential4.png',
+      '/images/placeholders/residential5.png',
+      '/images/placeholders/residential6.png',
       // Add more as needed
     ],
     // Define more property types as needed
