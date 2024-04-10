@@ -7,14 +7,59 @@ interface Props {
   property: PropertyModel;
 }
 
+interface PropertyModel {
+  id: string;
+  pictures: string[];
+  type: string; // This is the property type, e.g., "residential", "commercial", etc.
+  // ... other properties like address, price, etc.
+}
+
 const PropertyCard = ({ property }: Props) => {
+  // Placeholder images for different property types, each with multiple options
+  const placeholderImages = {
+    default: [
+      '/images/placeholders/residential1.png',
+      // Add more as needed
+    ],
+    realEstate: [
+      '/images/placeholders/residential1.png',
+      '/images/placeholders/residential2.png',
+      '/images/placeholders/residential3.png',
+      '/images/placeholders/residential4.png',
+      '/images/placeholders/residential5.png',
+      '/images/placeholders/residential6.png',
+      // Add more as needed
+    ],
+    vehicle: [
+      '/images/placeholders/residential1.png',
+      '/images/placeholders/residential2.png',
+      '/images/placeholders/residential3.png',
+      '/images/placeholders/residential4.png',
+      '/images/placeholders/residential5.png',
+      '/images/placeholders/residential6.png',
+      // Add more as needed
+    ],
+    // Define more property types as needed
+  };
+
+  // Function to select a random placeholder image based on property type
+  const getRandomPlaceholderImage = (type) => {
+    const images = placeholderImages[type] || placeholderImages['default']; // Fallback to residential or any default
+    return images[Math.floor(Math.random() * images.length)];
+  };
+
+  // Determine the image source
+  const imageUrl = property.pictures && property.pictures.length > 0
+    ? property.pictures[0]
+    : getRandomPlaceholderImage(property.type);
+
   return (
     <>
       {property && (
         <Link href={`/validation/${property.id}`} className="link-default">
           <div class="w-full sm:w-full h-72 sm:h-72 md:h-[391px] p-1.5 sm:p-2.5 border border-white border-opacity-10 flex-col justify-start items-start gap-2.5 inline-flex">
             <div class="self-stretch h-60 bg-white bg-opacity-5 flex-col justify-start items-start flex relative">
-              <Image src={property.pictures[0]} alt="Property Image" layout="fill" objectFit="cover" />
+              <Image src={imageUrl} alt="Property Image" layout="fill" objectFit="cover" />
               <div class="w-7 h-7 p-1 bg-zinc-900 bg-opacity-40 rounded-3xl border border-white border-opacity-10 flex-col justify-center items-center flex absolute bottom-0 right-0 m-2">
                 <CheckBadgeIcon className="text-white w-5 h-5" />
               </div>
