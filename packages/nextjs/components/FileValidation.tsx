@@ -42,15 +42,20 @@ const FileValidation = ({
     return validationEntry?.[1];
   }, [deedData.validations, id]);
 
-  const stateBadgeClasses = useMemo(() => ({
-    Completed: "bg-green-500 text-white",
-    "Needs Review": "bg-red-500 text-white",
-    Processing: "bg-yellow-500 text-white",
-    "Not started": "bg-gray-400 text-white",
-  }), []);
+  const stateBadge = useMemo(() => {
+    switch (state) {
+      case "Completed":
+        return "success";
+      case "Needs Review":
+        return "error";
+      case "Processing":
+        return "warning";
+      case "Not started":
+      default:
+        return "neutral";
+    }
+  }, [state]);
 
-  const badgeClasses = state ? stateBadgeClasses[state] || stateBadgeClasses["Not started"] : stateBadgeClasses["Not started"];
-  
   useEffect(() => {
     if (fileLabels && supportedFiles) {
       const files: typeof allFiles = [];
@@ -143,7 +148,13 @@ const FileValidation = ({
           </select>
         ) : (
           <div
-            className={`badge ${badgeClasses} h-6 px-3 rounded-lg text-[9px] font-normal capitalize`}
+            className={`badge badge-${stateBadge} text-${
+              stateBadge === "neutral"
+                ? "secondary"
+                : stateBadge === "warning"
+                ? "black"
+                : stateBadge
+            } h-6 rounded-lg text-[10px] font-normal capitalize`}
             onDoubleClick={() => setIsBadgeEdit(x => !x)}
           >
             {state ?? "Not started"}
