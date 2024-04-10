@@ -8,9 +8,9 @@ interface Props {
 }
 
 interface PropertyModel {
-  id: number;
+  id: string;
   pictures: string[];
-  type: PropertyType; // This is the property type, e.g., "residential", "commercial", etc.
+  type: string; // This is the property type, e.g., "residential", "commercial", etc.
   // ... other properties like address, price, etc.
 }
 
