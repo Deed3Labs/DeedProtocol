@@ -23,7 +23,7 @@ interface Props {
 }
 
 const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Props) => {
-  const vehicleModelsOptions = getVehicleModelsOptions(value?.vehicleMake);
+  const vehicleModelsOptions = getVehicleModelsOptions(value?.vehicleMake?.toLowerCase());
    
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
@@ -112,7 +112,7 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
             <SelectInput
               name="vehicleModel"
               label="Vehicle Model"
-              options={vehicleModels.map(model => ({ label: model.label, value: model.value }))}
+              options={vehicleModelsOptions}
               placeholder="Select Model"
               value={value?.vehicleModel}
               onChange={handleChange}
