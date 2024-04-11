@@ -10,7 +10,7 @@ import {
   PropertyZoningOptions,
   StateOptions,
   VehicleMakeOptions,
-  VehicleModelOptions,
+  getVehicleModelOptions,
 } from "~~/constants";
 import { DeedInfoModel, PropertyDetailsModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -33,7 +33,7 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
     });
   };
 
-  const vehicleModels = VehicleModelOptions(value?.vehicleMake); 
+  const vehicleModelsOptions = getVehicleModelsOptions(value?.vehicleMake); 
   
   return (
     <div className="flex flex-col mt-6 gap-6">
@@ -114,7 +114,7 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
             <SelectInput
               name="vehicleModel"
               label="Vehicle Model"
-              options={vehicleModels.map(model => ({ label: model, value: model }))}
+              options={vehicleModelsOptions}
               placeholder="Select Model"
               value={value?.vehicleModel}
               onChange={handleChange}
