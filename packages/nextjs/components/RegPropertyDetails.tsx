@@ -65,63 +65,29 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         value={value?.propertyType}
         readOnly={readOnly}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
-        {value?.PropertyType === "vehicle" && (
+      {value?.propertyType === "vehicle" ? (
         <>
-         {/* Vehicle-specific text inputs */}
-         <TextInput
-          name="vehicleIdentificationNumber"
-          label="Vehicle Identification Number (VIN)"
-          placeholder="e.g. 1HGBH41JXMN109186"
-          value={value?.vehicleIdentificationNumber}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <TextInput
-          name="yearOfManufacture"
-          label="Year of Manufacture"
-          placeholder="e.g. 2020"
-          value={value?.yearOfManufacture}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-      </>
-    ) : (
-      <>
-        {/* Real Estate-specific text inputs */}
-        <TextInput
-          name="propertyAddress"
-          label="APN # or Street Address"
-          info
-          placeholder="e.g. 123 Main Street"
-          value={value?.propertyAddress}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <TextInput
-          name="propertyCity"
-          label="City or Region"
-          placeholder="e.g. San Bernardino"
-          value={value?.propertyCity}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <SelectInput
-          name="propertyState"
-          label="State or Region"
-          placeholder="Select State"
-          options={StateOptions}
-          value={value?.propertyState}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-      </>
-    )}
-  </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
-        {value?.PropertyType === "vehicle" && (
-          <>
-            {/* Vehicle specific inputs */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Vehicle-specific text inputs */}
+            <TextInput
+              name="vehicleIdentificationNumber"
+              label="Vehicle Identification Number (VIN)"
+              placeholder="e.g. 1HGBH41JXMN109186"
+              value={value?.vehicleIdentificationNumber}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <TextInput
+              name="yearOfManufacture"
+              label="Year of Manufacture"
+              placeholder="e.g. 2020"
+              value={value?.yearOfManufacture}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Vehicle-specific select inputs */}
             <SelectInput
               name="vehicleMake"
               label="Vehicle Make"
@@ -140,10 +106,41 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
               onChange={handleChange}
               readOnly={readOnly}
             />
-          </>
-        ) : (
-          <>
-            {/* Real Estate specific inputs */}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Real Estate-specific text inputs */}
+            <TextInput
+              name="propertyAddress"
+              label="APN # or Street Address"
+              info
+              placeholder="e.g. 123 Main Street"
+              value={value?.propertyAddress}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <TextInput
+              name="propertyCity"
+              label="City or Region"
+              placeholder="e.g. San Bernardino"
+              value={value?.propertyCity}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="propertyState"
+              label="State or Region"
+              placeholder="Select State"
+              options={StateOptions}
+              value={value?.propertyState}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Real Estate-specific select inputs */}
             <TextInput
               name="propertySize"
               label="Lot Size"
@@ -173,9 +170,9 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
               onChange={handleChange}
               readOnly={readOnly}
             />
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
       <div>
         <div className="justify-start items-center inline-flex mt-3">
           <div className="text-base font-normal leading-normal">Property Image</div>
