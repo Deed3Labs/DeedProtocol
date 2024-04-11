@@ -22,7 +22,7 @@ interface Props {
   isDraft?: boolean;
 }
 
-const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) => {
+const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Props) => {
   const getVehicleModels = (make) => VehicleModelOptions[make] || [];
   const vehicleModels = getVehicleModels(value?.vehicleMake);  
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
