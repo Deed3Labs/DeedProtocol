@@ -38,7 +38,6 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       name: "propertyDetails",
       value: updatedValue,
     });
-  };
   return (
     <div className="flex flex-col mt-6 gap-6">
       <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
