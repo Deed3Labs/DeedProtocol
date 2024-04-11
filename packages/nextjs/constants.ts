@@ -83,6 +83,26 @@ export const StateOptions = [
   { label: "Wyoming", value: "WY" },
 ] as const;
 
+export const VehicleMakesAndModels = {
+  Ford: ["Fiesta", "Focus", "Mustang"],
+  Chevrolet: ["Camaro", "Silverado", "Tahoe"],
+  Toyota: ["Corolla", "Camry", "Prius"],
+  Honda: ["Civic", "Accord", "CR-V"],
+  // Add more makes and models as needed
+};
+
+export const VehicleMakeOptions = Object.keys(VehicleMakesAndModels).map(make => ({
+  label: make,
+  value: make.toLowerCase(),
+}));
+
+export const getVehicleModelsOptions = (make) => {
+  return VehicleMakesAndModels[make]?.map(model => ({
+    label: model,
+    value: model.toLowerCase(),
+  })) || [];
+};
+
 export const EntityTypeOptions = [
   { label: "Limited Partnership (LP)", value: "LP" },
   { label: "Corporation (C-Corp)", value: "C-Corp" },
