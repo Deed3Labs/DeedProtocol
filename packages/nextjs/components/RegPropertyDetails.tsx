@@ -33,7 +33,7 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
     });
   };
 
-  const vehicleModels = getVehicleModels(value?.vehicleMake); 
+  const vehicleModels = VehicleModelOptions(value?.vehicleMake); 
   
   return (
     <div className="flex flex-col mt-6 gap-6">
