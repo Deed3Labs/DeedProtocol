@@ -23,7 +23,7 @@ interface Props {
 }
 
 const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Props) => {
-  const getVehicleModels = (make) => VehicleModelOptions[make] || [];
+  const vehicleModelsOptions = getVehicleModelsOptions(value?.vehicleMake);
    
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
@@ -32,8 +32,6 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
       value: updatedValue,
     });
   };
-
-  const vehicleModelsOptions = getVehicleModelsOptions(value?.vehicleMake); 
   
   return (
     <div className="flex flex-col mt-6 gap-6">
