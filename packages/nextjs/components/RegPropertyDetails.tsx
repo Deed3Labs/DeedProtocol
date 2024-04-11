@@ -10,7 +10,7 @@ import {
   PropertyZoningOptions,
   StateOptions,
   VehicleMakeOptions,
-  getVehicleModelOptions,
+  getVehicleModelsOptions,
 } from "~~/constants";
 import { DeedInfoModel, PropertyDetailsModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
