@@ -10,7 +10,7 @@ import {
   StateOptions,
   WrapperOptions,
   VehicleMakeOptions,
-  getVehicleModelOptions,
+  getVehicleModelsOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
 
