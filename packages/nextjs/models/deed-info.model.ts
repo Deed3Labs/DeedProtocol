@@ -54,7 +54,7 @@ export interface PropertyDetailsModel {
   currentMileage: string;
   yearOfManufacture: string;
   vehicleMake: ValueExtractor<typeof VehicleMakeOptions>;
-  vehicleModel: ValueExtractor<typeof getVehicleModelsOptions>;
+  vehicleModel: ValueExtractor<typeof VehicleModelsOptions>;
 
   propertyImages?: FileModel[];
   propertyDeedOrTitle: FileModel;
