@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
@@ -65,6 +65,7 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         value={value?.propertyType}
         readOnly={readOnly}
       />
+      
       {value?.propertyType === "vehicle" ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
