@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
@@ -23,15 +23,8 @@ interface Props {
 }
 
 const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) => {
-  const [vehicleModels, setVehicleModels] = useState([]);
-
-  useEffect(() => {
-    // Update vehicle models based on the selected make
-    if (value?.vehicleMake) {
-      setVehicleModels(VehicleModelOptions[value.vehicleMake] || []);
-    }
-  }, [value?.vehicleMake]);
-  
+  const getVehicleModels = (make) => VehicleModelOptions[make] || [];
+  const vehicleModels = getVehicleModels(value?.vehicleMake);  
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({
@@ -39,6 +32,7 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       value: updatedValue,
     });
   };
+  
   return (
     <div className="flex flex-col mt-6 gap-6">
       <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
@@ -81,14 +75,31 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
             <TextInput
               name="yearOfManufacture"
               label="Year of Manufacture"
-              placeholder="e.g. 2020"
+              placeholder="e.g. 1981"
               value={value?.yearOfManufacture}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="propertyState"
+              label="State or Region"
+              placeholder="Select State"
+              options={StateOptions}
+              value={value?.propertyState}
               onChange={handleChange}
               readOnly={readOnly}
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
             {/* Vehicle-specific select inputs */}
+            <TextInput
+              name="currentMileage"
+              label="Current Mileage"
+              placeholder="e.g. 135,000 mi"
+              value={value?.currentMileage}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
             <SelectInput
               name="vehicleMake"
               label="Vehicle Make"
