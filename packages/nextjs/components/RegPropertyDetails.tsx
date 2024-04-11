@@ -68,23 +68,27 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
         {value?.PropertyType === "vehicle" && (
         <>
-          {/* Vehicle-specific text inputs */}
-          <TextInput
-            name="vehicleIdentificationNumber"
-            label="Vehicle Identification Number (VIN)"
-            placeholder="e.g. 1HGBH41JXMN109186"
-            value={value?.vehicleIdentificationNumber}
-            onChange={handleChange}
-            readOnly={readOnly}
-          />
-          <TextInput
-            name="yearOfManufacture"
-            label="Year of Manufacture"
-            placeholder="e.g. 2020"
-            value={value?.yearOfManufacture}
-            onChange={handleChange}
-            readOnly={readOnly}
-          />
+         {/* Vehicle-specific text inputs */}
+         <TextInput
+          name="vehicleIdentificationNumber"
+          label="Vehicle Identification Number (VIN)"
+          placeholder="e.g. 1HGBH41JXMN109186"
+          value={value?.vehicleIdentificationNumber}
+          onChange={handleChange}
+          readOnly={readOnly}
+        />
+        <TextInput
+          name="yearOfManufacture"
+          label="Year of Manufacture"
+          placeholder="e.g. 2020"
+          value={value?.yearOfManufacture}
+          onChange={handleChange}
+          readOnly={readOnly}
+        />
+      </>
+    ) : (
+      <>
+        {/* Real Estate-specific text inputs */}
         <TextInput
           name="propertyAddress"
           label="APN # or Street Address"
@@ -111,7 +115,9 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
           onChange={handleChange}
           readOnly={readOnly}
         />
-      </div>
+      </>
+    )}
+  </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
         {value?.PropertyType === "vehicle" && (
           <>
@@ -138,6 +144,15 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         ) : (
           <>
             {/* Real Estate specific inputs */}
+            <TextInput
+              name="propertySize"
+              label="Lot Size"
+              optional
+              placeholder="e.g. 3500 sqft"
+              value={value?.propertySize}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
             <SelectInput
               name="propertySubType"
               label="Sub-Type"
