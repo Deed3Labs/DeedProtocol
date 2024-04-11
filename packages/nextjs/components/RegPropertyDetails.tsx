@@ -103,7 +103,7 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
             <SelectInput
               name="vehicleMake"
               label="Vehicle Make"
-              options={VehicleMakeOptions}
+              options={vehicleModels.map(model => ({ label: model.label, value: model.value }))}
               placeholder="Select Make"
               value={value?.vehicleMake}
               onChange={handleChange}
