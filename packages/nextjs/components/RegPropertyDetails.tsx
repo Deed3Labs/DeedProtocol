@@ -9,6 +9,8 @@ import {
   PropertyTypeOptions,
   PropertyZoningOptions,
   StateOptions,
+  VehicleMakeOptions,
+  VehicleModelOptions,
 } from "~~/constants";
 import { DeedInfoModel, PropertyDetailsModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -21,6 +23,15 @@ interface Props {
 }
 
 const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) => {
+  const [vehicleModels, setVehicleModels] = useState([]);
+
+  useEffect(() => {
+    // Update vehicle models based on the selected make
+    if (value?.vehicleMake) {
+      setVehicleModels(VehicleModelOptions[value.vehicleMake] || []);
+    }
+  }, [value?.vehicleMake]);
+  
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({
@@ -55,6 +66,25 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         readOnly={readOnly}
       />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+        {value?.PropertyType === "vehicle" && (
+        <>
+          {/* Vehicle-specific text inputs */}
+          <TextInput
+            name="vehicleIdentificationNumber"
+            label="Vehicle Identification Number (VIN)"
+            placeholder="e.g. 1HGBH41JXMN109186"
+            value={value?.vehicleIdentificationNumber}
+            onChange={handleChange}
+            readOnly={readOnly}
+          />
+          <TextInput
+            name="yearOfManufacture"
+            label="Year of Manufacture"
+            placeholder="e.g. 2020"
+            value={value?.yearOfManufacture}
+            onChange={handleChange}
+            readOnly={readOnly}
+          />
         <TextInput
           name="propertyAddress"
           label="APN # or Street Address"
@@ -83,35 +113,53 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
-        <TextInput
-          name="propertySize"
-          label="Lot Size"
-          optional
-          placeholder="e.g. 3500 sqft"
-          value={value?.propertySize}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <SelectInput
-          name="propertySubType"
-          label="Sub-Type"
-          options={PropertySubtypeOptions}
-          optional
-          placeholder="Select Sub-Type"
-          value={value?.propertySubType}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <SelectInput
-          name="propertyZoning"
-          label="Zoning"
-          optional
-          options={PropertyZoningOptions}
-          placeholder="Select Zoning"
-          value={value?.propertyZoning}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
+        {value?.PropertyType === "vehicle" && (
+          <>
+            {/* Vehicle specific inputs */}
+            <SelectInput
+              name="vehicleMake"
+              label="Vehicle Make"
+              options={VehicleMakeOptions}
+              placeholder="Select Make"
+              value={value?.vehicleMake}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="vehicleModel"
+              label="Vehicle Model"
+              options={vehicleModels.map(model => ({ label: model, value: model }))}
+              placeholder="Select Model"
+              value={value?.vehicleModel}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </>
+        ) : (
+          <>
+            {/* Real Estate specific inputs */}
+            <SelectInput
+              name="propertySubType"
+              label="Sub-Type"
+              options={PropertySubtypeOptions}
+              optional
+              placeholder="Select Sub-Type"
+              value={value?.propertySubType}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="propertyZoning"
+              label="Zoning"
+              optional
+              options={PropertyZoningOptions}
+              placeholder="Select Zoning"
+              value={value?.propertyZoning}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </>
+        )}
       </div>
       <div>
         <div className="justify-start items-center inline-flex mt-3">
