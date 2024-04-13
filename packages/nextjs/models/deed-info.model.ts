@@ -9,6 +9,8 @@ import {
   PropertyZoningOptions,
   StateOptions,
   WrapperOptions,
+  VehicleMakeOptions,
+  getVehicleModelsOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
 
@@ -18,7 +20,7 @@ export interface OwnerInformationModel {
   ownerName: string;
   ownerSuffix?: string;
 
-  // -- Coorporation only --
+  // -- Corporation Only --
   entityName: string;
   ownerPosition: string;
   ownerState: ValueExtractor<typeof StateOptions>;
@@ -46,6 +48,13 @@ export interface PropertyDetailsModel {
   propertyBuildYear?: string;
   propertyHouseType?: string;
   propertySquareFootage?: string;
+
+  // -- Vehicles Only --
+  vehicleIdentificationNumber: string;
+  currentMileage: string;
+  yearOfManufacture: string;
+  vehicleMake: ValueExtractor<typeof VehicleMakeOptions>;
+  vehicleModel: ValueExtractor<typeof VehicleModelsOptions>;
 
   propertyImages?: FileModel[];
   propertyDeedOrTitle: FileModel;

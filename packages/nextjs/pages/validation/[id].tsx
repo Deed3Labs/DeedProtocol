@@ -139,120 +139,84 @@ const Page = ({ router }: WithRouterProps) => {
     }
   };
   return (
-    <>
-      <div className="container py-10">
-        {deedData && !isLoading ? (
-          errorCode && id ? (
-            <div className="flex flex-col gap-6 mt-6">
-              <div className="text-2xl leading-10">
-                {errorCode === "unexpected" ? (
-                  "Oops, something went wrong"
-                ) : (
-                  <>Property {errorCode === "notFound" ? "not found" : "restricted"}</>
-                )}
-              </div>
-              {errorCode !== "unexpected" && (
-                <div className="text-base font-normal leading-normal">
-                  {errorCode === "notFound" ? (
-                    <>The property you are looking for does not exist.</>
-                  ) : (
-                    <>
-                      This property is not yet published and has restricted access.
-                      <br />
-                      Please connect with the account owner.
-                    </>
-                  )}
-                </div>
-              )}
-
-              <button onClick={handleErrorClick} className="btn btn-lg bg-gray-600">
-                {errorCode === "unexpected" ? "Retry" : "Go back to explorer"}
+    <div className="container pt-2 sm:pt-8 pb-10">
+      <div className="flex flex-col lg:flex-row gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full lg:w-[63%]">
+          <div className="flex flex-row w-full items-center justify-between">
+            <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">Validation History</div>
+            <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
+              <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
+                <svg
+                  width="16"
+                  height="15"
+                  viewBox="0 0 16 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                <path
+                  d="M6 12.75V9.25H2M10 2.25V5.75H14"
+                  stroke="white"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                </svg>
               </button>
-            </div>
-          ) : (
-            <div className="flex flex-row flex-wrap gap-6 w-full">
-              <div className="flex flex-col gap-4 w-full 2xl:w-fit">
-                <div className="flex flex-row items-center w-full justify-between">
-                  <div className="text-2xl">Property Details</div>
-                  <div className="flex flex-row gap-4">
-                    <div className="btn btn-outline m-1 btn-square rounded-lg">
-                      <svg
-                        width="16"
-                        height="15"
-                        viewBox="0 0 16 15"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6 12.75V9.25H2M10 2.25V5.75H14"
-                          stroke="white"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <div className="join join-horizontal border p-2">
-                      <div
-                        className="join-item p-2 text-[14px] text-[#626262] cursor-default"
-                        title="Comming Soon"
-                      >
-                        Property Overview
-                      </div>
-                      <div className="join-item p-2 text-[14px] bg-base-300 cursor-pointer">
-                        Validation History
-                      </div>
-                    </div>
-                    <div className="dropdown dropdown-end">
-                      <div
-                        tabIndex={0}
-                        role="button"
-                        className="btn m-1 btn-outline btn-square rounded-lg"
-                      >
-                        <EllipsisHorizontalIcon className="h-6" />
-                      </div>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-                      >
-                        <li>
-                          <Link href={`/registration/${deedData.id}`} className="link-default">
-                            Edit
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
+                <div className="join join-horizontal border border-white border-opacity-10 p-1">
+                  <div
+                    className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal text-zinc-400 cursor-pointer"
+                    title="Coming Soon"
+                  >
+                    Property Overview
+                  </div>
+                  <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal bg-base-300 cursor-default">
+                    Validation History
                   </div>
                 </div>
-                <PropertyOverview
-                  deedData={deedData!}
-                  isOwner={isOwner}
-                  refresh={() => fetchDeedInfo(deedData!.id!)}
-                />
-                <PropertyDetails
-                  propertyDetail={deedData.propertyDetails}
-                  isOwner={isOwner}
-                  isValidator={isValidator}
-                  onChange={handleChange}
-                  refresh={() => fetchDeedInfo(deedData!.id!)}
-                  onSave={handleSave}
-                />
-              </div>
-              <div className="flex flex-col flex-grow">
-                <ValidationProcedures
-                  deedData={deedData}
-                  onSave={handleSave}
-                  isDraft={isDraft}
-                  onRefresh={() => fetchDeedInfo(deedData!.id!)}
-                ></ValidationProcedures>
+              <div className="dropdown dropdown-end">
+                  <button
+                    tabIndex={0}
+                    className="btn btn-sm m-1 border-white border-opacity-10 btn-square rounded-lg"
+                  >
+                    <EllipsisHorizontalIcon className="h-6" />
+                  </button>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
+                >
+                  <li>
+                    <Link href={`/registration/${deedData.id}`}>
+                      <a>Edit</a>
+                    </Link>
+                  </li>
+                </ul>
               </div>
             </div>
-          )
-        ) : (
-          <span className="loading loading-bars loading-lg my-8"></span>
-        )}
+          </div>
+          <PropertyOverview
+            deedData={deedData}
+            isOwner={isOwner}
+            refresh={() => fetchDeedInfo(deedData.id)}
+          />
+          <PropertyDetails
+            propertyDetail={deedData.propertyDetails}
+            isOwner={isOwner}
+            isValidator={isValidator}
+            onChange={handleChange}
+            refresh={() => fetchDeedInfo(deedData.id)}
+            onSave={handleSave}
+          />
+        </div>
+        <div className="w-full md:w-[37%]">
+          <ValidationProcedures
+            deedData={deedData}
+            onSave={handleSave}
+            isDraft={isDraft}
+            onRefresh={() => fetchDeedInfo(deedData.id)}
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

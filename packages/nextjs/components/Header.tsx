@@ -43,40 +43,50 @@ export const Header = () => {
     }
   }, [pathname]);
 
+  const router = useRouter();
+
+   const isActive = (href: string) => {
+    return router.asPath.includes(href); 
+  };
+
   const nav = useMemo(
     () => (
       <>
         <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
           <input
             ref={searchRef}
-            className="input input-bordered border-1 text-sm font-normal w-full lg:w-80"
+            className="hidden sm:flex input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
             placeholder="Quickly search the entire site"
             onChange={() => setSearch(searchRef.current?.value)}
             value={search}
           />
-          <kbd className="lg:flex bd bg-neutral-focus -ml-14 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
+          <kbd className="hidden lg:flex bd bg-neutral-focus -ml-10 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
             /
           </kbd>
         </div>
         <Link
-          className={`link-default ${
-            pathname.includes("registration/[id]") && id === "new"
-              ? "opacity-40 pointer-events-none"
-              : ""
+          className={`text-[11px] sm:text-[11px] uppercase tracking-widest link-default ${
+            isActive("explorer")
+              ? "text-white pointer-events-none"
+              : "text-white/30 hover:text-white"
           }`}
+          
+          href="/property-explorer?type=all" 
+        >
+          Explore
+        </Link>
+        <Link
+          className={`text-[11px] sm:text-[11px] uppercase tracking-widest link-default ${
+            isActive("/registration/new") 
+              ? "text-white pointer-events-none" 
+              : "text-white/30 hover:text-white"
+          }`}
+
           href="/registration/new"
         >
           Register
         </Link>
-        <Link
-          className={`link-default ${
-            pathname.includes("explorer") ? "opacity-40 pointer-events-none" : ""
-          }`}
-          href="/property-explorer?type=all"
-        >
-          Explore
-        </Link>
-        <Link target="_blank" href="https://docs.deedprotocol.org/" className="link-default">
+        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[11px] sm:text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
           Docs
         </Link>
         {/* <Link href="/property-explorer?type=lease">About</Link> */}
@@ -87,13 +97,13 @@ export const Header = () => {
 
   return (
     <>
-      <div className="sticky top-0 navbar flex-shrink-0 justify-between z-20 py-4 px-2">
-        <div className="navbar-start w-auto lg:w-1/2">
-          <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+      <div className="sticky top-0 navbar bg-[#0e0e0e] flex-shrink-0 justify-between z-20 w-full py-4 px-2 sm:pl-5 sm:pr-4">
+        <div className="flex navbar-start w-full lg:w-1/2">
+          <div className="lg:hidden dropdown border-0" ref={burgerMenuRef}>
             <label
               tabIndex={0}
-              className={`ml-0 btn btn-ghost ${
-                isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
+              className={`ml-0 btn bg-[#0e0e0e] ${
+                isDrawerOpen ? "hover:bg-[#0e0e0e]" : "hover:bg-[#0e0e0e]
               }`}
               onClick={() => {
                 setIsDrawerOpen(prevIsOpenState => !prevIsOpenState);
@@ -104,7 +114,7 @@ export const Header = () => {
             {isDrawerOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mt-2 shadow bg-base-100 w-screen text-2xl gap-2"
+                className="menu menu-compact bg-[#0e0e0e] dropdown-content left-0 mt-2 px-3.5 pb-5 border-y border-white border-opacity-10 flex flex-col w-screen gap-4 sm:gap-3"
                 onClick={() => {
                   setIsDrawerOpen(false);
                 }}
@@ -113,7 +123,7 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-2 ml-2 sm:ml-4 mr-0">
+          <Link href="/" passHref className="lg:flex items-center gap-1 ml-2 sm:ml-4 mr-0">
             <svg
               width="121"
               height="34"
@@ -133,10 +143,10 @@ export const Header = () => {
             </div>
           </div>
         </div>
-        <div className="navbar-end flex-grow mr-4">
+        <div className="navbar-end flex-grow mr-2 sm:mr-5">
           <DynamicWidget
-            buttonClassName="btn btn-neutral"
-            innerButtonComponent={<div className="btn btn-neutral">Login</div>}
+            buttonClassName="dynamic-shadow-dom"
+            innerButtonComponent={<div className="dynamic-shadow-dom btn-base-300 text-[11px] font-normal uppercase tracking-widest">Login</div>}
           />
         </div>
       </div>

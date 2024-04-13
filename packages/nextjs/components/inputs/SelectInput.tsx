@@ -11,6 +11,7 @@ interface Props<TParent> {
   optional?: boolean;
   placeholder?: string;
   large?: boolean;
+  textSize?: string;
   readOnly?: boolean;
 }
 
@@ -45,7 +46,7 @@ export const SelectInput = <TParent,>({
       <select
         id={name as string}
         name={name as string}
-        className={`select ${large ? "select-lg" : ""} select-bordered w-auto ${
+        className={`select ${"text-base sm:text-base"} ${large ? "select-lg" : ""} border-white border-opacity-10 w-auto ${
           readOnly ? "bg-none !cursor-text select-text" : ""
         }`}
         onChange={ev => onChange?.({ name, value: ev.target.value })}

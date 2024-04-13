@@ -131,8 +131,8 @@ const FileValidation = ({
   return (
     <div className="flex flex-row flex-wrap w-full justify-between items-center">
       <div className="flex flex-col gap-1">
-        <div className="text-lg">{label}</div>
-        <div className="text-secondary uppercase text-xs">{description}</div>
+        <div className="text-base font-normal text-white capitalize">{label}</div>
+        <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{description}</div>
       </div>
       <div className="flex flex-row items-center">
         {stateBadge && isBadgeEdit ? (
@@ -154,7 +154,7 @@ const FileValidation = ({
                 : stateBadge === "warning"
                 ? "black"
                 : stateBadge
-            } rounded-lg `}
+            } h-6 rounded-lg text-[10px] font-normal capitalize`}
             onDoubleClick={() => setIsBadgeEdit(x => !x)}
           >
             {state ?? "Not started"}
@@ -167,9 +167,9 @@ const FileValidation = ({
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-primary m-1 btn-outline btn-square rounded-lg w-fit px-2 uppercase"
+              className="btn btn-sm btn-primary ml-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
             >
-              View documents
+              View Documents
             </div>
             <ul
               tabIndex={0}
@@ -177,7 +177,7 @@ const FileValidation = ({
             >
               {allFiles.map(field => (
                 <li key={field.label}>
-                  <div className="pointer-events-none font-bold">{field.label}</div>
+                  <div className="pointer-events-none text-[9px] text-white font-normal uppercase tracking-widest">{field.label}</div>
                   <div className="flex flex-col flex-nowrap">
                     {field.files?.map(file =>
                       file ? (

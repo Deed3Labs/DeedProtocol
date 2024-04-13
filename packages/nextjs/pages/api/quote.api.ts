@@ -16,8 +16,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const { promoCode, appraisalAndInspection } = req.query;
-  const legalWrapperFees = 200;
-  const documentNotarizationFees = 75;
+  const legalWrapperFees = 225;
+  const documentNotarizationFees = 50;
   const stateAndCountyFees = 150;
   const titleReportFees = 75;
   const appraisalAndInspectionFees = 220;
@@ -29,7 +29,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     titleReportFees,
     appraisalAndInspectionFees,
     promoCodeReduction: promoCode ? 100 : 0,
-    advancedPlan: 99,
+    advancedPlan: 95,
     total:
       legalWrapperFees +
       documentNotarizationFees +

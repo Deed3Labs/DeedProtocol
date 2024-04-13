@@ -53,11 +53,11 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
   };
 
   return (
-    <div className="flex flex-row border-2 p-6 gap-6 flex-wrap">
+    <div className="flex flex-row border border-white border-opacity-10 p-5 sm:p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
           {" "}
-          <div className="w-80 h-80 bg-[#141414] flex-grow">
+          <div className="w-72 h-72 md:h-full bg-[#141414] flex-grow">
             {/* <Map
                       markers={[
                         `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}`,
@@ -65,39 +65,39 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                     /> */}
           </div>
           <div className="flex flex-col gap-6 mt-4 flex-grow justify-between">
-            <div className="flex flex-row">
-              <div className="text-secondary">Status</div>
-              <div className="ml-2 h-6 badge bg-[#ffdc19] text-primary-content rounded-xl">
-                Pending validation
+            <div className="flex flex-row items-center">
+              <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">Status</div>
+              <div className="ml-2 h-7 badge bg-[#ffdc19] text-[11px] font-normal text-primary-content capitalize rounded-xl">
+                Pending Validation
               </div>
             </div>
 
-            <div className="text-4xl uppercase">{deedData.propertyDetails.propertyAddress}</div>
+            <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">{deedData.propertyDetails.propertyAddress}</div>
 
-            <div className="flex flex-row gap-8 items-center">
+            <div className="flex flex-row gap-4 items-center">
               <Address address={deedData.owner} label="Owner" size="base" />
               <Address address="The Deed & Title Co." label="Validator" size="base" />
               <button
-                className="btn btn-outline w-12 p-3 rounded-md"
+                className="btn btn-sm sm:btn-sm border border-white border-opacity-10 w-8 p-2 sm:p-1.5 rounded-md"
                 onClick={() => handleChatClick()}
               >
-                <ChatBubbleBottomCenterTextIcon className="w-full" />
+                <ChatBubbleBottomCenterTextIcon className="w-full sm:w-4" />
               </button>
             </div>
 
-            <hr className="border-border"></hr>
+            <hr className="my-0 border-white opacity-10" />
             {/* Buttons */}
             <div className="flex flex-row w-full items-center justify-between">
               <div className="flex flex-row">
                 <button
-                  className="btn btn-link no-underline text-secondary"
+                  className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
                   onClick={() => handleShare()}
                 >
                   <ShareIcon className="h-4" />
                   Share
                 </button>
                 <button
-                  className="btn btn-link no-underline text-secondary"
+                  className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
                   onClick={() => refresh()}
                 >
                   <svg
@@ -122,7 +122,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                 </button>
               </div>
               <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn m-1">
+                <div tabIndex={0} role="button" className="btn bg-[#0e0e0e] m-1">
                   <EllipsisHorizontalIcon className="h-6" />
                 </div>
                 <ul

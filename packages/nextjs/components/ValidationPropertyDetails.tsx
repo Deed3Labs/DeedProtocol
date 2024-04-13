@@ -42,9 +42,9 @@ const PropertyDetails = ({
   return (
     <>
       {propertyDetail && (
-        <div className="border-2">
-          <div className="flex flex-row justify-between items-center px-2 pt-2">
-            <div className="pl-4">Property Details</div>
+        <div className="border border-white border-opacity-10">
+          <div className="flex flex-row justify-between items-center px-2 pt-8">
+            <div className="pl-4 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">Property Details</div>
             {(isOwner || isValidator) && (
               <button className="btn btn-link" onClick={handleViewModeToggle}>
                 {viewMode ? (
@@ -57,14 +57,14 @@ const PropertyDetails = ({
           </div>
           <div className="flex flex-row justify-between w-full gap-6 p-6 flex-wrap">
             {/* First col */}
-            <div className="flex flex-col flex-grow gap-4">
-              <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Bed / Bath: </div>
+            <div className="flex flex-col flex-grow gap-6">
+              <div className="flex flex-row justify-between items-center gap-4 sm:gap-3.5 pb-0 w-full">
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Bed / Bath: </div>
                 <div className="">
                   {viewMode ? (
                     <>
                       <TextInput
-                        className="input-sm"
+                        className="text-[3.4vw] sm:text-sm h-4"
                         name="propertyBedrooms"
                         value={`${propertyDetail.propertyBedrooms ?? 0} Bed / ${
                           propertyDetail.propertyBathrooms ?? 0
@@ -75,16 +75,16 @@ const PropertyDetails = ({
                       ></TextInput>
                     </>
                   ) : (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-4">
                       <TextInput
-                        className="input-sm"
+                        className="text-[3.4vw] sm:text-sm h-4"
                         name="propertyBedrooms"
                         value={propertyDetail.propertyBedrooms}
                         placeholder="0"
                         onChange={handleChange}
                       ></TextInput>
                       <TextInput
-                        className="input-sm"
+                        className="text-[3.6vw] sm:text-sm h-4"
                         name="propertyBathrooms"
                         value={propertyDetail.propertyBathrooms}
                         placeholder="0"
@@ -95,9 +95,9 @@ const PropertyDetails = ({
                 </div>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Lot size:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Lot size:</div>
                 <TextInput
-                  className="input-sm"
+                  className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySize"
                   value={propertyDetail.propertySize}
                   readOnly={viewMode}
@@ -105,9 +105,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Square footage:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Square footage:</div>
                 <TextInput
-                  className="input-sm"
+                  className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySquareFootage"
                   value={propertyDetail.propertySquareFootage}
                   readOnly={viewMode}
@@ -115,11 +115,11 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
             </div>
-            <div className="flex flex-col flex-grow">
-              <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Build Year:</div>
+            <div className="flex flex-col flex-grow gap-6">
+              <div className="flex flex-row justify-between items-center gap-3 pb-0 w-full">
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Build Year:</div>
                 <TextInput
-                  className="input-sm"
+                  className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyBuildYear"
                   value={propertyDetail.propertyBuildYear}
                   readOnly={viewMode}
@@ -127,9 +127,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Location:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Location:</div>
                 <TextInput
-                  className="input-sm"
+                  className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyCity"
                   value={propertyDetail.propertyCity}
                   readOnly={viewMode}
@@ -137,9 +137,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-secondary w-1/2">Property Type:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Property Type:</div>
                 <TextInput
-                  className="input-sm"
+                  className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyHouseType"
                   value={propertyDetail.propertyHouseType}
                   readOnly={viewMode}
@@ -148,8 +148,8 @@ const PropertyDetails = ({
               </div>
             </div>
           </div>
-          <div className="flex flex-row">
-            <button className="btn btn-link no-underline font-normal text-secondary">
+          <div className="grid grid-cols-4 auto-cols-min justify-items-start sm:gap-2 pt-6 sm:pt-3.5 pb-6 sm:pb-3">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="18"
                 height="18"
@@ -174,7 +174,7 @@ const PropertyDetails = ({
               </svg>
               <div>MLS Data</div>
             </button>
-            <button className="btn btn-link no-underline font-normal text-secondary">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="18"
                 height="18"
@@ -198,9 +198,9 @@ const PropertyDetails = ({
                   </clipPath>
                 </defs>
               </svg>
-              <div>Disclosure</div>
+              <div>Disclosures</div>
             </button>
-            <button className="btn btn-link no-underline font-normal text-secondary">
+            <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="18"
                 height="18"
@@ -220,14 +220,14 @@ const PropertyDetails = ({
                 </g>
                 <defs>
                   <clipPath id="clip0_2054_786">
-                    <rect width="16" height="18" fill="white" transform="translate(1)" />
+                    <rect width="18" height="18" fill="white" transform="translate(1)" />
                   </clipPath>
                 </defs>
               </svg>
-              <div>Proof of title</div>
+              <div>Proof of Title</div>
             </button>
             <button
-              className="btn btn-link no-underline font-normal text-secondary"
+              className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
               onClick={refresh}
             >
               <svg
@@ -249,7 +249,7 @@ const PropertyDetails = ({
                 />
               </svg>
 
-              <div>Refresh Metadata</div>
+              <div>Refresh</div>
             </button>
           </div>
         </div>

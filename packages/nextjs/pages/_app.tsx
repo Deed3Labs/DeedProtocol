@@ -10,6 +10,7 @@ import NextNProgress from "nextjs-progressbar";
 import { useDarkMode } from "usehooks-ts";
 import CONFIG from "~~/config";
 import "~~/styles/globals.scss";
+import Head from 'next/head';
 
 config.autoAddCss = false;
 
@@ -29,6 +30,9 @@ const ScaffoldEthApp = (props: AppProps) => {
 
   return (
     <>
+      <Head>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" />
+      </Head>
       <NextNProgress
         options={{
           showSpinner: false,

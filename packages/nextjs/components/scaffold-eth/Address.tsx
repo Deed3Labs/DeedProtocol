@@ -89,59 +89,60 @@ export const Address = ({
   }
 
   return (
-    <div className="flex items-center gap-3 my-3">
-      <div className="flex-shrink-0">
-        <BlockieAvatar
-          address={address}
-          ensImage={ensAvatar}
-          size={(blockieSizeMap[size] * 36) / blockieSizeMap["base"]}
-        />
-      </div>
-      <div className="flex flex-col">
-        {label && <div className="text-secondary">{label}</div>}
-        <div className="flex flex-row">
-          {disableAddressLink || !blockExplorerAddressLink ? (
-            <span className={`text-${size} font-normal`}>{displayAddress}</span>
-          ) : getTargetNetwork().id === hardhat.id ? (
-            <span className={`text-${size} font-normal`}>
-              <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
-            </span>
-          ) : (
-            <a
-              className={`text-${size} font-normal`}
-              target="_blank"
-              href={blockExplorerAddressLink}
-              rel="noopener noreferrer"
-            >
-              {displayAddress}
-            </a>
-          )}
-          {addressCopied ? (
-            <CheckCircleIcon
+  <div className="flex items-center gap-3 my-3">
+    <div className="flex-shrink-0">
+      <BlockieAvatar
+        address={address}
+        ensImage={ensAvatar}
+        size={(blockieSizeMap[size] * 34) / blockieSizeMap["base"]}
+      />
+    </div>
+    <div className="flex flex-col">
+      {label && <div className="text-[2.2vw] sm:text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{label}</div>}
+      <div className="flex flex-row items-center w-full">
+        {disableAddressLink || !blockExplorerAddressLink ? (
+          <span className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}>{displayAddress}</span>
+        ) : getTargetNetwork().id === hardhat.id ? (
+          <span className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}>
+            <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
+          </span>
+        ) : (
+          <a
+            className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}
+            target="_blank"
+            href={blockExplorerAddressLink}
+            rel="noopener noreferrer"
+          >
+            {displayAddress}
+          </a>
+        )}
+        {addressCopied ? (
+          <CheckCircleIcon
+            className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
+            aria-hidden="true"
+          />
+        ) : (
+          <CopyToClipboard
+            className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
+            text={address}
+            onCopy={() => {
+              notification.info("Copied to clipboard", {
+                position: "bottom-right",
+              });
+              setAddressCopied(true);
+              setTimeout(() => {
+                setAddressCopied(false);
+              }, 800);
+            }}
+          >
+            <DocumentDuplicateIcon
               className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
               aria-hidden="true"
             />
-          ) : (
-            <CopyToClipboard
-              text={address}
-              onCopy={() => {
-                notification.info("Copied to clipboard", {
-                  position: "bottom-right",
-                });
-                setAddressCopied(true);
-                setTimeout(() => {
-                  setAddressCopied(false);
-                }, 800);
-              }}
-            >
-              <DocumentDuplicateIcon
-                className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
-                aria-hidden="true"
-              />
-            </CopyToClipboard>
-          )}
-        </div>
+          </CopyToClipboard>
+        )}
       </div>
     </div>
-  );
-};
+  </div>
+ );
+};  

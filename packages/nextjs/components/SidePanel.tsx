@@ -146,7 +146,7 @@ const SidePanel = ({
   };
 
   return (
-    <div className="bg-base-100 w-[500] min-h-fit relative lg:sticky lg:top-32 py-2 border border-white border-opacity-10">
+    <div className="bg-base-300 w-[500] min-h-fit relative lg:sticky lg:top-32 py-2 border border-white border-opacity-10">
       <div className="m-8">
         <div className="flex flex-row gap-2">
           <div className="w-full flex flex-col gap-6">
@@ -188,7 +188,7 @@ const SidePanel = ({
                 
                   <div className="border p-4 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
                     <QuoteDetail
-                      title="Hire an Agent"
+                      title="Syndicated Listing"
                       secondary="ONE-TIME FEE"
                       price={quoteDetails.advancedPlan}
                     />
@@ -360,7 +360,7 @@ const SidePanel = ({
           )}
         </div>
 
-        <div className="flex flex-row text-secondary text-[10px] sm:text-[10px] justify-between">
+        <div className="flex flex-row text-secondary text-[2vw] sm:text-[11px] justify-between">
           <div>
             <span className="opacity-75">Powered by</span>&nbsp;
             <span className="text-white">Deed3Labs</span>

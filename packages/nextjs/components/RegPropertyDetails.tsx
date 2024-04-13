@@ -9,6 +9,8 @@ import {
   PropertyTypeOptions,
   PropertyZoningOptions,
   StateOptions,
+  VehicleMakeOptions,
+  getVehicleModelsOptions,
 } from "~~/constants";
 import { DeedInfoModel, PropertyDetailsModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -20,7 +22,9 @@ interface Props {
   isDraft?: boolean;
 }
 
-const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) => {
+const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Props) => {
+  const vehicleModelsOptions = getVehicleModelsOptions(value?.vehicleMake?.toLowerCase());
+   
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({
@@ -28,6 +32,7 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
       value: updatedValue,
     });
   };
+  
   return (
     <div className="flex flex-col mt-6 gap-6">
       <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
@@ -54,65 +59,132 @@ const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) 
         value={value?.propertyType}
         readOnly={readOnly}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
-        <TextInput
-          name="propertyAddress"
-          label="APN # or Street Address"
-          info
-          placeholder="e.g. 123 Main Street"
-          value={value?.propertyAddress}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <TextInput
-          name="propertyCity"
-          label="City or Region"
-          placeholder="e.g. San Bernardino"
-          value={value?.propertyCity}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <SelectInput
-          name="propertyState"
-          label="State or Region"
-          placeholder="Select State"
-          options={StateOptions}
-          value={value?.propertyState}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
-        <TextInput
-          name="propertySize"
-          label="Lot Size"
-          optional
-          placeholder="e.g. 3500 sqft"
-          value={value?.propertySize}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <SelectInput
-          name="propertySubType"
-          label="Sub-Type"
-          options={PropertySubtypeOptions}
-          optional
-          placeholder="Select Sub-Type"
-          value={value?.propertySubType}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-        <SelectInput
-          name="propertyZoning"
-          label="Zoning"
-          optional
-          options={PropertyZoningOptions}
-          placeholder="Select Zoning"
-          value={value?.propertyZoning}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
-      </div>
+      
+      {value?.propertyType === "vehicle" ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Vehicle-specific text inputs */}
+            <TextInput
+              name="vehicleIdentificationNumber"
+              label="Vehicle Identification Number (VIN)"
+              placeholder="e.g. 1HGBH41JXMN109186"
+              value={value?.vehicleIdentificationNumber}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <TextInput
+              name="yearOfManufacture"
+              label="Year of Manufacture"
+              placeholder="e.g. 1981"
+              value={value?.yearOfManufacture}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="propertyState"
+              label="State or Region"
+              placeholder="Select State"
+              options={StateOptions}
+              value={value?.propertyState}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Vehicle-specific select inputs */}
+            <TextInput
+              name="currentMileage"
+              label="Current Mileage"
+              placeholder="e.g. 135,000 mi"
+              value={value?.currentMileage}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="vehicleMake"
+              label="Vehicle Make"
+              options={VehicleMakeOptions}
+              placeholder="Select Make"
+              value={value?.vehicleMake}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="vehicleModel"
+              label="Vehicle Model"
+              options={vehicleModelsOptions}
+              placeholder="Select Model"
+              value={value?.vehicleModel}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Real Estate-specific text inputs */}
+            <TextInput
+              name="propertyAddress"
+              label="APN # or Street Address"
+              info
+              placeholder="e.g. 123 Main Street"
+              value={value?.propertyAddress}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <TextInput
+              name="propertyCity"
+              label="City or Region"
+              placeholder="e.g. San Bernardino"
+              value={value?.propertyCity}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="propertyState"
+              label="State or Region"
+              placeholder="Select State"
+              options={StateOptions}
+              value={value?.propertyState}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
+            {/* Real Estate-specific select inputs */}
+            <TextInput
+              name="propertySize"
+              label="Lot Size"
+              optional
+              placeholder="e.g. 3500 sqft"
+              value={value?.propertySize}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="propertySubType"
+              label="Sub-Type"
+              options={PropertySubtypeOptions}
+              optional
+              placeholder="Select Sub-Type"
+              value={value?.propertySubType}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+            <SelectInput
+              name="propertyZoning"
+              label="Zoning"
+              optional
+              options={PropertyZoningOptions}
+              placeholder="Select Zoning"
+              value={value?.propertyZoning}
+              onChange={handleChange}
+              readOnly={readOnly}
+            />
+          </div>
+        </>
+      )}
       <div>
         <div className="justify-start items-center inline-flex mt-3">
           <div className="text-base font-normal leading-normal">Property Image</div>
