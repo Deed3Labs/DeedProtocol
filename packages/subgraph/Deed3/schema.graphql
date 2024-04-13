@@ -22,9 +22,9 @@ type DeedMetadata @entity(immutable: false) {
     ownerInformation_entityName: String
     ownerInformation_entityType: String
 
-    ownerInformation_ids: FileInfo!
+    ownerInformation_ids: FileInfo
     ownerInformation_operatingAgreement: FileInfo
-    ownerInformation_articleIncorporation: FileInfo!
+    ownerInformation_articleIncorporation: FileInfo
     ownerInformation_proofBill: FileInfo
     ownerInformation_supportingDoc: [FileInfo!]
 
@@ -38,11 +38,10 @@ type DeedMetadata @entity(immutable: false) {
     propertyDetails_zoning: String
 
     propertyDetails_purchaseContract: FileInfo
-    propertyDetails_deedOrTitle: FileInfo!
+    propertyDetails_deedOrTitle: FileInfo
     propertyDetails_images: [FileInfo!]
 
     # Other Information
-    otherInformation_blockchain: String!
     otherInformation_wrapper: String!
 }
 
@@ -76,10 +75,12 @@ type ApprovalForAll @entity(immutable: true) {
     transactionHash: Bytes!
 }
 
-type FileInfo @entity(immutable: true) {
+type FileInfo @entity(immutable: false) {
     id: ID!
-    name: String!
-    size: BigInt!
-    type: String!
-    timestamp: String!
+    fileId: String
+    name: String
+    size: BigInt
+    type: String
+    timestamp: String
+    restricted: Boolean
 }
