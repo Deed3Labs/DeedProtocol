@@ -5,6 +5,7 @@ import {
     dataSource,
     json,
     log,
+    JSONValueKind,
 } from "@graphprotocol/graph-ts";
 import { DeedMetadata, FileInfo } from "../generated/schema";
 
@@ -43,21 +44,23 @@ export function handleMetadata(content: Bytes): void {
         : null;
 
     // Files
-    deedMetadata.ownerInformation_articleIncorporation = parseFileEntity(
-        ownerInformation.mustGet("articleIncorporation")
-    );
-    deedMetadata.ownerInformation_ids = parseFileEntity(
-        ownerInformation.mustGet("ids")
-    );
+    deedMetadata.ownerInformation_articleIncorporation = ownerInformation.isSet(
+        "articleIncorporation"
+    )
+        ? parseFileEntity(ownerInformation.mustGet("articleIncorporation"), cid)
+        : null;
+    deedMetadata.ownerInformation_ids = ownerInformation.isSet("ids")
+        ? parseFileEntity(ownerInformation.mustGet("ids"), cid)
+        : null;
     deedMetadata.ownerInformation_operatingAgreement = ownerInformation.isSet(
         "operatingAgreement"
     )
-        ? parseFileEntity(ownerInformation.mustGet("operatingAgreement"))
+        ? parseFileEntity(ownerInformation.mustGet("operatingAgreement"), cid)
         : null;
     deedMetadata.ownerInformation_proofBill = ownerInformation.isSet(
         "proofBill"
     )
-        ? parseFileEntity(ownerInformation.mustGet("proofBill"))
+        ? parseFileEntity(ownerInformation.mustGet("proofBill"), cid)
         : null;
 
     const supportingDocEntity: string[] = [];
@@ -65,7 +68,7 @@ export function handleMetadata(content: Bytes): void {
         ? ownerInformation.mustGet("supportingDoc").toArray()
         : [];
     for (let i = 0; i < supportingDoc.length; i++) {
-        let res = parseFileEntity(supportingDoc[i]);
+        let res = parseFileEntity(supportingDoc[i], cid);
         supportingDocEntity.push(res);
     }
     deedMetadata.ownerInformation_supportingDoc = supportingDocEntity;
@@ -99,13 +102,18 @@ export function handleMetadata(content: Bytes): void {
         : null;
 
     // Files
-    deedMetadata.propertyDetails_deedOrTitle = parseFileEntity(
-        propertyDetails.mustGet("propertyDeedOrTitle")
-    );
+    deedMetadata.propertyDetails_deedOrTitle = propertyDetails.isSet(
+        "propertyDeedOrTitle"
+    )
+        ? parseFileEntity(propertyDetails.mustGet("propertyDeedOrTitle"), cid)
+        : null;
     deedMetadata.propertyDetails_purchaseContract = propertyDetails.isSet(
         "propertyPurchaseContract"
     )
-        ? parseFileEntity(propertyDetails.mustGet("propertyPurchaseContract"))
+        ? parseFileEntity(
+              propertyDetails.mustGet("propertyPurchaseContract"),
+              cid
+          )
         : null;
 
     let propertyImages = propertyDetails.get("propertyImages");
@@ -113,7 +121,7 @@ export function handleMetadata(content: Bytes): void {
         const propertyImagesArr = propertyImages.toArray();
         const parsedPropertyImages: string[] = [];
         for (let i = 0; i < propertyImagesArr.length; i++) {
-            let res = parseFileEntity(propertyImagesArr[i]);
+            let res = parseFileEntity(propertyImagesArr[i], cid);
             parsedPropertyImages.push(res.toString());
         }
         deedMetadata.propertyDetails_images = parsedPropertyImages;
@@ -123,9 +131,6 @@ export function handleMetadata(content: Bytes): void {
 
     // #3 - Other Information
     log.debug("Handling Other Information", [cid.toString()]);
-    deedMetadata.otherInformation_blockchain = otherInformation
-        .mustGet("blockchain")
-        .toString();
     deedMetadata.otherInformation_wrapper = otherInformation
         .mustGet("wrapper")
         .toString();
@@ -133,13 +138,36 @@ export function handleMetadata(content: Bytes): void {
     deedMetadata.save();
 }
 
-function parseFileEntity(file: JSONValue): string {
-    let fileObject = file.toObject();
-    let fileInfo = new FileInfo(fileObject.mustGet("fileId").toString());
-    fileInfo.name = fileObject.mustGet("fileName").toString();
-    fileInfo.type = fileObject.mustGet("mimetype").toString();
-    fileInfo.size = fileObject.mustGet("size").toBigInt();
-    fileInfo.timestamp = fileObject.mustGet("timestamp").toString();
+function parseFileEntity(file: JSONValue, hash: string): string {
+    let fileInfo: FileInfo | null;
+    if (file.kind == JSONValueKind.STRING) {
+        fileInfo = FileInfo.load(hash + "-" + file.toString());
+        if (fileInfo == null) {
+            fileInfo = new FileInfo(hash + "-" + file.toString());
+        }
+        fileInfo.restricted = false;
+    } else {
+        let fileObject = file.toObject();
+        fileInfo = FileInfo.load(
+            hash + "-" + fileObject.mustGet("fileId").toString()
+        );
+        if (!fileInfo) {
+            log.debug("ababab Newing {}-{}", [
+                hash,
+                fileObject.mustGet("fileId").toString(),
+            ]);
+            fileInfo = new FileInfo(
+                hash + "-" + fileObject.mustGet("fileId").toString()
+            );
+        }
+        fileInfo.name = fileObject.mustGet("fileName").toString();
+        fileInfo.type = fileObject.mustGet("mimetype").toString();
+        fileInfo.size = fileObject.mustGet("size").toBigInt();
+        fileInfo.timestamp = fileObject.isSet("timestamp")
+            ? fileObject.mustGet("timestamp").toString()
+            : null;
+        fileInfo.restricted = fileObject.mustGet("restricted").toBool();
+    }
     fileInfo.save();
     return fileInfo.id;
 }
