@@ -239,4 +239,4 @@ export const WrapperOptions = (prices: string[]) =>
     } as const,
   ] as const;
 
-export const ExplorerPageSize = 6;
+export const ExplorerPageSize = 10;

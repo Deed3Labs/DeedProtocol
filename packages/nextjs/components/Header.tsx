@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Bars3Icon } from "@heroicons/react/24/outline";
-import { defaultPage } from "~~/constants";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import logger from "~~/services/logger.service";
