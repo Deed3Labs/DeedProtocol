@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import PropertyFilters from "../../components/PropertyFilters";
-import { debounce } from "lodash-es";
+import { debounce, last } from "lodash-es";
 import { NextPage } from "next";
 import { DeedEntity } from "~~/.graphclient";
 import PropertyCard from "~~/components/PropertyCard";
@@ -30,16 +30,10 @@ const PropertyExplorer: NextPage = () => {
   const [filter, setFilter] = useState<PropertiesFilterModel>();
 
   const containerRef = useRef<HTMLDivElement>(null);
-  // useEffect(() => {
-  //   if (!properties.length && !loading) {
-  //     console.log("Init");
-  //     loadMoreProperties();
-  //   }
-  // }, []);
 
   useEffect(() => {
     const handleDebouncedScroll = debounce(() => {
-      if (!isLast) handleScroll();
+      handleScroll();
     }, 100);
     window.addEventListener("scroll", handleDebouncedScroll);
     return () => {
@@ -48,6 +42,7 @@ const PropertyExplorer: NextPage = () => {
   }, [isLast]);
 
   const handleScroll = () => {
+    if (isLast) return;
     if (containerRef.current && typeof window !== "undefined") {
       const container = containerRef.current;
       const { bottom } = container.getBoundingClientRect();
