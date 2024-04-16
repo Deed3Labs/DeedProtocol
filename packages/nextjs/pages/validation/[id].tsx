@@ -95,15 +95,16 @@ const Page = ({ router }: WithRouterProps) => {
     [id, isDraft, chainId, authToken],
   );
 
-  const handleErrorClick = async () => {
-    if (errorCode === "unexpected") {
-      setIsLoading(true);
-      await fetchDeedInfo(id as string);
-      setIsLoading(false);
-    } else {
-      router.push("/explorer");
-    }
-  };
+  // const handleErrorClick = async () => {
+  //   if (errorCode === "unexpected") {
+  //     setIsLoading(true);
+  //     await fetchDeedInfo(id as string);
+  //     setIsLoading(false);
+  //   } else {
+  //     router.push("/explorer");
+  //   }
+  // };
+
   const handleSave = async () => {
     // if (!validateForm() || !deedData || !authToken) return;
     if (isDraft || !id) {
@@ -202,7 +203,6 @@ const Page = ({ router }: WithRouterProps) => {
           <PropertyDetails
             propertyDetail={deedData.propertyDetails}
             isOwner={isOwner}
-            isValidator={isValidator}
             onChange={handleChange}
             onRefresh={() => fetchDeedInfo(deedData.id!)}
             onSave={handleSave}

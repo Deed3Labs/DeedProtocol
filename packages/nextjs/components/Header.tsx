@@ -16,7 +16,7 @@ export const Header = () => {
   const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const { primaryWallet } = useDynamicContext();
-  const { query, pathname, replace } = useRouter();
+  const { query, pathname } = useRouter();
   const { id } = query;
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -37,16 +37,10 @@ export const Header = () => {
     }
   }, [primaryWallet]);
 
-  useEffect(() => {
-    if (pathname === "/") {
-      replace(defaultPage);
-    }
-  }, [pathname]);
-
   const router = useRouter();
 
-   const isActive = (href: string) => {
-    return router.asPath.includes(href); 
+  const isActive = (href: string) => {
+    return router.asPath.includes(href);
   };
 
   const nav = useMemo(
@@ -70,23 +64,25 @@ export const Header = () => {
               ? "text-white pointer-events-none"
               : "text-white/30 hover:text-white"
           }`}
-          
-          href="/property-explorer?type=all" 
+          href="/property-explorer?type=all"
         >
           Explore
         </Link>
         <Link
           className={`text-[11px] sm:text-[11px] uppercase tracking-widest link-default ${
-            isActive("/registration/new") 
-              ? "text-white pointer-events-none" 
+            isActive("/registration/new")
+              ? "text-white pointer-events-none"
               : "text-white/30 hover:text-white"
           }`}
-
           href="/registration/new"
         >
           Register
         </Link>
-        <Link target="_blank" href="https://docs.deedprotocol.org/" className="text-[11px] sm:text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default">
+        <Link
+          target="_blank"
+          href="https://docs.deedprotocol.org/"
+          className="text-[11px] sm:text-[11px] text-white/30 hover:text-white uppercase tracking-widest link-default"
+        >
           Docs
         </Link>
         {/* <Link href="/property-explorer?type=lease">About</Link> */}
@@ -103,7 +99,7 @@ export const Header = () => {
             <label
               tabIndex={0}
               className={`ml-0 btn bg-[#0e0e0e] ${
-                isDrawerOpen ? "hover:bg-[#0e0e0e]" : "hover:bg-[#0e0e0e]
+                isDrawerOpen ? "hover:bg-[#0e0e0e]" : "hover:bg-[#0e0e0e]"
               }`}
               onClick={() => {
                 setIsDrawerOpen(prevIsOpenState => !prevIsOpenState);
@@ -146,7 +142,11 @@ export const Header = () => {
         <div className="navbar-end flex-grow mr-2 sm:mr-5">
           <DynamicWidget
             buttonClassName="dynamic-shadow-dom"
-            innerButtonComponent={<div className="dynamic-shadow-dom btn-base-300 text-[11px] font-normal uppercase tracking-widest">Login</div>}
+            innerButtonComponent={
+              <div className="dynamic-shadow-dom btn-base-300 text-[11px] font-normal uppercase tracking-widest">
+                Login
+              </div>
+            }
           />
         </div>
       </div>
