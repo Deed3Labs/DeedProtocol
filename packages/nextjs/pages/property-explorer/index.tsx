@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import PropertyFilters from "../../components/PropertyFilters";
-import { debounce, last } from "lodash-es";
+import { debounce } from "lodash-es";
 import { NextPage } from "next";
 import { DeedEntity } from "~~/.graphclient";
 import PropertyCard from "~~/components/PropertyCard";
