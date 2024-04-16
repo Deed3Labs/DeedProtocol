@@ -1,5 +1,4 @@
 import { IconBitcoin, IconDollar, IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
-import { ValueExtractor } from "./utils/extract-values";
 
 export const defaultPage = "property-explorer?type=all";
 

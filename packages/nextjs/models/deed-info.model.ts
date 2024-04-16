@@ -8,10 +8,8 @@ import {
   PropertyTypeOptions,
   PropertyZoningOptions,
   StateOptions,
-  VehicleMakeOptions,
   VehicleMakesAndModels,
   WrapperOptions,
-  getVehicleModelsOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
 

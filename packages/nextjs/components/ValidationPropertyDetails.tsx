@@ -7,7 +7,6 @@ import { LightChangeEvent } from "~~/models/light-change-event";
 interface Props {
   propertyDetail: PropertyDetailsModel;
   isOwner: boolean;
-  isValidator: boolean;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
   onRefresh: () => void;
   onSave: () => void;
@@ -16,7 +15,6 @@ interface Props {
 const PropertyDetails = ({
   propertyDetail,
   isOwner,
-  isValidator,
   onChange,
   onRefresh: refresh,
   onSave,
