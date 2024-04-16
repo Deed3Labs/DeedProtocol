@@ -1,4 +1,5 @@
 import { IconBitcoin, IconDollar, IconEthereum, IconGnosis, IconPolygon } from "./styles/Icons";
+import { ValueExtractor } from "./utils/extract-values";
 
 export const defaultPage = "property-explorer?type=all";
 
@@ -89,18 +90,20 @@ export const VehicleMakesAndModels = {
   Toyota: ["Corolla", "Camry", "Prius"],
   Honda: ["Civic", "Accord", "CR-V"],
   // Add more makes and models as needed
-};
+} as const;
 
 export const VehicleMakeOptions = Object.keys(VehicleMakesAndModels).map(make => ({
   label: make,
-  value: make.toLowerCase(),
+  value: make,
 }));
 
-export const getVehicleModelsOptions = (make) => {
-  return VehicleMakesAndModels[make]?.map(model => ({
-    label: model,
-    value: model.toLowerCase(),
-  })) || [];
+export const getVehicleModelsOptions = (make: keyof typeof VehicleMakesAndModels) => {
+  return (
+    VehicleMakesAndModels[make]?.map((model: string) => ({
+      label: model,
+      value: model.toLowerCase(),
+    })) || []
+  );
 };
 
 export const EntityTypeOptions = [
@@ -136,6 +139,13 @@ export const PropertyTypeOptions = [
     tag: "Coming soon",
     subtitle: "IP, trademarks, etc.",
     disabled: true,
+  },
+] as const;
+
+export const AgentTypeOptions = [
+  {
+    label: "FIX ME KHAY",
+    value: "fixme",
   },
 ] as const;
 
@@ -218,7 +228,7 @@ export const WrapperOptions = (prices: string[]) =>
       
     Estimated cost to deploy contract: ${prices[0]}`,
       value: "trust",
-    },
+    } as const,
     {
       title: "Limited Liability Company",
       tag: "Multi-Layered",
@@ -227,5 +237,7 @@ export const WrapperOptions = (prices: string[]) =>
     Estimated cost to deploy contract: ${prices[1]}
     `,
       value: "llc",
-    },
+    } as const,
   ] as const;
+
+export const ExplorerPageSize = 6;

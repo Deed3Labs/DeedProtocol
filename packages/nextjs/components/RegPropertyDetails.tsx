@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
@@ -16,15 +16,18 @@ import { DeedInfoModel, PropertyDetailsModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 
 interface Props {
-  value?: PropertyDetailsModel;
+  value: PropertyDetailsModel;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
   readOnly?: boolean;
   isDraft?: boolean;
 }
 
-const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Props) => {
-  const vehicleModelsOptions = getVehicleModelsOptions(value?.vehicleMake?.toLowerCase());
-   
+const PropertyDetails = ({ value, onChange, readOnly, isDraft = false }: Props) => {
+  const vehicleModelsOptions = useMemo(
+    () => getVehicleModelsOptions(value.vehicleMake),
+    [value.vehicleMake],
+  );
+
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({
@@ -32,7 +35,7 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
       value: updatedValue,
     });
   };
-  
+
   return (
     <div className="flex flex-col mt-6 gap-6">
       <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
@@ -59,7 +62,7 @@ const PropertyDetails = ({ value = {}, onChange, readOnly, isDraft = false }: Pr
         value={value?.propertyType}
         readOnly={readOnly}
       />
-      
+
       {value?.propertyType === "vehicle" ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">

@@ -1,8 +1,8 @@
-import { AgentType } from "./agent-info.model
+import { AgentType } from "./agent-info.model";
 import { IMarker } from "./marker.model";
 
 export interface AgentModel extends IMarker {
-  id: number;
+  id: string;
   name: string;
   address: string;
   profile: string;
@@ -11,4 +11,5 @@ export interface AgentModel extends IMarker {
   phone: string;
   email: string;
   followers: number;
+  location: string;
 }

@@ -1,4 +1,4 @@
-import { FileFieldKeyLabel, FileModel, FileValidationState } from "./file.model";
+import { FileModel, FileValidationState } from "./file.model";
 import { Address } from "viem";
 import {
   EntityTypeOptions,
@@ -8,8 +8,9 @@ import {
   PropertyTypeOptions,
   PropertyZoningOptions,
   StateOptions,
-  WrapperOptions,
   VehicleMakeOptions,
+  VehicleMakesAndModels,
+  WrapperOptions,
   getVehicleModelsOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
@@ -53,8 +54,8 @@ export interface PropertyDetailsModel {
   vehicleIdentificationNumber: string;
   currentMileage: string;
   yearOfManufacture: string;
-  vehicleMake: ValueExtractor<typeof VehicleMakeOptions>;
-  vehicleModel: ValueExtractor<typeof VehicleModelsOptions>;
+  vehicleMake: keyof typeof VehicleMakesAndModels;
+  vehicleModel: string;
 
   propertyImages?: FileModel[];
   propertyDeedOrTitle: FileModel;
@@ -64,7 +65,7 @@ export interface PropertyDetailsModel {
 }
 
 export interface OtherInformationModel {
-  wrapper: ValueExtractor<typeof WrapperOptions>;
+  wrapper: ValueExtractor<ReturnType<typeof WrapperOptions>>;
 }
 
 export interface PaymentInformationModel {

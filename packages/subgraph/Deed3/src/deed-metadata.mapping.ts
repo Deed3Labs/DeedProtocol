@@ -1,7 +1,6 @@
 import {
     Bytes,
     JSONValue,
-    TypedMap,
     dataSource,
     json,
     log,
@@ -145,6 +144,7 @@ function parseFileEntity(file: JSONValue, hash: string): string {
         if (fileInfo == null) {
             fileInfo = new FileInfo(hash + "-" + file.toString());
         }
+        fileInfo.fileId = file.toString();
         fileInfo.restricted = false;
     } else {
         let fileObject = file.toObject();
@@ -152,14 +152,11 @@ function parseFileEntity(file: JSONValue, hash: string): string {
             hash + "-" + fileObject.mustGet("fileId").toString()
         );
         if (!fileInfo) {
-            log.debug("ababab Newing {}-{}", [
-                hash,
-                fileObject.mustGet("fileId").toString(),
-            ]);
             fileInfo = new FileInfo(
                 hash + "-" + fileObject.mustGet("fileId").toString()
             );
         }
+        fileInfo.fileId = fileObject.mustGet("fileId").toString();
         fileInfo.name = fileObject.mustGet("fileName").toString();
         fileInfo.type = fileObject.mustGet("mimetype").toString();
         fileInfo.size = fileObject.mustGet("size").toBigInt();

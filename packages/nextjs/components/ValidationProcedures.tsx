@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import FileValidation from "./FileValidation";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useSignMessage } from "wagmi";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { FileFieldKeyLabel, FileValidationState } from "~~/models/file.model";
@@ -15,6 +16,11 @@ interface Props {
 const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) => {
   const [supportedFiles, setSupportedFiles] = useState<Map<string, FileFieldKeyLabel>>();
   const { data: signMessageData, signMessageAsync } = useSignMessage();
+  const { primaryWallet } = useDynamicContext();
+
+  const isOwner = useMemo(() => {
+    return deedData.owner === primaryWallet?.address;
+  }, [deedData.owner, primaryWallet]);
 
   useEffect(() => {
     const map = new Map<string, FileFieldKeyLabel>();
@@ -81,7 +87,9 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
               <div className="text-center py-5 px-5">01</div>
             </td>
             <td className="border border-white border-opacity-10">
-              <div className="text-[11px] font-normal text-zinc-400 py-5 px-4 uppercase tracking-widest">Property validation</div>
+              <div className="text-[11px] font-normal text-zinc-400 py-5 px-4 uppercase tracking-widest">
+                Property validation
+              </div>
             </td>
           </tr>
           <tr>
@@ -147,7 +155,9 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
               <div className="text-center py-5 px-5">02</div>
             </td>
             <td className="border border-white border-opacity-10">
-              <div className="text-[11px] font-normal text-zinc-400 py-5 px-4 uppercase tracking-widest">PREP, FILING & NOTARIZATION</div>
+              <div className="text-[11px] font-normal text-zinc-400 py-5 px-4 uppercase tracking-widest">
+                PREP, FILING & NOTARIZATION
+              </div>
             </td>
           </tr>
           <tr>
@@ -224,7 +234,9 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
               <div className="text-center py-5 px-5">03</div>
             </td>
             <td className="border border-white border-opacity-10">
-              <div className="text-[11px] font-normal text-zinc-400 py-5 px-4 uppercase tracking-widest">Confirmation & Minting</div>
+              <div className="text-[11px] font-normal text-zinc-400 py-5 px-4 uppercase tracking-widest">
+                Confirmation & Minting
+              </div>
             </td>
           </tr>
 
@@ -241,6 +253,8 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                     <button
                       className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
                       onClick={handleSign}
+                      disabled={!isOwner}
+                      title="Only the owner can sign this deed."
                     >
                       Click to sign
                     </button>

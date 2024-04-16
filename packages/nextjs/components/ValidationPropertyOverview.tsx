@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { TransactionReceipt } from "viem";
@@ -8,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
+import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
@@ -15,14 +17,19 @@ import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   deedData: DeedInfoModel;
-  isOwner?: boolean;
-  isValidator?: boolean;
-  refresh: () => void;
+  isOwner: boolean;
+  isValidator: boolean;
+  onRefresh: () => void;
 }
 
-const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) => {
+const PropertyOverview = ({ deedData, isOwner, isValidator, onRefresh }: Props) => {
   const router = useRouter();
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
+  const { writeValidateAsync } = useDeedValidate();
+
+  const isMinted = useMemo(() => {
+    return !Number.isNaN(deedData.id);
+  }, [deedData.id]);
 
   const handleChatClick = () => {
     if (isOwner) {
@@ -52,12 +59,16 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
     await router.push(`/validation/${deedId}`);
   };
 
+  const handleValidateToggle = async () => {
+    await writeValidateAsync(deedData, !deedData.isValidated);
+  };
+
   return (
     <div className="flex flex-row border border-white border-opacity-10 p-5 sm:p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
           {" "}
-          <div className="w-72 h-72 md:h-full bg-[#141414] flex-grow">
+          <div className="w-72 h-72 md:h-full bg-[#141414] flex-grow hidden min-[1310px]:block">
             {/* <Map
                       markers={[
                         `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}`,
@@ -66,13 +77,17 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
           </div>
           <div className="flex flex-col gap-6 mt-4 flex-grow justify-between">
             <div className="flex flex-row items-center">
-              <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">Status</div>
+              <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
+                Status
+              </div>
               <div className="ml-2 h-7 badge bg-[#ffdc19] text-[11px] font-normal text-primary-content capitalize rounded-xl">
                 Pending Validation
               </div>
             </div>
 
-            <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">{deedData.propertyDetails.propertyAddress}</div>
+            <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
+              {deedData.propertyDetails.propertyAddress}
+            </div>
 
             <div className="flex flex-row gap-4 items-center">
               <Address address={deedData.owner} label="Owner" size="base" />
@@ -98,7 +113,7 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                 </button>
                 <button
                   className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
-                  onClick={() => refresh()}
+                  onClick={() => onRefresh()}
                 >
                   <svg
                     width="18"
@@ -134,13 +149,23 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, refresh }: Props) =>
                       Edit
                     </Link>
                   </li>
-                  {/* {isValidator && ( */}
-                  <li>
-                    <a onClick={() => handleMint()} className="link-default">
-                      Mint
-                    </a>
-                  </li>
-                  {/* )} */}
+                  {isValidator && (
+                    <>
+                      {isMinted ? (
+                        <li>
+                          <a onClick={() => handleValidateToggle()} className="link-default">
+                            {deedData.isValidated ? "Unvalidate" : "Validate"}
+                          </a>
+                        </li>
+                      ) : (
+                        <li>
+                          <a onClick={() => handleMint()} className="link-default">
+                            Mint
+                          </a>
+                        </li>
+                      )}
+                    </>
+                  )}
                 </ul>
               </div>
             </div>

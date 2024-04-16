@@ -6,4 +6,7 @@ export interface PropertiesFilterModel {
   featured?: boolean;
   search?: string;
   listingType?: ListingType | "All";
+  validated?: "true" | "false" | "all";
+  propertySize?: string;
+  ownerWallet?: string;
 }

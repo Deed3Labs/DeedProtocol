@@ -1,6 +1,7 @@
-import { FileFieldKeyLabel, FileModel, FileValidationState } from "./file.model";
+import { FileModel, FileValidationState } from "./file.model";
 import { Address } from "viem";
 import {
+  AgentTypeOptions,
   EntityTypeOptions,
   OwnerTypeOptions,
   PaymentOptions,
@@ -32,6 +33,7 @@ export interface OwnerInformationModel {
 }
 
 export type PropertyType = ValueExtractor<typeof PropertyTypeOptions>;
+export type AgentType = ValueExtractor<typeof AgentTypeOptions>;
 
 export interface PropertyDetailsModel {
   propertyType: PropertyType;
@@ -55,7 +57,7 @@ export interface PropertyDetailsModel {
 }
 
 export interface OtherInformationModel {
-  wrapper: ValueExtractor<typeof WrapperOptions>;
+  wrapper: ValueExtractor<ReturnType<typeof WrapperOptions>>;
 }
 
 export interface PaymentInformationModel {
