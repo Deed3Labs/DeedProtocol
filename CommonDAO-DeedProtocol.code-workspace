@@ -17,7 +17,7 @@
       "path": "."
     },
     {
-      "path": "packages/nextjs/public/assets"
+      "path": "packages/nextjs/public/images"
     }
   ],
   "settings": {

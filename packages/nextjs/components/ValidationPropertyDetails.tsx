@@ -9,7 +9,7 @@ interface Props {
   isOwner: boolean;
   isValidator: boolean;
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
-  refresh: () => void;
+  onRefresh: () => void;
   onSave: () => void;
 }
 
@@ -18,7 +18,7 @@ const PropertyDetails = ({
   isOwner,
   isValidator,
   onChange,
-  refresh,
+  onRefresh: refresh,
   onSave,
 }: Props) => {
   const [viewMode, setViewMode] = useState(true);
@@ -44,8 +44,10 @@ const PropertyDetails = ({
       {propertyDetail && (
         <div className="border border-white border-opacity-10">
           <div className="flex flex-row justify-between items-center px-2 pt-8">
-            <div className="pl-4 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">Property Details</div>
-            {(isOwner || isValidator) && (
+            <div className="pl-4 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
+              Property Details
+            </div>
+            {isOwner && (
               <button className="btn btn-link" onClick={handleViewModeToggle}>
                 {viewMode ? (
                   <PencilIcon className="w-4" />
@@ -59,7 +61,9 @@ const PropertyDetails = ({
             {/* First col */}
             <div className="flex flex-col flex-grow gap-6">
               <div className="flex flex-row justify-between items-center gap-4 sm:gap-3.5 pb-0 w-full">
-                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Bed / Bath: </div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
+                  Bed / Bath:{" "}
+                </div>
                 <div className="">
                   {viewMode ? (
                     <>
@@ -95,7 +99,9 @@ const PropertyDetails = ({
                 </div>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Lot size:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
+                  Lot size:
+                </div>
                 <TextInput
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySize"
@@ -105,7 +111,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Square footage:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
+                  Square footage:
+                </div>
                 <TextInput
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertySquareFootage"
@@ -117,7 +125,9 @@ const PropertyDetails = ({
             </div>
             <div className="flex flex-col flex-grow gap-6">
               <div className="flex flex-row justify-between items-center gap-3 pb-0 w-full">
-                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Build Year:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
+                  Build Year:
+                </div>
                 <TextInput
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyBuildYear"
@@ -127,7 +137,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Location:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
+                  Location:
+                </div>
                 <TextInput
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyCity"
@@ -137,7 +149,9 @@ const PropertyDetails = ({
                 ></TextInput>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">Property Type:</div>
+                <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
+                  Property Type:
+                </div>
                 <TextInput
                   className="text-[3.4vw] sm:text-sm h-4"
                   name="propertyHouseType"
