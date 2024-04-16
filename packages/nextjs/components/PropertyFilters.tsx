@@ -76,7 +76,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             onClick={() => setIsMoreFilters(old => !old)}
           >
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
-            {isMoreFilters ? "HIDE FILTERS" : "MORE FILTERS"}
+            {isMoreFilters ? "Hide Filters" : "More Filters"}
           </button>
           <select
             className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-grow"
