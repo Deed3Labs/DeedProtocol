@@ -37,7 +37,7 @@ const OtherInformations = ({ value, onChange, readOnly }: Props) => {
           </>
         }
         options={WrapperOptions(["$225.00", "$450.00"])}
-        gridTemplate="grid grid-cols-1 gap-4"  // Apply the new grid layout here
+        gridTemplate="grid grid-cols-1 gap-4" // Apply the new grid layout here
         value={value?.wrapper}
         onChange={handleChange}
         readOnly={readOnly}

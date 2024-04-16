@@ -2,15 +2,16 @@ import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
+import { debounce } from "lodash-es";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
-import useDebouncer from "~~/hooks/useDebouncer";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { PropertyType } from "~~/models/deed-info.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
-import { ListingType, PropertyModel } from "~~/models/property.model";
+import { PropertyModel } from "~~/models/property.model";
 
 interface Props {
   properties: PropertyModel[];
@@ -19,10 +20,22 @@ interface Props {
 
 const PropertyFilters = ({ properties, onFilter }: Props) => {
   const searchParams = useSearchParams();
+  const isValidator = useIsValidator();
   const [mapOpened, setMapOpened] = useState(false);
-  const [search, setSearch] = useState<string | undefined>();
-  const [filter, setFilter] = useState<PropertiesFilterModel>({});
-  const debouncedSearch = useDebouncer(search, 500);
+  const [isMoreFilters, setIsMoreFilters] = useState(false);
+  const [filter, setFilter] = useState<PropertiesFilterModel>({
+    listingType: searchParams.get("type") as PropertiesFilterModel["listingType"],
+  });
+  // Define the method directly in your class
+  const [search, setSearch] = useState("");
+
+  const searchDebounce = debounce((search: string) => {
+    applyFilter({ ...filter, search });
+  }, 500);
+
+  useEffect(() => {
+    searchDebounce(search);
+  }, [search]);
 
   const Map = useMemo(
     () =>
@@ -37,16 +50,10 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     [properties],
   );
 
-  useEffect(() => {
-    if (debouncedSearch) {
-      applyFilter({ search: debouncedSearch });
-    }
-  }, [debouncedSearch]);
-
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
     setFilter(newFilter);
-    onFilter(filter);
+    onFilter(newFilter);
   };
 
   useKeyboardShortcut(["Enter"], () => {
@@ -64,18 +71,25 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto">
+          <button
+            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto"
+            onClick={() => setIsMoreFilters(old => !old)}
+          >
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
-            More Filters
+            {isMoreFilters ? "Hide Filters" : "More Filters"}
           </button>
           <select
             className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-grow"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
-            <option disabled value={0}>Property type</option>
+            <option disabled value={0}>
+              Property type
+            </option>
             {PropertyTypeOptions.map(option => (
-              <option key={option.value} value={option.value}>{option.title}</option>
+              <option key={option.value} value={option.value}>
+                {option.title}
+              </option>
             ))}
           </select>
           <div className="join">
@@ -103,8 +117,49 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             </button>
           </div>
         </div>
+
+        {isMoreFilters && (
+          <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full my-4">
+            {isValidator && (
+              <select
+                className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px]"
+                value={filter.validated}
+                onChange={ev =>
+                  applyFilter({
+                    validated: ev.currentTarget.value as PropertiesFilterModel["validated"],
+                  })
+                }
+              >
+                <option value="true">Verified</option>
+                <option value="false">Not verified</option>
+                <option value="all">All</option>
+              </select>
+            )}
+            <input
+              type="text"
+              placeholder="Property Size"
+              className="input input-md sm:input-lg border-white border-opacity-10 sm:text-[16px]"
+              onChange={ev =>
+                applyFilter({
+                  propertySize: ev.target.value,
+                })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Owner wallet"
+              className="input input-md sm:input-lg border-white border-opacity-10 sm:text-[16px]"
+              onChange={ev =>
+                applyFilter({
+                  ownerWallet: ev.target.value,
+                })
+              }
+            />
+          </div>
+        )}
       </div>
-      {mapOpened && <Map markers={properties} />}
+
+      {mapOpened && <Map markers={properties.map(x => x.address)} />}
     </div>
   );
 };

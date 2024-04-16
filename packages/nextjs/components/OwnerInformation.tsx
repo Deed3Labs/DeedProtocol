@@ -4,7 +4,7 @@ import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
-import { EntityTypeOptions, OwnerTypeOptions, StateOptions, } from "~~/constants";
+import { EntityTypeOptions, OwnerTypeOptions, StateOptions } from "~~/constants";
 import { DeedInfoModel, OwnerInformationModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 
@@ -89,14 +89,14 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
             readOnly={readOnly}
           />
           <SelectInput
-          name="ownerEntityState"
-          label="State of Incorporation"
-          placeholder="Select State"
-          options={StateOptions}
-          value={value?.ownerEntityState}
-          onChange={handleChange}
-          readOnly={readOnly}
-        />
+            name="ownerState"
+            label="State of Incorporation"
+            placeholder="Select State"
+            options={StateOptions}
+            value={value?.ownerState}
+            onChange={handleChange}
+            readOnly={readOnly}
+          />
           <SelectInput
             name="ownerEntityType"
             label="Entity Type"

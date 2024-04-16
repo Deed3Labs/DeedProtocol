@@ -159,10 +159,10 @@ const SidePanel = ({
               (quoteDetails ? (
                 <>
                   <div className="text-[54px]/none font-['Coolvetica'] font-extra-condensed font-bold uppercase">
-                    STANDARD <br /> 
+                    STANDARD <br />
                     PROPERTY LISTING
                   </div>
-                 
+
                   <div className="quote-detail-container space-y-3">
                     <QuoteDetail
                       title="Legal Wrapper"
@@ -185,7 +185,7 @@ const SidePanel = ({
                       price={quoteDetails.titleReportFees}
                     />
                   </div>
-                
+
                   <div className="border p-4 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
                     <QuoteDetail
                       title="Syndicated Listing"
@@ -202,7 +202,10 @@ const SidePanel = ({
                       />
                       <span className="text-[10px] text-[#ffffff] tracking-widest">
                         SUBSCRIBE TO GET
-                        <span className="mx-1 p-1 bg-[#cbf4c9] text-[10px] text-[#0e6245] tracking-normal">50% OFF</span> TODAY.
+                        <span className="mx-1 p-1 bg-[#cbf4c9] text-[10px] text-[#0e6245] tracking-normal">
+                          50% OFF
+                        </span>{" "}
+                        TODAY.
                       </span>
                     </div>
                   </div>
@@ -220,12 +223,8 @@ const SidePanel = ({
                   <QuoteDetail title="Subtotal" price={quoteDetails.total} />
 
                   <hr className="opacity-25" />
-                   <div className="my-[-8px] text-left font-normal text-[10px] uppercase tracking-widest">
-                    <Link
-                      href=""
-                      target="_blank"
-                      className="opacity-90"
-                    >
+                  <div className="my-[-8px] text-left font-normal text-[10px] uppercase tracking-widest">
+                    <Link href="" target="_blank" className="opacity-90">
                       Add Promo Code
                     </Link>
                   </div>
@@ -234,7 +233,9 @@ const SidePanel = ({
                   <QuoteDetail title="Total due today" price={quoteDetails.total / 2} />
 
                   <div className="border py-4 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
-                    <span className="mx-4 font-normal text-[10px] text-zinc-400 uppercase tracking-widest">Add to your order</span>
+                    <span className="mx-4 font-normal text-[10px] text-zinc-400 uppercase tracking-widest">
+                      Add to your order
+                    </span>
                     <hr className="opacity-25" />
                     <div className="mx-3 text-sm flex flex-row gap-2 justify-between align-middle">
                       <div className="flex flex-col">

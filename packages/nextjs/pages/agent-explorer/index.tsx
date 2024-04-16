@@ -28,7 +28,9 @@ const AgentExplorer: NextPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadMoreAgents();
+    if (!agents.length) {
+      loadMoreAgents();
+    }
   }, []);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const AgentExplorer: NextPage = () => {
     const center = { lat: 40, lng: -100 };
     for (let index = currentPage * pageSize; index < currentPage * pageSize + pageSize; index++) {
       const newAgent: AgentModel = {
-        id: index,
+        id: index.toString(),
         name: `Agent ${index + 1}`,
         address: "address.eth",
         followers: Math.round(Math.random() * 10000),
@@ -78,6 +80,8 @@ const AgentExplorer: NextPage = () => {
         latitude: center.lat + (Math.random() - 0.5) * (radius * 2),
         longitude: center.lng + (Math.random() - 0.5) * (radius * 2),
         icon: agentIcon,
+        type: "fixme",
+        location: "New York",
       };
       newAgent.popupContent = <AgentCard agent={newAgent} />;
       agents.push(newAgent);

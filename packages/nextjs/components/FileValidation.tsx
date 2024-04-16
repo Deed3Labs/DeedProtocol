@@ -32,7 +32,7 @@ const FileValidation = ({
   onRefresh,
   deedData,
 }: Props) => {
-  const { authToken } = useDynamicContext();
+  const { authToken, primaryWallet } = useDynamicContext();
   const fileClient = useFileClient();
   const [isBadgeEdit, setIsBadgeEdit] = useState(false);
   const [allFiles, setAllFiles] = useState<(FileFieldKeyLabel & { files?: FileModel[] })[]>([]);
@@ -41,6 +41,10 @@ const FileValidation = ({
     const validationEntry = deedData.validations?.find(x => x[0] === id);
     return validationEntry?.[1];
   }, [deedData.validations, id]);
+
+  const isOwner = useMemo(() => {
+    return deedData.owner === primaryWallet?.address;
+  }, [deedData.owner, primaryWallet]);
 
   const stateBadge = useMemo(() => {
     switch (state) {
@@ -129,10 +133,12 @@ const FileValidation = ({
   };
 
   return (
-    <div className="flex flex-row flex-wrap w-full justify-between items-center">
+    <div className="flex flex-row flex-wrap w-full justify-between items-center gap-5">
       <div className="flex flex-col gap-1">
         <div className="text-base font-normal text-white capitalize">{label}</div>
-        <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">{description}</div>
+        <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
+          {description}
+        </div>
       </div>
       <div className="flex flex-row items-center">
         {stateBadge && isBadgeEdit ? (
@@ -177,9 +183,11 @@ const FileValidation = ({
             >
               {allFiles.map(field => (
                 <li key={field.label}>
-                  <div className="pointer-events-none text-[9px] text-white font-normal uppercase tracking-widest">{field.label}</div>
+                  <div className="pointer-events-none text-[9px] text-white font-normal uppercase tracking-widest">
+                    {field.label}
+                  </div>
                   <div className="flex flex-col flex-nowrap">
-                    {field.files?.map(file =>
+                    {field.files?.map((file, i) =>
                       file ? (
                         <button
                           className="hover:bg-secondary w-full p-2 text-left pl-4"
@@ -189,23 +197,28 @@ const FileValidation = ({
                           {file.fileName}
                         </button>
                       ) : (
-                        <span className="w-full p-2 text-left pl-4 text-secondary italic cursor-default">
+                        <span
+                          key={i}
+                          className="w-full p-2 text-left pl-4 text-secondary italic cursor-default"
+                        >
                           No file
                         </span>
                       ),
                     )}
-                    <div className="w-full text-left">
-                      <FileUploaderInput
-                        inline
-                        className="p-2 pl-4 hover:bg-secondary opacity-50"
-                        name={field.label}
-                        label={"Upload"}
-                        multiple={field.multiple}
-                        isRestricted={field.restricted}
-                        // @ts-ignore
-                        onChange={newFile => handleFileUpload(newFile as FileModel, field)}
-                      ></FileUploaderInput>
-                    </div>
+                    {isOwner && (
+                      <div className="w-full text-left">
+                        <FileUploaderInput
+                          inline
+                          className="p-2 pl-4 hover:bg-secondary opacity-50"
+                          name={field.label}
+                          label="Upload"
+                          multiple={field.multiple}
+                          isRestricted={field.restricted}
+                          // @ts-ignore
+                          onChange={newFile => handleFileUpload(newFile as FileModel, field)}
+                        ></FileUploaderInput>
+                      </div>
+                    )}
                   </div>
                 </li>
               ))}

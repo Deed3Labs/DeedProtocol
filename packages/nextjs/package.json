@@ -26,7 +26,6 @@
     "@helia/dag-json": "^1.0.3",
     "@helia/json": "^1.0.3",
     "@heroicons/react": "^2.0.11",
-    "@next/font": "^13.5.3",
     "@pinata/sdk": "^2.1.0",
     "@uniswap/sdk": "^3.0.3",
     "@uniswap/sdk-core": "^4.0.1",
