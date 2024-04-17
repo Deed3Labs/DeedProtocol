@@ -57,23 +57,24 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     }
   }, [search]);
 
+  const Map = useMemo(
+    () =>
+      dynamic(() => import("~~/components/Map"), {
+        loading: () => (
+          <div className="w-full flex flex-row justify-center">
+            <span className="loading loading-bars loading-lg"></span>
+          </div>
+        ),
+        ssr: false,
+      }),
+    [properties],
+  );
+
   useKeyboardShortcut(["Enter"], () => {
     if (search.trim()) {
       addSearchTerm(search.trim());
     }
   });
-
-  const Map = useMemo(
-    () => dynamic(() => import("~~/components/Map"), {
-      loading: () => (
-        <div className="w-full flex flex-row justify-center">
-          <span className="loading loading-bars loading-lg"></span>
-        </div>
-      ),
-      ssr: false,
-    }),
-    [properties],
-  );
 
   return (
     <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-8">
