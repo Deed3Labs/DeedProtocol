@@ -27,7 +27,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   const [filter, setFilter] = useState<PropertiesFilterModel>({
     listingType: searchParams.get("type") as PropertiesFilterModel["listingType"],
   });
-  const [search, setSearch] = useState("");
+  const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
@@ -47,13 +47,15 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   };
 
   const searchDebounce = debounce((search: string) => {
-    addSearchTerm(search);
+  addSearchTerm(search);
+  applyFilter({ ...filter, search });
   }, 500);
 
   useEffect(() => {
     if (search) {
       searchDebounce(search);
-    }, [search]);
+    }
+  }, [search]);
 
   useKeyboardShortcut(["Enter"], () => {
     if (search.trim()) {
