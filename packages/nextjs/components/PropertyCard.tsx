@@ -19,7 +19,7 @@ const PropertyCard = ({ property }: Props) => {
                   src={property.pictures[0]}
                   alt="Property Image"
                   layout="fill"
-                  objectFit="contain"
+                  objectFit="cover"
                 />
               )}
               <div className="w-7 h-7 p-1 bg-zinc-900 bg-opacity-40 rounded-3xl border border-white border-opacity-10 flex-col justify-center items-center flex absolute bottom-0 right-0 m-2">
