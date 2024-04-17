@@ -27,7 +27,8 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   const [filter, setFilter] = useState<PropertiesFilterModel>({
     listingType: searchParams.get("type") as PropertiesFilterModel["listingType"],
   });
-  const [searchTerms, setSearchTerms] = useState<string[]>([]);
+  
+  const [search, setSearch] = useState('');
 
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
@@ -76,7 +77,9 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   );
 
   useKeyboardShortcut(["Enter"], () => {
-    onFilter(filter);
+    if (search.trim()) {
+      addSearchTerm(search.trim());
+    }
   });
 
   return (
@@ -88,7 +91,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] py-2 sm:py-0 w-full sm:flex-grow"
             placeholder="Search by City, State, or Zip code"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             onKeyDown={e => {
               if (e.key === 'Enter' && search.trim()) {
                 e.preventDefault();
