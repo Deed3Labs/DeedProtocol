@@ -72,7 +72,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
       ssr: false,
     }),
     [properties],
-  });
+  );
 
   return (
     <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-8">
@@ -190,5 +190,4 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     </div>
   );
 };
-
 export default PropertyFilters;
