@@ -46,6 +46,11 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     setSearchTerms(prevTerms => prevTerms.filter(t => t !== term));
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setSearch(searchTerm);
+  };
+
   const searchDebounce = debounce((search: string) => {
   addSearchTerm(search);
   applyFilter({ ...filter, search });
