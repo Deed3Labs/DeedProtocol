@@ -86,7 +86,7 @@ const PropertyExplorer: NextPage = () => {
         validated: entity.isValidated,
       };
       if (!deed.pictures?.length) {
-        deed.pictures = ["images/home-icon.svg"];
+        deed.pictures = ["images/residential4.png"];
       }
       deed.popupContent = <PropertyCard property={deed} />;
       return deed;
