@@ -96,6 +96,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
               if (e.key === 'Enter' && search.trim()) {
                 e.preventDefault();
                 addSearchTerm(search.trim());
+                setSearch('');
               }
             }}
           />
