@@ -186,11 +186,11 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             />
           </div>
         )}
-        <div className="flex flex-wrap gap-2 p-2">
-        {searchTerms.map((term, index) => (
-          <div key={index} className="flex items-center bg-blue-500 text-white px-3 py-1 rounded-full">
-            <span>{term}</span>
-            <button onClick={() => removeSearchTerm(term)} className="ml-2 text-sm bg-blue-600 rounded-full px-1">×</button>
+          <div className="flex flex-wrap gap-2 p-2">
+          {searchTerms.map((term, index) => (
+            <div key={index} className="flex items-center bg-blue-500 text-white px-3 py-1 rounded-full">
+              <span>{term}</span>
+              <button onClick={() => removeSearchTerm(term)} className="ml-2 text-sm bg-blue-600 rounded-full px-1">×</button>
           </div>
         ))}
       </div>
