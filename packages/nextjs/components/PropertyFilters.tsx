@@ -23,11 +23,32 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   const isValidator = useIsValidator();
   const [mapOpened, setMapOpened] = useState(false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
-  const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [filter, setFilter] = useState<PropertiesFilterModel>({
     listingType: searchParams.get("type") as PropertiesFilterModel["listingType"],
   });
+  // Define the method directly in your class
   const [search, setSearch] = useState("");
+
+  const searchDebounce = debounce((search: string) => {
+    applyFilter({ ...filter, search });
+  }, 500);
+
+  useEffect(() => {
+    searchDebounce(search);
+  }, [search]);
+
+  const Map = useMemo(
+    () =>
+      dynamic(() => import("~~/components/Map"), {
+        loading: () => (
+          <div className="w-full flex flex-row justify-center">
+            <span className="loading loading-bars loading-lg"></span>
+          </div>
+        ),
+        ssr: false,
+      }),
+    [properties],
+  );
 
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
@@ -35,44 +56,9 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     onFilter(newFilter);
   };
 
-  const addSearchTerm = (term: string) => {
-    if (term && !searchTerms.includes(term)) {
-      setSearchTerms(prevTerms => [...prevTerms, term.trim()]);
-      applyFilter({ ...filter, search: term.trim() });
-    }
-  };
-
-  const removeSearchTerm = (term: string) => {
-    setSearchTerms(prevTerms => prevTerms.filter(t => t !== term));
-  };
-
-  const searchDebounce = debounce((search: string) => {
-    addSearchTerm(search);
-  }, 500);
-
-  useEffect(() => {
-    if (search) {
-      searchDebounce(search);
-    }
-  }, [search]);
-
   useKeyboardShortcut(["Enter"], () => {
-    if (search.trim()) {
-      addSearchTerm(search.trim());
-    }
+    onFilter(filter);
   });
-
-  const Map = useMemo(
-    () => dynamic(() => import("~~/components/Map"), {
-      loading: () => (
-        <div className="w-full flex flex-row justify-center">
-          <span className="loading loading-bars loading-lg"></span>
-        </div>
-      ),
-      ssr: false,
-    }),
-    [properties],
-  );
 
   return (
     <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-8">
@@ -84,12 +70,6 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             placeholder="Search by City, State, or Zip code"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && search.trim()) {
-                e.preventDefault();
-                addSearchTerm(search.trim());
-              }
-            }}
           />
           <button
             className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto"
@@ -177,13 +157,6 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
             />
           </div>
         )}
-        <div className="flex flex-wrap gap-2 p-2">
-        {searchTerms.map((term, index) => (
-          <div key={index} className="flex items-center bg-blue-500 text-white px-3 py-1 rounded-full">
-            <span>{term}</span>
-            <button onClick={() => removeSearchTerm(term)} className="ml-2 text-sm bg-blue-600 rounded-full px-1">×</button>
-          </div>
-        ))}
       </div>
 
       {mapOpened && <Map markers={properties.map(x => x.address)} />}
