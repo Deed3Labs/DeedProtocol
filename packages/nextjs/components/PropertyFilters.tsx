@@ -52,16 +52,18 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     setSearch(searchTerm);
   };
 
-  const searchDebounce = debounce((search: string) => {
-  addSearchTerm(search);
-  applyFilter({ ...filter, search });
-  }, 500);
-
   useEffect(() => {
+    const debouncedSearch = debounce(() => {
+        addSearchTerm(search);
+        applyFilter({ ...filter, search });
+    }, 500);
+
     if (search) {
-      searchDebounce(search);
+        debouncedSearch();
     }
-  }, [search]);
+    
+    return () => debouncedSearch.cancel();
+}, [search, addSearchTerm, applyFilter]);
 
   const Map = useMemo(
     () =>
