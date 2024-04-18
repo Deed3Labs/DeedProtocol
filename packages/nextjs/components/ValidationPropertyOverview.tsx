@@ -33,8 +33,9 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, onRefresh }: Props) 
 
   const handleChatClick = () => {
     if (isOwner) {
-      // Mailto link to dev@deed3.io
-      window.open("mailto:dev@deed3.io", "_blank");
+      // Creating mailto link with dynamic property name and owner address as subject
+      const subject = encodeURIComponent(`${deedData.propertyDetails.propertyAddress.toUpperCase()} || ${deedData.owner}`);
+      window.open(`mailto:validation@deed3.io?subject=${subject}`, "_blank");
     }
   };
 
