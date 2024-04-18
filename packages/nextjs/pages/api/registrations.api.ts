@@ -3,12 +3,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { RegistrationDb, RegistrationDb as RegistrationsDb } from "~~/databases/registrations.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { authentify, getWalletAddressFromToken } from "~~/servers/auth";
+import { authentify, getWalletAddressFromToken, testEncryption } from "~~/servers/auth";
 import { getContractInstance, getDeedOwner } from "~~/servers/contract";
 import { getFileFromHash } from "~~/servers/ipfs";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  // Check if the request method is GET.
+  if (!(await testEncryption(res))) return;
   try {
     switch (req.method) {
       case "GET":

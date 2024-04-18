@@ -7,7 +7,7 @@ import { Readable } from "stream";
 import { FilesDb } from "~~/databases/files.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { FileModel } from "~~/models/file.model";
-import { authentify, getWalletAddressFromToken } from "~~/servers/auth";
+import { authentify, getWalletAddressFromToken, testEncryption } from "~~/servers/auth";
 
 if (!process.env.NEXT_PINATA_GATEWAY_KEY) {
   throw new Error("Missing NEXT_PINATA_GATEWAY_KEY env var");
@@ -25,6 +25,7 @@ export const config = {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<string>) => {
+  if (!(await testEncryption(res))) return;
   if (req.method === "POST") {
     if (req.query.publish === "true") {
       // Publish the file to IPFS
