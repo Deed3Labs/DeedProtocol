@@ -1290,7 +1290,7 @@ __metadata:
     lodash-es: ^4.17.21
     mapbox-gl: ^3.2.0
     mongodb: ^6.3.0
-    next: ^13.5.0
+    next: ^13.1.6
     nextjs-progressbar: ^0.0.16
     node-fetch: ^3.3.2
     postcss: ^8.4.31
@@ -20045,7 +20045,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^13.5.0":
+"next@npm:^13.1.6, next@npm:^13.5.0":
   version: 13.5.6
   resolution: "next@npm:13.5.6"
   dependencies:
