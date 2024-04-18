@@ -45,9 +45,9 @@ const PropertyDetails = ({
             <div className="pl-4 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
               Property Details
             </div>
-            {isOwner && viewMode && (
+            {isOwner && (
               <button className="btn btn-link" onClick={handleViewModeToggle}>
-                {viewMode ? (
+                {isOwner && viewMode ? (
                   <PencilIcon className="w-4" />
                 ) : (
                   <CheckIcon className="w-4"></CheckIcon>
