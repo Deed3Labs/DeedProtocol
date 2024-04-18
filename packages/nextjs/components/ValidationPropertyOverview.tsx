@@ -32,12 +32,14 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, onRefresh }: Props) 
   }, [deedData.id]);
 
   const handleChatClick = () => {
-    if (isOwner) {
-      // Creating mailto link with dynamic property name and owner address as subject
-      const subject = encodeURIComponent(`${deedData.propertyDetails.propertyAddress.toUpperCase()} || ${deedData.owner}`);
-      window.open(`mailto:validation@deed3.io?subject=${subject}`, "_blank");
-    }
-  };
+  if (isOwner) {
+    const subject = encodeURIComponent(`${deedData.propertyDetails.propertyAddress.toUpperCase()} || ${deedData.owner}`);
+    window.open(`mailto:validation@deed3.io?subject=${subject}`, "_blank");
+  } else {
+    // Alert the user that they are not the owner and therefore cannot send the email
+    alert("You are not the owner of this property and cannot send the email.");
+  }
+};
 
   const handleShare = () => {
     const url = `${window.location.origin}/validation/${deedData.id}`;
