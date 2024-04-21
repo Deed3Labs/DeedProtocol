@@ -7,6 +7,10 @@ import {
 import { isArray } from "lodash-es";
 
 export type FileValidationState = "Completed" | "Not started" | "Needs Review" | "Processing";
+export interface FileValidationModel {
+  key: string;
+  state: FileValidationState;
+}
 
 export interface FileModel {
   fileId: string;

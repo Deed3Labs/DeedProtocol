@@ -4,7 +4,7 @@ import { notification } from "~~/utils/scaffold-eth";
 
 export class PaymentClient extends HttpClient {
   public async verifyPayment(receiptId: string) {
-    const res = await this.get(`/api/payment?receiptId=${receiptId}`);
+    const res = await this.get(`/api/payments?receiptId=${receiptId}`);
     if (!res.ok || !res.value) {
       const message = "Error verifying payment";
       logger.error({ message, error: res.error });

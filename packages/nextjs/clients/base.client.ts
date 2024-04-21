@@ -14,7 +14,7 @@ export class HttpClient {
     return this;
   }
 
-  public async get<TRes = any>(url: string, params: any = {}) {
+  public async get<TRes = any>(url: string, params: object = {}) {
     url = this.appendQueryParams(url, { ...params, chainId: this.chainId });
     const res = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],

@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import FileValidation from "./FileValidation";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useSignMessage } from "wagmi";
+import useValidationClient from "~~/clients/validation.client";
+import useIsOnwer from "~~/hooks/useIsOwner.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { FileFieldKeyLabel, FileValidationState } from "~~/models/file.model";
+import { FileFieldKeyLabel, FileValidationModel } from "~~/models/file.model";
 import { getSupportedFiles } from "~~/services/file.service";
+import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   deedData: DeedInfoModel;
@@ -16,11 +19,9 @@ interface Props {
 const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) => {
   const [supportedFiles, setSupportedFiles] = useState<Map<string, FileFieldKeyLabel>>();
   const { data: signMessageData, signMessageAsync } = useSignMessage();
-  const { primaryWallet } = useDynamicContext();
-
-  const isOwner = useMemo(() => {
-    return deedData.owner === primaryWallet?.address;
-  }, [deedData.owner, primaryWallet]);
+  const { authToken } = useDynamicContext();
+  const validationClient = useValidationClient();
+  const isOwner = useIsOnwer(deedData);
 
   useEffect(() => {
     const map = new Map<string, FileFieldKeyLabel>();
@@ -37,16 +38,15 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
     }
   }, [signMessageData]);
 
-  const handleStateChange = (id: string, state: FileValidationState) => {
-    if (!deedData.validations) deedData.validations = [];
-    const validationEntry = deedData.validations.find(x => x[0] === id);
-
-    if (!validationEntry) {
-      deedData.validations.push([id, state]);
+  const handleValidationChange = async (validation: FileValidationModel) => {
+    const notificationId = notification.loading("Publishing validation...");
+    const res = await validationClient.authentify(authToken).saveValidation(validation);
+    notification.remove(notificationId);
+    if (res) {
+      notification.success("Successfully updated");
     } else {
-      validationEntry[1] = state;
+      notification.error("Error while publishing validation");
     }
-    onSave(deedData).then(onRefresh);
   };
 
   const handleSign = async () => {
@@ -108,7 +108,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                     "Any other Supporting Documents",
                   ]}
                   supportedFiles={supportedFiles}
-                  onStateChanged={handleStateChange}
+                  onStateChanged={handleValidationChange}
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
@@ -120,11 +120,11 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
-                  id={"EntityVerification"}
+                  id="EntityVerification"
                   label="Entity Verification"
                   description="Complete KYB Procedures"
                   fileLabels={["Property Images"]}
-                  onStateChanged={handleStateChange}
+                  onStateChanged={handleValidationChange}
                   supportedFiles={supportedFiles}
                   deedData={deedData}
                   onSave={onSave}
@@ -141,7 +141,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   label="Ownership Verification"
                   description="Complete KYB Procedures"
                   fileLabels={["Deed or Title", "Purchase Contract"]}
-                  onStateChanged={handleStateChange}
+                  onStateChanged={handleValidationChange}
                   supportedFiles={supportedFiles}
                   deedData={deedData}
                   onSave={onSave}
@@ -175,7 +175,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                     </button>
                   }
                   supportedFiles={supportedFiles}
-                  onStateChanged={handleStateChange}
+                  onStateChanged={handleValidationChange}
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
@@ -197,14 +197,19 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                     "Not Started" ? undefined : (
                       <button
                         className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
-                        onClick={() => handleStateChange("DocumentNotorization", "Processing")}
+                        onClick={() =>
+                          handleValidationChange({
+                            key: "DocumentNotorization",
+                            state: "Processing",
+                          })
+                        }
                       >
                         Begin Process
                       </button>
                     )
                   }
                   supportedFiles={supportedFiles}
-                  onStateChanged={handleStateChange}
+                  onStateChanged={handleValidationChange}
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
@@ -220,7 +225,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   label="State & County Fillings"
                   description="Complete KYB Procedures"
                   fileLabels={["State & County Fillings"]}
-                  onStateChanged={handleStateChange}
+                  onStateChanged={handleValidationChange}
                   supportedFiles={supportedFiles}
                   deedData={deedData}
                   onSave={onSave}
@@ -259,7 +264,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                       Click to sign
                     </button>
                   }
-                  onStateChanged={handleStateChange}
+                  onStateChanged={handleValidationChange}
                   supportedFiles={supportedFiles}
                   deedData={deedData}
                   onSave={onSave}

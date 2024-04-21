@@ -13,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case "GET":
-        if (req.query.isRestricted === "true") {
+        if (req.query.isRestricted === "true" || process.env.NEXT_PUBLIC_OFFLINE) {
           return await getRegistrationFromDatabase(req, res);
         } else {
           return await getRegistrationFromChain(req, res);
@@ -91,9 +91,9 @@ async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResp
     return res.status(404).send(`Error: Deed ${id} not found in drafts`);
   }
 
-  // if (!(await authentify(req, res, [registration.owner!, "Validator"]))) {
-  //   return;
-  // }
+  if (!(await authentify(req, res, [registration.owner!, "Validator"]))) {
+    return;
+  }
 
   return res.status(200).json(registration);
 }

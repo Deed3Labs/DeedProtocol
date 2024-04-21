@@ -8,6 +8,12 @@
       "command": "yarn start"
     },
     {
+      "name": "Next.js: debug server-side offline",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn start:offline"
+    },
+    {
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",

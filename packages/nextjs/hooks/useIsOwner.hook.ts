@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { cacheIsAdmin } from "~~/services/cache.service";
+import { DeedInfoModel } from "~~/models/deed-info.model";
 
-const useIsAdmin = () => {
+const useIsOnwer = (deedData: DeedInfoModel) => {
   const { primaryWallet } = useDynamicContext();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {
     if (process.env.NEXT_PUBLIC_OFFLINE) {
-      setIsAdmin(true);
+      setIsOwner(false);
     }
     if (primaryWallet?.address) {
-      cacheIsAdmin(primaryWallet?.address).then(setIsAdmin);
+      setIsOwner(primaryWallet?.address === deedData.owner);
     }
   }, [primaryWallet?.address]);
-  return isAdmin;
+  return isOwner;
 };
 
-export default useIsAdmin;
+export default useIsOnwer;

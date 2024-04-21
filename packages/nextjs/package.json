@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "start": "next dev",
+    "start:offline": "NEXT_PUBLIC_OFFLINE=true next dev",
     "build": "next build",
     "serve": "next start",
     "lint": "next lint",

@@ -7,6 +7,9 @@ const useIsValidator = () => {
   const { primaryWallet } = useDynamicContext();
 
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_OFFLINE) {
+      setIsValidator(true);
+    }
     if (primaryWallet?.address) {
       cacheIsValidator(primaryWallet?.address).then(setIsValidator);
     }

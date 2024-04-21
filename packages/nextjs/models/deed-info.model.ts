@@ -108,6 +108,5 @@ export interface DeedInfoModel {
   agreement?: FileModel[];
   documentNotorization?: FileModel[];
 
-  validations?: [string, FileValidationState][];
   signatureTx?: string;
 }

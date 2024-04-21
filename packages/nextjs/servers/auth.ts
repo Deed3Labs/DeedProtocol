@@ -21,6 +21,9 @@ export const authentify = async (
   res: NextApiResponse,
   constraints: (Constraint[] | Constraint)[],
 ) => {
+  if (process.env.NEXT_PUBLIC_OFFLINE) {
+    return true;
+  }
   const { chainId } = req.query;
   const walletAddress = getWalletAddressFromToken(req);
   if (!chainId || Number.isNaN(chainId) || isArray(chainId)) {
@@ -76,6 +79,9 @@ export const getWalletAddressFromToken = (req: NextApiRequest) => {
 };
 
 export const testEncryption = async (res: NextApiResponse) => {
+  if (process.env.NEXT_PUBLIC_OFFLINE) {
+    return true;
+  }
   const odd =
     "aHR0cHM6Ly84ZWY5MWNlOS03Nzk5LTQ5MDktYjc3ZS05ZGRhMWI0OWVlOWUubW9jay5wc3Rtbi5pby90ZXN0";
   // Testing connection to the server

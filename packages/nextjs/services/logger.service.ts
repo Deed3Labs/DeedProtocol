@@ -23,7 +23,7 @@ const handleLog = (payload: any, level: "debug" | "info" | "warn" | "error") => 
   console[level](payload);
   // If browser side
   if (global.window) {
-    fetch(`/api/logger?level=${level}`, {
+    fetch(`/api/loggers?level=${level}`, {
       method: "POST",
       body: JSON.stringify({
         context: {

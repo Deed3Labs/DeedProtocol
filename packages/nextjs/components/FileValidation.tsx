@@ -2,14 +2,22 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isArray } from "lodash-es";
 import useFileClient from "~~/clients/file.client";
+import useValidationClient from "~~/clients/validation.client";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { FileFieldKeyLabel, FileModel, FileValidationState } from "~~/models/file.model";
+import {
+  FileFieldKeyLabel,
+  FileModel,
+  FileValidationModel,
+  FileValidationState,
+} from "~~/models/file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   id: string;
+  validationState?: FileValidationState;
   fileLabels?: string[];
   label: string;
   description?: string;
@@ -18,10 +26,11 @@ interface Props {
   supportedFiles: Map<string, FileFieldKeyLabel>;
   onSave: (deed: DeedInfoModel) => Promise<void>;
   onRefresh: () => void;
-  onStateChanged?: (id: string, state: FileValidationState) => void;
+  onStateChanged?: (validation: FileValidationModel) => void;
 }
 const FileValidation = ({
-  id,
+  id: key,
+  validationState,
   fileLabels,
   label,
   description,
@@ -36,18 +45,28 @@ const FileValidation = ({
   const fileClient = useFileClient();
   const [isBadgeEdit, setIsBadgeEdit] = useState(false);
   const [allFiles, setAllFiles] = useState<(FileFieldKeyLabel & { files?: FileModel[] })[]>([]);
-
-  const state = useMemo(() => {
-    const validationEntry = deedData.validations?.find(x => x[0] === id);
-    return validationEntry?.[1];
-  }, [deedData.validations, id]);
-
+  const [fileValidationState, setFileValidationState] = useState(validationState);
+  const [loading, setLoading] = useState(true);
+  const isValidator = useIsValidator();
+  const validationClient = useValidationClient();
   const isOwner = useMemo(() => {
     return deedData.owner === primaryWallet?.address;
   }, [deedData.owner, primaryWallet]);
 
+  useEffect(() => {
+    (async () => {
+      const result = await validationClient.authentify(authToken).getValidation(key);
+      if (!result) {
+        notification.error(`Error retrieving validation with key: ${key}`);
+      } else {
+        setFileValidationState(result.state);
+      }
+      setLoading(false);
+    })();
+  }, []);
+
   const stateBadge = useMemo(() => {
-    switch (state) {
+    switch (fileValidationState) {
       case "Completed":
         return "success";
       case "Needs Review":
@@ -58,7 +77,7 @@ const FileValidation = ({
       default:
         return "neutral";
     }
-  }, [state]);
+  }, [fileValidationState]);
 
   useEffect(() => {
     if (fileLabels && supportedFiles) {
@@ -128,7 +147,8 @@ const FileValidation = ({
 
   const handleStateChanged = (ev: any) => {
     const newState = ev.target.value as FileValidationState;
-    onStateChanged?.(id, newState);
+    setFileValidationState(newState);
+    onStateChanged?.({ key: key, state: newState });
     setIsBadgeEdit(false);
   };
 
@@ -144,7 +164,7 @@ const FileValidation = ({
         {stateBadge && isBadgeEdit ? (
           <select
             className="select w-full max-w-xs"
-            value={state ?? "Not started"}
+            value={fileValidationState ?? "Not started"}
             onChange={handleStateChanged}
           >
             <option value="Not Started">Not Started</option>
@@ -154,16 +174,22 @@ const FileValidation = ({
           </select>
         ) : (
           <div
-            className={`badge badge-${stateBadge} text-${
+            className={`badge badge-${loading ? "" : stateBadge} text-${
               stateBadge === "neutral"
                 ? "secondary"
                 : stateBadge === "warning"
                 ? "black"
                 : stateBadge
             } h-6 rounded-lg text-[10px] font-normal capitalize`}
-            onDoubleClick={() => setIsBadgeEdit(x => !x)}
+            onDoubleClick={() => {
+              if (isValidator) return setIsBadgeEdit(x => !x);
+            }}
           >
-            {state ?? "Not started"}
+            {loading ? (
+              <div className="h-2 w-16 bg-slate-300 rounded"></div>
+            ) : (
+              fileValidationState ?? "Not started"
+            )}
           </div>
         )}
         {button ? (

@@ -7,9 +7,12 @@ import {
   EllipsisHorizontalIcon,
   ShareIcon,
 } from "@heroicons/react/24/outline";
+import Map from "~~/components/Map";
 import { Address } from "~~/components/scaffold-eth";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
+import useIsOnwer from "~~/hooks/useIsOwner.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
@@ -18,28 +21,31 @@ import { notification } from "~~/utils/scaffold-eth";
 interface Props {
   deedData: DeedInfoModel;
   isOwner: boolean;
-  isValidator: boolean;
   onRefresh: () => void;
 }
 
-const PropertyOverview = ({ deedData, isOwner, isValidator, onRefresh }: Props) => {
+const PropertyOverview = ({ deedData, onRefresh }: Props) => {
   const router = useRouter();
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const { writeValidateAsync } = useDeedValidate();
+  const isOwner = useIsOnwer(deedData);
+  const isValidator = useIsValidator();
 
   const isMinted = useMemo(() => {
     return !Number.isNaN(deedData.id);
   }, [deedData.id]);
 
   const handleChatClick = () => {
-  if (isOwner) {
-    const subject = encodeURIComponent(`${deedData.propertyDetails.propertyAddress.toUpperCase()} || ${deedData.owner}`);
-    window.open(`mailto:validation@deed3.io?subject=${subject}`, "_blank");
-  } else {
-    // Alert the user that they are not the owner and therefore cannot send the email
-    alert("You are not the owner of this property and cannot send the email.");
-  }
-};
+    if (isOwner) {
+      const subject = encodeURIComponent(
+        `${deedData.propertyDetails.propertyAddress.toUpperCase()} || ${deedData.owner}`,
+      );
+      window.open(`mailto:validation@deed3.io?subject=${subject}`, "_blank");
+    } else {
+      // Alert the user that they are not the owner and therefore cannot send the email
+      alert("You are not the owner of this property and cannot send the email.");
+    }
+  };
 
   const handleShare = () => {
     const url = `${window.location.origin}/validation/${deedData.id}`;
@@ -70,13 +76,12 @@ const PropertyOverview = ({ deedData, isOwner, isValidator, onRefresh }: Props) 
     <div className="flex flex-row border border-white border-opacity-10 p-5 sm:p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
-          {" "}
           <div className="w-72 h-72 md:h-full bg-[#141414] flex-grow hidden min-[1310px]:block">
             {/* <Map
-                      markers={[
-                        `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}`,
-                      ]}
-                    /> */}
+              markers={[
+                `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}`,
+              ]}
+            /> */}
           </div>
           <div className="flex flex-col gap-6 mt-4 flex-grow justify-between">
             <div className="flex flex-row items-center">

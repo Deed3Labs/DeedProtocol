@@ -135,7 +135,7 @@ const Page = ({ router }: WithRouterProps) => {
       await fetchDeedInfo(id as string);
       setIsLoading(false);
     } else {
-      router.push("/explorer");
+      router.push("/property-explorer");
     }
   };
 
@@ -199,7 +199,7 @@ const Page = ({ router }: WithRouterProps) => {
                   <>
                     This property is not yet published and has restricted access.
                     <br />
-                    Please connect with the account owner.
+                    Please connect with the owner wallet.
                   </>
                 )}
               </div>

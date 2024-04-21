@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { withRouter } from "next/router";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import useIsAdmin from "~~/hooks/contracts/access-manager/useIdAdmin.hook";
+import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import logger from "~~/services/logger.service";
 
 const adminRole = `0x${Array(64).join("0")}` as `0x${string}`;
-const Page = () => {
+const AdminPanel = () => {
   const [walletToGrant, setWalletToGrant] = useState<string>();
-  const { primaryWallet } = useDynamicContext();
 
   const { writeAsync: grantValidatorAsync } = useScaffoldContractWrite({
     contractName: "AccessManager",
@@ -21,11 +20,7 @@ const Page = () => {
     args: [undefined, undefined],
   });
 
-  const { data: isAdmin } = useScaffoldContractRead({
-    contractName: "AccessManager",
-    functionName: "hasAdminRole",
-    args: [primaryWallet?.address],
-  });
+  const isAdmin = useIsAdmin();
 
   const onGrantValidatorSubmit = async () => {
     logger.debug("Granting validator", walletToGrant);
@@ -85,7 +80,7 @@ const Page = () => {
         <div className="flex flex-col gap-6 mt-6">
           <div className="text-2xl leading-10">Restricted</div>
           <div className="text-base font-normal leading-normal">
-            Thi section is restricted to admin users only.
+            This section is restricted to admin users only.
           </div>
         </div>
       )}
@@ -93,4 +88,4 @@ const Page = () => {
   );
 };
 
-export default withRouter(Page);
+export default withRouter(AdminPanel);

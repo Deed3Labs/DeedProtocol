@@ -7,6 +7,8 @@ import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { sleepAsync } from "~~/utils/sleepAsync";
 
 let cacheActivated = true;
+const validatorCacheTimeSec = 3600;
+const adminCacheTimeSec = validatorCacheTimeSec;
 
 let cacheMap: Map<
   string,
@@ -31,7 +33,7 @@ export async function cacheIsValidator(wallet: Address, forceCacheRefresh: boole
         keyParam.wallet,
       ]);
     },
-    undefined,
+    3600,
     forceCacheRefresh,
   );
 }
@@ -52,7 +54,7 @@ export async function cacheIsAdmin(wallet: Address, forceCacheRefresh: boolean =
         keyParam.wallet,
       ]);
     },
-    undefined,
+    adminCacheTimeSec,
     forceCacheRefresh,
   );
 }
