@@ -23,12 +23,12 @@ const propertyIcon: MapIconModel = {
 };
 
 const defaultImages = [
-  "images/residential1.png",
-  "images/residential2.png",
-  "images/residential3.png",
-  "images/residential4.png",
-  "images/residential5.png",
-  "images/residential6.png",
+  "/images/residential1.png",
+  "/images/residential2.png",
+  "/images/residential3.png",
+  "/images/residential4.png",
+  "/images/residential5.png",
+  "/images/residential6.png",
   // ... add as many default images as you like
 ];
 
