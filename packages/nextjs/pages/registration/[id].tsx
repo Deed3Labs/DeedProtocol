@@ -258,7 +258,7 @@ const Page = ({ router }: WithRouterProps) => {
                 )}
               </div>
             </div>
-            <div className="w-full lg:w-1/3">
+            <div className="w-full lg:w-1/3 mb-10">
               <SidePanel
                 isOwner={isOwner}
                 isDraft={isDraft}
