@@ -86,7 +86,7 @@ export const StateOptions = [
 export const VehicleMakesAndModels = {
   Audi: ["A3", "A4", "A5", "A6", "A7", "A8", "Q3", "Q5", "Q7", "TT", "R8", "RS3", "RS4", "RS5"],
   BMW: ["118I", "220I", "228I", "320I", "328I", "330I", "335I", "340I", "M3", "M4", "X1", "X3", "X5", "X6", "Z4"],
-  MercedesBenz: ["A-Class", "B-Class", "C-Class", "E-Class", "S-Class", "GLA", "GLC", "GLE", "GLS", "AMG GT", "G-Class"],
+  "Mercedes Benz": ["A-Class", "B-Class", "C-Class", "E-Class", "S-Class", "GLA", "GLC", "GLE", "GLS", "AMG GT", "G-Class"],
   Ford: ["Fiesta", "Focus", "Fusion", "Mustang", "Escape", "Explorer", "F-150", "Ranger", "Transit", "EcoSport", "Edge"],
   Chevrolet: ["Spark", "Malibu", "Impala", "Camaro", "Silverado", "Equinox", "Tahoe", "Suburban", "Colorado", "Traverse"],
   Toyota: ["Yaris", "Corolla", "Camry", "Prius", "RAV4", "Highlander", "Tacoma", "Tundra", "Sienna", "4Runner", "Land Cruiser"],
