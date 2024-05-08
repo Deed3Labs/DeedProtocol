@@ -10,6 +10,7 @@ export class DbBase {
       strict: true,
       deprecationErrors: true,
     },
+    maxPoolSize: 50,
   });
 
   protected static deedDB = this.dbClient.db(dbName);

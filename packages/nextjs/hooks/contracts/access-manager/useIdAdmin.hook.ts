@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import useWallet from "~~/hooks/useWallet";
 import { cacheIsAdmin } from "~~/services/cache.service";
 
 const useIsAdmin = () => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet, isConnecting } = useWallet();
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_OFFLINE) {
-      setIsAdmin(true);
-    }
     if (primaryWallet?.address) {
       cacheIsAdmin(primaryWallet?.address).then(setIsAdmin);
+    } else {
+      setIsAdmin(false);
     }
-  }, [primaryWallet?.address]);
+  }, [primaryWallet?.address, isConnecting]);
   return isAdmin;
 };
 

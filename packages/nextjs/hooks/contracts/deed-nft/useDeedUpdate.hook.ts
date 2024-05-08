@@ -1,13 +1,14 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
-import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
 import useFileClient from "~~/clients/file.client";
+import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { uploadFiles } from "~~/services/file.service";
+import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
-  const { primaryWallet, authToken } = useDynamicContext();
+  const { primaryWallet, authToken } = useWallet();
   const fileClient = useFileClient();
 
   const contractWriteHook = useScaffoldContractWrite({
@@ -29,7 +30,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     try {
       const payload = await uploadFiles(authToken, data, old);
       if (!payload) return;
-      hash = await fileClient.authentify(authToken).uploadJson(payload);
+      hash = await fileClient.uploadJson(payload);
     } catch (error) {
       notification.error("Error while uploading documents");
       logger.error({ message: "[Deed Mint] Error while uploading documents", error });

@@ -1,5 +1,5 @@
 import { createPublicClient, getContract, http } from "viem";
-import { gnosis, goerli } from "viem/chains";
+import { gnosis, goerli, localhost } from "viem/chains";
 import { mainnet, sepolia } from "wagmi";
 import CONFIG from "~~/config";
 import deployedContracts from "~~/contracts/deployedContracts";
@@ -16,6 +16,8 @@ export const getClient = (chainId: number | string) => {
     chain = gnosis;
   } else if (chainId === goerli.id) {
     chain = goerli;
+  } else if (chainId === localhost.id) {
+    chain = localhost;
   } else {
     throw new Error(`ChainId not supported (${chainId})`);
   }
@@ -49,7 +51,7 @@ export const getDeedOwner = async (id: number, chainId: number) => {
 
 export const getContractInstance = (
   chainId: number | string,
-  name: keyof (typeof deployedContracts)[11155111],
+  name: keyof (typeof deployedContracts)[1337],
 ) => {
   chainId = Number(chainId);
   const deedNFT = deployedContracts[+chainId as keyof typeof deployedContracts][name];

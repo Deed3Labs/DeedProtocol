@@ -5,14 +5,20 @@ import { withRouter } from "next/router";
 import ValidationProcedures from "../../components/ValidationProcedures";
 import PropertyDetails from "../../components/ValidationPropertyDetails";
 import PropertyOverview from "../../components/ValidationPropertyOverview";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useRegistrationClient from "~~/clients/registrations.client";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
+import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
 import useIsOnwer from "~~/hooks/useIsOwner.hook";
+import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { uploadFiles } from "~~/services/file.service";
+import logger from "~~/services/logger.service";
+import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
@@ -36,15 +42,17 @@ const Page = ({ router }: WithRouterProps) => {
   // eslint-disable-next-line prefer-const
   let { id } = router.query;
 
-  const { primaryWallet, authToken } = useDynamicContext();
+  const { primaryWallet, authToken, isConnecting } = useWallet();
+  const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const [isLoading, setIsLoading] = useState(true);
-  // const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const [initialData, setInitialData] = useState<DeedInfoModel>(defaultData);
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(deedData!.id!));
   const isOwner = useIsOnwer(deedData);
+  const isValidator = useIsValidator();
   const registrationClient = useRegistrationClient();
+  const { writeValidateAsync } = useDeedValidate();
 
   const isDraft = useMemo(() => {
     return !id || Number.isNaN(+id);
@@ -52,29 +60,33 @@ const Page = ({ router }: WithRouterProps) => {
   const { id: chainId } = getTargetNetwork();
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !isConnecting) {
       if (id) {
         setIsLoading(true);
         fetchDeedInfo(id as string);
       }
     }
-  }, [id, router.isReady]);
-
-  useEffect(() => {
-    if (router.isReady && id && !isLoading) {
-      setIsLoading(true);
-      fetchDeedInfo(id as string);
-    }
-  }, [authToken, id, router.isReady]);
+  }, [id, router.isReady, isConnecting, authToken]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
   };
 
+  const onDeedMinted = async (txnReceipt: TransactionReceipt) => {
+    const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");
+    if (!payload) {
+      logger.error({ message: "Error parsing DeedNFTMinted event", txnReceipt });
+      return;
+    }
+    const { deedId } = payload;
+    notification.success(`Deed NFT Minted with id ${deedId}`);
+    await router.push(`/validation/${deedId}`);
+  };
+
   const fetchDeedInfo = useCallback(
     async (id: string) => {
       setIsLoading(true);
-      const resp = await registrationClient.authentify(authToken!).getRegistration(id, !!isDraft);
+      const resp = await registrationClient.getRegistration(id, !!isDraft);
       setErrorCode(undefined);
       setIsLoading(false);
       if (resp.ok && resp.value) {
@@ -88,7 +100,7 @@ const Page = ({ router }: WithRouterProps) => {
         }
       }
     },
-    [id, isDraft, chainId, authToken],
+    [id, isDraft, chainId],
   );
 
   const handleErrorClick = async () => {
@@ -99,6 +111,14 @@ const Page = ({ router }: WithRouterProps) => {
     } else {
       router.push("/property-explorer");
     }
+  };
+
+  const handleValidate = async () => {
+    await writeValidateAsync(deedData, !deedData.isValidated);
+  };
+
+  const handleMint = async () => {
+    await writeMintDeedAsync(deedData);
   };
 
   const handleSave = async () => {
@@ -114,9 +134,7 @@ const Page = ({ router }: WithRouterProps) => {
       const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
-      const response = await registrationClient
-        .authentify(authToken!)
-        .saveRegistration(newDeedData);
+      const response = await registrationClient.saveRegistration(newDeedData);
       notification.remove(toastId);
 
       if (response.ok && response.value) {
@@ -136,7 +154,7 @@ const Page = ({ router }: WithRouterProps) => {
     }
   };
   return (
-    <div className="container pt-2 sm:pt-8 pb-10">
+    <div className="container pt-10 sm:pt-8 pb-10">
       {!isLoading ? (
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
@@ -215,6 +233,23 @@ const Page = ({ router }: WithRouterProps) => {
                       <li>
                         <Link href={`/registration/${deedData.id}`}>Edit</Link>
                       </li>
+                      {isValidator && (
+                        <>
+                          {deedData.mintedId ? (
+                            <li>
+                              <a onClick={() => handleValidate()} className="link-default">
+                                {deedData.isValidated ? "Unvalidate" : "Validate"}
+                              </a>
+                            </li>
+                          ) : (
+                            <li>
+                              <a onClick={() => handleMint()} className="link-default">
+                                Mint
+                              </a>
+                            </li>
+                          )}
+                        </>
+                      )}
                     </ul>
                   </div>
                 </div>
@@ -223,6 +258,8 @@ const Page = ({ router }: WithRouterProps) => {
                 deedData={deedData}
                 isOwner={isOwner}
                 onRefresh={() => fetchDeedInfo(deedData.id!)}
+                handleMint={handleMint}
+                handleValidate={handleValidate}
               />
               <PropertyDetails
                 propertyDetail={deedData.propertyDetails}
@@ -243,7 +280,7 @@ const Page = ({ router }: WithRouterProps) => {
           </div>
         )
       ) : (
-        <span className="loading loading-bars loading-lg my-8"></span>
+        <span className="loading loading-bars loading-lg my-8" />
       )}
     </div>
   );

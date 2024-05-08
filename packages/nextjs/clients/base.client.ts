@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useEffect, useState } from "react";
+import useWallet from "~~/hooks/useWallet";
 import logger from "~~/services/logger.service";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
@@ -112,12 +112,13 @@ export class HttpClient {
   }
 }
 
-const useHttpClient = <TClient extends HttpClient>(client: TClient): TClient => {
-  const { authToken } = useDynamicContext();
+const useHttpClient = <TClient extends HttpClient>(_client: TClient): TClient => {
+  const { authToken } = useWallet();
+  const [client, setClient] = useState(_client);
 
   useEffect(() => {
     if (authToken) {
-      client.authentify(authToken);
+      setClient(client.authentify(authToken));
     }
   }, [authToken]);
 

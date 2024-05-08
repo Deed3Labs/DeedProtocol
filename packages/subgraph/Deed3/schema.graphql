@@ -31,6 +31,8 @@ type DeedMetadata @entity(immutable: false) {
     # Property Details
     propertyDetails_type: String!
     propertyDetails_address: String!
+    propertyDetails_latitude: String
+    propertyDetails_longitude: String
     propertyDetails_city: String!
     propertyDetails_state: String!
     propertyDetails_size: String

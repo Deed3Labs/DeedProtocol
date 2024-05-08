@@ -1,10 +1,11 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
-import { logger, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
+import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 const useDeedValidate = () => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet } = useWallet();
 
   const contractWritePayload = useScaffoldContractWrite({
     contractName: "DeedNFT",

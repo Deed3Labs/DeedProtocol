@@ -1,12 +1,13 @@
-import { execute } from "../.graphclient";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 import { ExplorerPageSize } from "~~/constants";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
+import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 const Deed3Query = (
   filterVerified: boolean,
   filterPropertySize: boolean,
   filterOwnerWallet: boolean,
-) => ` 
+) => gql` 
   query FetchDeedEntities(
     $PROPERTY_ADDRESS: String
     $PROPERTY_CITY: String
@@ -70,14 +71,20 @@ const Deed3Query = (
   }
 `;
 
-export function fetchDeeds(
+const client = new ApolloClient({
+  uri: getTargetNetwork().deedSubgraph,
+  cache: new InMemoryCache(),
+});
+
+export async function fetchDeeds(
   filter?: PropertiesFilterModel,
   currentPage?: number,
   pageSize?: number,
 ) {
-  return execute(
-    Deed3Query(filter?.validated !== "all", !!filter?.propertySize, !!filter?.ownerWallet),
-    {
+  const res = await client.query({
+    query: Deed3Query(filter?.validated !== "all", !!filter?.propertySize, !!filter?.ownerWallet),
+    errorPolicy: "ignore",
+    variables: {
       PROPERTY_ADDRESS: filter?.search ?? "",
       PROPERTY_CITY: filter?.search ?? "",
       PROPERTY_STATE: filter?.search ?? "",
@@ -88,5 +95,6 @@ export function fetchDeeds(
       CURRENT_PAGE: currentPage ?? 0,
       PAGE_SIZE: pageSize ?? ExplorerPageSize,
     },
-  ).then(res => res.data.deedEntities);
+  });
+  return res.data.deedEntities;
 }

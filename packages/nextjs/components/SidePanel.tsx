@@ -3,16 +3,20 @@ import Link from "next/link";
 import { NextRouter } from "next/router";
 import MarketLogo from "../pages/registration/assets/MarketLogo";
 import QuoteDetail, { USDollar } from "./scaffold-eth/QuoteDetail";
-import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
+import usePaymentClient from "~~/clients/payment.client";
 import useQuoteClient from "~~/clients/quote.client";
 import useRegistrationClient from "~~/clients/registrations.client";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
+import CONFIG from "~~/config";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
+import useCryptoPayement from "~~/hooks/useCryptoPayment.hook";
+import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { QuoteModel } from "~~/models/quote.model";
 import { uploadFiles } from "~~/services/file.service";
@@ -44,12 +48,13 @@ const SidePanel = ({
   const { writeValidateAsync } = useDeedValidate();
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => refetchDeedInfo());
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
-  // const { writeAsync: writeCryptoPayement } = useCryptoPayement();
-  const { primaryWallet, authToken } = useDynamicContext();
+  const { writeAsync: writeCryptoPayement } = useCryptoPayement();
+  const { primaryWallet, authToken } = useWallet();
   const [quoteDetails, setQuoteDetails] = useState<QuoteModel>();
   const [appraisalInspection, setAppraisalInspection] = useState(false);
   const [advancedPlan, setAdvancedPlan] = useState(false);
   const registrationClient = useRegistrationClient();
+  const paymentClient = usePaymentClient();
   const quoteClient = useQuoteClient();
 
   useEffect(() => {
@@ -74,22 +79,24 @@ const SidePanel = ({
       const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
-      const response = await registrationClient
-        .authentify(authToken!)
-        .saveRegistration(newDeedData);
+      const response = await registrationClient.saveRegistration(newDeedData);
       notification.remove(toastId);
 
-      if (response.ok && response.value) {
-        if (!deedData.id) {
-          // await handlePayment(response.value);
-          await router.push(`/validation/${response.value}`);
-        } else {
-          notification.success("Successfully updated");
-          refetchDeedInfo();
-        }
-      } else {
+      if (!response.ok || !response.value) {
         notification.error("Error saving registration");
+        return;
       }
+
+      if (!deedData.paymentInformation.receipt) {
+        if (await handlePayment(response.value)) {
+          await router.push(`/validation/${response.value}`);
+          return;
+        }
+        return;
+      }
+
+      notification.success("Successfully updated");
+      refetchDeedInfo();
     } else {
       if (!deedData.id || !initialData) return;
       // Update on chain
@@ -97,31 +104,30 @@ const SidePanel = ({
     }
   };
 
-  // const handlePayment = async (_id: string) => {
-  //   if (!authToken) {
-  //     notification.error("Please connect your wallet");
-  //     return;
-  //   }
+  const handlePayment = async (_id: string) => {
+    if (!authToken) {
+      notification.error("Please connect your wallet");
+      return;
+    }
 
-  //   if (deedData.paymentInformation.paymentType === "crypto") {
-  //     const toastId = notification.loading("Submiting payment...");
-  //     const hash = await writeCryptoPayement();
-  //     if (!hash) {
-  //       notification.remove(toastId);
-  //       return;
-  //     }
-  //     const response = await registrationClient
-  //       .authentify(authToken!)
-  //       .savePaymentReceipt(_id, hash?.toString());
-  //     notification.remove(toastId);
-  //     if (!response.ok) {
-  //       notification.error("Error submiting receipt");
-  //     }
-  //     await router.push(`/registration/${_id}`);
-  //   } else if (deedData.paymentInformation.paymentType === "fiat") {
-  //     location.href = `${CONFIG.paymentLink}?client_reference_id=${_id}`;
-  //   }
-  // };
+    if (deedData.paymentInformation.paymentType === "crypto") {
+      const toastId = notification.loading("Submiting payment...");
+      const hash = await writeCryptoPayement();
+      if (!hash) {
+        notification.remove(toastId);
+        return false;
+      }
+      const response = await paymentClient.submitPaymentReceipt(_id, hash?.toString());
+      notification.remove(toastId);
+      if (!response.ok) {
+        notification.error("Error submiting payment");
+        return false;
+      }
+      return true;
+    } else if (deedData.paymentInformation.paymentType === "fiat") {
+      location.href = `${CONFIG.paymentLink}?client_reference_id=${_id}`;
+    }
+  };
 
   const onDeedMinted = async (txnReceipt: TransactionReceipt) => {
     const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");
@@ -130,8 +136,10 @@ const SidePanel = ({
       return;
     }
     const { deedId } = payload;
-    notification.success(`Deed NFT Minted with id ${deedId}`);
-    await router.push(`/validation/${deedId}`);
+    if (deedId) {
+      deedData.mintedId = +deedId;
+      await router.push(`/validation/${deedId}`);
+    }
   };
 
   const mintDeedNFT = async () => {
@@ -155,7 +163,6 @@ const SidePanel = ({
               Deed3 (The Deed Protocol)
             </div>
             {deedData &&
-              !deedData.id &&
               (quoteDetails ? (
                 <>
                   <div className="text-[54px]/none font-['Coolvetica'] font-extra-condensed font-bold uppercase">
@@ -254,13 +261,13 @@ const SidePanel = ({
                   </div>
                 </>
               ) : (
-                <span className="loading loading-bars loading-lg m-auto my-8"></span>
+                <span className="loading loading-bars loading-lg m-auto my-8" />
               ))}
           </div>
         </div>
 
         <div className="my-8">
-          {deedData && deedData.id ? (
+          {deedData && deedData.id && !isOwner ? (
             <>
               {(isValidator || isOwner) && (
                 <div className="text-xl mb-4">
@@ -339,25 +346,35 @@ const SidePanel = ({
                   <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
                     Save
                   </button>
-                  {/* {!deedData.paymentInformation.receipt && deedData?.id && (
+                  {!deedData.paymentInformation.receipt && deedData?.id && (
                     <button
                       onClick={() => handlePayment(deedData.id!)}
                       className="btn btn-lg bg-gray-600"
                     >
                       Pay
                     </button>
-                  )} */}
+                  )}
                 </>
               )}
             </>
           ) : (
-            <button
-              onClick={handleSubmit}
-              className="my-3 btn btn-lg w-full font-normal text-sm btn-primary uppercase tracking-widest"
-              disabled={!quoteDetails}
-            >
-              Submit Form
-            </button>
+            <>
+              <button
+                onClick={handleSubmit}
+                className="my-3 btn btn-lg w-full font-normal text-sm btn-primary uppercase tracking-widest"
+                disabled={!quoteDetails}
+              >
+                {deedData.paymentInformation.receipt ? "Save" : "Proceed to payment"}
+              </button>
+              {deedData.paymentInformation.receipt && (
+                <button
+                  onClick={() => router.push(`/validation/${deedData.id}`)}
+                  className="my-3 btn btn-lg w-full font-normal text-sm btn-primary uppercase tracking-widest"
+                >
+                  Validation page
+                </button>
+              )}
+            </>
           )}
         </div>
 

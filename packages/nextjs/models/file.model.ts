@@ -8,6 +8,7 @@ import { isArray } from "lodash-es";
 
 export type FileValidationState = "Completed" | "Not started" | "Needs Review" | "Processing";
 export interface FileValidationModel {
+  registrationId: string;
   key: string;
   state: FileValidationState;
 }

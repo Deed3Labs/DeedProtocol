@@ -5,12 +5,15 @@ import logger from "~~/services/logger.service";
 // LINK ../pages/api/validations.api.ts
 
 export class ValidationClient extends HttpClient {
-  public async getValidation(key: string): Promise<FileValidationModel | undefined> {
-    const result = await this.get<FileValidationModel>("/api/validations", { key });
+  public async getValidation(
+    registrationId: string,
+    key: string,
+  ): Promise<FileValidationModel | undefined> {
+    const result = await this.get<FileValidationModel>("/api/validations", { key, registrationId });
     if (!result.ok) {
       logger.error({
         error: result.error,
-        message: `Failed to retrieve validation with key: ${key}`,
+        message: `Failed to retrieve validation with registrationId: ${registrationId} and key: ${key}`,
       });
       return undefined;
     }

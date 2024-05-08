@@ -6,9 +6,9 @@ import OtherInformations from "../../components/OtherInformations";
 import OwnerInformation from "../../components/OwnerInformation";
 import PaymentInformation from "../../components/PaymentInformation";
 import PropertyDetails from "../../components/RegPropertyDetails";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import useRegistrationClient from "~~/clients/registrations.client";
 import SidePanel from "~~/components/SidePanel";
+import useWallet from "~~/hooks/useWallet";
 import {
   DeedInfoModel,
   OwnerInformationModel,
@@ -71,7 +71,7 @@ const Page = ({ router }: WithRouterProps) => {
     id = undefined;
   }
 
-  const { primaryWallet, authToken } = useDynamicContext();
+  const { primaryWallet, authToken, isConnecting } = useWallet();
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
@@ -88,7 +88,7 @@ const Page = ({ router }: WithRouterProps) => {
   }, [deedData.owner, primaryWallet, id]);
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !isConnecting) {
       if (id) {
         setIsLoading(true);
         fetchDeedInfo(id as string);
@@ -97,14 +97,7 @@ const Page = ({ router }: WithRouterProps) => {
         setIsLoading(false);
       }
     }
-  }, [id, router.isReady]);
-
-  useEffect(() => {
-    if (router.isReady && id && !isLoading) {
-      setIsLoading(true);
-      fetchDeedInfo(id as string);
-    }
-  }, [authToken, id, router.isReady]);
+  }, [id, router.isReady, isConnecting]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -253,7 +246,7 @@ const Page = ({ router }: WithRouterProps) => {
                   readOnly={!isOwner}
                 />
                 <hr className="my-12 opacity-20" />
-                {router.isReady && (
+                {router.isReady && !deedData.paymentInformation.receipt && (
                   <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
                 )}
               </div>
@@ -272,7 +265,7 @@ const Page = ({ router }: WithRouterProps) => {
           </div>
         )
       ) : (
-        <span className="loading loading-bars loading-lg my-8"></span>
+        <span className="loading loading-bars loading-lg my-8" />
       )}
     </div>
   );

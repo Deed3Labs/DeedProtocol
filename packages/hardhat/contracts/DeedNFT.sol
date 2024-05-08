@@ -9,11 +9,12 @@ contract DeedNFT is ERC721Upgradeable, ERC721URIStorageUpgradeable, AccessManage
     struct DeedInfo {
         AssetType assetType;
         bool isValidated;
-        uint256[48] __gap;
+        uint256[10] __gap;
     }
 
     uint256 public nextDeedId;
     mapping(uint256 => DeedInfo) private deedInfoMap;
+    uint256[36] __gap;
 
     enum AssetType {
         Land,
@@ -33,10 +34,10 @@ contract DeedNFT is ERC721Upgradeable, ERC721URIStorageUpgradeable, AccessManage
         _disableInitializers();
     }
 
-    function initialize(address admin) public override(AccessManagerBase) initializer {
+    function initialize(address _accessManager) public override(AccessManagerBase) initializer {
         __ERC721URIStorage_init();
         __ERC721_init("DeedNFT", "DEED");
-        AccessManagerBase.initialize(admin);
+        AccessManagerBase.initialize(_accessManager);
         nextDeedId = 1;
     }
 
@@ -74,6 +75,8 @@ contract DeedNFT is ERC721Upgradeable, ERC721URIStorageUpgradeable, AccessManage
 
     function burn(uint256 _deedId) public onlyOwner(_deedId) {
         _burn(_deedId);
+        nextDeedId -= 1;
+        delete deedInfoMap[_deedId];
         emit DeedNFTBurned(_deedId);
     }
 

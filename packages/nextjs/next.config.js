@@ -20,6 +20,7 @@ const nextConfig = {
       "xsgames.co",
       "randomuser.me",
       "ipfs.io",
+      "localhost:8080",
     ],
   },
   productionBrowserSourceMaps: true,

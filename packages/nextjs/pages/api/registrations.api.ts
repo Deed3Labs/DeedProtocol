@@ -1,11 +1,12 @@
+import "./base";
 import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
-import { RegistrationDb, RegistrationDb as RegistrationsDb } from "~~/databases/registrations.db";
+import { RegistrationDb as RegistrationsDb } from "~~/databases/registrations.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { authentify, getWalletAddressFromToken, testEncryption } from "~~/servers/auth";
 import { getContractInstance, getDeedOwner } from "~~/servers/contract";
-import { getFileFromHash } from "~~/servers/ipfs";
+import { getObjectFromIpfs } from "~~/servers/ipfs";
 import logger from "~~/services/logger.service";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -13,17 +14,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case "GET":
-        if (req.query.isRestricted === "true" || process.env.NEXT_PUBLIC_OFFLINE) {
+        if (req.query.isRestricted === "true") {
           return await getRegistrationFromDatabase(req, res);
         } else {
           return await getRegistrationFromChain(req, res);
         }
       case "POST":
-        if (req.query.paymentReceipt) {
-          return await savePaymentReceipt(req, res);
-        } else {
-          return await saveRegistration(req, res);
-        }
+        return await saveRegistration(req, res);
       default:
         return res.status(405).send("Method not allowed");
     }
@@ -44,7 +41,7 @@ async function getRegistrationFromChain(req: NextApiRequest, res: NextApiRespons
     return res.status(400).send("Error: chainId of type number is required");
   }
 
-  if (!id || Number.isNaN(id)) {
+  if (!id || Number.isNaN(+id)) {
     return res.status(400).send("Error: id of type number is required");
   }
 
@@ -53,11 +50,9 @@ async function getRegistrationFromChain(req: NextApiRequest, res: NextApiRespons
   // Get the deed information from the contract.
   const tokenHash = await contract.read.tokenURI([id as any]);
 
-  const tokenMetadataResponse = await getFileFromHash(tokenHash);
-  if (tokenMetadataResponse.status !== 200) {
-    res
-      .status(tokenMetadataResponse.status)
-      .send(`Error while fetching deed ${id} (${tokenMetadataResponse.statusText})`);
+  const tokenMetadataResponse = await getObjectFromIpfs(tokenHash);
+  if (!tokenMetadataResponse) {
+    res.status(500).send(`Error while fetching deed ${id} with hash ${tokenHash}`);
     return;
   }
 
@@ -67,8 +62,9 @@ async function getRegistrationFromChain(req: NextApiRequest, res: NextApiRespons
   // Fetch isValidated
   const deedInfo = await contract.read.getDeedInfo([id as any]);
 
-  const deedInfoMetadata = (await tokenMetadataResponse.json()) as DeedInfoModel;
+  const deedInfoMetadata = tokenMetadataResponse as unknown as DeedInfoModel;
   deedInfoMetadata.id = id as string;
+  deedInfoMetadata.mintedId = Number(id);
   deedInfoMetadata.owner = deedOwner;
   deedInfoMetadata.isValidated = deedInfo.isValidated;
 
@@ -113,11 +109,42 @@ async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).send("Error: deedInfo is invalid");
   }
 
+  let existingRegistration;
   if (deedInfo.id) {
-    const reg = await RegistrationsDb.getRegistration(deedInfo.id);
-    if (!(await authentify(req, res, [reg!.owner!]))) {
+    existingRegistration = await RegistrationsDb.getRegistration(deedInfo.id);
+    if (!(await authentify(req, res, [existingRegistration!.owner!]))) {
       return;
     }
+  }
+
+  const getFullAddress = (model: DeedInfoModel) => {
+    const { propertyDetails } = model;
+    return `${propertyDetails.propertyAddress}, ${propertyDetails.propertyCity}, ${propertyDetails.propertyState}, United States`;
+  };
+
+  if (
+    !existingRegistration?.propertyDetails.propertyLatitude ||
+    getFullAddress(deedInfo) !== getFullAddress(existingRegistration)
+  ) {
+    // Compute the lat long from address
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(
+        getFullAddress(deedInfo),
+      )}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`,
+    );
+
+    const data = await response.json();
+
+    if (!data.features.length) {
+      return res
+        .status(400)
+        .send("Error: Unable to get coordinates from address, please try another address.");
+    }
+
+    const coordinates = data.features[0].geometry.coordinates;
+
+    deedInfo.propertyDetails.propertyLatitude = coordinates[1];
+    deedInfo.propertyDetails.propertyLongitude = coordinates[0];
   }
 
   deedInfo.owner = walletAddress;
@@ -128,29 +155,6 @@ async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
   } else {
     return res.status(200).send(id);
   }
-}
-
-async function savePaymentReceipt(req: NextApiRequest, res: NextApiResponse) {
-  const { id, paymentReceipt } = req.query;
-
-  if (!id || isArray(id)) {
-    return res.status(400).send("Error: id of type number is required");
-  }
-
-  const deedInfo = await RegistrationDb.getRegistration(id);
-
-  if (!deedInfo) {
-    return res.status(404).send(`Error: Deed ${id} not found`);
-  }
-
-  if (!(await authentify(req, res, [deedInfo.owner!, "Validator"]))) {
-    return;
-  }
-
-  deedInfo.paymentInformation.receipt = paymentReceipt as string;
-  await RegistrationDb.saveRegistration(deedInfo);
-
-  return res.status(200).send("success");
 }
 
 function validate() {

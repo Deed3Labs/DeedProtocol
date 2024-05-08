@@ -29,12 +29,11 @@ const PropertyDetails = ({
   };
 
   const handleViewModeToggle = () => {
-    setViewMode(isViewMode => {
-      if (!isViewMode) {
-        onSave();
-      }
-      return !isViewMode;
-    });
+    if (!viewMode) {
+      onSave();
+    }
+
+    setViewMode(!viewMode);
   };
 
   return (
@@ -45,7 +44,7 @@ const PropertyDetails = ({
             <div className="pl-4 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
               Property Details
             </div>
-            {isOwner && viewMode && (
+            {isOwner && viewMode !== undefined && (
               <button className="btn btn-link" onClick={handleViewModeToggle}>
                 {viewMode ? (
                   <PencilIcon className="w-4" />

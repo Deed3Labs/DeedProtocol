@@ -15,4 +15,5 @@ const deployLeaseNFT: DeployFunction = async function () {
 
 export default deployLeaseNFT;
 
-deployLeaseNFT.tags = ["LeaseNFT", "AccessManager"];
+deployLeaseNFT.tags = ["LeaseNFT", "core"];
+deployLeaseNFT.dependencies = ["AccessManager"];

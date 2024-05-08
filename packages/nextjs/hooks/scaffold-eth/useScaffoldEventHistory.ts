@@ -31,16 +31,22 @@ export const useScaffoldEventHistory = <
 >({
   contractName,
   eventName,
-  fromBlock,
   filters,
   blockData,
   transactionData,
   receiptData,
-}: UseScaffoldEventHistoryConfig<TContractName, TEventName, TBlockData, TTransactionData, TReceiptData>) => {
+}: UseScaffoldEventHistoryConfig<
+  TContractName,
+  TEventName,
+  TBlockData,
+  TTransactionData,
+  TReceiptData
+>) => {
   const [events, setEvents] = useState<any[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>();
-  const { data: deployedContractData, isLoading: deployedContractLoading } = useDeployedContractInfo(contractName);
+  const { data: deployedContractData, isLoading: deployedContractLoading } =
+    useDeployedContractInfo(contractName);
   const publicClient = usePublicClient();
 
   useEffect(() => {
@@ -58,7 +64,7 @@ export const useScaffoldEventHistory = <
           address: deployedContractData?.address,
           event,
           args: filters as any, // TODO: check if it works and fix type
-          fromBlock,
+          fromBlock: BigInt(deployedContractData.startBlock),
         });
         const newEvents = [];
         for (let i = logs.length - 1; i >= 0; i--) {
@@ -75,7 +81,9 @@ export const useScaffoldEventHistory = <
                 : null,
             receipt:
               receiptData && logs[i].transactionHash !== null
-                ? await publicClient.getTransactionReceipt({ hash: logs[i].transactionHash as Hash })
+                ? await publicClient.getTransactionReceipt({
+                    hash: logs[i].transactionHash as Hash,
+                  })
                 : null,
           });
         }
@@ -95,7 +103,6 @@ export const useScaffoldEventHistory = <
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     publicClient,
-    fromBlock,
     contractName,
     eventName,
     deployedContractLoading,

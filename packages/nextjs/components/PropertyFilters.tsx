@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
+import Map from "./map";
 import { debounce } from "lodash-es";
+import { useLocalStorage } from "usehooks-ts";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
@@ -10,6 +11,7 @@ import { PropertyTypeOptions } from "~~/constants";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { PropertyType } from "~~/models/deed-info.model";
+import { MarkerModel } from "~~/models/marker.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { PropertyModel } from "~~/models/property.model";
 
@@ -21,7 +23,7 @@ interface Props {
 const PropertyFilters = ({ properties, onFilter }: Props) => {
   const searchParams = useSearchParams();
   const isValidator = useIsValidator();
-  const [mapOpened, setMapOpened] = useState(false);
+  const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
   const [filter, setFilter] = useState<PropertiesFilterModel>({
     listingType: searchParams.get("type") as PropertiesFilterModel["listingType"],
@@ -37,19 +39,6 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     searchDebounce(search);
   }, [search]);
 
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("~~/components/Map"), {
-        loading: () => (
-          <div className="w-full flex flex-row justify-center">
-            <span className="loading loading-bars loading-lg"></span>
-          </div>
-        ),
-        ssr: false,
-      }),
-    [properties],
-  );
-
   const applyFilter = (partialFilter: Partial<PropertiesFilterModel>) => {
     const newFilter = { ...filter, ...partialFilter };
     setFilter(newFilter);
@@ -59,6 +48,10 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   useKeyboardShortcut(["Enter"], () => {
     onFilter(filter);
   });
+
+  function onMarkerClicked(marker: MarkerModel): void {
+    alert(`Marker clicked ${marker.name}`);
+  }
 
   return (
     <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-8">
@@ -158,8 +151,11 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
           </div>
         )}
       </div>
-
-      {mapOpened && <Map markers={properties.map(x => x.address)} />}
+      {mapOpened && (
+        <div className="!mt-4 border">
+          <Map markers={properties} onMarkerClicked={onMarkerClicked} />
+        </div>
+      )}
     </div>
   );
 };

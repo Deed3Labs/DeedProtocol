@@ -1,4 +1,4 @@
-import pinataSDK from "@pinata/sdk";
+import "./base";
 import axios from "axios";
 import { IncomingForm } from "formidable";
 import fs from "fs";
@@ -8,16 +8,12 @@ import { FilesDb } from "~~/databases/files.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { FileModel } from "~~/models/file.model";
 import { authentify, getWalletAddressFromToken, testEncryption } from "~~/servers/auth";
+import { ipfsClient, pinata, pushObjectToIpfs } from "~~/servers/ipfs";
 import logger from "~~/services/logger.service";
 
-if (!process.env.NEXT_PINATA_GATEWAY_KEY) {
-  throw new Error("Missing NEXT_PINATA_GATEWAY_KEY env var");
+if (!process.env.NEXT_PINATA_API_KEY || !process.env.NEXT_PINATA_API_SECRET) {
+  throw new Error("Missing Pinata API Key or Secret");
 }
-
-const pinata = new pinataSDK(
-  "0ef110c59f035fed162f",
-  "17025a6e8e0c7d645551f7683df3c743d64249d8c354dd3b2b29a23c0b6990c9",
-);
 
 export const config = {
   api: {
@@ -81,16 +77,21 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
           timestamp: new Date(),
         } satisfies Omit<FileModel, "fileId">);
       } else {
-        // Push the file to IPFS
-        const options = {
-          pinataMetadata: {
-            name: file.fileName![0],
-            description: `
-            - Owner ${walletAddress}
-            - Timestamp ${new Date().toISOString()}`,
-          },
-        };
-        response = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
+        if (process.env.NEXT_PUBLIC_OFFLINE) {
+          const cid = await ipfsClient.add(stream);
+          response = cid.toString();
+        } else {
+          const options = {
+            pinataMetadata: {
+              name: file.fileName![0],
+              description: `
+              - Owner ${file.owner}
+              - DB File ID ${file.fileId}
+              - Timestamp ${new Date().toISOString()}`,
+            },
+          };
+          response = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
+        }
         await FilesDb.saveFileInfo({
           mimetype: fileInfo.mimetype,
           fileName: file.fileName,
@@ -111,9 +112,8 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
 
 const uploadJson = async (req: NextApiRequest, res: NextApiResponse<string>) => {
   const payload = JSON.parse(Buffer.from(req.read()).toString()) as File;
-  const response = await pinata.pinJSONToIPFS(payload);
-  const ipfsHash = response.IpfsHash;
-  return res.status(200).send(ipfsHash);
+  const hash = await pushObjectToIpfs(payload);
+  return res.status(200).send(hash.toString());
 };
 
 const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) => {
@@ -124,15 +124,19 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   if (!authentify(req, res, ["Validator"])) {
     return;
   }
-
-  // Push the file to IPFS
-  const options = {
-    pinataMetadata: {
-      name: dbFile.fileInfo.fileName,
-      description: dbFile.fileInfo.fileId.toString().replaceAll('"', ""),
-    },
-  };
-  const ipfsHash = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
+  let ipfsHash;
+  if (process.env.NEXT_PUBLIC_OFFLINE) {
+    ipfsHash = (await ipfsClient.add(stream)).toString();
+  } else {
+    //  Push the file to IPFS
+    const options = {
+      pinataMetadata: {
+        name: dbFile.fileInfo.fileName,
+        description: dbFile.fileInfo.fileId.toString().replaceAll('"', ""),
+      },
+    };
+    ipfsHash = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
+  }
 
   // Maybe Delete the file from database
   // await FilesDb.deleteFile(dbFile.fileInfo);

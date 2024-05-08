@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import FileValidation from "./FileValidation";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useSignMessage } from "wagmi";
 import useValidationClient from "~~/clients/validation.client";
 import useIsOnwer from "~~/hooks/useIsOwner.hook";
@@ -19,7 +18,6 @@ interface Props {
 const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) => {
   const [supportedFiles, setSupportedFiles] = useState<Map<string, FileFieldKeyLabel>>();
   const { data: signMessageData, signMessageAsync } = useSignMessage();
-  const { authToken } = useDynamicContext();
   const validationClient = useValidationClient();
   const isOwner = useIsOnwer(deedData);
 
@@ -40,7 +38,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
 
   const handleValidationChange = async (validation: FileValidationModel) => {
     const notificationId = notification.loading("Publishing validation...");
-    const res = await validationClient.authentify(authToken).saveValidation(validation);
+    const res = await validationClient.saveValidation(validation);
     notification.remove(notificationId);
     if (res) {
       notification.success("Successfully updated");
@@ -51,7 +49,8 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
 
   const handleSign = async () => {
     await signMessageAsync({
-      message: "Please sign this message to confirm that you agree to tokenize your asset.",
+      message:
+        "Please sign this message to confirm that you agree to tokenize your asset and that the document you provided are valid.",
     });
   };
 
@@ -93,7 +92,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border border-white border-opacity-10" rowSpan={3}></td>
+            <td className="border border-white border-opacity-10" rowSpan={3} />
             <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
@@ -112,7 +111,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
-                ></FileValidation>
+                />
               </div>
             </td>
           </tr>
@@ -129,7 +128,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
-                ></FileValidation>
+                />
               </div>
             </td>
           </tr>
@@ -146,7 +145,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
-                ></FileValidation>
+                />
               </div>
             </td>
           </tr>
@@ -161,7 +160,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
             </td>
           </tr>
           <tr>
-            <td className="border border-white border-opacity-10" rowSpan={3}></td>
+            <td className="border border-white border-opacity-10" rowSpan={3} />
             <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
@@ -179,7 +178,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
-                ></FileValidation>
+                />
               </div>
             </td>
           </tr>
@@ -199,6 +198,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                         className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
                         onClick={() =>
                           handleValidationChange({
+                            registrationId: deedData.id!,
                             key: "DocumentNotorization",
                             state: "Processing",
                           })
@@ -213,7 +213,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
-                ></FileValidation>
+                />
               </div>
             </td>
           </tr>
@@ -230,7 +230,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
-                ></FileValidation>
+                />
               </div>
             </td>
           </tr>
@@ -246,7 +246,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
           </tr>
 
           <tr>
-            <td className="border border-white border-opacity-10" rowSpan={1}></td>
+            <td className="border border-white border-opacity-10" rowSpan={1} />
             <td className="border border-white border-opacity-10">
               <div className="py-8 px-4">
                 <FileValidation
@@ -256,12 +256,14 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   fileLabels={["Deed or Title"]}
                   button={
                     <button
-                      className="btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest"
+                      className={`btn btn-sm btn-primary m-1 border-white border-opacity-10 btn-square rounded-lg w-fit px-2 text-[9px] font-normal uppercase tracking-widest ${
+                        deedData.signatureTx ? "btn-success pointer-events-none" : ""
+                      }`}
                       onClick={handleSign}
                       disabled={!isOwner}
                       title="Only the owner can sign this deed."
                     >
-                      Click to sign
+                      {deedData.signatureTx ? "Signed" : "Click to sign"}
                     </button>
                   }
                   onStateChanged={handleValidationChange}
@@ -269,7 +271,7 @@ const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) =
                   deedData={deedData}
                   onSave={onSave}
                   onRefresh={onRefresh}
-                ></FileValidation>
+                />
               </div>
             </td>
           </tr>

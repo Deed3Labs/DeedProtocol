@@ -1,9 +1,9 @@
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { Address, useContractWrite } from "wagmi";
+import useWallet from "~~/hooks/useWallet";
 import { notification } from "~~/utils/scaffold-eth";
 
 const useErc20Transfer = (token: Address, amount: bigint, to: Address) => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet } = useWallet();
 
   const { writeAsync: erc20Transfer } = useContractWrite({
     abi: [
