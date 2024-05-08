@@ -8,10 +8,10 @@
       "command": "yarn start"
     },
     {
-      "name": "Next.js: debug server-side offline",
+      "name": "Next.js: debug server-side local",
       "type": "node-terminal",
       "request": "launch",
-      "command": "yarn start:offline"
+      "command": "yarn start:local"
     },
     {
       "name": "Next.js: debug client-side",

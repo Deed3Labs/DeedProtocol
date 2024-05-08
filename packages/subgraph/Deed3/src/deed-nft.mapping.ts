@@ -60,21 +60,29 @@ export function handleDeedNFTBurned(event: DeedNFTBurned): void {
 export function handleDeedNFTUriChanged(event: DeedNFTUriChangedEvent): void {
     let deed = DeedEntity.load(
         getDeedEntityId(event.address, event.params.deedId)
-    )!;
-    deed.uri = event.params.newIpfsDetailsHash;
-    deed.deedMetadata = deed.uri;
-    DeedMetadataTemplate.create(deed.uri);
-    deed.save();
+    );
+    if (deed) {
+        deed.uri = event.params.newIpfsDetailsHash;
+        deed.deedMetadata = deed.uri;
+        DeedMetadataTemplate.create(deed.uri);
+        deed.save();
+    }
 }
 
 export function handleDeedNFTValidatedChanged(
     event: DeedNFTValidatedChangedEvent
 ): void {
+    log.debug("DeedNFTValidatedChanged: {} {}", [
+        event.address.toString(),
+        event.params.isValid.toString(),
+    ]);
     let deed = DeedEntity.load(
         getDeedEntityId(event.address, event.params.deedId)
-    )!;
-    deed.isValidated = event.params.isValid;
-    deed.save();
+    );
+    if (deed) {
+        deed.isValidated = event.params.isValid;
+        deed.save();
+    }
 }
 
 export function handleTransfer(event: TransferEvent): void {

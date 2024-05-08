@@ -13,9 +13,19 @@ export interface TChainAttributes {
   deedMintingFeeDollar: number;
   blockExplorer?: string;
   deedSubgraph?: string;
+  ipfsGateway?: string;
 }
 
 export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
+  [chains.localhost.id]: {
+    color: "#7d7d7d",
+    nativeCurrencyTokenAddress: "0x0000000000",
+    storageAddress: "0xaA373895fe4f752ecF17e1F4D90217C4c48CbA05",
+    deedMintingFeeDollar: 0,
+    stableCoinAddress: "0x96935956d6D19db79dbc4258Cd6402B3Ee0AB05c",
+    deedSubgraph: "http://localhost:8000/subgraphs/name/Deed3",
+    ipfsGateway: "http://localhost:8080/ipfs/",
+  },
   [chains.hardhat.id]: {
     color: "#b8af0c",
     nativeCurrencyTokenAddress: "0x0000000000",
@@ -37,6 +47,7 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     deedMintingFeeDollar: 500,
     stableCoinAddress: "0x2B4987D22648CB0B7C062b03d91147478A95b52b",
     deedSubgraph: "https://api.studio.thegraph.com/query/56229/deed3-sepolia/version/latest",
+    ipfsGateway: "https://ipfs.io/ipfs/",
   },
   [chains.goerli.id]: {
     color: "#0975F6",

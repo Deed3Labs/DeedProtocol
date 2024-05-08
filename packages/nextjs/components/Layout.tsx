@@ -1,4 +1,5 @@
 import { AppProps } from "next/app";
+import { RainbowKitCustomConnectButton } from "./scaffold-eth/RainbowKitCustomConnectButton";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { Toaster } from "react-hot-toast";
 import { BackToTop } from "~~/components/BackToTop";
@@ -39,10 +40,18 @@ const Layout = ({ pageProps, Component }: AppProps) => {
       <Toaster />
       <BackToTop />
       <div className="container pt-10 !hidden">
-        <DynamicWidget
-          buttonClassName="dynamic-shadow-dom"
-          innerButtonComponent={<div className="dynamic-shadow-dom">Connect</div>}
-        />
+        {process.env.NEXT_PUBLIC_OFFLINE ? (
+          <RainbowKitCustomConnectButton />
+        ) : (
+          <DynamicWidget
+            buttonClassName="dynamic-shadow-dom"
+            innerButtonComponent={
+              <div className="dynamic-shadow-dom btn-base-300 text-[11px] font-normal uppercase tracking-widest">
+                Login
+              </div>
+            }
+          />
+        )}
       </div>
     </>
   );

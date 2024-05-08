@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isArray } from "lodash-es";
 import useFileClient from "~~/clients/file.client";
 import useValidationClient from "~~/clients/validation.client";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import {
   FileFieldKeyLabel,
@@ -41,7 +41,7 @@ const FileValidation = ({
   onRefresh,
   deedData,
 }: Props) => {
-  const { authToken, primaryWallet } = useDynamicContext();
+  const { primaryWallet } = useWallet();
   const fileClient = useFileClient();
   const [isBadgeEdit, setIsBadgeEdit] = useState(false);
   const [allFiles, setAllFiles] = useState<(FileFieldKeyLabel & { files?: FileModel[] })[]>([]);
@@ -55,7 +55,8 @@ const FileValidation = ({
 
   useEffect(() => {
     (async () => {
-      const result = await validationClient.authentify(authToken).getValidation(key);
+      if (!deedData.registrationId) return;
+      const result = await validationClient.getValidation(deedData.registrationId, key);
       if (!result) {
         notification.error(`Error retrieving validation with key: ${key}`);
       } else {
@@ -110,7 +111,7 @@ const FileValidation = ({
     const toastId = notification.loading("Uploading documents...");
     await Promise.all(
       files.value.map(async (file: FileModel, index: number) => {
-        const fileId = await fileClient.authentify(authToken ?? "").uploadFile(file, field.label);
+        const fileId = await fileClient.uploadFile(file, field.label);
         file.fileId = fileId;
         if (!field.key[1]) {
           if (field.multiple) {
@@ -142,13 +143,13 @@ const FileValidation = ({
   };
 
   const openFile = async (file: FileModel) => {
-    await fileClient.authentify(authToken ?? "").getFile(file.fileId, file.fileName, false);
+    await fileClient.getFile(file.fileId, file.fileName, false);
   };
 
   const handleStateChanged = (ev: any) => {
     const newState = ev.target.value as FileValidationState;
     setFileValidationState(newState);
-    onStateChanged?.({ key: key, state: newState });
+    onStateChanged?.({ key: key, state: newState, registrationId: deedData.registrationId! });
     setIsBadgeEdit(false);
   };
 

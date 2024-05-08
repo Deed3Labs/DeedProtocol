@@ -1,39 +1,27 @@
-import { useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { TransactionReceipt } from "viem";
+import Map from "./map";
 import {
   ChatBubbleBottomCenterTextIcon,
   EllipsisHorizontalIcon,
   ShareIcon,
 } from "@heroicons/react/24/outline";
-import Map from "~~/components/Map";
 import { Address } from "~~/components/scaffold-eth";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
-import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
-import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
 import useIsOnwer from "~~/hooks/useIsOwner.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import logger from "~~/services/logger.service";
-import { parseContractEvent } from "~~/utils/contract";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   deedData: DeedInfoModel;
   isOwner: boolean;
   onRefresh: () => void;
+  handleMint: () => void;
+  handleValidate: () => void;
 }
 
-const PropertyOverview = ({ deedData, onRefresh }: Props) => {
-  const router = useRouter();
-  const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
-  const { writeValidateAsync } = useDeedValidate();
+const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: Props) => {
   const isOwner = useIsOnwer(deedData);
   const isValidator = useIsValidator();
-
-  const isMinted = useMemo(() => {
-    return !Number.isNaN(deedData.id);
-  }, [deedData.id]);
 
   const handleChatClick = () => {
     if (isOwner) {
@@ -53,35 +41,24 @@ const PropertyOverview = ({ deedData, onRefresh }: Props) => {
     notification.info("Link copied to clipboard");
   };
 
-  const handleMint = async () => {
-    await writeMintDeedAsync(deedData);
-  };
-
-  const onDeedMinted = async (txnReceipt: TransactionReceipt) => {
-    const payload = parseContractEvent(txnReceipt, "DeedNFT", "DeedNFTMinted");
-    if (!payload) {
-      logger.error({ message: "Error parsing DeedNFTMinted event", txnReceipt });
-      return;
-    }
-    const { deedId } = payload;
-    notification.success(`Deed NFT Minted with id ${deedId}`);
-    await router.push(`/validation/${deedId}`);
-  };
-
-  const handleValidateToggle = async () => {
-    await writeValidateAsync(deedData, !deedData.isValidated);
-  };
-
   return (
     <div className="flex flex-row border border-white border-opacity-10 p-5 sm:p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
-          <div className="w-72 h-72 md:h-full bg-[#141414] flex-grow hidden min-[1310px]:block">
-            {/* <Map
+          <div
+            id="Map"
+            className="w-72 h-72 md:h-full bg-[#141414] flex-grow hidden min-[1310px]:block"
+          >
+            <Map
               markers={[
-                `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}`,
+                {
+                  id: deedData.id!,
+                  name: `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}, ${deedData.propertyDetails.propertyState}, United States`,
+                  lat: deedData.propertyDetails.propertyLatitude || 0,
+                  lng: deedData.propertyDetails.propertyLongitude || 0,
+                },
               ]}
-            /> */}
+            />
           </div>
           <div className="flex flex-col gap-6 mt-4 flex-grow justify-between">
             <div className="flex flex-row items-center">
@@ -94,7 +71,8 @@ const PropertyOverview = ({ deedData, onRefresh }: Props) => {
             </div>
 
             <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
-              {deedData.propertyDetails.propertyAddress}
+              {deedData.propertyDetails.propertyAddress}, {deedData.propertyDetails.propertyCity},{" "}
+              {deedData.propertyDetails.propertyState}
             </div>
 
             <div className="flex flex-row gap-4 items-center">
@@ -159,9 +137,9 @@ const PropertyOverview = ({ deedData, onRefresh }: Props) => {
                   </li>
                   {isValidator && (
                     <>
-                      {isMinted ? (
+                      {deedData.mintedId ? (
                         <li>
-                          <a onClick={() => handleValidateToggle()} className="link-default">
+                          <a onClick={() => handleValidate()} className="link-default">
                             {deedData.isValidated ? "Unvalidate" : "Validate"}
                           </a>
                         </li>

@@ -29,5 +29,5 @@ const deployLeaseAgreement: DeployFunction = async function () {
 
 export default deployLeaseAgreement;
 
-deployLeaseAgreement.tags = ["LeaseAgreement"];
+deployLeaseAgreement.tags = ["LeaseAgreement", "core"];
 deployLeaseAgreement.dependencies = ["DeedNFT", "SubdivisionNFT", "LeaseNFT", "AccessManager"];

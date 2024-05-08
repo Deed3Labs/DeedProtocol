@@ -7,9 +7,14 @@ import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import NextNProgress from "nextjs-progressbar";
 import { useDarkMode } from "usehooks-ts";
+import { WagmiConfig } from "wagmi";
 import CONFIG from "~~/config";
+import { wagmiConfig } from "~~/services/web3/wagmiConfig";
+import { appChains } from "~~/services/web3/wagmiConnectors";
 import "~~/styles/globals.scss";
 
 config.autoAddCss = false;
@@ -41,19 +46,27 @@ const ScaffoldEthApp = (props: AppProps) => {
           showSpinner: false,
         }}
       />
-      <DynamicContextProvider
-        theme={isDarkTheme ? "dark" : "light"}
-        settings={{
-          initialAuthenticationMode: "connect-and-sign",
-          environmentId: CONFIG.dynamicEnvironementId,
-          appName: CONFIG.appName,
-          walletConnectors: [EthereumWalletConnectors],
-        }}
-      >
-        <DynamicWagmiConnector>
-          <Layout {...props} />
-        </DynamicWagmiConnector>
-      </DynamicContextProvider>
+      {process.env.NEXT_PUBLIC_OFFLINE ? (
+        <WagmiConfig config={wagmiConfig}>
+          <RainbowKitProvider chains={appChains.chains} theme={darkTheme()}>
+            <Layout {...props} />
+          </RainbowKitProvider>
+        </WagmiConfig>
+      ) : (
+        <DynamicContextProvider
+          theme={isDarkTheme ? "dark" : "light"}
+          settings={{
+            initialAuthenticationMode: "connect-and-sign",
+            environmentId: CONFIG.dynamicEnvironementId,
+            appName: CONFIG.appName,
+            walletConnectors: [EthereumWalletConnectors],
+          }}
+        >
+          <DynamicWagmiConnector>
+            <Layout {...props} />
+          </DynamicWagmiConnector>
+        </DynamicContextProvider>
+      )}
     </>
   );
 };

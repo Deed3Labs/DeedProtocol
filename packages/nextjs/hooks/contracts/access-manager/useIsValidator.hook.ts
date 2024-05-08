@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import useWallet from "~~/hooks/useWallet";
 import { cacheIsValidator } from "~~/services/cache.service";
 
 const useIsValidator = () => {
   const [isValidator, setIsValidator] = useState(false);
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet, isConnecting } = useWallet();
 
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_OFFLINE) {
-      setIsValidator(true);
-    }
     if (primaryWallet?.address) {
       cacheIsValidator(primaryWallet?.address).then(setIsValidator);
+    } else {
+      setIsValidator(false);
     }
-  }, [primaryWallet?.address]);
+  }, [primaryWallet?.address, isConnecting]);
   return isValidator;
 };
 

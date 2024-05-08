@@ -15,4 +15,5 @@ const deployFundsManager: DeployFunction = async function () {
 
 export default deployFundsManager;
 
-deployFundsManager.tags = ["FundsManager", "AccessManager"];
+deployFundsManager.tags = ["FundsManager", "core"];
+deployFundsManager.dependencies = ["AccessManager"];

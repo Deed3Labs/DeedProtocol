@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
-import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
 import useFileClient from "~~/clients/file.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import useWallet from "~~/hooks/useWallet";
 import { FileModel } from "~~/models/file.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { IconLightningSolid } from "~~/styles/Icons";
@@ -37,7 +38,7 @@ export const FileUploaderInput = <TParent,>({
   isRestricted = true,
 }: Props<TParent>) => {
   const fileClient = useFileClient();
-  const { authToken, primaryWallet } = useDynamicContext();
+  const { authToken, primaryWallet } = useWallet();
   const [files, setFiles] = useState<FileModel[]>([]);
   const isValidator = useIsValidator();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,11 +77,11 @@ export const FileUploaderInput = <TParent,>({
   };
 
   const download = async (hash: string) => {
-    await fileClient.authentify(authToken ?? "").getFile(hash, name.toString(), true);
+    await fileClient.getFile(hash, name.toString(), true);
   };
 
   const openFile = async (hash: string) => {
-    await fileClient.authentify(authToken ?? "").getFile(hash, name.toString(), false);
+    await fileClient.getFile(hash, name.toString(), false);
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {

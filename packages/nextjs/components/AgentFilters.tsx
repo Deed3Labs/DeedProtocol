@@ -8,9 +8,9 @@ import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
 import useDebouncer from "~~/hooks/useDebouncer";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
-import { AgentModel } from "~~/models/agent.model";
-import { AgentType } from "~~/models/agent-info.model";
 import { AgentFilterModel } from "~~/models/agent-filter.model";
+import { AgentType } from "~~/models/agent-info.model";
+import { AgentModel } from "~~/models/agent.model";
 
 interface Props {
   agents: AgentModel[];
@@ -26,10 +26,10 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
 
   const Map = useMemo(
     () =>
-      dynamic(() => import("~~/components/Map"), {
+      dynamic(() => import("~~/components/map"), {
         loading: () => (
           <div className="w-full flex flex-row justify-center">
-            <span className="loading loading-bars loading-lg"></span>
+            <span className="loading loading-bars loading-lg" />
           </div>
         ),
         ssr: false,
@@ -73,9 +73,13 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
             value={filter.propertyType}
             onChange={ev => applyFilter({ agentType: ev.target.value as AgentType })}
           >
-            <option disabled value={0}>Property type</option>
+            <option disabled value={0}>
+              Property type
+            </option>
             {PropertyTypeOptions.map(option => (
-              <option key={option.value} value={option.value}>{option.title}</option>
+              <option key={option.value} value={option.value}>
+                {option.title}
+              </option>
             ))}
           </select>
           <div className="join">

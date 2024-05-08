@@ -69,8 +69,8 @@ export class FileClient extends HttpClient {
       if (!res.ok) throw new Error(res.error);
       return res.value;
     } catch (error) {
-      const message = `Error uploading json with payload ${payload}`;
-      logger.error({ message, error });
+      const message = `Error uploading json with payload`;
+      logger.error({ message, error, payload });
       throw error;
     }
   }

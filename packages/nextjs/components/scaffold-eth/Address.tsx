@@ -65,9 +65,9 @@ export const Address = ({
   if (!address) {
     return (
       <div className="animate-pulse flex space-x-4">
-        <div className="rounded-md bg-slate-300 h-6 w-6"></div>
+        <div className="rounded-md bg-slate-300 h-6 w-6" />
         <div className="flex items-center space-y-6">
-          <div className="h-2 w-28 bg-slate-300 rounded"></div>
+          <div className="h-2 w-28 bg-slate-300 rounded" />
         </div>
       </div>
     );
@@ -124,12 +124,12 @@ export const Address = ({
           )}
           {addressCopied ? (
             <CheckCircleIcon
-              className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
+              className="ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
               aria-hidden="true"
             />
           ) : (
             <CopyToClipboard
-              className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
+              className="ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
               text={address}
               onCopy={() => {
                 notification.info("Copied to clipboard", {

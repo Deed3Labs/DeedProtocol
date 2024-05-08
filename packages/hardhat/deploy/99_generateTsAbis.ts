@@ -63,7 +63,8 @@ function getInheritedFunctions(sources: Record<string, any>, contractName: strin
     const sourcePath = Object.keys(sources).find(key => key.includes(`/${sourceContractName}`));
     if (sourcePath) {
       const sourceName = sourcePath?.split("/").pop()?.split(".sol")[0];
-      const { abi } = JSON.parse(fs.readFileSync(`${ARTIFACTS_DIR}/${sourcePath}/${sourceName}.json`).toString());
+      const fullPath = `${ARTIFACTS_DIR}/${sourcePath}/${sourceName}.json`;
+      const { abi } = JSON.parse(fs.readFileSync(fullPath).toString());
       for (const functionAbi of abi) {
         if (functionAbi.type === "function") {
           inheritedFunctions[functionAbi.name] = sourcePath;
@@ -85,9 +86,9 @@ function getContractDataFromDeployments() {
     const contracts = {} as Record<string, any>;
     for (const contractName of getContractNames(`${DEPLOYMENTS_DIR}/${chainName}`)) {
       const json = fs.readFileSync(`${DEPLOYMENTS_DIR}/${chainName}/${contractName}.json`).toString();
-      const { abi, address, metadata, receipt } = JSON.parse(json);
+      const { abi, address, metadata, blockNumber } = JSON.parse(json);
       const inheritedFunctions = getInheritedFunctions(JSON.parse(metadata).sources, contractName);
-      contracts[contractName] = { address, abi, inheritedFunctions, startBlock: receipt.blockNumber };
+      contracts[contractName] = { address, abi, inheritedFunctions, startBlock: blockNumber };
     }
     output[chainId] = contracts;
   }
@@ -127,6 +128,6 @@ export default generateTsAbis;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags generateTsAbis
-generateTsAbis.tags = ["generateTsAbis"];
+generateTsAbis.tags = ["generateTsAbis", "core", "mocks"];
 
 generateTsAbis.runAtTheEnd = true;

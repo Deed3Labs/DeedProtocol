@@ -5,6 +5,7 @@ import { useDebounce } from "usehooks-ts";
 import { Address, isAddress } from "viem";
 import { useEnsAddress, useEnsAvatar, useEnsName } from "wagmi";
 import { CommonInputProps, InputBase, isENS } from "~~/components/scaffold-eth";
+import useWallet from "~~/hooks/useWallet";
 
 /**
  * Address input with ENS name resolution
@@ -21,7 +22,7 @@ export const AddressInput = ({
   const _debouncedValue = useDebounce(value, 500);
   const debouncedValue = isAddress(value) ? value : _debouncedValue;
   const isDebouncedValueLive = debouncedValue === value;
-
+  const { primaryWallet } = useWallet();
   // If the user changes the input after an ENS name is already resolved, we want to remove the stale result
   const settledValue = isDebouncedValueLive ? debouncedValue : undefined;
 
@@ -64,6 +65,12 @@ export const AddressInput = ({
     [onChange],
   );
 
+  function onBlockieClicked(): void {
+    if (!value && primaryWallet.address) {
+      onChange(primaryWallet.address);
+    }
+  }
+
   return (
     <InputBase<Address>
       name={name}
@@ -94,13 +101,15 @@ export const AddressInput = ({
       suffix={
         // Don't want to use nextJS Image here (and adding remote patterns for the URL)
         // eslint-disable-next-line @next/next/no-img-element
-        value && (
+        (value || primaryWallet?.address) && (
           <Image
             alt=""
-            className="!rounded-full"
-            src={blo(value as `0x${string}`)}
+            className={`!rounded-full ${!value ? "cursor-pointer" : ""}`}
+            src={blo((value || primaryWallet?.address) as `0x${string}`)}
             width="35"
             height="35"
+            title={!value ? "Click for current wallet" : "Address Blockie"}
+            onClick={onBlockieClicked}
           />
         )
       }

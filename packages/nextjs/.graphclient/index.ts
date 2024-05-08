@@ -417,6 +417,8 @@ export type DeedMetadata = {
   ownerInformation_supportingDoc?: Maybe<Array<FileInfo>>;
   propertyDetails_type: Scalars["String"];
   propertyDetails_address: Scalars["String"];
+  propertyDetails_latitude: Scalars["String"];
+  propertyDetails_longitude: Scalars["String"];
   propertyDetails_city: Scalars["String"];
   propertyDetails_state: Scalars["String"];
   propertyDetails_size?: Maybe<Scalars["String"]>;

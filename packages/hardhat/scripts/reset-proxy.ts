@@ -1,8 +1,10 @@
-import { getDeployConfig, updateDeployConfig } from "./deploy-config-update";
 import hardhat from "hardhat";
+import fs from "fs";
 
-console.log(`Resetting proxy addresses for ${hardhat.network.name}`);
-const actualConfig = getDeployConfig();
-actualConfig[hardhat.network.name]["deed-proxy"] = "";
-actualConfig[hardhat.network.name]["access-manager-proxy"] = "";
-updateDeployConfig(actualConfig);
+console.log(`Resetting proxies deployments for ${hardhat.network.name}`);
+fs.rmSync(`./deployments/${hardhat.network.name}/DeedNFT.json`, {
+  force: true,
+});
+// fs.rmSync(`./deployments/${hardhat.network.name}/AccessManager.json`, {
+//   force: true,
+// });

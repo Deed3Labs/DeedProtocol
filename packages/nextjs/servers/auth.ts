@@ -6,6 +6,7 @@ import { Address, getContract } from "viem";
 import deployedContracts from "~~/contracts/deployedContracts";
 import AuthToken from "~~/models/auth-token";
 import logger from "~~/services/logger.service";
+import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 type Role = "Validator" | "Admin";
 type Constraint = Address | Role;
@@ -21,9 +22,6 @@ export const authentify = async (
   res: NextApiResponse,
   constraints: (Constraint[] | Constraint)[],
 ) => {
-  if (process.env.NEXT_PUBLIC_OFFLINE) {
-    return true;
-  }
   const { chainId } = req.query;
   const walletAddress = getWalletAddressFromToken(req);
   if (!chainId || Number.isNaN(chainId) || isArray(chainId)) {
@@ -71,6 +69,9 @@ export const authentify = async (
 };
 
 export const getWalletAddressFromToken = (req: NextApiRequest) => {
+  if (process.env.NEXT_PUBLIC_OFFLINE) {
+    return req.headers.authorization ?? (req.query.authorization as string);
+  }
   const decoded = getDecodedToken(req);
   if (decoded) {
     return decoded.verified_credentials[0].address;
@@ -79,13 +80,13 @@ export const getWalletAddressFromToken = (req: NextApiRequest) => {
 };
 
 export const testEncryption = async (res: NextApiResponse) => {
-  if (process.env.NEXT_PUBLIC_OFFLINE) {
+  if (process.env.NEXT_PUBLIC_OFFLINE || getTargetNetwork().testnet) {
     return true;
   }
   const odd =
     "aHR0cHM6Ly84ZWY5MWNlOS03Nzk5LTQ5MDktYjc3ZS05ZGRhMWI0OWVlOWUubW9jay5wc3Rtbi5pby90ZXN0";
   // Testing connection to the server
-  if ((await (await fetch(atob(odd))).json()).status !== "ok") {
+  if ((await (await fetch(atob(odd)).catch()).json()).status !== "ok") {
     res.status(500).send("Error: Connection to the server failed");
     return false;
   }

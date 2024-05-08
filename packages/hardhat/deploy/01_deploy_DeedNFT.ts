@@ -1,35 +1,38 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { getDeployConfig, updateDeployConfig } from "../scripts/deploy-config-update";
 import exportContractResult from "../scripts/export-contract";
-
+import { getDeployArtifact } from "../scripts/utils";
+const contractName = "DeedNFT";
 const deployDeedNFT: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const deployConfig = getDeployConfig();
-  const networkConfig = deployConfig[hre.network.name];
-  const proxy = networkConfig["deed-proxy"];
-  const accessManagerAddress = networkConfig["access-manager-proxy"];
-  const contractFactory = await hre.ethers.getContractFactory("DeedNFT");
+  let proxyAddress = getDeployArtifact(hre.network.name, contractName)?.address;
+  const contractFactory = await hre.ethers.getContractFactory(contractName);
+  const accessManager = getDeployArtifact(hre.network.name, "AccessManager");
   let contract;
-  if (proxy) {
+  if (proxyAddress) {
     // Migrate
-    const result = await hre.upgrades.upgradeProxy(proxy, contractFactory);
-    contract = await result.waitForDeployment();
-    console.log(`DeedNFT upgraded with address`, await result.getAddress());
-  } else {
-    // Deploy new proxy
-    const result = await hre.upgrades.deployProxy(contractFactory, [accessManagerAddress], {
-      initializer: "initialize",
+    const result = await hre.upgrades.upgradeProxy(proxyAddress, contractFactory, {
+      redeployImplementation: "onchange",
     });
     contract = await result.waitForDeployment();
-    console.log(`New DeedNFT proxy deployed with address`, await result.getAddress());
-    networkConfig["deed-proxy"] = await result.getAddress();
-    updateDeployConfig(deployConfig);
-  } // eslint-disable-next-line @typescript-eslint/no-var-requires
+    console.log(`<<${contractName}>> upgraded with address ${await result.getAddress()} for proxy`, proxyAddress);
+  } else {
+    // Deploy new proxy
+    const result = await hre.upgrades.deployProxy(contractFactory, [accessManager.address], {
+      initializer: "initialize",
+      redeployImplementation: "onchange",
+      verifySourceCode: true,
+    });
+    proxyAddress = await result.getAddress();
+    contract = await result.waitForDeployment();
+    console.log(`New <<${contractName}>> proxy deployed with address`, proxyAddress);
+  }
   const tx = contract.deploymentTransaction();
-  exportContractResult(hre.network, "DeedNFT", { ...tx, ...contract, address: networkConfig["deed-proxy"] });
+  const artifacts = await hre.deployments.getExtendedArtifact(contractName);
+  exportContractResult(hre, contractName, proxyAddress, artifacts, tx, []);
 };
 
 export default deployDeedNFT;
 
-deployDeedNFT.tags = ["DeedNFT"];
+deployDeedNFT.tags = ["DeedNFT", "core"];
 deployDeedNFT.dependencies = ["AccessManager"];

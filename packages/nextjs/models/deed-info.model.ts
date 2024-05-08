@@ -1,4 +1,4 @@
-import { FileModel, FileValidationState } from "./file.model";
+import { FileModel } from "./file.model";
 import { Address } from "viem";
 import {
   EntityTypeOptions,
@@ -47,6 +47,8 @@ export interface PropertyDetailsModel {
   propertyBuildYear?: string;
   propertyHouseType?: string;
   propertySquareFootage?: string;
+  propertyLatitude?: number;
+  propertyLongitude?: number;
 
   // -- Vehicles Only --
   vehicleIdentificationNumber: string;
@@ -88,6 +90,8 @@ export interface PaymentInformationModel {
 
 export interface DeedInfoModel {
   id?: string;
+  registrationId?: string;
+  mintedId?: number;
   owner?: Address;
   isValidated?: boolean;
   timestamp?: number;

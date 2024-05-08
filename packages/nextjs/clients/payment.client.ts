@@ -16,6 +16,14 @@ export class PaymentClient extends HttpClient {
       registrationId: res.value.registrationId,
     };
   }
+
+  async submitPaymentReceipt(id: string, receipt: string) {
+    const result = await this.post<number>(`/api/payments?id=${id}&paymentReceipt=${receipt}`);
+    if (!result.ok) {
+      logger.error({ message: "Error saving payment", status: result.status });
+    }
+    return result;
+  }
 }
 
 const usePaymentClient = () => useHttpClient(new PaymentClient());

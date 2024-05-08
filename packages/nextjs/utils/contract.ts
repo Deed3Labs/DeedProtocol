@@ -1,7 +1,8 @@
 import { TransactionReceipt, decodeEventLog, getEventSelector } from "viem";
 import deployedContracts from "~~/contracts/deployedContracts";
+import logger from "~~/services/logger.service";
 
-const testChainId: keyof typeof deployedContracts = 11155111;
+const testChainId: keyof typeof deployedContracts = 1337;
 type EventNames<TAbi> = TAbi extends { type: "event"; name: infer TName } ? TName : never;
 
 type ContractAtIndex = (typeof deployedContracts)[typeof testChainId];
@@ -31,7 +32,8 @@ export const parseContractEvent = <TContract extends keyof ContractAtIndex>(
   const log = receipt.logs.find(log => log.topics[0] === topic);
 
   if (!log) {
-    throw new Error(`Event ${eventName} not found in receipt`);
+    logger.error(`Event ${eventName} not found in receipt`);
+    return null;
   }
 
   const parsedLog = decodeEventLog({

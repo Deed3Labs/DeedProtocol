@@ -85,6 +85,12 @@ export function handleMetadata(content: Bytes): void {
     deedMetadata.propertyDetails_address = propertyDetails
         .mustGet("propertyAddress")
         .toString();
+    deedMetadata.propertyDetails_latitude = propertyDetails
+        .mustGet("propertyLatitude")
+        .toString();
+    deedMetadata.propertyDetails_longitude = propertyDetails
+        .mustGet("propertyLongitude")
+        .toString();
     deedMetadata.propertyDetails_city = propertyDetails
         .mustGet("propertyCity")
         .toString();

@@ -1,3 +1,4 @@
+import "./base";
 import { NextApiRequest, NextApiResponse } from "next";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { authentify } from "~~/servers/auth";

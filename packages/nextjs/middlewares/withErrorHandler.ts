@@ -1,20 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { request } from "http";
+import { NextApiRequest, NextApiResponse } from "next";
 import logger from "~~/services/logger.service";
 
 function withErrorHandler(fn: any) {
-  return async function (request: NextRequest, ...args: any[]) {
+  return async function (req: NextApiRequest, res: NextApiResponse) {
     try {
-      return await fn(request, ...args);
+      return await fn(req, res);
     } catch (error) {
       logger.error({ error, requestBody: request, location: fn.name });
-      return NextResponse.json(
-        {
-          message: "Internal Server Error",
-          // @ts-ignore
-          details: "message" in error ? error.message : error,
-        },
-        { status: 500 },
-      );
+      return res.status(500).send("Internal Server Error");
     }
   };
 }

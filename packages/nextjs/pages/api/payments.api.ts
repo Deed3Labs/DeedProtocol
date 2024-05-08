@@ -1,11 +1,16 @@
+import "./base";
+import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import { RegistrationDb } from "~~/databases/registrations.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
+import { authentify } from "~~/servers/auth";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     return await verifyPayment(req, res);
+  } else if (req.method === "POST") {
+    return await submitPayment(req, res);
   } else {
     return res.status(405).send("Method Not Supported");
   }
@@ -50,5 +55,32 @@ const verifyPayment = async (req: NextApiRequest, res: NextApiResponse) => {
     isVerified: true,
   });
 };
+
+async function submitPayment(req: NextApiRequest, res: NextApiResponse) {
+  const { id, paymentReceipt } = req.query;
+
+  if (!id || isArray(id)) {
+    return res.status(400).send("Error: id of type number is required");
+  }
+
+  if (!req.query.paymentReceipt) {
+    return res.status(400).send("Error: payment receipt is required");
+  }
+
+  const deedInfo = await RegistrationDb.getRegistration(id);
+
+  if (!deedInfo) {
+    return res.status(404).send(`Error: Deed ${id} not found`);
+  }
+
+  if (!(await authentify(req, res, [deedInfo.owner!, "Validator"]))) {
+    return;
+  }
+
+  deedInfo.paymentInformation.receipt = paymentReceipt as string;
+  await RegistrationDb.saveRegistration(deedInfo);
+
+  return res.status(200).send("success");
+}
 
 export default withErrorHandler(handler);

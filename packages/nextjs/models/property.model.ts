@@ -1,7 +1,7 @@
 import { PropertyType } from "./deed-info.model";
-import { IMarker } from "./marker.model";
+import { MarkerModel } from "./marker.model";
 
-export interface PropertyModel extends IMarker {
+export interface PropertyModel extends MarkerModel {
   id: string;
   price: number;
   type: PropertyType;

@@ -1,10 +1,10 @@
 import { MapIconModel } from "./map-icon.model";
 
-export interface IMarker {
+export interface MarkerModel {
   id: string;
   name: string;
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lng: number;
   icon?: MapIconModel;
   popupContent?: JSX.Element;
 }

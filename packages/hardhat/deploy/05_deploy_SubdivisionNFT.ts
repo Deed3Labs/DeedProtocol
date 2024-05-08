@@ -16,5 +16,5 @@ const deploySubdivisionNFT: DeployFunction = async function () {
 
 export default deploySubdivisionNFT;
 
-deploySubdivisionNFT.tags = ["SubdivisionNFT"];
+deploySubdivisionNFT.tags = ["SubdivisionNFT", "core"];
 deploySubdivisionNFT.dependencies = ["DeedNFT", "AccessManager"];
