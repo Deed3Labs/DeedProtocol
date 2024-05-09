@@ -47,7 +47,7 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
         <>
           <div
             id="Map"
-            className="w-72 h-72 md:h-full bg-[#141414] flex-grow hidden min-[1310px]:block"
+            className="max-w-72 h-72 sm:w-72 sm:h-full bg-[#141414] flex-grow"
           >
             <Map
               markers={[
