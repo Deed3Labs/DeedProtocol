@@ -60,7 +60,7 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
               ]}
             />
           </div>
-          <div className="flex flex-col gap-6 items-center mt-6 sm:mt-2 flex-grow justify-center">
+          <div className="flex flex-col gap-6 mt-7 sm:mt-1 flex-grow justify-center">
             <div className="flex flex-row items-center">
               <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
                 Status
