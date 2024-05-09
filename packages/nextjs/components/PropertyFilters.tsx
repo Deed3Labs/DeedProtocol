@@ -50,10 +50,6 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
     onFilter(filter);
   });
 
-  function onMarkerClicked(marker: MarkerModel): void {
-    window.open(`/validation/${marker.id}`, "_blank", "noopener,noreferrer");
-  }
-
   return (
     <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-8">
       <ExplorerLinks />

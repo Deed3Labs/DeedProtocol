@@ -29,7 +29,8 @@ const Map = ({ markers, onMarkerClicked, popupContent: popupContent }: MapProps)
       [maxLng, maxLat],
     ];
     setBounds(newBounds);
-    // mapRef.current?.fitBounds(newBounds);
+    if (minLat !== Infinity && minLng !== Infinity && maxLat !== -Infinity && maxLng !== -Infinity)
+      mapRef.current?.setCenter([(minLng + maxLng) / 2, (minLat + maxLat) / 2]);
   }, [markers.length]);
 
   return (
@@ -40,9 +41,9 @@ const Map = ({ markers, onMarkerClicked, popupContent: popupContent }: MapProps)
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         mapStyle="mapbox://styles/mapbox/streets-v12"
         style={{ width: "100%", height: "100%" }}
-        latitude={bounds ? (bounds[0][1] + bounds[1][1]) / 2 : 36.7783}
-        longitude={bounds ? (bounds[0][0] + bounds[1][0]) / 2 : -119.417931}
         initialViewState={{
+          latitude: 36.7783,
+          longitude: -119.417931,
           bounds,
           zoom: 5,
           fitBoundsOptions: { padding: 64 },
@@ -51,15 +52,9 @@ const Map = ({ markers, onMarkerClicked, popupContent: popupContent }: MapProps)
         <NavigationControl showCompass={false} />
         {markers?.map(marker => (
           <>
-            <Marker
-              key={"marker_" + marker.id}
-              latitude={marker.lat}
-              longitude={marker.lng}
-              onClick={() => onMarkerClicked?.(marker)}
-            />
             {popupContent ? (
               <Popup
-                className="[&_.mapboxgl-popup-tip]:!border-t-secondary [&_.mapboxgl-popup-content]:bg-secondary [&_.mapboxgl-popup-content]:p-1"
+                className="[&_.mapboxgl-popup-tip]:!border-t-secondary [&_.mapboxgl-popup-tip]:!border-b-secondary [&_.mapboxgl-popup-content]:bg-secondary [&_.mapboxgl-popup-content]:p-1"
                 key={"popup_" + marker.id}
                 latitude={marker.lat}
                 longitude={marker.lng}
@@ -70,7 +65,12 @@ const Map = ({ markers, onMarkerClicked, popupContent: popupContent }: MapProps)
                 {popupContent(marker)}
               </Popup>
             ) : (
-              <></>
+              <Marker
+                key={"marker_" + marker.id}
+                latitude={marker.lat}
+                longitude={marker.lng}
+                onClick={() => onMarkerClicked?.(marker)}
+              />
             )}
           </>
         ))}
