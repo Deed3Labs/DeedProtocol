@@ -54,19 +54,23 @@ const PropertyCard = ({ property, small = false }: Props) => {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="self-stretch justify-start items-center w-full">
-                  <div className="text-white text-sm sm:text-base font-normal w-full capitalize leading-snug line-clamp-1 sm:line-clamp-1">
-                    {property.address}
-                  </div>
-                </div>
-              </div>
-              <div className="self-stretch h-14 sm:h-16 px-2.5 sm:px-3 pt-2.5 pb-2.5 bg-base-300 border border-white border-opacity-10 flex-col justify-center items-start flex">
-                <div className="self-stretch justify-between items-start gap-2.5 inline-flex">
-                  <div className="flex-col justify-start items-start inline-flex">
-                    <div className="self-stretch h-4 flex-col justify-start items-start flex">
-                      <div className="text-white text-opacity-60 text-[1.8vw] sm:text-[0.68vw] font-normal leading-none tracking-wider">
-                        PRICE
+                  <div className="self-stretch h-14 sm:h-16 px-2.5 sm:px-3 pt-2.5 pb-2.5 bg-base-300 border border-white border-opacity-10 flex-col justify-center items-start flex">
+                    <div className="self-stretch justify-between items-start gap-2.5 inline-flex">
+                      <div className="flex-col justify-start items-start inline-flex">
+                        <div className="self-stretch h-4 flex-col justify-start items-start flex">
+                          <div className="text-white text-opacity-60 text-[1.8vw] sm:text-[0.68vw] font-normal leading-none tracking-wider">
+                            PRICE
+                          </div>
+                        </div>
+                        <div className="self-stretch justify-start items-start gap-0.5 inline-flex">
+                          <div className="text-white text-[2vw] sm:text-[0.74vw] font-medium uppercase leading-none">
+                            {property.price?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: "USD",
+                              maximumFractionDigits: 0,
+                            })}
+                          </div>
+                        </div>
                       </div>
                       <div className="flex-col justify-start items-start inline-flex">
                         <div className="self-stretch h-4 flex-col justify-start items-start flex">
