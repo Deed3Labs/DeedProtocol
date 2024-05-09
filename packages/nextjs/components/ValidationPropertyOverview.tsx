@@ -47,7 +47,7 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
         <>
           <div
             id="Map"
-            className="w-72 h-72 md:h-full bg-[#141414] flex-grow hidden min-[1310px]:block"
+            className="max-w-72 h-72 sm:w-72 sm:h-full bg-[#141414] flex-grow"
           >
             <Map
               markers={[
@@ -60,7 +60,7 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
               ]}
             />
           </div>
-          <div className="flex flex-col gap-6 mt-4 flex-grow justify-between">
+          <div className="flex flex-col gap-5 mt-7 sm:mt-1 flex-grow justify-center">
             <div className="flex flex-row items-center">
               <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
                 Status
