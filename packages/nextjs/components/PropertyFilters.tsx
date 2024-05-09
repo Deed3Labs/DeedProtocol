@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
+import PropertyCard from "./PropertyCard";
 import Map from "./map";
 import { debounce } from "lodash-es";
 import { useLocalStorage } from "usehooks-ts";
@@ -50,7 +51,7 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
   });
 
   function onMarkerClicked(marker: MarkerModel): void {
-    alert(`Marker clicked ${marker.name}`);
+    window.open(`/validation/${marker.id}`, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -153,7 +154,10 @@ const PropertyFilters = ({ properties, onFilter }: Props) => {
       </div>
       {mapOpened && (
         <div className="!mt-4 border">
-          <Map markers={properties} onMarkerClicked={onMarkerClicked} />
+          <Map
+            markers={properties}
+            popupContent={marker => <PropertyCard property={marker as PropertyModel} small />}
+          />
         </div>
       )}
     </div>

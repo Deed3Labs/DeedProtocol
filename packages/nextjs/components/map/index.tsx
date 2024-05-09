@@ -4,6 +4,7 @@ import { MarkerModel } from "~~/models/marker.model";
 
 export interface MapProps {
   markers: Array<MarkerModel>;
+  popupContent?: (marker: MarkerModel) => JSX.Element;
   onMarkerClicked?: (marker: MarkerModel) => void;
 }
 

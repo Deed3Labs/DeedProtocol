@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { MapProps } from ".";
 import classes from "./Map.module.css";
 import "mapbox-gl/dist/mapbox-gl.css";
-import Mapbox, { MapRef, Marker, NavigationControl } from "react-map-gl";
+import Mapbox, { MapRef, Marker, NavigationControl, Popup } from "react-map-gl";
 
-const Map = ({ markers, onMarkerClicked }: MapProps) => {
+const Map = ({ markers, onMarkerClicked, popupContent: popupContent }: MapProps) => {
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | undefined>(undefined);
   const mapRef = useRef<MapRef | null>(null);
 
@@ -50,12 +50,29 @@ const Map = ({ markers, onMarkerClicked }: MapProps) => {
       >
         <NavigationControl showCompass={false} />
         {markers?.map(marker => (
-          <Marker
-            key={marker.id}
-            latitude={marker.lat}
-            longitude={marker.lng}
-            onClick={() => onMarkerClicked?.(marker)}
-          />
+          <>
+            <Marker
+              key={"marker_" + marker.id}
+              latitude={marker.lat}
+              longitude={marker.lng}
+              onClick={() => onMarkerClicked?.(marker)}
+            />
+            {popupContent ? (
+              <Popup
+                className="[&_.mapboxgl-popup-tip]:!border-t-secondary [&_.mapboxgl-popup-content]:bg-secondary [&_.mapboxgl-popup-content]:p-1"
+                key={"popup_" + marker.id}
+                latitude={marker.lat}
+                longitude={marker.lng}
+                closeButton={false}
+                closeOnClick={false}
+                offset={[0, -38] as [number, number]}
+              >
+                {popupContent(marker)}
+              </Popup>
+            ) : (
+              <></>
+            )}
+          </>
         ))}
       </Mapbox>
       {/* ) : (

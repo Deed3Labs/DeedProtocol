@@ -11,6 +11,7 @@ templates:
       handler: handleMetadata
       entities:
         - DeedMetadata
+        - DeedMetadata
         - FileInfo
       abis:
         - name: DeedNFT
@@ -31,6 +32,7 @@ dataSources:
       - Approval
       - ApprovalForAll
       - DeedEntity
+      - DeedMetadata
       - Transfer
     abis:
       - name: DeedNFT
