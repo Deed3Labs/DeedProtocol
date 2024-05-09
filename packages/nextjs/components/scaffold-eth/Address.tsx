@@ -114,7 +114,7 @@ export const Address = ({
             </span>
           ) : (
             <a
-              className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}
+              className={`text-[3vw] sm:text-${size} font-normal w-full line-clamp-1`}
               target="_blank"
               href={blockExplorerAddressLink}
               rel="noopener noreferrer"
@@ -129,7 +129,7 @@ export const Address = ({
             />
           ) : (
             <CopyToClipboard
-              className="ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
+              className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
               text={address}
               onCopy={() => {
                 notification.info("Copied to clipboard", {
