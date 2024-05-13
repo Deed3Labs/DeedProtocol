@@ -49,7 +49,7 @@ const PropertyCard = ({ property, small = false }: Props) => {
                       </div>
                     </div>
                     <div className="self-stretch justify-start items-center w-full">
-                      <div className="text-white text-sm sm:text-base font-normal w-full capitalize leading-snug line-clamp-2">
+                      <div className="text-white text-sm sm:text-base font-normal w-full leading-snug line-clamp-2">
                         {property.address}
                       </div>
                     </div>
