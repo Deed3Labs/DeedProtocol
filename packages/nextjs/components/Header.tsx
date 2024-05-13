@@ -151,9 +151,9 @@ export const Header = () => {
             <RainbowKitCustomConnectButton />
           ) : (
             <DynamicWidget
-              buttonClassName="dynamic-shadow-dom"
+              buttonClassName="dynamic-shadow-dom bg-[#0e0e0e] text-[11px] font-normal uppercase tracking-widest"
               innerButtonComponent={
-                <div className="dynamic-shadow-dom btn-base-300 text-[11px] font-normal uppercase tracking-widest">
+                <div className="dynamic-shadow-dom bg-[#0e0e0e] text-[11px] font-normal uppercase tracking-widest">
                   Login
                 </div>
               }
