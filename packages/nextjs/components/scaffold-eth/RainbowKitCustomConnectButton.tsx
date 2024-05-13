@@ -37,7 +37,7 @@ export const RainbowKitCustomConnectButton = () => {
               if (!connected) {
                 return (
                   <button
-                    className="btn btn-primary btn-sm"
+                    className="btn btn-base-300 btn-sm text-[11px] font-normal uppercase tracking-widest"
                     onClick={openConnectModal}
                     type="button"
                   >
