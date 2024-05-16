@@ -1,7 +1,7 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
 import { TransactionReceipt } from "viem";
-import useFileClient from "~~/clients/file.client";
-import useRegistrationClient from "~~/clients/registrations.client";
+import useDeedClient from "~~/clients/deeds.api";
+import useFileClient from "~~/clients/files.client";
 import { PropertyTypeOptions } from "~~/constants";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
@@ -13,7 +13,7 @@ import { notification } from "~~/utils/scaffold-eth";
 const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet, authToken } = useWallet();
   const fileClient = useFileClient();
-  const registrationsClient = useRegistrationClient();
+  const registrationsClient = useDeedClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -60,7 +60,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       logger.error({ message: "Error while minting deed", error });
 
       // Save the current state of published documents
-      await registrationsClient.saveRegistration(payload);
+      await registrationsClient.saveDeed(payload);
       return;
     } finally {
       notification.remove(mintNotif);

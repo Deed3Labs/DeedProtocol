@@ -369,11 +369,16 @@ const deployedContracts = {
       inheritedFunctions: {
         DEFAULT_ADMIN_ROLE:
           "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        getRoleAdmin: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        grantRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        hasRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        renounceRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        revokeRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        getRoleAdmin:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        grantRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        hasRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        renounceRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        revokeRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
         supportsInterface:
           "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
       },
@@ -916,7 +921,7 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "admin",
+              name: "_accessManager",
               type: "address",
             },
           ],
@@ -1972,11 +1977,16 @@ const deployedContracts = {
       inheritedFunctions: {
         DEFAULT_ADMIN_ROLE:
           "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        getRoleAdmin: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        grantRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        hasRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        renounceRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
-        revokeRole: "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        getRoleAdmin:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        grantRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        hasRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        renounceRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
+        revokeRole:
+          "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
         supportsInterface:
           "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
       },

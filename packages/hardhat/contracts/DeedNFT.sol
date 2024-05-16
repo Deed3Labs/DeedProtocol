@@ -57,6 +57,14 @@ contract DeedNFT is ERC721Upgradeable, ERC721URIStorageUpgradeable, AccessManage
         _;
     }
 
+    modifier onlyOwnerOrValidator(uint256 _deedId) {
+        require(
+            _msgSender() == _ownerOf(_deedId) || hasValidatorRole(),
+            string.concat("[DeedNFT] Must be validator or owner of the Deed with id ", Strings.toString(_deedId))
+        );
+        _;
+    }
+
     function mintAsset(
         address _owner,
         string memory _ipfsDetailsHash,
@@ -88,9 +96,11 @@ contract DeedNFT is ERC721Upgradeable, ERC721URIStorageUpgradeable, AccessManage
     function setIpfsDetailsHash(
         uint256 _deedId,
         string memory _ipfsDetailsHash
-    ) public virtual deedExists(_deedId) onlyOwner(_deedId) {
+    ) public virtual deedExists(_deedId) onlyOwnerOrValidator(_deedId) {
         _setTokenURI(_deedId, _ipfsDetailsHash);
-        _setAssetValidation(_deedId, false);
+        if(hasValidatorRole() == false) {
+          _setAssetValidation(_deedId, false);
+        }
         emit DeedNFTUriChanged(_deedId, _ipfsDetailsHash);
     }
 

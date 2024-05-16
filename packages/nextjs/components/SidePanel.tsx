@@ -5,9 +5,9 @@ import MarketLogo from "../pages/registration/assets/MarketLogo";
 import QuoteDetail, { USDollar } from "./scaffold-eth/QuoteDetail";
 import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
-import usePaymentClient from "~~/clients/payment.client";
-import useQuoteClient from "~~/clients/quote.client";
-import useRegistrationClient from "~~/clients/registrations.client";
+import useDeedClient from "~~/clients/deeds.api";
+import usePaymentClient from "~~/clients/payments.client";
+import useQuoteClient from "~~/clients/quotes.client";
 import { TransactionHash } from "~~/components/blockexplorer";
 import { Address } from "~~/components/scaffold-eth";
 import CONFIG from "~~/config";
@@ -53,7 +53,7 @@ const SidePanel = ({
   const [quoteDetails, setQuoteDetails] = useState<QuoteModel>();
   const [appraisalInspection, setAppraisalInspection] = useState(false);
   const [advancedPlan, setAdvancedPlan] = useState(false);
-  const registrationClient = useRegistrationClient();
+  const registrationClient = useDeedClient();
   const paymentClient = usePaymentClient();
   const quoteClient = useQuoteClient();
 
@@ -79,7 +79,7 @@ const SidePanel = ({
       const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
-      const response = await registrationClient.saveRegistration(newDeedData);
+      const response = await registrationClient.saveDeed(newDeedData);
       notification.remove(toastId);
 
       if (!response.ok || !response.value) {

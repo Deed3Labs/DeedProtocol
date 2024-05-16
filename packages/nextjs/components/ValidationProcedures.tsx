@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FileValidation from "./FileValidation";
 import { useSignMessage } from "wagmi";
-import useValidationClient from "~~/clients/validation.client";
+import useValidationClient from "~~/clients/validations.client";
 import useIsOnwer from "~~/hooks/useIsOwner.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { FileFieldKeyLabel, FileValidationModel } from "~~/models/file.model";

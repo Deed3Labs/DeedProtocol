@@ -6,14 +6,14 @@ import logger from "~~/services/logger.service";
 
 export class ValidationClient extends HttpClient {
   public async getValidation(
-    registrationId: string,
+    deedId: string,
     key: string,
   ): Promise<FileValidationModel | undefined> {
-    const result = await this.get<FileValidationModel>("/api/validations", { key, registrationId });
+    const result = await this.get<FileValidationModel>("/api/validations", { key, deedId });
     if (!result.ok) {
       logger.error({
         error: result.error,
-        message: `Failed to retrieve validation with registrationId: ${registrationId} and key: ${key}`,
+        message: `Failed to retrieve validation with deedId: ${deedId} and key: ${key}`,
       });
       return undefined;
     }

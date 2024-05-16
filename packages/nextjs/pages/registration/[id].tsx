@@ -6,7 +6,7 @@ import OtherInformations from "../../components/OtherInformations";
 import OwnerInformation from "../../components/OwnerInformation";
 import PaymentInformation from "../../components/PaymentInformation";
 import PropertyDetails from "../../components/RegPropertyDetails";
-import useRegistrationClient from "~~/clients/registrations.client";
+import useDeedClient from "~~/clients/deeds.api";
 import SidePanel from "~~/components/SidePanel";
 import useWallet from "~~/hooks/useWallet";
 import {
@@ -81,7 +81,7 @@ const Page = ({ router }: WithRouterProps) => {
   }, [id, router.isReady, deedData]);
   const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
-  const registrationClient = useRegistrationClient();
+  const registrationClient = useDeedClient();
 
   const isOwner = useMemo(() => {
     return deedData.owner === primaryWallet?.address || !id;
@@ -105,7 +105,7 @@ const Page = ({ router }: WithRouterProps) => {
 
   const fetchDeedInfo = useCallback(
     async (id: string) => {
-      const resp = await registrationClient.authentify(authToken!).getRegistration(id, !!isDraft);
+      const resp = await registrationClient.authentify(authToken!).getDeed(id, !!isDraft);
       setErrorCode(undefined);
       setIsLoading(false);
       if (resp.ok && resp.value) {

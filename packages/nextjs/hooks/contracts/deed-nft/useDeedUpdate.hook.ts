@@ -1,6 +1,6 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
 import { TransactionReceipt } from "viem";
-import useFileClient from "~~/clients/file.client";
+import useFileClient from "~~/clients/files.client";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { uploadFiles } from "~~/services/file.service";

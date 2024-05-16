@@ -15,12 +15,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     switch (req.method) {
       case "GET":
         if (req.query.isRestricted === "true") {
-          return await getRegistrationFromDatabase(req, res);
+          return await getPropertyFromDatabase(req, res);
         } else {
-          return await getRegistrationFromChain(req, res);
+          return await getPropertyFromChain(req, res);
         }
       case "POST":
-        return await saveRegistration(req, res);
+        return await saveProperty(req, res);
       default:
         return res.status(405).send("Method not allowed");
     }
@@ -35,7 +35,7 @@ export default withErrorHandler(handler);
 /**
  * Retrieve the deed information from the chain.
  */
-async function getRegistrationFromChain(req: NextApiRequest, res: NextApiResponse) {
+async function getPropertyFromChain(req: NextApiRequest, res: NextApiResponse) {
   const { id, chainId } = req.query;
   if (!chainId || Number.isNaN(chainId) || Array.isArray(chainId)) {
     return res.status(400).send("Error: chainId of type number is required");
@@ -74,7 +74,7 @@ async function getRegistrationFromChain(req: NextApiRequest, res: NextApiRespons
 /**
  * Retrieve the deed information from the database.
  */
-async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResponse) {
+async function getPropertyFromDatabase(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
   if (!id || isArray(id)) {
@@ -97,7 +97,7 @@ async function getRegistrationFromDatabase(req: NextApiRequest, res: NextApiResp
 /**
  * Add a new deed information to the database.
  */
-async function saveRegistration(req: NextApiRequest, res: NextApiResponse) {
+async function saveProperty(req: NextApiRequest, res: NextApiResponse) {
   const deedInfo = JSON.parse(req.body) as DeedInfoModel;
   const walletAddress = getWalletAddressFromToken(req);
 

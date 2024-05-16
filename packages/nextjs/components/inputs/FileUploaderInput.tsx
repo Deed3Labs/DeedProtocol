@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DownloadLogo } from "../assets/Downloadicon";
 import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
-import useFileClient from "~~/clients/file.client";
+import useFileClient from "~~/clients/files.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useWallet from "~~/hooks/useWallet";
 import { FileModel } from "~~/models/file.model";

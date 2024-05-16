@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash-es";
-import { FileClient } from "~~/clients/file.client";
+import { FileClient } from "~~/clients/files.client";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { FileFieldKeyLabel } from "~~/models/file.model";
 

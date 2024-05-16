@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { isArray } from "lodash-es";
-import useFileClient from "~~/clients/file.client";
-import useValidationClient from "~~/clients/validation.client";
+import useFileClient from "~~/clients/files.client";
+import useValidationClient from "~~/clients/validations.client";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useWallet from "~~/hooks/useWallet";

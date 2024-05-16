@@ -7,7 +7,7 @@ import PropertyDetails from "../../components/ValidationPropertyDetails";
 import PropertyOverview from "../../components/ValidationPropertyOverview";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-import useRegistrationClient from "~~/clients/registrations.client";
+import useDeedClient from "~~/clients/deeds.api";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
@@ -51,7 +51,7 @@ const Page = ({ router }: WithRouterProps) => {
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(deedData!.id!));
   const isOwner = useIsOnwer(deedData);
   const isValidator = useIsValidator();
-  const registrationClient = useRegistrationClient();
+  const registrationClient = useDeedClient();
   const { writeValidateAsync } = useDeedValidate();
 
   const isDraft = useMemo(() => {
@@ -86,7 +86,7 @@ const Page = ({ router }: WithRouterProps) => {
   const fetchDeedInfo = useCallback(
     async (id: string) => {
       setIsLoading(true);
-      const resp = await registrationClient.getRegistration(id, !!isDraft);
+      const resp = await registrationClient.getDeed(id, !!isDraft);
       setErrorCode(undefined);
       setIsLoading(false);
       if (resp.ok && resp.value) {
@@ -134,7 +134,7 @@ const Page = ({ router }: WithRouterProps) => {
       const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
-      const response = await registrationClient.saveRegistration(newDeedData);
+      const response = await registrationClient.saveDeed(newDeedData);
       notification.remove(toastId);
 
       if (response.ok && response.value) {

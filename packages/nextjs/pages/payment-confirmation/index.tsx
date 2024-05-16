@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
-import usePaymentClient from "~~/clients/payment.client";
+import usePaymentClient from "~~/clients/payments.client";
 
 const Page = ({ router }: WithRouterProps) => {
   const { query } = router;
