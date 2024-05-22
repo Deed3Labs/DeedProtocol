@@ -90,7 +90,6 @@ export interface PaymentInformationModel {
 
 export interface DeedInfoModel {
   id?: string;
-  registrationId?: string;
   mintedId?: number;
   owner?: Address;
   isValidated?: boolean;

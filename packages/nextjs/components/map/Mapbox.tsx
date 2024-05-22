@@ -35,51 +35,47 @@ const Map = ({ markers, onMarkerClicked, popupContent: popupContent }: MapProps)
 
   return (
     <main className={classes.mainStyle}>
-      {/* {markers ? ( */}
-      <Mapbox
-        ref={mapRef}
-        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
-        style={{ width: "100%", height: "100%" }}
-        initialViewState={{
-          latitude: 36.7783,
-          longitude: -119.417931,
-          bounds,
-          zoom: 5,
-          fitBoundsOptions: { padding: 64 },
-        }}
-      >
-        <NavigationControl showCompass={false} />
-        {markers?.map(marker => (
-          <>
-            {popupContent ? (
-              <Popup
-                className="[&_.mapboxgl-popup-tip]:!border-t-secondary [&_.mapboxgl-popup-tip]:!border-b-secondary [&_.mapboxgl-popup-content]:bg-secondary [&_.mapboxgl-popup-content]:p-1"
-                key={"popup_" + marker.id}
-                latitude={marker.lat}
-                longitude={marker.lng}
-                closeButton={false}
-                closeOnClick={false}
-                offset={[0, -38] as [number, number]}
-              >
-                {popupContent(marker)}
-              </Popup>
-            ) : (
-              <Marker
-                key={"marker_" + marker.id}
-                latitude={marker.lat}
-                longitude={marker.lng}
-                onClick={() => onMarkerClicked?.(marker)}
-              />
-            )}
-          </>
-        ))}
-      </Mapbox>
-      {/* ) : (
-        <div className="w-full h-full flex flex-row justify-center items-center">
-          <span className="loading loading-bars loading-lg" />
-        </div>
-      )} */}
+      {!process.env.NEXT_PUBLIC_OFFLINE && (
+        <Mapbox
+          ref={mapRef}
+          mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+          mapStyle="mapbox://styles/mapbox/streets-v12"
+          style={{ width: "100%", height: "100%" }}
+          initialViewState={{
+            latitude: 36.7783,
+            longitude: -119.417931,
+            bounds,
+            zoom: 5,
+            fitBoundsOptions: { padding: 64 },
+          }}
+        >
+          <NavigationControl showCompass={false} />
+          {markers?.map(marker => (
+            <>
+              {popupContent ? (
+                <Popup
+                  className="[&_.mapboxgl-popup-tip]:!border-t-secondary [&_.mapboxgl-popup-tip]:!border-b-secondary [&_.mapboxgl-popup-content]:bg-secondary [&_.mapboxgl-popup-content]:p-1"
+                  key={"popup_" + marker.id}
+                  latitude={marker.lat}
+                  longitude={marker.lng}
+                  closeButton={false}
+                  closeOnClick={false}
+                  offset={[0, -38] as [number, number]}
+                >
+                  {popupContent(marker)}
+                </Popup>
+              ) : (
+                <Marker
+                  key={"marker_" + marker.id}
+                  latitude={marker.lat}
+                  longitude={marker.lng}
+                  onClick={() => onMarkerClicked?.(marker)}
+                />
+              )}
+            </>
+          ))}
+        </Mapbox>
+      )}
     </main>
   );
 };

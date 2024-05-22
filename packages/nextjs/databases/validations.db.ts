@@ -1,25 +1,50 @@
 import { DbBase } from "./db-utils.db";
+import { DeedDb } from "./deeds.db";
 import { FileValidationModel } from "~~/models/file.model";
 
 export class ValidationDb extends DbBase {
   private static collection = this.deedDB.collection("Validations");
 
   static async saveValidation(validation: FileValidationModel) {
-    if (validation.key !== undefined) {
-      await this.collection.deleteOne({
-        key: validation.key,
-        registrationId: validation.registrationId,
-      });
+    const entry = {
+      ...validation,
+      lastModified: new Date(),
+      chainId: DeedDb.getChainId(),
+    } as any;
+    if (validation._id === undefined) {
+      entry.createdOn = new Date();
+    } else {
+      delete entry._id;
     }
-    const result = await this.collection.insertOne({ ...validation, timestamp: new Date() });
-    return result.insertedId.toString().replaceAll('"', "");
+    const id =
+      (
+        await this.collection.updateOne(
+          {
+            key: validation.key,
+            id: validation.registrationId,
+            chainId: DeedDb.getChainId(),
+          },
+          { $set: entry },
+          {
+            upsert: true, // Create if not exists
+          },
+        )
+      ).upsertedId
+        ?.toString()
+        .replaceAll('"', "") ?? validation._id;
+
+    return id;
   }
 
   static async getValidation(
     registrationId: string,
     key: string,
   ): Promise<FileValidationModel | null> {
-    const result = await this.collection.findOne({ registrationId, key });
+    const result = await this.collection.findOne({
+      registrationId,
+      key,
+      chainId: DeedDb.getChainId(),
+    });
     return (
       (result as unknown as FileValidationModel) ?? {
         key,

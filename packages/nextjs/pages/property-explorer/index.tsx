@@ -1,17 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import PropertyFilters from "../../components/PropertyFilters";
 import { debounce } from "lodash-es";
 import { NextPage } from "next";
-import { DeedEntity } from "~~/.graphclient";
+import useDeedClient from "~~/clients/deeds.client";
 import PropertyCard from "~~/components/PropertyCard";
 import { ExplorerPageSize } from "~~/constants";
-import { PropertyType } from "~~/models/deed-info.model";
+import { usePropertiesFilter } from "~~/contexts/property-filter.context";
+import { DeedInfoModel } from "~~/models/deed-info.model";
 import { MapIconModel } from "~~/models/map-icon.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { PropertyModel } from "~~/models/property.model";
-import { fetchDeeds } from "~~/queries/deed3.query";
-import { getContractInstance } from "~~/servers/contract";
-import { getTargetNetwork } from "~~/utils/scaffold-eth";
+import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 const propertyIcon: MapIconModel = {
   className: "property-icon",
@@ -39,10 +38,16 @@ const PropertyExplorer: NextPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isLast, setIsLast] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<PropertiesFilterModel>();
+  const { filter } = usePropertiesFilter();
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const isLocal = process.env.NEXT_PUBLIC_OFFLINE === "true";
+  const deedClient = useDeedClient();
+
+  useEffect(() => {
+    setCurrentPage(0);
+    setProperties([]);
+    loadMoreProperties(filter, 0);
+  }, [filter]);
 
   useEffect(() => {
     const handleDebouncedScroll = debounce(() => {
@@ -66,118 +71,76 @@ const PropertyExplorer: NextPage = () => {
     }
   };
 
-  const onFilter = (filter?: PropertiesFilterModel) => {
-    setCurrentPage(0);
-    setProperties([]);
-    setFilter(filter);
-    loadMoreProperties(filter, 0);
-  };
+  const loadMoreProperties = useCallback(
+    debounce(async (filter?: PropertiesFilterModel, currentPage?: number) => {
+      setLoading(true);
+      const response = await deedClient.searchDeeds(filter, currentPage, ExplorerPageSize);
+      if (!response.ok || !response.value) {
+        setIsLast(true);
+        setLoading(false);
+        notification.error("Error occured when loading properties");
+        return;
+      }
+      const results = response.value;
+      if (results.length === 0) {
+        setIsLast(true);
+        setLoading(false);
+        return;
+      }
 
-  const loadMoreProperties = async (filter?: PropertiesFilterModel, currentPage?: number) => {
-    return loadFakeProperties();
-    // if (isLocal) return loadFakeProperties();
+      const deeds = results.map((entity: DeedInfoModel, index) => {
+        const deed: PropertyModel = {
+          id: entity.id!,
+          name: entity.propertyDetails.propertyAddress,
+          pictures: entity.propertyDetails.propertyImages
+            ?.filter(x => !!x.fileId && !x.restricted)
+            ?.map(image => getTargetNetwork().ipfsGateway + image.fileId),
+          address:
+            entity.propertyDetails.propertyAddress +
+            ", " +
+            entity.propertyDetails.propertyCity +
+            ", " +
+            entity.propertyDetails.propertyState,
+          price: Math.round(Math.random() * 1000000),
+          lat: +(entity.propertyDetails.propertyLatitude ?? 0),
+          lng: +(entity.propertyDetails.propertyLongitude ?? 0),
+          type: entity.propertyDetails.propertyType ?? "realEstate",
+          icon: propertyIcon,
+          validated: entity.isValidated,
+        };
+        if (!deed.pictures?.length) {
+          const randomImage = defaultImages[index % defaultImages.length];
+          deed.pictures = [randomImage];
+        }
+        deed.popupContent = <PropertyCard property={deed} />;
+        return deed;
+      }) as PropertyModel[];
 
-    // setLoading(true);
-    // const results = await fetchDeeds(filter, currentPage, ExplorerPageSize);
-    // if (results.length === 0) {
-    //   setIsLast(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // const deeds = results.map((entity: DeedEntity) => {
-    //   const deed: PropertyModel = {
-    //     id: entity.deedId,
-    //     name: entity.deedMetadata.propertyDetails_address,
-    //     pictures: entity.deedMetadata.propertyDetails_images
-    //       ?.filter(x => !!x.fileId)
-    //       ?.map(image => getTargetNetwork().ipfsGateway + image.fileId),
-    //     address:
-    //       entity.deedMetadata.propertyDetails_address +
-    //       ", " +
-    //       entity.deedMetadata.propertyDetails_city +
-    //       ", " +
-    //       entity.deedMetadata.propertyDetails_state,
-    //     price: Math.round(Math.random() * 1000000),
-    //     lat: +(entity.deedMetadata.propertyDetails_latitude ?? 0),
-    //     lng: +(entity.deedMetadata.propertyDetails_longitude ?? 0),
-    //     type: (entity.deedMetadata.propertyDetails_type as PropertyType) ?? "realEstate",
-    //     icon: propertyIcon,
-    //     validated: entity.isValidated,
-    //   };
-    //   if (!deed.pictures?.length) {
-    //     const randomImage = defaultImages[Math.floor(Math.random() * defaultImages.length)];
-    //     deed.pictures = [randomImage];
-    //   }
-    //   deed.popupContent = <PropertyCard property={deed} />;
-    //   return deed;
-    // }) as PropertyModel[];
-
-    // setProperties(old => {
-    //   // Merge with distinct
-    //   const result = [];
-    //   const map = new Map();
-    //   for (const item of [...old, ...deeds]) {
-    //     if (!map.has(item.id)) {
-    //       map.set(item.id, true); // set any value to Map
-    //       result.push(item);
-    //     }
-    //   }
-    //   return result;
-    // });
-    // setLoading(false);
-    // if (results.length < ExplorerPageSize) {
-    //   setIsLast(true);
-    //   return;
-    // }
-    // setCurrentPage(old => old + 1);
-  };
-
-  /**
-   * Only used for local development since local subgraph is not usable offline
-   */
-  const loadFakeProperties = async () => {
-    setLoading(true);
-    const _properties = [];
-    setCurrentPage(1);
-    const contract = getContractInstance(getTargetNetwork().id, "DeedNFT");
-    const nextId = await contract.read.nextDeedId();
-    const pageSize = Number(nextId);
-    const center = { lat: 40, lng: -100 };
-    const radius = 10;
-    for (let index = 1; index < pageSize; index++) {
-      const newProperty: PropertyModel = {
-        id: index.toString(),
-        name: `Deed #${index}`,
-        pictures: [defaultImages[index % defaultImages.length]],
-        address: [
-          "16336 E ALAMEDA PL AURORA CO 80017-1130 USA",
-          "4500 S FOX ST ENGLEWOOD CO 80110-5621 USA",
-          "2924 ROSS DR FORT COLLINS CO 80526-1143 USA",
-          "504 FRUITVALE CT GRAND JUNCTION CO 81504-4445 USA",
-          "3801 ELK LN PUEBLO CO 81005-3093 USA",
-          "1 UTE LN GUNNISON CO 81230-9501 USA",
-          "1057 S GAYLORD ST DENVER CO 80209-4680 USA",
-          "301 N MESA ST FRUITA CO 81521-2109 USA",
-        ][index % 8],
-        lat: center.lat + (Math.random() - 0.5) * (radius * 2),
-        lng: center.lng + (Math.random() - 0.5) * (radius * 2),
-        price: Math.round(Math.random() * 1000000),
-        type: "realEstate",
-        icon: propertyIcon,
-      };
-      newProperty.popupContent = <PropertyCard property={newProperty} />;
-      _properties.push(newProperty);
-    }
-
-    setProperties(_properties);
-    setLoading(false);
-    setIsLast(true);
-  };
+      setProperties(old => {
+        // Merge with distinct
+        const result = [];
+        const map = new Map();
+        for (const item of [...old, ...deeds]) {
+          if (!map.has(item.id)) {
+            map.set(item.id, true); // set any value to Map
+            result.push(item);
+          }
+        }
+        return result;
+      });
+      setLoading(false);
+      if (results.length < ExplorerPageSize) {
+        setIsLast(true);
+        return;
+      }
+      setCurrentPage(old => old + 1);
+    }, 500),
+    [],
+  );
 
   return (
     <div className="container pb-4" ref={containerRef}>
-      <PropertyFilters properties={properties} onFilter={onFilter} />
+      <PropertyFilters properties={properties} />
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-3 items-start justify-start w-full">
         {properties.length !== 0 &&

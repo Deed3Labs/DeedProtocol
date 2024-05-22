@@ -1,5 +1,4 @@
 import Link from "next/link";
-import PropertyCard from "./PropertyCard";
 import Map from "./map";
 import {
   ChatBubbleBottomCenterTextIcon,
@@ -10,7 +9,6 @@ import { Address } from "~~/components/scaffold-eth";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useIsOnwer from "~~/hooks/useIsOwner.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { PropertyModel } from "~~/models/property.model";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {

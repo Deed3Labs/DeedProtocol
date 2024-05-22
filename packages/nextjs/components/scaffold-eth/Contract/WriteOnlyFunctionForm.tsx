@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InheritanceTooltip } from "./InheritanceTooltip";
 import { Abi, AbiFunction } from "abitype";
 import { Address, TransactionReceipt } from "viem";
@@ -13,6 +13,7 @@ import {
   getParsedError,
 } from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
+import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 interface WriteOnlyFunctionFormProps {
@@ -33,6 +34,7 @@ export const WriteOnlyFunctionForm = ({
   const { chain } = useNetwork();
   const writeTxn = useTransactor();
   const writeDisabled = !chain || chain?.id !== getTargetNetwork().id;
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const {
     data: result,
@@ -57,6 +59,12 @@ export const WriteOnlyFunctionForm = ({
       }
     }
   };
+
+  useKeyboardShortcut(["Enter"], () => {
+    if (wrapperRef.current && wrapperRef.current.contains(document.activeElement)) {
+      handleWrite();
+    }
+  });
 
   const [displayedTxResult, setDisplayedTxResult] = useState<TransactionReceipt>();
   const { data: txResult } = useWaitForTransaction({
@@ -85,7 +93,7 @@ export const WriteOnlyFunctionForm = ({
   const zeroInputs = inputs.length === 0 && abiFunction.stateMutability !== "payable";
 
   return (
-    <div className="py-5 space-y-3 first:pt-0 last:pb-1">
+    <div className="py-5 space-y-3 first:pt-0 last:pb-1" ref={wrapperRef}>
       <div
         className={`flex gap-3 ${
           zeroInputs ? "flex-row justify-between items-center" : "flex-col"
@@ -124,7 +132,7 @@ export const WriteOnlyFunctionForm = ({
               disabled={writeDisabled || isLoading}
               onClick={handleWrite}
             >
-              {isLoading && <span className="loading loading-spinner loading-xs"></span>}
+              {isLoading && <span className="loading loading-spinner loading-xs" />}
               Send 💸
             </button>
           </div>

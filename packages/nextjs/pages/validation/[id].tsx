@@ -7,7 +7,7 @@ import PropertyDetails from "../../components/ValidationPropertyDetails";
 import PropertyOverview from "../../components/ValidationPropertyOverview";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-import useDeedClient from "~~/clients/deeds.api";
+import useDeedClient from "~~/clients/deeds.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
@@ -51,22 +51,20 @@ const Page = ({ router }: WithRouterProps) => {
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(deedData!.id!));
   const isOwner = useIsOnwer(deedData);
   const isValidator = useIsValidator();
-  const registrationClient = useDeedClient();
+  const deedClient = useDeedClient();
   const { writeValidateAsync } = useDeedValidate();
 
   const isDraft = useMemo(() => {
-    return !id || Number.isNaN(+id);
-  }, [id, router.isReady, deedData]);
+    return !id || !deedData.mintedId;
+  }, [id, router.isReady, deedData.mintedId]);
   const { id: chainId } = getTargetNetwork();
 
   useEffect(() => {
     if (router.isReady && !isConnecting) {
-      if (id) {
-        setIsLoading(true);
-        fetchDeedInfo(id as string);
-      }
+      setIsLoading(true);
+      fetchDeedInfo(id as string);
     }
-  }, [id, router.isReady, isConnecting, authToken]);
+  }, [router.isReady, isConnecting, authToken]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -79,19 +77,26 @@ const Page = ({ router }: WithRouterProps) => {
       return;
     }
     const { deedId } = payload;
-    notification.success(`Deed NFT Minted with id ${deedId}`);
+    if (deedId) {
+      deedData.mintedId = Number(deedId);
+      notification.success(`Deed NFT Minted with id ${deedId}`);
+      await deedClient.saveDeed(deedData);
+    }
     await router.push(`/validation/${deedId}`);
   };
 
   const fetchDeedInfo = useCallback(
     async (id: string) => {
       setIsLoading(true);
-      const resp = await registrationClient.getDeed(id, !!isDraft);
+      const resp = await deedClient.getDeed(id, !!isDraft);
       setErrorCode(undefined);
       setIsLoading(false);
       if (resp.ok && resp.value) {
         setInitialData(resp.value);
         setDeedData(resp.value);
+        if (id === resp.value.id) {
+          await router.replace(`/validation/${resp.value.mintedId}`, undefined, { shallow: true });
+        }
       } else {
         if (resp?.status === 404) setErrorCode("notFound");
         else if (resp?.status === 401) setErrorCode("unauthorized");
@@ -134,7 +139,7 @@ const Page = ({ router }: WithRouterProps) => {
       const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
-      const response = await registrationClient.saveDeed(newDeedData);
+      const response = await deedClient.saveDeed(newDeedData);
       notification.remove(toastId);
 
       if (response.ok && response.value) {
@@ -148,9 +153,9 @@ const Page = ({ router }: WithRouterProps) => {
         notification.error("Error saving registration");
       }
     } else {
-      if (!deedData.id || !initialData) return;
+      if (!deedData.mintedId || !initialData) return;
       // Update on chain
-      await writeUpdateDeedAsync(deedData, initialData, deedData.id!);
+      await writeUpdateDeedAsync(deedData, initialData);
     }
   };
   return (

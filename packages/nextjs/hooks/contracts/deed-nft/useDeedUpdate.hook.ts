@@ -1,5 +1,6 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
 import { TransactionReceipt } from "viem";
+import useDeedClient from "~~/clients/deeds.client";
 import useFileClient from "~~/clients/files.client";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
@@ -10,6 +11,7 @@ import { notification } from "~~/utils/scaffold-eth";
 const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => {
   const { primaryWallet, authToken } = useWallet();
   const fileClient = useFileClient();
+  const deedClient = useDeedClient();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -19,7 +21,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     account: primaryWallet?.address,
   });
 
-  const writeAsync = async (data: DeedInfoModel, old: DeedInfoModel, deedId: string) => {
+  const writeAsync = async (data: DeedInfoModel, old: DeedInfoModel) => {
     if (!primaryWallet || !authToken) {
       notification.error("No wallet connected");
       return;
@@ -30,6 +32,10 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     try {
       const payload = await uploadFiles(authToken, data, old);
       if (!payload) return;
+
+      // Start by saving data into database for redundancy
+      await deedClient.saveDeed({ ...data, isValidated: false });
+
       hash = await fileClient.uploadJson(payload);
     } catch (error) {
       notification.error("Error while uploading documents");
@@ -45,7 +51,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     });
     try {
       await contractWriteHook.writeAsync({
-        args: [BigInt(deedId), hash],
+        args: [BigInt(data.mintedId!), hash],
       });
     } catch (error) {
       notification.error("Error while updating deed");

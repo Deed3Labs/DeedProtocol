@@ -91,7 +91,7 @@ export async function fetchDeeds(
       PROPERTY_TYPE: filter?.propertyType ?? "realEstate",
       PROPERTY_SIZE: filter?.propertySize ?? "",
       OWNER_WALLET: filter?.ownerWallet ?? "",
-      VALIDATED: (filter?.validated ?? "true") === "true",
+      VALIDATED: filter?.validated ? filter?.validated === "true" : true,
       CURRENT_PAGE: currentPage ?? 0,
       PAGE_SIZE: pageSize ?? ExplorerPageSize,
     },

@@ -69,15 +69,22 @@ export async function getObjectFromIpfs<TResult = string>(
       hash = hexToString(hash as Hex);
     }
 
+    const filePath = getIpfsUrl(hash);
+    return await (await fetch(filePath)).json();
+  }
+
+  return undefined; // No result
+}
+
+export function getIpfsUrl(hash: string) {
+  if (process.env.NEXT_PUBLIC_OFFLINE) {
+    return `http://${config.host}:${config.port}/ipfs/${hash}`;
+  } else {
     let gateway = process.env.NEXT_PINATA_GATEWAY;
 
     if (!gateway?.endsWith("/")) {
       gateway += "/";
     }
-
-    const filePath = `${gateway}ipfs/${hash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
-    return await (await fetch(filePath)).json();
+    return `${gateway}ipfs/${hash}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
   }
-
-  return undefined; // No result
 }

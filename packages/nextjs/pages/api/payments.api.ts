@@ -2,7 +2,7 @@ import "./base";
 import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { RegistrationDb } from "~~/databases/registrations.db";
+import { DeedDb } from "~~/databases/deeds.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { authentify } from "~~/servers/auth";
 
@@ -40,7 +40,7 @@ const verifyPayment = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).send("No registration id");
   }
 
-  const registration = await RegistrationDb.getRegistration(registrationId);
+  const registration = await DeedDb.getDeed(registrationId);
 
   if (!registration) {
     return res.status(404).send({ registrationId, error: "Registration not found" });
@@ -48,7 +48,7 @@ const verifyPayment = async (req: NextApiRequest, res: NextApiResponse) => {
 
   registration.paymentInformation.receipt = paymentIntent.payment_intent?.toString();
 
-  await RegistrationDb.saveRegistration(registration);
+  await DeedDb.saveDeed(registration);
 
   return res.status(200).send({
     registrationId,
@@ -67,7 +67,7 @@ async function submitPayment(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).send("Error: payment receipt is required");
   }
 
-  const deedInfo = await RegistrationDb.getRegistration(id);
+  const deedInfo = await DeedDb.getDeed(id);
 
   if (!deedInfo) {
     return res.status(404).send(`Error: Deed ${id} not found`);
@@ -78,7 +78,7 @@ async function submitPayment(req: NextApiRequest, res: NextApiResponse) {
   }
 
   deedInfo.paymentInformation.receipt = paymentReceipt as string;
-  await RegistrationDb.saveRegistration(deedInfo);
+  await DeedDb.saveDeed(deedInfo);
 
   return res.status(200).send("success");
 }

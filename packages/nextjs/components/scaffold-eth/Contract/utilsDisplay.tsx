@@ -1,6 +1,8 @@
 import { ReactElement } from "react";
-import { TransactionBase, TransactionReceipt, formatEther } from "viem";
+import Link from "next/link";
+import { TransactionBase, TransactionReceipt, formatEther, hexToString } from "viem";
 import { Address } from "~~/components/scaffold-eth";
+import { getIpfsUrl, getObjectFromIpfs } from "~~/servers/ipfs";
 import { replacer } from "~~/utils/scaffold-eth/common";
 
 type DisplayContent =
@@ -40,6 +42,25 @@ export const displayTxResult = (
     displayContent.length === 42
   ) {
     return asText ? displayContent : <Address address={displayContent} />;
+  }
+
+  // Most likely a ipfs hash
+  if (
+    typeof displayContent === "string" &&
+    displayContent.indexOf("0x") === 0 &&
+    displayContent.length === 94
+  ) {
+    const ascii = hexToString(displayContent as `0x${string}`);
+    const ipfsUrl = getIpfsUrl(hexToString(displayContent as `0x${string}`));
+    getObjectFromIpfs(displayContent as `0x${string}`);
+    return (
+      <div>
+        {displayContent} &gt;{" "}
+        <Link href={ipfsUrl} target="_blank">
+          {ascii}
+        </Link>
+      </div>
+    );
   }
 
   if (Array.isArray(displayContent)) {

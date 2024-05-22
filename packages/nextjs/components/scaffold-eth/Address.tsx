@@ -129,6 +129,7 @@ export const Address = ({
             />
           ) : (
             <CopyToClipboard
+              // @ts-ignore
               className="hidden ml-1.5 text-xl font-normal text-sky-600 h-3 w-3 cursor-pointer"
               text={address}
               onCopy={() => {

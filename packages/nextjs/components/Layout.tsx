@@ -6,6 +6,7 @@ import { BackToTop } from "~~/components/BackToTop";
 import ErrorBoundary from "~~/components/ErrorBoundary";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
+import { PropertiesFilterProvider } from "~~/contexts/property-filter.context";
 
 const Layout = ({ pageProps, Component }: AppProps) => {
   // const connectBtnRef = useRef<HTMLInputElement>(null);
@@ -32,7 +33,9 @@ const Layout = ({ pageProps, Component }: AppProps) => {
         <Header />
         <main className="relative flex flex-col flex-1">
           <ErrorBoundary>
-            <Component {...pageProps} />
+            <PropertiesFilterProvider>
+              <Component {...pageProps} />
+            </PropertiesFilterProvider>
           </ErrorBoundary>
         </main>
         <Footer />

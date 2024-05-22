@@ -1,4 +1,5 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
+import useDeedClient from "~~/clients/deeds.client";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import logger from "~~/services/logger.service";
@@ -6,6 +7,7 @@ import { notification } from "~~/utils/scaffold-eth";
 
 const useDeedValidate = () => {
   const { primaryWallet } = useWallet();
+  const deedClient = useDeedClient();
 
   const contractWritePayload = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -25,7 +27,12 @@ const useDeedValidate = () => {
 
     try {
       await contractWritePayload.writeAsync({
-        args: [BigInt(deed.id!), isValidated],
+        args: [BigInt(deed.mintedId!), isValidated],
+      });
+
+      await deedClient.saveDeed({
+        ...deed,
+        isValidated,
       });
     } catch (error) {
       notification.error("Error while validating deed");

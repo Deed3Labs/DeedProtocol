@@ -1,6 +1,6 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
 import { TransactionReceipt } from "viem";
-import useDeedClient from "~~/clients/deeds.api";
+import useDeedClient from "~~/clients/deeds.client";
 import useFileClient from "~~/clients/files.client";
 import { PropertyTypeOptions } from "~~/constants";
 import useWallet from "~~/hooks/useWallet";
@@ -28,7 +28,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       return;
     }
 
-    const toastId = notification.loading("Uploading documents...");
+    const toastId = notification.loading("Publishing documents...");
     let hash;
     let payload: DeedInfoModel;
     try {
@@ -36,8 +36,8 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       if (!payload) return;
       hash = await fileClient.uploadJson(payload);
     } catch (error) {
-      notification.error("Error while uploading documents");
-      logger.error({ message: "[Deed Mint] Error while uploading documents", error });
+      notification.error("Error while publishing documents");
+      logger.error({ message: "[Deed Mint] Error while publishing documents", error });
       return null;
     } finally {
       notification.remove(toastId);
@@ -55,12 +55,13 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
           indexOfLiteral(PropertyTypeOptions, data.propertyDetails.propertyType),
         ],
       });
+
+      // Save the current state of published documents
+      await registrationsClient.saveDeed({ ...payload, isValidated: true });
     } catch (error) {
       notification.error("Error while minting deed");
       logger.error({ message: "Error while minting deed", error });
 
-      // Save the current state of published documents
-      await registrationsClient.saveDeed(payload);
       return;
     } finally {
       notification.remove(mintNotif);

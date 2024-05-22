@@ -6,7 +6,7 @@ import OtherInformations from "../../components/OtherInformations";
 import OwnerInformation from "../../components/OwnerInformation";
 import PaymentInformation from "../../components/PaymentInformation";
 import PropertyDetails from "../../components/RegPropertyDetails";
-import useDeedClient from "~~/clients/deeds.api";
+import useDeedClient from "~~/clients/deeds.client";
 import SidePanel from "~~/components/SidePanel";
 import useWallet from "~~/hooks/useWallet";
 import {
@@ -77,8 +77,8 @@ const Page = ({ router }: WithRouterProps) => {
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const isDraft = useMemo(() => {
-    return !id || Number.isNaN(+id);
-  }, [id, router.isReady, deedData]);
+    return !id || !deedData.mintedId;
+  }, [id, router.isReady, deedData.mintedId]);
   const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
   const registrationClient = useDeedClient();

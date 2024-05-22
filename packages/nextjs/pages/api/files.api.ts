@@ -8,7 +8,7 @@ import { FilesDb } from "~~/databases/files.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { FileModel } from "~~/models/file.model";
 import { authentify, getWalletAddressFromToken, testEncryption } from "~~/servers/auth";
-import { ipfsClient, pinata, pushObjectToIpfs } from "~~/servers/ipfs";
+import { getIpfsUrl, ipfsClient, pinata, pushObjectToIpfs } from "~~/servers/ipfs";
 import logger from "~~/services/logger.service";
 
 if (!process.env.NEXT_PINATA_API_KEY || !process.env.NEXT_PINATA_API_SECRET) {
@@ -126,7 +126,7 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   }
   let ipfsHash;
   if (process.env.NEXT_PUBLIC_OFFLINE) {
-    ipfsHash = (await ipfsClient.add(stream)).toString();
+    ipfsHash = (await ipfsClient.add(stream)).cid.toString();
   } else {
     //  Push the file to IPFS
     const options = {
@@ -167,11 +167,7 @@ const getFile = async (req: NextApiRequest, res: NextApiResponse<string>) => {
       return;
     }
   } else {
-    let gateway = process.env.NEXT_PINATA_GATEWAY;
-    if (!gateway?.endsWith("/")) {
-      gateway += "/";
-    }
-    const filePath = `${gateway}ipfs/${fileId}?pinataGatewayToken=${process.env.NEXT_PINATA_GATEWAY_KEY}`;
+    const filePath = getIpfsUrl(fileId);
     const { data } = await axios.get<Readable>(filePath, {
       responseType: "stream",
     });

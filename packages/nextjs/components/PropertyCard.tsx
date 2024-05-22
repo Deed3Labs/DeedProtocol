@@ -5,7 +5,7 @@ import { PropertyModel } from "~~/models/property.model";
 
 interface Props {
   property: PropertyModel;
-  small: boolean;
+  small?: boolean;
 }
 
 const PropertyCard = ({ property, small = false }: Props) => {

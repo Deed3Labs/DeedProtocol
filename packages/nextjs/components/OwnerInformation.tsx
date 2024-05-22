@@ -46,7 +46,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
         onChange={handleChange}
         value={value?.ownerType}
         readOnly={readOnly}
-      ></RadioBoxesInput>
+      />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-3 justify-start w-full">
         {value?.ownerType === "legal" && (
           <TextInput

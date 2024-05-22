@@ -16,6 +16,8 @@ export const AddressInput = ({
   placeholder,
   onChange,
   disabled,
+  className = "",
+  large = false,
 }: CommonInputProps<Address | string>) => {
   // Debounce the input to keep clean RPC calls when resolving ENS names
   // If the input is an address, we don't need to debounce it
@@ -66,7 +68,7 @@ export const AddressInput = ({
   );
 
   function onBlockieClicked(): void {
-    if (!value && primaryWallet.address) {
+    if (!value && primaryWallet?.address) {
       onChange(primaryWallet.address);
     }
   }
@@ -77,8 +79,10 @@ export const AddressInput = ({
       placeholder={placeholder}
       error={ensAddress === null}
       value={value}
+      className={`w-[536px] ${className}`}
       onChange={handleChange}
       disabled={isEnsAddressLoading || isEnsNameLoading || disabled}
+      large={large}
       prefix={
         ensName && (
           <div className="flex bg-base-300 rounded-l-full items-center">
@@ -104,7 +108,7 @@ export const AddressInput = ({
         (value || primaryWallet?.address) && (
           <Image
             alt=""
-            className={`!rounded-full ${!value ? "cursor-pointer" : ""}`}
+            className={`!rounded-full mx-2 ${!value ? "cursor-pointer" : ""}`}
             src={blo((value || primaryWallet?.address) as `0x${string}`)}
             width="35"
             height="35"

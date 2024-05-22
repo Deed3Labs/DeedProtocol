@@ -55,8 +55,8 @@ const FileValidation = ({
 
   useEffect(() => {
     (async () => {
-      if (!deedData.registrationId) return;
-      const result = await validationClient.getValidation(deedData.registrationId, key);
+      if (!deedData.id) return;
+      const result = await validationClient.getValidation(deedData.id, key);
       if (!result) {
         notification.error(`Error retrieving validation with key: ${key}`);
       } else {
@@ -149,7 +149,7 @@ const FileValidation = ({
   const handleStateChanged = (ev: any) => {
     const newState = ev.target.value as FileValidationState;
     setFileValidationState(newState);
-    onStateChanged?.({ key: key, state: newState, registrationId: deedData.registrationId! });
+    onStateChanged?.({ key: key, state: newState, registrationId: deedData.id! });
     setIsBadgeEdit(false);
   };
 
@@ -187,7 +187,7 @@ const FileValidation = ({
             }}
           >
             {loading ? (
-              <div className="h-2 w-16 bg-slate-300 rounded"></div>
+              <div className="h-2 w-16 bg-slate-300 rounded" />
             ) : (
               fileValidationState ?? "Not started"
             )}
@@ -243,7 +243,7 @@ const FileValidation = ({
                           isRestricted={field.restricted}
                           // @ts-ignore
                           onChange={newFile => handleFileUpload(newFile as FileModel, field)}
-                        ></FileUploaderInput>
+                        />
                       </div>
                     )}
                   </div>

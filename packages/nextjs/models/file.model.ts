@@ -5,15 +5,18 @@ import {
   PropertyDetailsModel,
 } from "./deed-info.model";
 import { isArray } from "lodash-es";
+import { ObjectId } from "mongodb";
 
 export type FileValidationState = "Completed" | "Not started" | "Needs Review" | "Processing";
 export interface FileValidationModel {
+  _id?: string;
   registrationId: string;
   key: string;
   state: FileValidationState;
 }
 
 export interface FileModel {
+  _id?: ObjectId;
   fileId: string;
   owner: string;
   fileName: string;

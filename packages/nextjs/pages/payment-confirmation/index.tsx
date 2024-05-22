@@ -28,7 +28,7 @@ const Page = ({ router }: WithRouterProps) => {
   return (
     <div className="container">
       <div className="mt-8 flex flex-col justify-center">
-        {isLoading && <span className="loading loading-bars loading-lg my-8"></span>}
+        {isLoading && <span className="loading loading-bars loading-lg my-8" />}
         {!isLoading && (
           <>
             <div className="card w-96 bg-neutral">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { InheritanceTooltip } from "./InheritanceTooltip";
 import { Abi, AbiFunction } from "abitype";
 import { Address } from "viem";
@@ -10,6 +10,7 @@ import {
   getInitialFormState,
   getParsedContractFunctionArgs,
 } from "~~/components/scaffold-eth";
+import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface TReadOnlyFunctionFormProps {
@@ -25,6 +26,7 @@ export const ReadOnlyFunctionForm = ({
 }: TReadOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(abiFunction));
   const [result, setResult] = useState<unknown>();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const { isFetching, refetch } = useContractRead({
     address: contractAddress,
@@ -35,6 +37,12 @@ export const ReadOnlyFunctionForm = ({
     onError: (error: any) => {
       notification.error(error.message);
     },
+  });
+
+  useKeyboardShortcut(["Enter"], () => {
+    if (wrapperRef.current && wrapperRef.current.contains(document.activeElement)) {
+      onClick();
+    }
   });
 
   const inputElements = abiFunction.inputs.map((input, inputIndex) => {
@@ -53,8 +61,13 @@ export const ReadOnlyFunctionForm = ({
     );
   });
 
+  const onClick = async () => {
+    const { data } = await refetch();
+    setResult(data);
+  };
+
   return (
-    <div className="flex flex-col gap-3 py-5 first:pt-0 last:pb-1">
+    <div className="flex flex-col gap-3 py-5 first:pt-0 last:pb-1" ref={wrapperRef}>
       <p className="font-medium my-0 break-words">
         {abiFunction.name}
         <InheritanceTooltip inheritedFrom={inheritedFrom} />
@@ -69,14 +82,7 @@ export const ReadOnlyFunctionForm = ({
             </div>
           )}
         </div>
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={async () => {
-            const { data } = await refetch();
-            setResult(data);
-          }}
-          disabled={isFetching}
-        >
+        <button className="btn btn-secondary btn-sm" onClick={onClick} disabled={isFetching}>
           {isFetching && <span className="loading loading-spinner loading-xs" />}
           Read 📡
         </button>

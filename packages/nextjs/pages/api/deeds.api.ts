@@ -1,9 +1,11 @@
 import "./base";
 import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
-import { RegistrationDb as RegistrationsDb } from "~~/databases/registrations.db";
+import { ExplorerPageSize } from "~~/constants";
+import { DeedDb as RegistrationsDb } from "~~/databases/deeds.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { DeedInfoModel } from "~~/models/deed-info.model";
+import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { authentify, getWalletAddressFromToken, testEncryption } from "~~/servers/auth";
 import { getContractInstance, getDeedOwner } from "~~/servers/contract";
 import { getObjectFromIpfs } from "~~/servers/ipfs";
@@ -14,13 +16,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case "GET":
-        if (req.query.isRestricted === "true") {
-          return await getPropertyFromDatabase(req, res);
+        if (req.query.id) {
+          if (Number.isNaN(+req.query.id)) {
+            return await getDeedFromDatabase(req, res);
+          } else {
+            return await getDeedFromChain(req, res);
+          }
         } else {
-          return await getPropertyFromChain(req, res);
+          return await searchDeeds(req, res);
         }
       case "POST":
-        return await saveProperty(req, res);
+        return await saveDeed(req, res);
       default:
         return res.status(405).send("Method not allowed");
     }
@@ -35,8 +41,9 @@ export default withErrorHandler(handler);
 /**
  * Retrieve the deed information from the chain.
  */
-async function getPropertyFromChain(req: NextApiRequest, res: NextApiResponse) {
-  const { id, chainId } = req.query;
+async function getDeedFromChain(req: NextApiRequest, res: NextApiResponse, forceId?: any) {
+  const { chainId } = req.query;
+  const id = forceId ?? req.query.id;
   if (!chainId || Number.isNaN(chainId) || Array.isArray(chainId)) {
     return res.status(400).send("Error: chainId of type number is required");
   }
@@ -63,7 +70,6 @@ async function getPropertyFromChain(req: NextApiRequest, res: NextApiResponse) {
   const deedInfo = await contract.read.getDeedInfo([id as any]);
 
   const deedInfoMetadata = tokenMetadataResponse as unknown as DeedInfoModel;
-  deedInfoMetadata.id = id as string;
   deedInfoMetadata.mintedId = Number(id);
   deedInfoMetadata.owner = deedOwner;
   deedInfoMetadata.isValidated = deedInfo.isValidated;
@@ -74,30 +80,32 @@ async function getPropertyFromChain(req: NextApiRequest, res: NextApiResponse) {
 /**
  * Retrieve the deed information from the database.
  */
-async function getPropertyFromDatabase(req: NextApiRequest, res: NextApiResponse) {
+async function getDeedFromDatabase(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
   if (!id || isArray(id)) {
     return res.status(400).send("Error: id of type number is required");
   }
 
-  const registration = await RegistrationsDb.getRegistration(id);
+  const deed = await RegistrationsDb.getDeed(id);
 
-  if (!registration) {
+  if (deed?.mintedId) return getDeedFromChain(req, res, deed.mintedId);
+
+  if (!deed) {
     return res.status(404).send(`Error: Deed ${id} not found in drafts`);
   }
 
-  if (!(await authentify(req, res, [registration.owner!, "Validator"]))) {
+  if (!(await authentify(req, res, [deed.owner!, "Validator"]))) {
     return;
   }
 
-  return res.status(200).json(registration);
+  return res.status(200).json(deed);
 }
 
 /**
  * Add a new deed information to the database.
  */
-async function saveProperty(req: NextApiRequest, res: NextApiResponse) {
+async function saveDeed(req: NextApiRequest, res: NextApiResponse) {
   const deedInfo = JSON.parse(req.body) as DeedInfoModel;
   const walletAddress = getWalletAddressFromToken(req);
 
@@ -105,14 +113,15 @@ async function saveProperty(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).send("Error: Unauthorized");
   }
 
-  if (!validate()) {
-    return res.status(400).send("Error: deedInfo is invalid");
+  const validationError = validate(deedInfo);
+  if (validationError) {
+    return res.status(453).send("Validation Error: " + validationError);
   }
 
   let existingRegistration;
   if (deedInfo.id) {
-    existingRegistration = await RegistrationsDb.getRegistration(deedInfo.id);
-    if (!(await authentify(req, res, [existingRegistration!.owner!]))) {
+    existingRegistration = await RegistrationsDb.getDeed(deedInfo.id);
+    if (!(await authentify(req, res, [existingRegistration!.owner!, "Validator"]))) {
       return;
     }
   }
@@ -126,30 +135,46 @@ async function saveProperty(req: NextApiRequest, res: NextApiResponse) {
     !existingRegistration?.propertyDetails.propertyLatitude ||
     getFullAddress(deedInfo) !== getFullAddress(existingRegistration)
   ) {
-    // Compute the lat long from address
-    const response = await fetch(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(
-        getFullAddress(deedInfo),
-      )}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`,
-    );
+    try {
+      // Compute the lat long from address
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(
+          getFullAddress(deedInfo),
+        )}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`,
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!data.features.length) {
-      return res
-        .status(400)
-        .send("Error: Unable to get coordinates from address, please try another address.");
+      if (!data.features.length) {
+        return res
+          .status(400)
+          .send("Error: Unable to get coordinates from address, please try another address.");
+      }
+
+      const coordinates = data.features[0].geometry.coordinates;
+
+      deedInfo.propertyDetails.propertyLatitude = coordinates[1];
+      deedInfo.propertyDetails.propertyLongitude = coordinates[0];
+    } catch (error) {
+      // If no connection we can fake location
+      if (process.env.NEXT_PUBLIC_OFFLINE) {
+        const center = { lat: 40, lng: -100 };
+        const radius = 10;
+        deedInfo.propertyDetails.propertyLatitude =
+          center.lat + (Math.random() - 0.5) * (radius * 2);
+        deedInfo.propertyDetails.propertyLongitude =
+          center.lng + (Math.random() - 0.5) * (radius * 2);
+      } else {
+        return res
+          .status(400)
+          .send("Error: Unable to get coordinates from address, please try another address.");
+      }
     }
-
-    const coordinates = data.features[0].geometry.coordinates;
-
-    deedInfo.propertyDetails.propertyLatitude = coordinates[1];
-    deedInfo.propertyDetails.propertyLongitude = coordinates[0];
   }
 
   deedInfo.owner = walletAddress;
 
-  const id = await RegistrationsDb.saveRegistration(deedInfo);
+  const id = await RegistrationsDb.saveDeed(deedInfo);
   if (!id) {
     return res.status(500).send("Error: Unable to save deedInfo");
   } else {
@@ -157,6 +182,65 @@ async function saveProperty(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-function validate() {
-  return true;
+async function searchDeeds(req: NextApiRequest, res: NextApiResponse) {
+  const query = req.query as unknown as PropertiesFilterModel & {
+    currentPage: string;
+    pageSize: string;
+  };
+  const registrations = await RegistrationsDb.listDeeds(
+    query,
+    query.currentPage ? +query.currentPage : 0,
+    query.pageSize ? +query.pageSize : ExplorerPageSize,
+  );
+  return res.status(200).send(registrations);
 }
+
+function validate(model: DeedInfoModel) {
+  // Validate if the model is valid and if all required fields are present
+  if (!model.ownerInformation.ownerName) return "Field owner name is required";
+  if (model.ownerInformation.ownerType === "legal") {
+    if (!model.ownerInformation.ownerPosition) return "Field owner position is required";
+    if (!model.ownerInformation.ownerState) return "Field owner state is required";
+    if (!model.ownerInformation.ownerEntityType) return "Field owner entity type is required";
+  }
+  if (!model.propertyDetails.propertyType) return "Field property type is required";
+  if (!model.propertyDetails.propertyAddress) return "Field property address is required";
+  if (!model.propertyDetails.propertyCity) return "Field property city is required";
+  if (!model.propertyDetails.propertyState) return "Field property state is required";
+  return false;
+}
+
+// /**
+//  * Only used for local development since local subgraph is not usable offline
+//  */
+// const loadFakeProperties = async () => {
+//   const properties = [];
+//   const contract = getContractInstance(getTargetNetwork().id, "DeedNFT");
+//   const nextId = await contract.read.nextDeedId();
+//   const pageSize = Number(nextId);
+//   const center = { lat: 40, lng: -100 };
+//   const radius = 10;
+//   const fakeAddresses = [
+//     "16336 E ALAMEDA PL AURORA CO 80017-1130 USA",
+//     "4500 S FOX ST ENGLEWOOD CO 80110-5621 USA",
+//     "2924 ROSS DR FORT COLLINS CO 80526-1143 USA",
+//     "504 FRUITVALE CT GRAND JUNCTION CO 81504-4445 USA",
+//     "3801 ELK LN PUEBLO CO 81005-3093 USA",
+//     "1 UTE LN GUNNISON CO 81230-9501 USA",
+//     "1057 S GAYLORD ST DENVER CO 80209-4680 USA",
+//     "301 N MESA ST FRUITA CO 81521-2109 USA",
+//   ];
+//   for (let index = 1; index < pageSize; index++) {
+//     const newProperty = {
+//       id: index.toString(),
+//       propertyDetails: {
+//         propertyImages: [],
+//         propertyAddress: fakeAddresses[index % fakeAddresses.length],
+//         propertyLatitude: center.lat + (Math.random() - 0.5) * (radius * 2),
+//         propertyLongitude: center.lng + (Math.random() - 0.5) * (radius * 2),
+//       } as unknown as PropertyDetailsModel,
+//     } as DeedInfoModel;
+//     properties.push(newProperty);
+//   }
+//   return properties;
+// };

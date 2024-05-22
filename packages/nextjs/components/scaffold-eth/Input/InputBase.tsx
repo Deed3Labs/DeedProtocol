@@ -5,6 +5,8 @@ type InputBaseProps<T> = CommonInputProps<T> & {
   error?: boolean;
   prefix?: ReactNode;
   suffix?: ReactNode;
+  className?: string;
+  large?: boolean;
 };
 
 export const InputBase = <T extends { toString: () => string } | undefined = string>({
@@ -16,6 +18,8 @@ export const InputBase = <T extends { toString: () => string } | undefined = str
   disabled,
   prefix,
   suffix,
+  className,
+  large,
 }: InputBaseProps<T>) => {
   let modifier = "";
   if (error) {
@@ -33,11 +37,15 @@ export const InputBase = <T extends { toString: () => string } | undefined = str
 
   return (
     <div
-      className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent ${modifier}`}
+      className={`flex border-2 border-white border-opacity-10 bg-base-200 text-accent input ${
+        large ? "input-lg" : ""
+      } ${modifier} ${className}`}
     >
       {prefix}
       <input
-        className="input input-ghost focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400"
+        className={`input ${
+          large ? "input-lg" : ""
+        } px-0 bg-transparent w-full border-none focus:border-none outline-none focus:outline-none text-white`}
         placeholder={placeholder}
         name={name}
         value={value?.toString()}

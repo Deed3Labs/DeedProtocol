@@ -127,11 +127,8 @@ export const Header = () => {
               viewBox="0 0 121 34"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              onClick={ev => {
-                if (ev.altKey && ev.ctrlKey) {
-                  router.push("/admin");
-                  ev.stopPropagation();
-                }
+              onDoubleClick={() => {
+                router.push("/admin");
               }}
             >
               <path

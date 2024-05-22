@@ -5,7 +5,8 @@ import MarketLogo from "../pages/registration/assets/MarketLogo";
 import QuoteDetail, { USDollar } from "./scaffold-eth/QuoteDetail";
 import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt } from "viem";
-import useDeedClient from "~~/clients/deeds.api";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import useDeedClient from "~~/clients/deeds.client";
 import usePaymentClient from "~~/clients/payments.client";
 import useQuoteClient from "~~/clients/quotes.client";
 import { TransactionHash } from "~~/components/blockexplorer";
@@ -56,6 +57,7 @@ const SidePanel = ({
   const registrationClient = useDeedClient();
   const paymentClient = usePaymentClient();
   const quoteClient = useQuoteClient();
+  const deedClient = useDeedClient();
 
   useEffect(() => {
     if (!quoteDetails) {
@@ -82,25 +84,25 @@ const SidePanel = ({
       const response = await registrationClient.saveDeed(newDeedData);
       notification.remove(toastId);
 
-      if (!response.ok || !response.value) {
-        notification.error("Error saving registration");
+      if (!response.ok || !response || !response.value) {
+        notification.error(response.status === 453 ? response.error : "Error saving registration");
         return;
       }
 
       if (!deedData.paymentInformation.receipt) {
         if (await handlePayment(response.value)) {
           await router.push(`/validation/${response.value}`);
-          return;
+        } else {
+          await router.push(`/registration/${response.value}`);
         }
-        return;
       }
 
       notification.success("Successfully updated");
       refetchDeedInfo();
     } else {
-      if (!deedData.id || !initialData) return;
+      if (!deedData.mintedId || !initialData) return;
       // Update on chain
-      await writeUpdateDeedAsync(deedData, initialData, deedData.id!);
+      await writeUpdateDeedAsync(deedData, initialData);
     }
   };
 
@@ -137,7 +139,8 @@ const SidePanel = ({
     }
     const { deedId } = payload;
     if (deedId) {
-      deedData.mintedId = +deedId;
+      deedData.mintedId = Number(deedId);
+      await deedClient.saveDeed(deedData);
       await router.push(`/validation/${deedId}`);
     }
   };
@@ -369,8 +372,9 @@ const SidePanel = ({
               {deedData.paymentInformation.receipt && (
                 <button
                   onClick={() => router.push(`/validation/${deedData.id}`)}
-                  className="my-3 btn btn-lg w-full font-normal text-sm btn-primary uppercase tracking-widest"
+                  className="my-3 btn btn-lg w-full font-normal text-sm btn-secondary uppercase tracking-widest"
                 >
+                  <ArrowRightIcon className="w-8" />
                   Validation page
                 </button>
               )}

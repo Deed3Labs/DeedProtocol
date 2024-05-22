@@ -19,7 +19,7 @@ export class HttpClient {
     const res = await fetch(url, {
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
-    const error = this.handleError(url, res);
+    const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, value: (await res.json()) as TRes, ok: true };
@@ -37,7 +37,7 @@ export class HttpClient {
       body: body,
       headers: [["authorization", this.authorizationToken ?? ""], ...(headers ?? [])],
     });
-    const error = this.handleError(url, res);
+    const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, value: (await res.text()) as TRes, ok: true };
@@ -50,7 +50,7 @@ export class HttpClient {
       body: body,
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
-    const error = this.handleError(url, res);
+    const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, value: (await res.text()) as TRes, ok: true };
@@ -62,13 +62,13 @@ export class HttpClient {
       method: "DELETE",
       headers: [["authorization", this.authorizationToken ?? ""]],
     });
-    const error = this.handleError(url, res);
+    const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
 
     return { status: res.status, ok: true };
   }
 
-  private handleError(url: string, res: Response) {
+  private async handleError(url: string, res: Response) {
     if (res.status === 401) {
       const message = "Unauthorized";
       logger.error({ message, url });
@@ -77,6 +77,12 @@ export class HttpClient {
 
     if (res.status === 500) {
       const message = "Server Error";
+      logger.error({ message, url });
+      return message;
+    }
+
+    if (res.status === 453) {
+      const message = await res.text();
       logger.error({ message, url });
       return message;
     }
@@ -103,10 +109,13 @@ export class HttpClient {
   }
 
   private appendQueryParams(url: string, params: any = {}) {
+    if (!params) return url;
     const [path, query] = url.split("?");
     const searchParams = new URLSearchParams(query);
     Object.keys(params).forEach(key => {
-      searchParams.append(key, params[key].toString());
+      if (params[key] != null) {
+        searchParams.append(key, params[key].toString());
+      }
     });
     return `${path}?${searchParams.toString()}`;
   }
