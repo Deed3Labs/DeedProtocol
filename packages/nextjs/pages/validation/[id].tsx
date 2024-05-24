@@ -63,11 +63,13 @@ const Page = ({ router }: WithRouterProps) => {
     }
   }, [router.isReady, isConnecting, authToken]);
 
-  // useEffect(() => {
-  //   if (!isOwner && !isValidator) {
-  //     setErrorCode("unauthorized");
-  //   }
-  // }, [isValidator, deedData, isOwner]);
+  useEffect(() => {
+    if (!isOwner && !isValidator) {
+      setErrorCode("unauthorized");
+    } else if (errorCode === "unauthorized") {
+      setErrorCode(undefined);
+    }
+  }, [isValidator, deedData, isOwner]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -97,9 +99,6 @@ const Page = ({ router }: WithRouterProps) => {
       if (resp.ok && resp.value) {
         setInitialData(resp.value);
         setDeedData(resp.value);
-        if (primaryWallet?.address !== resp.value.owner && !isValidator) {
-          setErrorCode("unauthorized");
-        }
         if (resp.value.mintedId && id === resp.value.id) {
           await router.replace(`/validation/${resp.value.mintedId}`, undefined, { shallow: true });
         }
