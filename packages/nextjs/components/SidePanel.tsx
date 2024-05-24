@@ -233,7 +233,7 @@ const SidePanel = ({
                     />
                   </div>
 
-                  <div className="border p-4 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
+                  <div className="border p-4 rounded border-white border-opacity-10 gap-4 flex flex-col">
                     <QuoteDetail
                       title="Syndicated Listing"
                       secondary="ONE-TIME FEE"
@@ -279,11 +279,11 @@ const SidePanel = ({
 
                   <QuoteDetail title="Total due today" price={quoteDetails.total / 2} />
 
-                  <div className="border py-4 rounded border-secondary border-opacity-25 gap-4 flex flex-col">
+                  <div className="border py-4 rounded border-white border-opacity-10 gap-4 flex flex-col">
                     <span className="mx-4 font-normal text-[10px] text-zinc-400 uppercase tracking-widest">
                       Add to your order
                     </span>
-                    <hr className="opacity-25" />
+                    <hr className="opacity-10" />
                     <div className="mx-3 text-sm flex flex-row gap-2 justify-between align-middle">
                       <div className="flex flex-col">
                         <span className="font-normal text-[#f0f0f0]">Appraisal and inspection</span>
@@ -414,7 +414,7 @@ const SidePanel = ({
 
         <div className="flex flex-row text-secondary text-[2vw] sm:text-[11px] justify-between">
           <div>
-            <span className="opacity-75">Powered by</span>&nbsp;
+            <span className="text-white opacity-75">Powered by</span>&nbsp;
             <span className="text-white">Deed3Labs</span>
           </div>
           <div className="mx-2">|</div>
@@ -422,14 +422,14 @@ const SidePanel = ({
             <Link
               target="_blank"
               href="https://www.termsandconditionsgenerator.com/live.php?token=Kz3gxZ7VV5MJ4Qr8muZTviLJck3eZgz2"
-              className="link-default opacity-75"
+              className="link-default text-white opacity-75"
             >
               TERMS
             </Link>
             <Link
               target="_blank"
               href="https://www.termsandconditionsgenerator.com/live.php?token=Kz3gxZ7VV5MJ4Qr8muZTviLJck3eZgz2"
-              className="link-default opacity-75"
+              className="link-default text-white opacity-75"
             >
               PRIVACY POLICY
             </Link>
