@@ -91,21 +91,19 @@ const PropertyFilters = ({ properties }: Props) => {
 
         {isMoreFilters && (
           <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full my-4">
-            {isValidator && (
-              <select
-                className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px]"
-                value={filter.validated}
-                onChange={ev => {
-                  applyFilter({
-                    validated: ev.currentTarget.value as PropertiesFilterModel["validated"],
-                  });
-                }}
-              >
-                <option value="true">Verified</option>
-                <option value="false">Not verified</option>
-                <option value="all">All</option>
-              </select>
-            )}
+            <select
+              className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px]"
+              value={filter.validated}
+              onChange={ev => {
+                applyFilter({
+                  validated: ev.currentTarget.value as PropertiesFilterModel["validated"],
+                });
+              }}
+            >
+              <option value="true">Verified</option>
+              <option value="false">Not verified{!isValidator ? " (only mine)" : ""}</option>
+              <option value="all">All{!isValidator ? " (only mine)" : ""}</option>
+            </select>
             <TextInput
               name="PropertySize"
               placeholder="Property Size"

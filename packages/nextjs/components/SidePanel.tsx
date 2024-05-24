@@ -17,18 +17,16 @@ import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
 import useCryptoPayement from "~~/hooks/useCryptoPayment.hook";
+import useIsOwner from "~~/hooks/useIsOwner.hook";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { QuoteModel } from "~~/models/quote.model";
 import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
-import { isDev } from "~~/utils/is-dev";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
-  isOwner: boolean;
-  isDraft: boolean;
   stableCoinAddress: string;
   deedData: DeedInfoModel;
   initialData?: DeedInfoModel;
@@ -37,10 +35,8 @@ interface Props {
 }
 
 const SidePanel = ({
-  isOwner,
   deedData,
   initialData,
-  isDraft,
   stableCoinAddress,
   refetchDeedInfo,
   router,
@@ -58,6 +54,7 @@ const SidePanel = ({
   const paymentClient = usePaymentClient();
   const quoteClient = useQuoteClient();
   const deedClient = useDeedClient();
+  const isOwner = useIsOwner(deedData);
 
   useEffect(() => {
     if (!quoteDetails) {
@@ -68,9 +65,9 @@ const SidePanel = ({
   }, [appraisalInspection]);
 
   const handleSubmit = async () => {
-    // if (!validateForm() || !deedData || !authToken) return;
+    if (!validateForm() || !deedData || !authToken) return;
 
-    if (isDraft || !deedData.id) {
+    if (!deedData.mintedId || !deedData.id) {
       // Save in draft
       if (!primaryWallet?.connected) {
         notification.error("Please connect your wallet");
@@ -104,6 +101,46 @@ const SidePanel = ({
       // Update on chain
       await writeUpdateDeedAsync(deedData, initialData);
     }
+  };
+
+  const validateForm = () => {
+    // if (!deedData.ownerInformation.ids) {
+    //   notification.error("Owner Information ids is required", { duration: 3000 });
+    //   return false;
+    // }
+
+    // if (!deedData.ownerInformation.articleIncorporation) {
+    //   notification.error("Owner Information articleIncorporation is required", { duration: 3000 });
+    //   return false;
+    // }
+
+    // if (!deedData.propertyDetails.propertyDeedOrTitle) {
+    //   notification.error("Property details Deed or Title is required", { duration: 3000 });
+    //   return false;
+    // }
+
+    for (const field of Object.values(deedData.ownerInformation)) {
+      if (field instanceof File && field.size / 1024 > 10000) {
+        notification.error(`${field.name} is too big. Max size is 10mb`, { duration: 3000 });
+        return false;
+      }
+    }
+
+    for (const field of Object.values(deedData.propertyDetails)) {
+      if (field instanceof File && field.size / 1024 > 10000) {
+        notification.error(`${field.name} is too big. Max size is 10mb`, { duration: 3000 });
+        return false;
+      }
+    }
+
+    for (const field of Object.values(deedData.otherInformation)) {
+      if (field instanceof File && field.size / 1024 > 10000) {
+        notification.error(`${field.name} is too big. Max size is 10mb`);
+        return false;
+      }
+    }
+
+    return true;
   };
 
   const handlePayment = async (_id: string) => {
@@ -269,116 +306,109 @@ const SidePanel = ({
           </div>
         </div>
 
-        <div className="my-8">
-          {deedData && deedData.id && !isOwner ? (
-            <>
-              {(isValidator || isOwner) && (
-                <div className="text-xl mb-4">
-                  Status:{" "}
-                  <span className={deedData.isValidated ? "text-success" : "text-warning"}>
-                    {deedData.isValidated ? "Verified" : "Waiting for validation"}
-                  </span>
-                </div>
-              )}
-              {isValidator && (isDev() || !isOwner) && (
-                <>
-                  <div className="mb-4">
-                    <div className="text-2xl">Payment information:</div>
-                    <ul className="flex flex-col gap-2">
-                      <li>
-                        <div className="text-xl flex flex-row gap2">
-                          <span className="mr-2">Type: </span>
-                          {deedData.paymentInformation?.paymentType === "crypto" ? (
-                            <span className="text-secondary">Crypto</span>
-                          ) : (
-                            <span className="text-secondary">Fiat</span>
-                          )}
-                        </div>
-                      </li>
-                      {deedData.paymentInformation?.paymentType === "crypto" ? (
-                        <>
-                          <li>
-                            <div className="text-xl">Coin:</div>
-                            <Address
-                              address={deedData.paymentInformation.stableCoin ?? stableCoinAddress}
-                            />
-                          </li>
-                          <li>
-                            <div className="text-xl">Transaction:</div>
-                            {deedData.paymentInformation.receipt ? (
-                              <TransactionHash hash={deedData.paymentInformation.receipt} />
-                            ) : (
-                              <span className="text-error">No receipt</span>
-                            )}
-                          </li>
-                        </>
-                      ) : (
-                        <>
-                          <li>
-                            <div className="text-xl">Receipt:</div>
-                            {deedData.paymentInformation.receipt ? (
-                              <Link
-                                href={`https://dashboard.stripe.com/test/payments/${deedData.paymentInformation.receipt}`}
-                                target="_blank"
-                                className="flex items-baseline gap-2"
-                              >
-                                <ExternalLinkIcon />
-                                Open in stripe
-                              </Link>
-                            ) : (
-                              <span className="text-error">No receipt</span>
-                            )}
-                          </li>
-                        </>
-                      )}
-                    </ul>
+        {deedData.id && (
+          <div className="my-8">
+            <div className="text-xl mb-4">
+              Status:{" "}
+              <span className={deedData.isValidated ? "text-success" : "text-warning"}>
+                {deedData.isValidated ? "Verified" : "Waiting for validation"}
+              </span>
+            </div>
+
+            <div className="mb-4">
+              <div className="text-2xl">Payment information:</div>
+              <ul className="flex flex-col gap-2">
+                <li>
+                  <div className="text-xl flex flex-row gap2">
+                    <span className="mr-2">Type: </span>
+                    {deedData.paymentInformation?.paymentType === "crypto" ? (
+                      <span className="text-secondary">Crypto</span>
+                    ) : (
+                      <span className="text-secondary">Fiat</span>
+                    )}
                   </div>
-                  {isDraft ? (
-                    <button onClick={mintDeedNFT} className="btn btn-lg bg-gray-600">
-                      Mint
-                    </button>
-                  ) : (
-                    <button onClick={handleValidationClicked} className="btn btn-lg bg-gray-600">
-                      {deedData.isValidated ? "Unvalidate" : "Validate"}
-                    </button>
-                  )}
-                </>
-              )}
-              {deedData.owner === primaryWallet?.address && (
-                <>
-                  <button onClick={handleSubmit} className="btn btn-lg bg-gray-600">
-                    Save
-                  </button>
-                  {!deedData.paymentInformation.receipt && deedData?.id && (
-                    <button
-                      onClick={() => handlePayment(deedData.id!)}
-                      className="btn btn-lg bg-gray-600"
-                    >
-                      Pay
-                    </button>
-                  )}
-                </>
-              )}
-            </>
-          ) : (
-            <>
+                </li>
+                {deedData.paymentInformation?.paymentType === "crypto" ? (
+                  <>
+                    <li>
+                      <div className="text-xl">Coin:</div>
+                      <Address
+                        address={deedData.paymentInformation.stableCoin ?? stableCoinAddress}
+                      />
+                    </li>
+                    <li>
+                      <div className="text-xl">Transaction:</div>
+                      {deedData.paymentInformation.receipt ? (
+                        <TransactionHash hash={deedData.paymentInformation.receipt} />
+                      ) : (
+                        <span className="text-error">No receipt</span>
+                      )}
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <div className="text-xl">Receipt:</div>
+                      {deedData.paymentInformation.receipt ? (
+                        <Link
+                          href={`https://dashboard.stripe.com/test/payments/${deedData.paymentInformation.receipt}`}
+                          target="_blank"
+                          className="flex items-baseline gap-2"
+                        >
+                          <ExternalLinkIcon />
+                          Open in stripe
+                        </Link>
+                      ) : (
+                        <span className="text-error">No receipt</span>
+                      )}
+                    </li>
+                  </>
+                )}
+              </ul>
+            </div>
+          </div>
+        )}
+        <div className="my-8">
+          {isValidator &&
+            deedData?.id &&
+            (!deedData.mintedId ? (
               <button
-                onClick={handleSubmit}
-                className="my-3 btn btn-lg w-full font-normal text-sm btn-primary uppercase tracking-widest"
-                disabled={!quoteDetails}
+                onClick={mintDeedNFT}
+                className="btn btn-lg w-full bg-gray-600 text-sm uppercase  tracking-widest"
               >
-                {deedData.paymentInformation.receipt ? "Save" : "Proceed to payment"}
+                Mint
               </button>
+            ) : (
+              <button
+                onClick={handleValidationClicked}
+                className="btn btn-lg w-full bg-gray-600 text-sm uppercase  tracking-widest"
+              >
+                {deedData.isValidated ? "Unvalidate" : "Validate"}
+              </button>
+            ))}
+
+          <button
+            onClick={handleSubmit}
+            className="btn btn-primary btn-lg my-3 w-full uppercase text-sm tracking-widest"
+            disabled={!quoteDetails}
+          >
+            {deedData.id && (deedData.paymentInformation.receipt || !isOwner)
+              ? "Save"
+              : "Proceed to payment"}
+          </button>
+
+          {deedData.id && (
+            <div className="w-full flex justify-end">
               {deedData.paymentInformation.receipt && (
                 <button
                   onClick={() => router.push(`/validation/${deedData.id}`)}
-                  className="my-3 btn btn-lg w-full font-normal text-sm btn-secondary uppercase tracking-widest"
+                  className="btn btn-lg my-3 bg-gray-800 text-sm uppercase tracking-widest"
                 >
                   <ArrowRightIcon className="w-8" />
                   Validation page
                 </button>
               )}
-            </>
+            </div>
           )}
         </div>
 

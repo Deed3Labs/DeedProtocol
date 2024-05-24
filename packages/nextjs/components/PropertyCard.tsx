@@ -30,7 +30,7 @@ const PropertyCard = ({ property, small = false }: Props) => {
   return (
     <>
       {property && (
-        <Link href={`/validation/${property.id}`} className="link-default">
+        <Link href={`/overview/${property.id}`} className="link-default">
           {small ? (
             image
           ) : (

@@ -15,7 +15,7 @@ module.exports = {
         scaffoldEthDark: {
           primary: "#FFFFFF",
           "primary-content": "#0e0e0e",
-          secondary: "#454444",
+          secondary: "#1b1b1b",
           "secondary-content": "#9f9f9f",
           accent: "#92b8ff",
           "accent-content": "#252525",
@@ -90,7 +90,7 @@ module.exports = {
     // Extend Tailwind classes (e.g. font-bai-jamjuree, animate-grow)
     extend: {
       fontFamily: {
-        "coolvetica": ["Coolvetica", "sans-serif"],
+        coolvetica: ["Coolvetica", "sans-serif"],
         "bai-jamjuree": ["Bai Jamjuree", "sans-serif"],
       },
       keyframes: {

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckIcon, PencilIcon } from "@heroicons/react/24/outline";
 import TextInput from "~~/components/inputs/TextInput";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { DeedInfoModel, PropertyDetailsModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 
@@ -10,6 +11,7 @@ interface Props {
   onChange?: (ev: LightChangeEvent<DeedInfoModel>) => void;
   onRefresh: () => void;
   onSave: () => void;
+  noBorders?: boolean;
 }
 
 const PropertyDetails = ({
@@ -18,8 +20,10 @@ const PropertyDetails = ({
   onChange,
   onRefresh: refresh,
   onSave,
+  noBorders = false,
 }: Props) => {
   const [viewMode, setViewMode] = useState(true);
+  const isValidator = useIsValidator();
   const handleChange = (ev: LightChangeEvent<PropertyDetailsModel>) => {
     const updatedValue = { ...propertyDetail, [ev.name]: ev.value };
     onChange?.({
@@ -39,18 +43,14 @@ const PropertyDetails = ({
   return (
     <>
       {propertyDetail && (
-        <div className="border border-white border-opacity-10">
+        <div className={`w-full ${noBorders ? "" : "border border-white border-opacity-10"}`}>
           <div className="flex flex-row justify-between items-center px-2 pt-8">
             <div className="pl-4 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
               Property Details
             </div>
-            {isOwner && viewMode !== undefined && (
+            {(isOwner || isValidator) && viewMode !== undefined && (
               <button className="btn btn-link" onClick={handleViewModeToggle}>
-                {viewMode ? (
-                  <PencilIcon className="w-4" />
-                ) : (
-                  <CheckIcon className="w-4"></CheckIcon>
-                )}
+                {viewMode ? <PencilIcon className="w-4" /> : <CheckIcon className="w-4" />}
               </button>
             )}
           </div>
@@ -73,7 +73,7 @@ const PropertyDetails = ({
                         placeholder="0"
                         onChange={handleChange}
                         readOnly
-                      ></TextInput>
+                      />
                     </>
                   ) : (
                     <div className="flex flex-col gap-4">
@@ -83,14 +83,14 @@ const PropertyDetails = ({
                         value={propertyDetail.propertyBedrooms}
                         placeholder="0"
                         onChange={handleChange}
-                      ></TextInput>
+                      />
                       <TextInput
                         className="text-[3.6vw] sm:text-sm h-4"
                         name="propertyBathrooms"
                         value={propertyDetail.propertyBathrooms}
                         placeholder="0"
                         onChange={handleChange}
-                      ></TextInput>
+                      />
                     </div>
                   )}
                 </div>
@@ -105,7 +105,7 @@ const PropertyDetails = ({
                   value={propertyDetail.propertySize}
                   readOnly={viewMode}
                   onChange={handleChange}
-                ></TextInput>
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
                 <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
@@ -117,7 +117,7 @@ const PropertyDetails = ({
                   value={propertyDetail.propertySquareFootage}
                   readOnly={viewMode}
                   onChange={handleChange}
-                ></TextInput>
+                />
               </div>
             </div>
             <div className="flex flex-col flex-grow gap-6">
@@ -131,7 +131,7 @@ const PropertyDetails = ({
                   value={propertyDetail.propertyBuildYear}
                   readOnly={viewMode}
                   onChange={handleChange}
-                ></TextInput>
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
                 <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
@@ -143,7 +143,7 @@ const PropertyDetails = ({
                   value={propertyDetail.propertyCity}
                   readOnly={viewMode}
                   onChange={handleChange}
-                ></TextInput>
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
                 <div className="text-[3.4vw] sm:text-sm text-zinc-400 font-normal w-full h-4">
@@ -155,7 +155,7 @@ const PropertyDetails = ({
                   value={propertyDetail.propertyHouseType}
                   readOnly={viewMode}
                   onChange={handleChange}
-                ></TextInput>
+                />
               </div>
             </div>
           </div>

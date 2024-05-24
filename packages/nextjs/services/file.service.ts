@@ -10,11 +10,11 @@ export async function uploadFiles(
   data: DeedInfoModel,
   old?: DeedInfoModel,
   publish: boolean = false,
-  isDraft: boolean = false,
+  isMinted: boolean = false,
 ) {
   fileClient.authentify(authToken);
 
-  const toBeUploaded = getSupportedFiles(data, old, publish, isDraft);
+  const toBeUploaded = getSupportedFiles(data, old, publish, isMinted);
 
   const payload = cloneDeep(data);
 
@@ -73,7 +73,7 @@ export function getSupportedFiles(
   data: DeedInfoModel,
   old?: DeedInfoModel,
   publish: boolean = false,
-  isDraft: boolean = false,
+  isMinted: boolean = false,
   includeAll: boolean = false,
 ): FileFieldKeyLabel[] {
   const files: FileFieldKeyLabel[] = [];
@@ -167,7 +167,7 @@ export function getSupportedFiles(
         key: ["propertyDetails", "propertyImages"],
         label: "Property Images",
         multiple: true,
-        restricted: publish ? false : isDraft,
+        restricted: publish ? false : !isMinted,
       }),
     );
   }

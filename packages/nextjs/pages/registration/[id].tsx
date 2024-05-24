@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
@@ -8,6 +8,8 @@ import PaymentInformation from "../../components/PaymentInformation";
 import PropertyDetails from "../../components/RegPropertyDetails";
 import useDeedClient from "~~/clients/deeds.client";
 import SidePanel from "~~/components/SidePanel";
+import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import useIsOwner from "~~/hooks/useIsOwner.hook";
 import useWallet from "~~/hooks/useWallet";
 import {
   DeedInfoModel,
@@ -16,7 +18,7 @@ import {
 } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { isDev } from "~~/utils/is-dev";
-import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
+import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 const fakeData: DeedInfoModel = {
   ownerInformation: {
@@ -76,16 +78,12 @@ const Page = ({ router }: WithRouterProps) => {
   const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
-  const isDraft = useMemo(() => {
-    return !id || !deedData.mintedId;
-  }, [id, router.isReady, deedData.mintedId]);
   const { id: chainId, stableCoinAddress } = getTargetNetwork();
 
-  const registrationClient = useDeedClient();
+  const deedClient = useDeedClient();
 
-  const isOwner = useMemo(() => {
-    return deedData.owner === primaryWallet?.address || !id;
-  }, [deedData.owner, primaryWallet, id]);
+  const isOwner = useIsOwner(deedData);
+  const isValidator = useIsValidator();
 
   useEffect(() => {
     if (router.isReady && !isConnecting) {
@@ -97,7 +95,7 @@ const Page = ({ router }: WithRouterProps) => {
         setIsLoading(false);
       }
     }
-  }, [id, router.isReady, isConnecting]);
+  }, [id, router.isReady, isConnecting, isOwner, isValidator]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -105,12 +103,15 @@ const Page = ({ router }: WithRouterProps) => {
 
   const fetchDeedInfo = useCallback(
     async (id: string) => {
-      const resp = await registrationClient.authentify(authToken!).getDeed(id, !!isDraft);
+      const resp = await deedClient.getDeed(id, !deedData.mintedId);
       setErrorCode(undefined);
       setIsLoading(false);
       if (resp.ok && resp.value) {
         setInitialData(resp.value);
         setDeedData(resp.value);
+        if (primaryWallet?.address !== resp.value.owner && !isValidator) {
+          setErrorCode("unauthorized");
+        }
       } else {
         if (resp?.status === 404) setErrorCode("notFound");
         else if (resp?.status === 401) setErrorCode("unauthorized");
@@ -119,7 +120,7 @@ const Page = ({ router }: WithRouterProps) => {
         }
       }
     },
-    [id, isDraft, chainId, authToken],
+    [id, deedData.mintedId, chainId, authToken, primaryWallet?.address, isValidator],
   );
 
   const handleErrorClick = async () => {
@@ -130,46 +131,6 @@ const Page = ({ router }: WithRouterProps) => {
     } else {
       router.push("/property-explorer");
     }
-  };
-
-  const _validateForm = () => {
-    if (!deedData.ownerInformation.ids) {
-      notification.error("Owner Information ids is required", { duration: 3000 });
-      return false;
-    }
-
-    if (!deedData.ownerInformation.articleIncorporation) {
-      notification.error("Owner Information articleIncorporation is required", { duration: 3000 });
-      return false;
-    }
-
-    if (!deedData.propertyDetails.propertyDeedOrTitle) {
-      notification.error("Property details Deed or Title is required", { duration: 3000 });
-      return false;
-    }
-
-    for (const field of Object.values(deedData.ownerInformation)) {
-      if (field instanceof File && field.size / 1024 > 10000) {
-        notification.error(`${field.name} is too big. Max size is 10mb`, { duration: 3000 });
-        return false;
-      }
-    }
-
-    for (const field of Object.values(deedData.propertyDetails)) {
-      if (field instanceof File && field.size / 1024 > 10000) {
-        notification.error(`${field.name} is too big. Max size is 10mb`, { duration: 3000 });
-        return false;
-      }
-    }
-
-    for (const field of Object.values(deedData.otherInformation)) {
-      if (field instanceof File && field.size / 1024 > 10000) {
-        notification.error(`${field.name} is too big. Max size is 10mb`);
-        return false;
-      }
-    }
-
-    return true;
   };
 
   return (
@@ -227,24 +188,15 @@ const Page = ({ router }: WithRouterProps) => {
               )}
 
               <div className="mb-10">
-                <OwnerInformation
-                  value={deedData.ownerInformation}
-                  onChange={handleChange}
-                  readOnly={!isOwner}
-                />
+                <OwnerInformation value={deedData.ownerInformation} onChange={handleChange} />
                 <hr className="my-12 opacity-20" />
                 <PropertyDetails
                   value={deedData.propertyDetails}
                   onChange={handleChange}
-                  readOnly={!isOwner}
-                  isDraft={isDraft}
+                  isDraft={!deedData.mintedId}
                 />
                 <hr className="my-12 opacity-20" />
-                <OtherInformations
-                  value={deedData.otherInformation}
-                  onChange={handleChange}
-                  readOnly={!isOwner}
-                />
+                <OtherInformations value={deedData.otherInformation} onChange={handleChange} />
                 <hr className="my-12 opacity-20" />
                 {router.isReady && !deedData.paymentInformation.receipt && (
                   <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
@@ -253,8 +205,6 @@ const Page = ({ router }: WithRouterProps) => {
             </div>
             <div className="w-full lg:w-1/3 mb-10">
               <SidePanel
-                isOwner={isOwner}
-                isDraft={isDraft}
                 stableCoinAddress={stableCoinAddress}
                 deedData={deedData}
                 initialData={initialData}

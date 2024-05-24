@@ -35,6 +35,7 @@ export interface OwnerInformationModel {
 export type PropertyType = ValueExtractor<typeof PropertyTypeOptions>;
 
 export interface PropertyDetailsModel {
+  propertyDescription: string;
   propertyType: PropertyType;
   propertySubType?: ValueExtractor<typeof PropertySubtypeOptions>;
   propertyAddress: string;

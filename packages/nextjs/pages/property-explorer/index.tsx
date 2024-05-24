@@ -23,16 +23,6 @@ const propertyIcon: MapIconModel = {
   popupAnchor: [-3, -76],
 };
 
-const defaultImages = [
-  "/images/residential1.png",
-  "/images/residential2.png",
-  "/images/residential3.png",
-  "/images/residential4.png",
-  "/images/residential5.png",
-  "/images/residential6.png",
-  // ... add as many default images as you like
-];
-
 const PropertyExplorer: NextPage = () => {
   const [properties, setProperties] = useState<PropertyModel[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -109,8 +99,7 @@ const PropertyExplorer: NextPage = () => {
           validated: entity.isValidated,
         };
         if (!deed.pictures?.length) {
-          const randomImage = defaultImages[index % defaultImages.length];
-          deed.pictures = [randomImage];
+          deed.pictures = [`/images/residential${(index % 6) + 1}.png`];
         }
         deed.popupContent = <PropertyCard property={deed} />;
         return deed;

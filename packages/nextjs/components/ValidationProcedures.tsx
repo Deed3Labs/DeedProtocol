@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FileValidation from "./FileValidation";
 import { useSignMessage } from "wagmi";
 import useValidationClient from "~~/clients/validations.client";
-import useIsOnwer from "~~/hooks/useIsOwner.hook";
+import useIsOwner from "~~/hooks/useIsOwner.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { FileFieldKeyLabel, FileValidationModel } from "~~/models/file.model";
 import { getSupportedFiles } from "~~/services/file.service";
@@ -10,20 +10,19 @@ import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   deedData: DeedInfoModel;
-  isDraft: boolean;
   onSave: (deed: DeedInfoModel) => Promise<void>;
   onRefresh: () => void;
 }
 
-const ValidationProcedures = ({ deedData, onSave, isDraft, onRefresh }: Props) => {
+const ValidationProcedures = ({ deedData, onSave, onRefresh }: Props) => {
   const [supportedFiles, setSupportedFiles] = useState<Map<string, FileFieldKeyLabel>>();
   const { data: signMessageData, signMessageAsync } = useSignMessage();
   const validationClient = useValidationClient();
-  const isOwner = useIsOnwer(deedData);
+  const isOwner = useIsOwner(deedData);
 
   useEffect(() => {
     const map = new Map<string, FileFieldKeyLabel>();
-    getSupportedFiles(deedData, undefined, false, isDraft, true).forEach(x => {
+    getSupportedFiles(deedData, undefined, false, !!deedData.mintedId, true).forEach(x => {
       map.set(x.label, x);
     });
     setSupportedFiles(map);

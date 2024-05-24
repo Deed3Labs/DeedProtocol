@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useWallet from "./useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 
-const useIsOnwer = (deedData: DeedInfoModel) => {
+const useIsOwner = (deedData: DeedInfoModel) => {
   const { primaryWallet, isConnecting } = useWallet();
   const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {
@@ -11,4 +11,4 @@ const useIsOnwer = (deedData: DeedInfoModel) => {
   return isOwner;
 };
 
-export default useIsOnwer;
+export default useIsOwner;

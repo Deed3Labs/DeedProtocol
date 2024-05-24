@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Link from "next/link";
 import { withRouter } from "next/router";
 import ValidationProcedures from "../../components/ValidationProcedures";
 import PropertyDetails from "../../components/ValidationPropertyDetails";
-import PropertyOverview from "../../components/ValidationPropertyOverview";
+import Map from "../../components/map";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
+import ProfileComponent from "~~/components/ProfilComponent";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
-import useIsOnwer from "~~/hooks/useIsOwner.hook";
+import useIsOwner from "~~/hooks/useIsOwner.hook";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -49,14 +50,10 @@ const Page = ({ router }: WithRouterProps) => {
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => fetchDeedInfo(deedData!.id!));
-  const isOwner = useIsOnwer(deedData);
+  const isOwner = useIsOwner(deedData);
   const isValidator = useIsValidator();
   const deedClient = useDeedClient();
   const { writeValidateAsync } = useDeedValidate();
-
-  const isDraft = useMemo(() => {
-    return !id || !deedData.mintedId;
-  }, [id, router.isReady, deedData.mintedId]);
   const { id: chainId } = getTargetNetwork();
 
   useEffect(() => {
@@ -65,6 +62,12 @@ const Page = ({ router }: WithRouterProps) => {
       fetchDeedInfo(id as string);
     }
   }, [router.isReady, isConnecting, authToken]);
+
+  useEffect(() => {
+    if (!isOwner && !isValidator) {
+      setErrorCode("unauthorized");
+    }
+  }, [isValidator, deedData, isOwner]);
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -88,13 +91,13 @@ const Page = ({ router }: WithRouterProps) => {
   const fetchDeedInfo = useCallback(
     async (id: string) => {
       setIsLoading(true);
-      const resp = await deedClient.getDeed(id, !!isDraft);
+      const resp = await deedClient.getDeed(id, !deedData.mintedId);
       setErrorCode(undefined);
       setIsLoading(false);
       if (resp.ok && resp.value) {
         setInitialData(resp.value);
         setDeedData(resp.value);
-        if (id === resp.value.id) {
+        if (resp.value.mintedId && id === resp.value.id) {
           await router.replace(`/validation/${resp.value.mintedId}`, undefined, { shallow: true });
         }
       } else {
@@ -105,7 +108,7 @@ const Page = ({ router }: WithRouterProps) => {
         }
       }
     },
-    [id, isDraft, chainId],
+    [id, deedData.mintedId, chainId, authToken, primaryWallet?.address, isValidator],
   );
 
   const handleErrorClick = async () => {
@@ -128,7 +131,7 @@ const Page = ({ router }: WithRouterProps) => {
 
   const handleSave = async () => {
     // if (!validateForm() || !deedData || !authToken) return;
-    if (isDraft || !id) {
+    if (!deedData.mintedId || !id) {
       // Save in draft
       if (!primaryWallet?.connected) {
         notification.error("Please connect your wallet");
@@ -214,13 +217,13 @@ const Page = ({ router }: WithRouterProps) => {
                     </svg>
                   </button>
                   <div className="join join-horizontal border border-white border-opacity-10 p-1">
-                    <div
-                      className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal text-zinc-400 cursor-pointer"
-                      title="Coming Soon"
+                    <Link
+                      href={`/overview/${id}`}
+                      className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal !text-zinc-400 !no-underline"
                     >
                       Property Overview
-                    </div>
-                    <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal bg-base-300 cursor-default">
+                    </Link>
+                    <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal  bg-base-300 cursor-default">
                       Validation History
                     </div>
                   </div>
@@ -259,13 +262,48 @@ const Page = ({ router }: WithRouterProps) => {
                   </div>
                 </div>
               </div>
-              <PropertyOverview
-                deedData={deedData}
-                isOwner={isOwner}
-                onRefresh={() => fetchDeedInfo(deedData.id!)}
-                handleMint={handleMint}
-                handleValidate={handleValidate}
-              />
+              <div className="flex flex-row border border-white border-opacity-10 p-5 sm:p-6 gap-6 flex-wrap">
+                {deedData?.propertyDetails && (
+                  <>
+                    <div
+                      id="Map"
+                      className="max-w-72 h-72 sm:w-72 sm:h-full bg-[#141414] flex-grow"
+                    >
+                      <Map
+                        markers={[
+                          {
+                            id: deedData.id!,
+                            name: `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}, ${deedData.propertyDetails.propertyState}, United States`,
+                            lat: deedData.propertyDetails.propertyLatitude || 0,
+                            lng: deedData.propertyDetails.propertyLongitude || 0,
+                          },
+                        ]}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-5 mt-7 sm:mt-1 flex-grow justify-center">
+                      <div className="flex flex-row items-center">
+                        <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
+                          Status
+                        </div>
+                        <div className="ml-2 h-7 badge bg-[#ffdc19] text-[11px] font-normal text-primary-content capitalize rounded-xl">
+                          Pending Validation
+                        </div>
+                      </div>
+                      <div className="text-5xl font-['Coolvetica'] font-extra-condensed font-bold uppercase">
+                        {deedData.propertyDetails.propertyAddress},{" "}
+                        {deedData.propertyDetails.propertyCity},{" "}
+                        {deedData.propertyDetails.propertyState}
+                      </div>
+                      <ProfileComponent
+                        deedData={deedData}
+                        onRefresh={() => fetchDeedInfo(deedData.id!)}
+                        handleMint={handleMint}
+                        handleValidate={handleValidate}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
               <PropertyDetails
                 propertyDetail={deedData.propertyDetails}
                 isOwner={isOwner}
@@ -278,7 +316,6 @@ const Page = ({ router }: WithRouterProps) => {
               <ValidationProcedures
                 deedData={deedData}
                 onSave={handleSave}
-                isDraft={isDraft}
                 onRefresh={() => fetchDeedInfo(deedData.id!)}
               />
             </div>
