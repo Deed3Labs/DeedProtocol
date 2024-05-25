@@ -171,6 +171,7 @@ const Page = ({ router }: WithRouterProps) => {
       await writeUpdateDeedAsync(deedData, initialData);
     }
   };
+
   return (
     <div className="container pt-6 sm:pt-8 pb-10">
       {!isLoading ? (
@@ -203,11 +204,12 @@ const Page = ({ router }: WithRouterProps) => {
           </div>
         ) : (
           <div>
-            {/* Pictures */}
-            <div className="grid grid-cols-4 gap-2">
-              <div className="col-span-2 row-span-2">
+            {/* Map and Pictures */}
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Map */}
+              <div className="w-full lg:w-1/2 h-full">
                 {deedData?.propertyDetails && (
-                 <div id="Map" className="max-w-72 max-h-72 sm:w-full sm:h-[100%] bg-[#141414] flex-grow">
+                  <div className="w-full h-full">
                     <Map
                       markers={[
                         {
@@ -221,25 +223,13 @@ const Page = ({ router }: WithRouterProps) => {
                   </div>
                 )}
               </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[1]} />
-                )}
-              </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[2]} />
-                )}
-              </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[3]} />
-                )}
-              </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[4]} />
-                )}
+              {/* Images */}
+              <div className="w-full lg:w-1/2 grid grid-cols-2 gap-2">
+                {pictures?.slice(1, 5).map((picture, index) => (
+                  <div key={index} className="w-full h-full">
+                    <Image alt="" className="" width={300} height={300} src={picture} />
+                  </div>
+                ))}
               </div>
             </div>
             {/* 2 cols layout */}
