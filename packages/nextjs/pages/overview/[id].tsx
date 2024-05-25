@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import Map from "../../components/map";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Image from "next/image";
 import Link from "next/link";
@@ -205,13 +206,17 @@ const Page = ({ router }: WithRouterProps) => {
             {/* Pictures */}
             <div className="grid grid-cols-4 gap-2">
               <div className="col-span-2 row-span-2">
-                {pictures && (
-                  <Image alt="" className="" width={610} height={610} src={pictures[0]} />
-                )}
-              </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[1]} />
+                {deedData?.propertyDetails && (
+                  <Map
+                    markers={[
+                      {
+                        id: deedData.id!,
+                        name: `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}, ${deedData.propertyDetails.propertyState}, United States`,
+                        lat: deedData.propertyDetails.propertyLatitude || 0,
+                        lng: deedData.propertyDetails.propertyLongitude || 0,
+                      },
+                    ]}
+                  />
                 )}
               </div>
               <div className="">
@@ -318,7 +323,7 @@ const Page = ({ router }: WithRouterProps) => {
                   />
                 </div>
                 <div className="flex flex-col border border-white border-opacity-10">
-                  <div className="bg-secondary w-full capitalize p-4">ℹ️ Deed information</div>
+                  <div className="bg-secondary w-full capitalize p-4">ℹ️ Deed Information</div>
                   <div className="flex flex-col p-4 gap-4">
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Deed Type</div>
@@ -336,6 +341,12 @@ const Page = ({ router }: WithRouterProps) => {
                       <div className="text-sm text-[#8c8e97]">Tax Assessed Value</div>
                       <div>$297,578</div>
                     </div>
+                    <div className="flex flex-row justify-between">
+                     <div className="text-sm text-[#8c8e97]">GPS Coordinates</div>
+                     <div>
+                       {deedData.propertyDetails.propertyLatitude}, {deedData.propertyDetails.propertyLongitude}
+                     </div>
+                    </div>
                     <hr className=" border-white opacity-10 w-full" />
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Contract</div>
@@ -345,7 +356,7 @@ const Page = ({ router }: WithRouterProps) => {
                     </div>
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Transfer Fee</div>
-                      <div>3.5%</div>
+                      <div>2.5%</div>
                     </div>
                   </div>
                 </div>
