@@ -205,7 +205,7 @@ const Page = ({ router }: WithRouterProps) => {
         ) : (
           <div>
             {/* Map and Pictures */}
-            <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex flex-col lg:flex-row gap-4 lg:h-[600px]">
               {/* Map */}
               <div className="w-full lg:w-1/2 h-full flex-grow">
                 {deedData?.propertyDetails && (
