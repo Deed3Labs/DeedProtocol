@@ -332,6 +332,10 @@ const Page = ({ router }: WithRouterProps) => {
                       <div className="text-sm text-[#8c8e97]">Parcel Number</div>
                       <div>006-0153-011-0000</div>
                     </div>
+                    <div className="flex flex-row justify-between">
+                      <div className="text-sm text-[#8c8e97]">Tax Assessed Value</div>
+                      <div>$297,578</div>
+                    </div>
                     <hr className=" border-white opacity-10 w-full" />
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Contract</div>
@@ -340,7 +344,7 @@ const Page = ({ router }: WithRouterProps) => {
                       </div>
                     </div>
                     <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Transaction Fee</div>
+                      <div className="text-sm text-[#8c8e97]">Transfer Fee</div>
                       <div>3.5%</div>
                     </div>
                   </div>
