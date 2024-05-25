@@ -207,16 +207,23 @@ const Page = ({ router }: WithRouterProps) => {
             <div className="grid grid-cols-4 gap-2">
               <div className="col-span-2 row-span-2">
                 {deedData?.propertyDetails && (
-                  <Map
-                    markers={[
-                      {
-                        id: deedData.id!,
-                        name: `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}, ${deedData.propertyDetails.propertyState}, United States`,
-                        lat: deedData.propertyDetails.propertyLatitude || 0,
-                        lng: deedData.propertyDetails.propertyLongitude || 0,
-                      },
-                    ]}
-                  />
+                 <div className="w-full h-full">
+                    <Map
+                      markers={[
+                        {
+                          id: deedData.id!,
+                          name: `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}, ${deedData.propertyDetails.propertyState}, United States`,
+                          lat: deedData.propertyDetails.propertyLatitude || 0,
+                          lng: deedData.propertyDetails.propertyLongitude || 0,
+                        },
+                      ]}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="">
+                {pictures && (
+                  <Image alt="" className="" width={300} height={300} src={pictures[1]} />
                 )}
               </div>
               <div className="">
@@ -328,10 +335,6 @@ const Page = ({ router }: WithRouterProps) => {
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Deed Type</div>
                       <div>Grant/Warranty</div>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Access</div>
-                      <div>Public Road</div>
                     </div>
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Parcel Number</div>
