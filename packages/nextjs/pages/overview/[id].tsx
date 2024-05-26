@@ -293,8 +293,8 @@ const Page = ({ router }: WithRouterProps) => {
                 )}
               </div>
               {/* Images */}
-              <div className="w-[30%] sm:w-1/2 grid grid-rows-4 sm:grid-cols-2 gap-2 sm:gap-4">
-                {pictures?.slice(1, 4).map((picture, index) => (
+              <div className="w-[30%] sm:w-1/2 grid grid-rows-4 sm:grid-cols-1 gap-2 sm:gap-4">
+                {pictures?.slice(1, 5).map((picture, index) => (
                   <div key={index} className="w-full h-full sm:h-[300px]">
                     <Image alt="" className="object-cover w-full h-full sm:h-full bg-[#141414] border border-white border-opacity-10" src={picture} />
                   </div>
