@@ -205,7 +205,7 @@ const Page = ({ router }: WithRouterProps) => {
         ) : (
           <div>
             {/* Property Overview Title and Switcher Buttons */}
-            <div className="flex flex-row w-full items-center justify-between mb-2">
+            <div className="flex flex-row w-full items-center justify-between mb-4">
               <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
                 Property Overview
               </div>
