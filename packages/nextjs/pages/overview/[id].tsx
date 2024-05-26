@@ -173,7 +173,7 @@ const Page = ({ router }: WithRouterProps) => {
   };
 
   return (
-    <div className="container pt-2 sm:pt-2 pb-10">
+    <div className="container pt-2 sm:pt-4 pb-10">
       {!isLoading ? (
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
@@ -207,9 +207,9 @@ const Page = ({ router }: WithRouterProps) => {
             {/* Map and Pictures */}
             <div className="flex flex-row gap-2 sm:gap-4">
               {/* Map */}
-              <div className="w-[70%] sm:w-1/2 h-full bg-[#141414] border border-white border-opacity-10">
+              <div className="w-[70%] sm:w-1/2 h-full h-[372x] lg:h-[616px] bg-[#141414] border border-white border-opacity-10">
                 {deedData?.propertyDetails && (
-                  <div className="w-full h-[340px] lg:h-[616px] flex-grow">
+                  <div className="w-full h-full flex-grow">
                     <Map
                       markers={[
                         {
