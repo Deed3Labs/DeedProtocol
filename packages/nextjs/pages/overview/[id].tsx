@@ -207,7 +207,7 @@ const Page = ({ router }: WithRouterProps) => {
             {/* Map and Pictures */}
             <div className="flex flex-row gap-2 sm:gap-4 h-[372x] sm:h-[616px]">
               {/* Map */}
-              <div className="w-[70%] sm:w-1/2 h-full bg-[#141414] border border-white border-opacity-10">
+              <div className="w-[70%] sm:w-1/2 h-[372x] sm:h-[616px] bg-[#141414] border border-white border-opacity-10">
                 {deedData?.propertyDetails && (
                   <div className="w-full h-full">
                     <Map
@@ -224,9 +224,9 @@ const Page = ({ router }: WithRouterProps) => {
                 )}
               </div>
               {/* Images */}
-              <div className="w-[30%] sm:w-1/2 h-full grid grid-rows-4 sm:grid-cols-2 gap-2 sm:gap-4">
+              <div className="w-[30%] sm:w-1/2 h-[372px] sm:h-[616px] grid grid-rows-4 sm:grid-cols-2 gap-2 sm:gap-4">
                 {pictures?.slice(1, 5).map((picture, index) => (
-                  <div key={index} className="w-full h-[85px] sm:h-[300px]">
+                  <div key={index} className="w-full h-full">
                     <Image alt="" className="object-cover w-full h-full sm:h-full bg-[#141414] border border-white border-opacity-10" src={picture} />
                   </div>
                 ))}
