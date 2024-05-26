@@ -204,12 +204,81 @@ const Page = ({ router }: WithRouterProps) => {
           </div>
         ) : (
           <div>
+            {/* Property Overview Title and Switcher Buttons */}
+            <div className="flex flex-row w-full items-center justify-between mb-8">
+              <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
+                Property Overview
+              </div>
+              <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
+                <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
+                  <svg
+                    width="16"
+                    height="15"
+                    viewBox="0 0 16 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 12.75V9.25H2M10 2.25V5.75H14"
+                      stroke="white"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div className="join join-horizontal border border-white border-opacity-10 p-1">
+                  <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal  bg-base-300 cursor-default">
+                    Property Overview
+                  </div>
+                  <Link
+                    href={`/validation/${id}`}
+                    className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal !text-zinc-400 !no-underline"
+                  >
+                    Validation History
+                  </Link>
+                </div>
+                <div className="dropdown dropdown-end">
+                  <button
+                    tabIndex={0}
+                    className="btn btn-sm m-1 border-white border-opacity-10 btn-square rounded-lg"
+                  >
+                    <EllipsisHorizontalIcon className="h-6" />
+                  </button>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
+                  >
+                    <li>
+                      <Link href={`/registration/${deedData.id}`}>Edit</Link>
+                    </li>
+                    {isValidator && (
+                      <>
+                        {deedData.mintedId ? (
+                          <li>
+                            <a onClick={() => handleValidate()} className="link-default">
+                              {deedData.isValidated ? "Unvalidate" : "Validate"}
+                            </a>
+                          </li>
+                        ) : (
+                          <li>
+                            <a onClick={() => handleMint()} className="link-default">
+                              Mint
+                            </a>
+                          </li>
+                        )}
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
             {/* Map and Pictures */}
             <div className="flex flex-row gap-2 sm:gap-4">
               {/* Map */}
               <div className="w-[70%] sm:w-1/2 h-[372px] sm:h-[616px] bg-[#141414] border border-white border-opacity-10">
                 {deedData?.propertyDetails && (
-                  <div className="w-full h-full">
+                  <div className="w-full h-full flex-grow">
                     <Map
                       markers={[
                         {
@@ -235,74 +304,6 @@ const Page = ({ router }: WithRouterProps) => {
             {/* 2 cols layout */}
             <div className="flex flex-col lg:flex-row mt-8 gap-4">
               <div className="flex flex-col gap-4 w-full lg:w-[63%]">
-                <div className="flex flex-row w-full items-center justify-between">
-                  <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
-                    Property Overview
-                  </div>
-                  <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
-                    <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
-                      <svg
-                        width="16"
-                        height="15"
-                        viewBox="0 0 16 15"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6 12.75V9.25H2M10 2.25V5.75H14"
-                          stroke="white"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                    <div className="join join-horizontal border border-white border-opacity-10 p-1">
-                      <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal  bg-base-300 cursor-default">
-                        Property Overview
-                      </div>
-                      <Link
-                        href={`/validation/${id}`}
-                        className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal !text-zinc-400 !no-underline"
-                      >
-                        Validation History
-                      </Link>
-                    </div>
-                    <div className="dropdown dropdown-end">
-                      <button
-                        tabIndex={0}
-                        className="btn btn-sm m-1 border-white border-opacity-10 btn-square rounded-lg"
-                      >
-                        <EllipsisHorizontalIcon className="h-6" />
-                      </button>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
-                      >
-                        <li>
-                          <Link href={`/registration/${deedData.id}`}>Edit</Link>
-                        </li>
-                        {isValidator && (
-                          <>
-                            {deedData.mintedId ? (
-                              <li>
-                                <a onClick={() => handleValidate()} className="link-default">
-                                  {deedData.isValidated ? "Unvalidate" : "Validate"}
-                                </a>
-                              </li>
-                            ) : (
-                              <li>
-                                <a onClick={() => handleMint()} className="link-default">
-                                  Mint
-                                </a>
-                              </li>
-                            )}
-                          </>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
                 <OverviewPropertyDescription
                   onChange={handleChange}
                   onSave={handleSave}
