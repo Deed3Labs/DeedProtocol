@@ -130,7 +130,7 @@ const PropertyFilters = ({ properties }: Props) => {
         )}
       </div>
       {mapOpened && (
-        <div className="!mt-4 border">
+        <div className="!mt-4 border h-[420px]">
           <Map
             markers={properties}
             popupContent={marker => <PropertyCard property={marker as PropertyModel} small />}

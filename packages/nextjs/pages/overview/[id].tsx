@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import Map from "../../components/map";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Image from "next/image";
 import Link from "next/link";
@@ -170,8 +171,9 @@ const Page = ({ router }: WithRouterProps) => {
       await writeUpdateDeedAsync(deedData, initialData);
     }
   };
+
   return (
-    <div className="container pt-6 sm:pt-8 pb-10">
+    <div className="container pt-2 sm:pt-4 pb-10">
       {!isLoading ? (
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
@@ -202,105 +204,106 @@ const Page = ({ router }: WithRouterProps) => {
           </div>
         ) : (
           <div>
-            {/* Pictures */}
-            <div className="grid grid-cols-4 gap-2">
-              <div className="col-span-2 row-span-2">
-                {pictures && (
-                  <Image alt="" className="" width={610} height={610} src={pictures[0]} />
+            {/* Property Overview Title and Switcher Buttons */}
+            <div className="flex flex-row w-full items-center justify-between mb-4 sm:mb-6">
+              <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
+                Property Overview
+              </div>
+              <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
+                <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
+                  <svg
+                    width="16"
+                    height="15"
+                    viewBox="0 0 16 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 12.75V9.25H2M10 2.25V5.75H14"
+                      stroke="white"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div className="join join-horizontal border border-white border-opacity-10 p-1">
+                  <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal  bg-base-300 cursor-default">
+                    Property Overview
+                  </div>
+                  <Link
+                    href={`/validation/${id}`}
+                    className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal !text-zinc-400 !no-underline"
+                  >
+                    Validation History
+                  </Link>
+                </div>
+                <div className="dropdown dropdown-end">
+                  <button
+                    tabIndex={0}
+                    className="btn btn-sm m-1 border-white border-opacity-10 btn-square rounded-lg"
+                  >
+                    <EllipsisHorizontalIcon className="h-6" />
+                  </button>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
+                  >
+                    <li>
+                      <Link href={`/registration/${deedData.id}`}>Edit</Link>
+                    </li>
+                    {isValidator && (
+                      <>
+                        {deedData.mintedId ? (
+                          <li>
+                            <a onClick={() => handleValidate()} className="link-default">
+                              {deedData.isValidated ? "Unvalidate" : "Validate"}
+                            </a>
+                          </li>
+                        ) : (
+                          <li>
+                            <a onClick={() => handleMint()} className="link-default">
+                              Mint
+                            </a>
+                          </li>
+                        )}
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {/* Map and Pictures */}
+            <div className="flex flex-row w-full gap-2 sm:gap-4">
+              {/* Map */}
+              <div className="w-[70%] sm:w-1/2 bg-[#141414] border border-white border-opacity-10">
+                {deedData?.propertyDetails && (
+                  <div className="w-full h-full sm:h-[616px]">
+                    <Map
+                      markers={[
+                        {
+                          id: deedData.id!,
+                          name: `${deedData.propertyDetails.propertyAddress}, ${deedData.propertyDetails.propertyCity}, ${deedData.propertyDetails.propertyState}, United States`,
+                          lat: deedData.propertyDetails.propertyLatitude || 0,
+                          lng: deedData.propertyDetails.propertyLongitude || 0,
+                        },
+                      ]}
+                    />
+                  </div>
                 )}
               </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[1]} />
-                )}
-              </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[2]} />
-                )}
-              </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[3]} />
-                )}
-              </div>
-              <div className="">
-                {pictures && (
-                  <Image alt="" className="" width={300} height={300} src={pictures[4]} />
-                )}
+              {/* Images */}
+              <div className="w-[30%] sm:w-1/2 grid grid-rows-4 sm:grid-rows-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                {pictures?.slice(1, 5).map((picture, index) => (
+                  <div key={index} className="w-full h-[85px] sm:h-[300px]">
+                    <Image alt="" className="object-cover w-full h-full bg-[#141414] border border-white border-opacity-10" src={picture} />
+                  </div>
+                ))}
               </div>
             </div>
             {/* 2 cols layout */}
-            <div className="flex flex-col lg:flex-row mt-8 gap-4">
+            <div className="flex flex-col lg:flex-row mt-4 sm:mt-6 gap-4">
               <div className="flex flex-col gap-4 w-full lg:w-[63%]">
-                <div className="flex flex-row w-full items-center justify-between">
-                  <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
-                    Property Overview
-                  </div>
-                  <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
-                    <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
-                      <svg
-                        width="16"
-                        height="15"
-                        viewBox="0 0 16 15"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6 12.75V9.25H2M10 2.25V5.75H14"
-                          stroke="white"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                    <div className="join join-horizontal border border-white border-opacity-10 p-1">
-                      <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal  bg-base-300 cursor-default">
-                        Property Overview
-                      </div>
-                      <Link
-                        href={`/validation/${id}`}
-                        className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal !text-zinc-400 !no-underline"
-                      >
-                        Validation History
-                      </Link>
-                    </div>
-                    <div className="dropdown dropdown-end">
-                      <button
-                        tabIndex={0}
-                        className="btn btn-sm m-1 border-white border-opacity-10 btn-square rounded-lg"
-                      >
-                        <EllipsisHorizontalIcon className="h-6" />
-                      </button>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
-                      >
-                        <li>
-                          <Link href={`/registration/${deedData.id}`}>Edit</Link>
-                        </li>
-                        {isValidator && (
-                          <>
-                            {deedData.mintedId ? (
-                              <li>
-                                <a onClick={() => handleValidate()} className="link-default">
-                                  {deedData.isValidated ? "Unvalidate" : "Validate"}
-                                </a>
-                              </li>
-                            ) : (
-                              <li>
-                                <a onClick={() => handleMint()} className="link-default">
-                                  Mint
-                                </a>
-                              </li>
-                            )}
-                          </>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
                 <OverviewPropertyDescription
                   onChange={handleChange}
                   onSave={handleSave}
@@ -318,15 +321,11 @@ const Page = ({ router }: WithRouterProps) => {
                   />
                 </div>
                 <div className="flex flex-col border border-white border-opacity-10">
-                  <div className="bg-secondary w-full capitalize p-4">ℹ️ Deed information</div>
+                  <div className="bg-secondary w-full capitalize p-4">ℹ️ Deed Information</div>
                   <div className="flex flex-col p-4 gap-4">
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Deed Type</div>
                       <div>Grant/Warranty</div>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Access</div>
-                      <div>Public Road</div>
                     </div>
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Parcel Number</div>
@@ -335,6 +334,12 @@ const Page = ({ router }: WithRouterProps) => {
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Tax Assessed Value</div>
                       <div>$297,578</div>
+                    </div>
+                    <div className="flex flex-row justify-between">
+                     <div className="text-sm text-[#8c8e97]">GPS Coordinates</div>
+                     <div>
+                       {deedData.propertyDetails.propertyLatitude}, {deedData.propertyDetails.propertyLongitude}
+                     </div>
                     </div>
                     <hr className=" border-white opacity-10 w-full" />
                     <div className="flex flex-row justify-between">
@@ -345,7 +350,7 @@ const Page = ({ router }: WithRouterProps) => {
                     </div>
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Transfer Fee</div>
-                      <div>3.5%</div>
+                      <div>2.5%</div>
                     </div>
                   </div>
                 </div>
