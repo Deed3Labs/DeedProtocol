@@ -173,7 +173,7 @@ const Page = ({ router }: WithRouterProps) => {
   };
 
   return (
-    <div className="container pt-6 sm:pt-8 pb-10">
+    <div className="container pt-2 sm:pt-6 pb-10">
       {!isLoading ? (
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
@@ -226,7 +226,7 @@ const Page = ({ router }: WithRouterProps) => {
               {/* Images */}
               <div className="w-full lg:w-1/2 grid grid-cols-2 gap-2">
                 {pictures?.slice(1, 5).map((picture, index) => (
-                  <div key={index} className="w-full h-[300px]">
+                  <div key={index} className="w-full h-[160px] sm:h-[300px]">
                     <Image alt="" className="object-cover w-full h-full lg:h-full bg-[#141414] border border-white border-opacity-10" src={picture} />
                   </div>
                 ))}
