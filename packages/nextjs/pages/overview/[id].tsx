@@ -173,7 +173,7 @@ const Page = ({ router }: WithRouterProps) => {
   };
 
   return (
-    <div className="container pt-2 sm:pt-6 pb-10">
+    <div className="container pt-2 sm:pt-2 pb-10">
       {!isLoading ? (
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
