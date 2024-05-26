@@ -209,7 +209,7 @@ const Page = ({ router }: WithRouterProps) => {
               {/* Map */}
               <div className="w-full lg:w-1/2 h-full">
                 {deedData?.propertyDetails && (
-                  <div className="w-full h-full lg:min-h-[600px] flex-grow">
+                  <div className="w-full h-full lg:h-[600px] flex-grow">
                     <Map
                       markers={[
                         {
