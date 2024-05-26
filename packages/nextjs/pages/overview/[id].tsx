@@ -205,7 +205,7 @@ const Page = ({ router }: WithRouterProps) => {
         ) : (
           <div>
             {/* Property Overview Title and Switcher Buttons */}
-            <div className="flex flex-row w-full items-center justify-between mb-4">
+            <div className="flex flex-row w-full items-center justify-between mb-4 sm:mb-6">
               <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
                 Property Overview
               </div>
@@ -274,11 +274,11 @@ const Page = ({ router }: WithRouterProps) => {
               </div>
             </div>
             {/* Map and Pictures */}
-            <div className="flex flex-row sm:h-[616px] gap-2 sm:gap-4">
+            <div className="flex flex-row gap-2 sm:gap-4">
               {/* Map */}
               <div className="w-[70%] sm:w-1/2 h-full bg-[#141414] border border-white border-opacity-10">
                 {deedData?.propertyDetails && (
-                  <div className="w-full h-[372px] sm:h-[616px] flex-grow">
+                  <div className="w-full h-[372px] sm:h-[616px]">
                     <Map
                       markers={[
                         {
@@ -302,7 +302,7 @@ const Page = ({ router }: WithRouterProps) => {
               </div>
             </div>
             {/* 2 cols layout */}
-            <div className="flex flex-col lg:flex-row mt-8 gap-4">
+            <div className="flex flex-col lg:flex-row mt-4 sm:mt-6 gap-4">
               <div className="flex flex-col gap-4 w-full lg:w-[63%]">
                 <OverviewPropertyDescription
                   onChange={handleChange}
