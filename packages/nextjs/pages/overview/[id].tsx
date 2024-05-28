@@ -280,6 +280,10 @@ const Page = ({ router }: WithRouterProps) => {
                 {deedData?.propertyDetails && (
                   <div className="w-full h-full sm:h-[616px]">
                     <Map
+                      center={{
+                        lat: deedData.propertyDetails.propertyLatitude || 0,
+                        lng: deedData.propertyDetails.propertyLongitude || 0,
+                      }}
                       markers={[
                         {
                           id: deedData.id!,

@@ -47,6 +47,10 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
         <>
           <div id="Map" className="max-w-72 h-72 sm:w-72 sm:h-full bg-[#141414] flex-grow">
             <Map
+              center={{
+                lat: deedData.propertyDetails.propertyLatitude || 0,
+                lng: deedData.propertyDetails.propertyLongitude || 0,
+              }}
               markers={[
                 {
                   id: deedData.id!,
