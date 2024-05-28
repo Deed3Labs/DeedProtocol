@@ -46,7 +46,7 @@ const Map = ({ markers, onMarkerClicked, popupContent, center }: MapProps & { ce
         <Mapbox
           ref={mapRef}
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-          mapStyle="mapbox://styles/mapbox/standard"
+          mapStyle="mapbox://styles/mapbox/navigation-night-v4"
           style={{ width: "100%", height: "100%" }}
           initialViewState={{
             latitude: center?.lat || 36.7783,
