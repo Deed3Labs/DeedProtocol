@@ -172,7 +172,9 @@ async function saveDeed(req: NextApiRequest, res: NextApiResponse) {
     }
   }
 
-  deedInfo.owner = walletAddress;
+  if (!deedInfo.owner) {
+    deedInfo.owner = walletAddress;
+  }
 
   const id = await RegistrationsDb.saveDeed(deedInfo);
   if (!id) {

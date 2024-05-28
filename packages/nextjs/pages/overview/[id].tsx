@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import Map from "../../components/map";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Image from "next/image";
 import Link from "next/link";
 import { withRouter } from "next/router";
+import Map from "../../components/map";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
@@ -15,6 +15,7 @@ import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hoo
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
+import useContractAddress from "~~/hooks/useContractAddress";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -44,6 +45,7 @@ const Page = ({ router }: WithRouterProps) => {
   const { id } = router.query;
 
   const { primaryWallet, authToken, isConnecting } = useWallet();
+  const deedNFTAddresss = useContractAddress("DeedNFT");
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<DeedInfoModel>(defaultData);
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
@@ -296,7 +298,11 @@ const Page = ({ router }: WithRouterProps) => {
               <div className="w-[30%] sm:w-1/2 grid grid-rows-4 sm:grid-rows-2 sm:grid-cols-2 gap-2 sm:gap-4">
                 {pictures?.slice(1, 5).map((picture, index) => (
                   <div key={index} className="w-full h-[85px] sm:h-[300px]">
-                    <Image alt="" className="object-cover w-full h-full bg-[#141414] border border-white border-opacity-10" src={picture} />
+                    <Image
+                      alt=""
+                      className="object-cover w-full h-full bg-[#141414] border border-white border-opacity-10"
+                      src={picture}
+                    />
                   </div>
                 ))}
               </div>
@@ -336,10 +342,11 @@ const Page = ({ router }: WithRouterProps) => {
                       <div>$297,578</div>
                     </div>
                     <div className="flex flex-row justify-between">
-                     <div className="text-sm text-[#8c8e97]">GPS Coordinates</div>
-                     <div>
-                       {deedData.propertyDetails.propertyLatitude}, {deedData.propertyDetails.propertyLongitude}
-                     </div>
+                      <div className="text-sm text-[#8c8e97]">GPS Coordinates</div>
+                      <div>
+                        {deedData.propertyDetails.propertyLatitude},{" "}
+                        {deedData.propertyDetails.propertyLongitude}
+                      </div>
                     </div>
                     <hr className=" border-white opacity-10 w-full" />
                     <div className="flex flex-row justify-between">
