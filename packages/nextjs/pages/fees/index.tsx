@@ -11,6 +11,7 @@ import { notification } from "~~/utils/scaffold-eth";
 const FeesPanel = ({ router }: WithRouterProps) => {
   const isAdmin = useIsAdmin();
   const { fees, client } = useFeesClient();
+
   useEffect(() => {
     if (fees) {
       const feesState: Record<string, string> = {};
@@ -21,6 +22,7 @@ const FeesPanel = ({ router }: WithRouterProps) => {
       setFeesState(feesState);
     }
   }, [fees]);
+
   const [feesState, setFeesState] = useState<Record<keyof typeof fees, string>>();
 
   const handleChange = (
@@ -34,6 +36,7 @@ const FeesPanel = ({ router }: WithRouterProps) => {
     // @ts-ignore
     setFeesState?.(updatedValue);
   };
+
   const handleSave = async () => {
     if (feesState) {
       const notif = notification.info("Saving...", { duration: 0 });
@@ -41,9 +44,13 @@ const FeesPanel = ({ router }: WithRouterProps) => {
         const keyIn = key as keyof typeof feesState & keyof typeof fees;
         if (keyIn in feesState)
           try {
-            fees[keyIn] = JSON.parse(feesState[keyIn]);
+            if (feesState[keyIn] === "") {
+              fees[keyIn] = undefined;
+            } else {
+              fees[keyIn] = JSON.parse(feesState[keyIn]);
+            }
           } catch (error) {
-            logger.error(`Failed to parse ${keyIn} with value ${feesState[keyIn]}`);
+            notification.error(`Failed to parse ${keyIn} with value ${feesState[keyIn]}`);
           }
       });
       notification.remove(notif);
