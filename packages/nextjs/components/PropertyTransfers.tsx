@@ -80,8 +80,14 @@ const PropertyTransfers = ({ deedData, onRefresh }: Props) => {
                       listOpenState[1](false);
                     }}
                     onListingComplete={() => {
-                      listings.mutate();
-                      bids.mutate();
+                      setPendingRefresh(true);
+                    }}
+                    onClose={() => {
+                      if (pendingRefresh) {
+                        listings.mutate();
+                        bids.mutate();
+                        setPendingRefresh(false);
+                      }
                     }}
                     onListingError={(error, data) => {
                       notification.error("Error while listing the token");
@@ -96,6 +102,9 @@ const PropertyTransfers = ({ deedData, onRefresh }: Props) => {
                 listingId={listings.data[0].id}
                 onCancelComplete={() => {
                   notification.success("Listing cancelled");
+                  setPendingRefresh(true);
+                }}
+                onClose={() => {
                   listings.mutate();
                   bids.mutate();
                 }}

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import OtherInformations from "../../components/OtherInformations";
 import OwnerInformation from "../../components/OwnerInformation";
-import PaymentInformation from "../../components/PaymentInformation";
 import PropertyDetails from "../../components/RegPropertyDetails";
 import useDeedClient from "~~/clients/deeds.client";
 import SidePanel from "~~/components/SidePanel";
