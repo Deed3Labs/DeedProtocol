@@ -1,7 +1,9 @@
 import logger from "./logger.service";
 import { Address } from "viem";
 import "viem";
+import { FeesClient } from "~~/clients/fees.client";
 import deployedContracts from "~~/contracts/deployedContracts";
+import { FeesModel } from "~~/models/fees.model";
 import { getContractInstance } from "~~/servers/contract";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { sleepAsync } from "~~/utils/sleepAsync";
@@ -55,6 +57,19 @@ export async function cacheIsAdmin(wallet: Address, forceCacheRefresh: boolean =
       ]);
     },
     adminCacheTimeSec,
+    forceCacheRefresh,
+  );
+}
+
+export async function cacheFees(forceCacheRefresh: boolean = false) {
+  const keyParam = {
+    chainId: getTargetNetwork().id,
+  };
+  return buildCache<FeesModel>(
+    "fees",
+    JSON.stringify(keyParam),
+    () => new FeesClient().getFees().then(x => x ?? {}),
+    5000,
     forceCacheRefresh,
   );
 }

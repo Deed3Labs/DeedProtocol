@@ -54,7 +54,11 @@ export class ValidationDb extends DbBase {
   }
 
   static async getAllValidations(): Promise<FileValidationModel[]> {
-    const result = await this.collection.find().toArray();
+    const result = await this.collection
+      .find({
+        chainId: DeedDb.getChainId(),
+      })
+      .toArray();
     return result as unknown as FileValidationModel[];
   }
 }

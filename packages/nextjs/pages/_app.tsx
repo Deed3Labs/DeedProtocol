@@ -11,12 +11,14 @@ import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import {
   ReservoirKitProvider,
+  ReservoirKitProviderOptions,
   darkTheme as reservoirDarkTheme,
 } from "@reservoir0x/reservoir-kit-ui";
-import { LogLevel, reservoirChains } from "@reservoir0x/reservoir-sdk";
+import { LogLevel, ReservoirClientOptions, reservoirChains } from "@reservoir0x/reservoir-sdk";
 import NextNProgress from "nextjs-progressbar";
 import { useDarkMode } from "usehooks-ts";
 import { WagmiConfig } from "wagmi";
+import useFeesClient from "~~/clients/fees.client";
 import CONFIG from "~~/config";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
@@ -29,6 +31,8 @@ const ScaffoldEthApp = (props: AppProps) => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const { isDarkMode } = useDarkMode();
 
+  const { fees } = useFeesClient();
+
   useEffect(() => {
     if (!CONFIG.dynamicEnvironementId) {
       throw new Error("Missing environment ID");
@@ -38,6 +42,20 @@ const ScaffoldEthApp = (props: AppProps) => {
   useEffect(() => {
     setIsDarkTheme(isDarkMode);
   }, [isDarkMode]);
+
+  const reservoirOptions: ReservoirClientOptions & ReservoirKitProviderOptions = {
+    apiKey: process.env.NEXT_PUBLIC_RESERVOIR_API_KEY,
+    chains: [
+      {
+        ...reservoirChains.sepolia,
+        active: true,
+      },
+    ],
+    logLevel: isDev() ? LogLevel.Verbose : LogLevel.Warn,
+    automatedRoyalties: fees?.global_automatedRoyalties,
+    normalizeRoyalties: fees?.global_normalizeRoyalties,
+    marketplaceFees: fees?.global_marketplaceFees,
+  };
 
   return (
     <>
@@ -52,45 +70,31 @@ const ScaffoldEthApp = (props: AppProps) => {
           showSpinner: false,
         }}
       />
-      {process.env.NEXT_PUBLIC_OFFLINE ? (
-        <WagmiConfig config={wagmiConfig}>
-          <ReservoirKitProvider theme={reservoirDarkTheme()}>
+      <WagmiConfig config={wagmiConfig}>
+        {process.env.NEXT_PUBLIC_OFFLINE ? (
+          <ReservoirKitProvider theme={reservoirDarkTheme()} options={reservoirOptions}>
             <RainbowKitProvider chains={appChains.chains} theme={darkTheme()}>
               <Layout {...props} />
             </RainbowKitProvider>
           </ReservoirKitProvider>
-        </WagmiConfig>
-      ) : (
-        <DynamicContextProvider
-          theme={isDarkTheme ? "dark" : "light"}
-          settings={{
-            initialAuthenticationMode: "connect-and-sign",
-            environmentId: CONFIG.dynamicEnvironementId,
-            appName: CONFIG.appName,
-            walletConnectors: [EthereumWalletConnectors],
-          }}
-        >
-          <DynamicWagmiConnector>
-            <ReservoirKitProvider
-              theme={reservoirDarkTheme()}
-              options={{
-                apiKey: process.env.NEXT_PUBLIC_RESERVOIR_API_KEY,
-                chains: [
-                  {
-                    ...reservoirChains.sepolia,
-                    active: true,
-                  },
-                ],
-                source: "localhost",
-                automatedRoyalties: true,
-                logLevel: isDev() ? LogLevel.Verbose : LogLevel.Warn,
-              }}
-            >
-              <Layout {...props} />
-            </ReservoirKitProvider>
-          </DynamicWagmiConnector>
-        </DynamicContextProvider>
-      )}
+        ) : (
+          <DynamicContextProvider
+            theme={isDarkTheme ? "dark" : "light"}
+            settings={{
+              initialAuthenticationMode: "connect-and-sign",
+              environmentId: CONFIG.dynamicEnvironementId,
+              appName: CONFIG.appName,
+              walletConnectors: [EthereumWalletConnectors],
+            }}
+          >
+            <DynamicWagmiConnector>
+              <ReservoirKitProvider theme={reservoirDarkTheme()} options={reservoirOptions}>
+                <Layout {...props} />
+              </ReservoirKitProvider>
+            </DynamicWagmiConnector>
+          </DynamicContextProvider>
+        )}
+      </WagmiConfig>
     </>
   );
 };

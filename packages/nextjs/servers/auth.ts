@@ -15,7 +15,7 @@ type Constraint = Address | Role;
  * @param req
  * @param res
  * @param constraints first level is OR, second level is AND
- * @returns
+ * @returns true if the user is authenticated
  */
 export const authentify = async (
   req: NextApiRequest,
