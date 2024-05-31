@@ -13,7 +13,7 @@ module.exports = {
     themes: [
       {
         scaffoldEthDark: {
-          primary: "#FFFFFF",
+          primary: "#bababa",
           "primary-content": "#0e0e0e",
           secondary: "#1b1b1b",
           "secondary-content": "#9f9f9f",
@@ -27,9 +27,9 @@ module.exports = {
           "base-300": "#141414",
           "base-content": "#F9FBFF",
           info: "#385183",
-          success: "#34EEB6",
+          success: "#7fc18e",
           warning: "#FFCF72",
-          error: "#cf1f1f",
+          error: "#7c3d3d",
 
           "--text-accent": "#92b8ff",
           "--rounded-box": "0", // border radius rounded-box utility class, used in card and other large boxes

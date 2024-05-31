@@ -9,6 +9,11 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import {
+  ReservoirKitProvider,
+  darkTheme as reservoirDarkTheme,
+} from "@reservoir0x/reservoir-kit-ui";
+import { LogLevel, reservoirChains } from "@reservoir0x/reservoir-sdk";
 import NextNProgress from "nextjs-progressbar";
 import { useDarkMode } from "usehooks-ts";
 import { WagmiConfig } from "wagmi";
@@ -16,6 +21,7 @@ import CONFIG from "~~/config";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
 import "~~/styles/globals.scss";
+import { isDev } from "~~/utils/is-dev";
 
 config.autoAddCss = false;
 
@@ -48,9 +54,11 @@ const ScaffoldEthApp = (props: AppProps) => {
       />
       {process.env.NEXT_PUBLIC_OFFLINE ? (
         <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider chains={appChains.chains} theme={darkTheme()}>
-            <Layout {...props} />
-          </RainbowKitProvider>
+          <ReservoirKitProvider theme={reservoirDarkTheme()}>
+            <RainbowKitProvider chains={appChains.chains} theme={darkTheme()}>
+              <Layout {...props} />
+            </RainbowKitProvider>
+          </ReservoirKitProvider>
         </WagmiConfig>
       ) : (
         <DynamicContextProvider
@@ -63,7 +71,23 @@ const ScaffoldEthApp = (props: AppProps) => {
           }}
         >
           <DynamicWagmiConnector>
-            <Layout {...props} />
+            <ReservoirKitProvider
+              theme={reservoirDarkTheme()}
+              options={{
+                apiKey: process.env.NEXT_PUBLIC_RESERVOIR_API_KEY,
+                chains: [
+                  {
+                    ...reservoirChains.sepolia,
+                    active: true,
+                  },
+                ],
+                source: "localhost",
+                automatedRoyalties: true,
+                logLevel: isDev() ? LogLevel.Verbose : LogLevel.Warn,
+              }}
+            >
+              <Layout {...props} />
+            </ReservoirKitProvider>
           </DynamicWagmiConnector>
         </DynamicContextProvider>
       )}

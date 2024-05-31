@@ -1,3 +1,3 @@
 export const Spinner = () => {
-  return <span className="loading loading-spinner loading-md"></span>;
+  return <span className="loading loading-spinner loading-md" />;
 };

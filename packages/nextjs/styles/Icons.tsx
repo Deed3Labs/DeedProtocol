@@ -99,5 +99,23 @@ export const IconPolygon = (
   </svg>
 );
 
-export const IconDollar = <CurrencyDollarIcon width={24}></CurrencyDollarIcon>;
-export const IconBitcoin = <BitcoinIcon width={24}></BitcoinIcon>;
+export const IconDollar = <CurrencyDollarIcon width={24} />;
+export const IconBitcoin = <BitcoinIcon width={24} />;
+
+export const IconInfoSquare = (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_1700_4413)">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 14.6667C0.000733333 15.4027 0.59726 15.9993 1.33333 16H14.6667C15.4027 15.9993 15.9993 15.4027 16 14.6667V1.33333C15.9993 0.59726 15.4027 0.000733333 14.6667 0H1.33333C0.59726 0.000733333 0.000733333 0.59726 0 1.33333V14.6667ZM1.33333 14.6667V1.33333H14.6667L14.6673 14.6667H1.33333ZM8.66667 12V6H6V7.33333H7.33333V12H5.33333V13.3333H10.6667V12H8.66667ZM7 3.88889C7 3.33661 7.44773 2.88889 8 2.88889C8.55227 2.88889 9 3.33661 9 3.88889C9 4.4412 8.55227 4.88887 8 4.88887C7.44773 4.88887 7 4.4412 7 3.88889Z"
+        fill="#C7C7CC"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1700_4413">
+        <rect width="16" height="16" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);

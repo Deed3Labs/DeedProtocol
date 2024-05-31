@@ -98,6 +98,7 @@ const SidePanel = ({
       refetchDeedInfo();
     } else {
       if (!deedData.mintedId || !initialData) return;
+
       // Update on chain
       await writeUpdateDeedAsync(deedData, initialData);
     }
@@ -386,17 +387,29 @@ const SidePanel = ({
                 {deedData.isValidated ? "Unvalidate" : "Validate"}
               </button>
             ))}
+          <div className="btn-group my-3 flex">
+            {deedData.id && (
+              <>
+                <button
+                  onClick={() => handlePayment(deedData.id!)}
+                  className="btn btn-primary btn-lg uppercase text-sm tracking-widest flex-1"
+                >
+                  Payment needed
+                </button>
+                <div className="border-l-2 border-solid border-black h-10" />
+              </>
+            )}
 
-          <button
-            onClick={handleSubmit}
-            className="btn btn-primary btn-lg my-3 w-full uppercase text-sm tracking-widest"
-            disabled={!quoteDetails}
-          >
-            {deedData.id && (deedData.paymentInformation.receipt || !isOwner)
-              ? "Save"
-              : "Proceed to payment"}
-          </button>
-
+            <button
+              onClick={handleSubmit}
+              className="btn btn-primary btn-lg uppercase text-sm tracking-widest flex-1"
+              disabled={!quoteDetails}
+            >
+              {deedData.id || deedData.paymentInformation.receipt || !isOwner
+                ? "Save"
+                : "Proceed to payment"}
+            </button>
+          </div>
           {deedData.id && (
             <div className="w-full flex justify-end">
               {deedData.paymentInformation.receipt && (

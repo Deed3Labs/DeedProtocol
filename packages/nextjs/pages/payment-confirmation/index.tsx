@@ -51,7 +51,7 @@ const Page = ({ router }: WithRouterProps) => {
                 )}
                 <div className="card-actions justify-end">
                   <Link className="btn" href={`/validation/${registrationId}`}>
-                    Go to validation page
+                    Go to validation page &rarr;
                   </Link>
                 </div>
               </div>

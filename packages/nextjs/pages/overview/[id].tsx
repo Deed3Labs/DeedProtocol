@@ -9,18 +9,19 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
 import OverviewPropertyDescription from "~~/components/OverviewPropertyDescription";
 import ProfileComponent from "~~/components/ProfilComponent";
+import PropertyTransfers from "~~/components/PropertyTransfers";
 import { Address } from "~~/components/scaffold-eth";
 import deployedContracts from "~~/contracts/deployedContracts";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
-import useContractAddress from "~~/hooks/useContractAddress";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
+import { IconInfoSquare } from "~~/styles/Icons";
 import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
@@ -45,7 +46,6 @@ const Page = ({ router }: WithRouterProps) => {
   const { id } = router.query;
 
   const { primaryWallet, authToken, isConnecting } = useWallet();
-  const deedNFTAddresss = useContractAddress("DeedNFT");
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<DeedInfoModel>(defaultData);
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
@@ -73,8 +73,8 @@ const Page = ({ router }: WithRouterProps) => {
       deedData?.propertyDetails.propertyImages
         ?.filter(x => !!x.fileId && !x.restricted)
         ?.map(image => getTargetNetwork().ipfsGateway + image.fileId) ?? [];
-    if (!pictures?.length) {
-      for (let index = 1; index <= 6; index++) {
+    if (pictures.length < 4) {
+      for (let index = pictures.length; index <= 4; index++) {
         pictures.push(`/images/residential${index}.png`);
       }
     }
@@ -282,6 +282,7 @@ const Page = ({ router }: WithRouterProps) => {
                 {deedData?.propertyDetails && (
                   <div className="w-full h-full sm:h-[616px]">
                     <Map
+                      // @ts-ignore
                       center={{
                         lat: deedData.propertyDetails.propertyLatitude || 0,
                         lng: deedData.propertyDetails.propertyLongitude || 0,
@@ -300,15 +301,19 @@ const Page = ({ router }: WithRouterProps) => {
               </div>
               {/* Images */}
               <div className="w-[30%] sm:w-1/2 grid grid-rows-4 sm:grid-rows-2 sm:grid-cols-2 gap-2 sm:gap-4">
-                {pictures?.slice(1, 5).map((picture, index) => (
-                  <div key={index} className="w-full h-[85px] sm:h-[300px]">
-                    <Image
-                      alt=""
-                      className="object-cover w-full h-full bg-[#141414] border border-white border-opacity-10"
-                      src={picture}
-                    />
-                  </div>
-                ))}
+                {pictures?.slice(0, 4).map((picture, index) => {
+                  return (
+                    <div key={index} className="w-full h-[85px] sm:h-[300px]">
+                      <Image
+                        alt={picture}
+                        className="object-cover w-full h-full bg-[#141414] border border-white border-opacity-10"
+                        src={picture}
+                        width={300}
+                        height={85}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
             {/* 2 cols layout */}
@@ -331,7 +336,9 @@ const Page = ({ router }: WithRouterProps) => {
                   />
                 </div>
                 <div className="flex flex-col border border-white border-opacity-10">
-                  <div className="bg-secondary w-full capitalize p-4">ℹ️ Deed Information</div>
+                  <div className="bg-secondary w-full uppercase p-4 flex items-center gap-2">
+                    {IconInfoSquare} Deed Information
+                  </div>
                   <div className="flex flex-col p-4 gap-4">
                     <div className="flex flex-row justify-between">
                       <div className="text-sm text-[#8c8e97]">Deed Type</div>
@@ -365,6 +372,10 @@ const Page = ({ router }: WithRouterProps) => {
                     </div>
                   </div>
                 </div>
+                <PropertyTransfers
+                  deedData={deedData}
+                  onRefresh={() => fetchDeedInfo(deedData.id!)}
+                />
               </div>
             </div>
           </div>

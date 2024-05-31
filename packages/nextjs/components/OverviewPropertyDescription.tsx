@@ -75,7 +75,7 @@ const OverviewPropertyDescription = ({ deedData, onRefresh, onSave, onChange }: 
                   {deedData.propertyDetails.propertyDescription ? (
                     deedData.propertyDetails.propertyDescription
                   ) : (
-                    <span className="text-gray-500">
+                    <span className="text-gray-500 italic">
                       Please provide a description for your property ...
                     </span>
                   )}
@@ -88,36 +88,37 @@ const OverviewPropertyDescription = ({ deedData, onRefresh, onSave, onChange }: 
                   }`}
                 >
                   <hr className="my-0 border-[#2d2d2d] w-full flex-1" />
-                  <button
-                    className="btn btn-secondary btn-lg border-2 text-sm tracking-widest"
-                    onClick={() => setReadMore(x => !x)}
-                  >
-                    {isReadMore ? (
-                      <>
-                        <span>READ LESS</span>
-                        <ChevronUpIcon width={16} />
-                      </>
-                    ) : (
-                      <>
-                        <span>READ MORE</span>
-                        <ChevronDownIcon width={16} />
-                      </>
-                    )}
-                  </button>
+                  {!!deedData.propertyDetails.propertyDescription && (
+                    <button
+                      className="btn btn-secondary btn-lg border-2 text-sm tracking-widest"
+                      onClick={() => setReadMore(x => !x)}
+                    >
+                      {isReadMore ? (
+                        <>
+                          <span>READ LESS</span>
+                          <ChevronUpIcon width={16} />
+                        </>
+                      ) : (
+                        <>
+                          <span>READ MORE</span>
+                          <ChevronDownIcon width={16} />
+                        </>
+                      )}
+                    </button>
+                  )}
                   <hr className="my-0 border-[#2d2d2d] w-full flex-1" />
                 </div>
               </>
             ) : (
               <textarea
                 aria-multiline
-                placeholder="Please provide a description for your property ..."
+                placeholder="Please provide a description for your property"
                 onChange={handleDescriptionChange}
                 value={deedData.propertyDetails.propertyDescription}
                 className="input h-40"
               />
             )}
           </div>
-
           <PropertyDetails
             onRefresh={onRefresh}
             onSave={onSave}
