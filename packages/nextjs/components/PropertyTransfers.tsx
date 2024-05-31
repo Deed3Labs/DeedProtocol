@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Address } from "./scaffold-eth";
 import {
   AcceptBidModal,
@@ -12,6 +12,7 @@ import {
   useBids,
   useListings,
 } from "@reservoir0x/reservoir-kit-ui";
+import Countdown from "react-countdown";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import useFeesClient from "~~/clients/fees.client";
@@ -25,7 +26,6 @@ import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   deedData: DeedInfoModel;
-  onRefresh: () => void;
 }
 
 const formatter = new Intl.NumberFormat("en-US", {
@@ -33,12 +33,11 @@ const formatter = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-const PropertyTransfers = ({ deedData, onRefresh }: Props) => {
+const PropertyTransfers = ({ deedData }: Props) => {
   const deedNFTAddresss = useContractAddress("DeedNFT");
   const isOwner = useIsOwner(deedData);
   const tokenWithId = `${deedNFTAddresss}:${deedData.mintedId}`;
   const listOpenState = useState(false);
-  const [pendingRefresh, setPendingRefresh] = useState(false);
   const { primaryWallet, connectWallet } = useWallet();
   const { fees } = useFeesClient();
   const bids = useBids({
@@ -48,6 +47,13 @@ const PropertyTransfers = ({ deedData, onRefresh }: Props) => {
   const listings = useListings({
     token: tokenWithId,
   });
+
+  const expiration = useCallback((bid: any) => {
+    const date = new Date(bid.expiration * 1000);
+    const dateString = date.toDateString();
+    return <>{dateString === new Date().toDateString() ? <Countdown date={date} /> : dateString}</>;
+  }, []);
+
   return (
     <div className="flex flex-col border border-white border-opacity-10">
       <div className="bg-secondary w-full uppercase p-4 flex items-center gap-2 justify-between">
@@ -162,17 +168,11 @@ const PropertyTransfers = ({ deedData, onRefresh }: Props) => {
                       trigger={<button className="btn btn-primary flex-1">Buy</button>}
                       token={tokenWithId}
                       onPurchaseComplete={async () => {
-                        setPendingRefresh(true);
                         notification.success("Purchase Complete");
                       }}
                       onClose={() => {
-                        if (pendingRefresh) {
-                          onRefresh();
-                          setPendingRefresh(false);
-                        } else {
-                          listings.mutate();
-                          bids.mutate();
-                        }
+                        listings.mutate();
+                        bids.mutate();
                       }}
                       onPurchaseError={(error, data) => {
                         notification.error("Purchase Error");
@@ -223,8 +223,7 @@ const PropertyTransfers = ({ deedData, onRefresh }: Props) => {
                                     : "-"}
                                 </span>
                                 <div className="flex items-center">
-                                  <ClockIcon className="w-4 mr-1" />{" "}
-                                  {new Date(bid.expiration * 1000).toDateString()}
+                                  <ClockIcon className="w-4 mr-1" /> {expiration(bid)}
                                 </div>
                                 {isOwner ? (
                                   <AcceptBidModal
@@ -238,16 +237,10 @@ const PropertyTransfers = ({ deedData, onRefresh }: Props) => {
                                     ]}
                                     onBidAccepted={() => {
                                       notification.success("Offer accepted");
-                                      setPendingRefresh(true);
                                     }}
                                     onClose={() => {
-                                      if (pendingRefresh) {
-                                        onRefresh();
-                                        setPendingRefresh(false);
-                                      } else {
-                                        listings.mutate();
-                                        bids.mutate();
-                                      }
+                                      listings.mutate();
+                                      bids.mutate();
                                     }}
                                     onBidAcceptError={(error, data) => {
                                       logger.error("Bid Acceptance Error", error, data);
