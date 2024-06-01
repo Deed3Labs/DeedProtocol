@@ -9,7 +9,8 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
 import OverviewPropertyDescription from "~~/components/OverviewPropertyDescription";
 import ProfileComponent from "~~/components/ProfilComponent";
-import PropertyTransfers from "~~/components/PropertyTransfers";
+import PropertyBidOffers from "~~/components/PropertyBidOffers";
+import PropertyListBuy from "~~/components/PropertyListBuy";
 import { Address } from "~~/components/scaffold-eth";
 import deployedContracts from "~~/contracts/deployedContracts";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
@@ -209,8 +210,9 @@ const Page = ({ router }: WithRouterProps) => {
             {/* Property Overview Title and Switcher Buttons */}
             <div className="flex flex-row w-full items-center justify-between mb-4 sm:mb-6">
               <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
-                Property Overview
+                Property Details
               </div>
+
               <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
                 <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
                   <svg
@@ -319,6 +321,7 @@ const Page = ({ router }: WithRouterProps) => {
             {/* 2 cols layout */}
             <div className="flex flex-col lg:flex-row mt-4 sm:mt-6 gap-4">
               <div className="flex flex-col gap-4 w-full lg:w-[63%]">
+                <PropertyListBuy deedData={deedData} />
                 <OverviewPropertyDescription
                   onChange={handleChange}
                   onSave={handleSave}
@@ -372,10 +375,7 @@ const Page = ({ router }: WithRouterProps) => {
                     </div>
                   </div>
                 </div>
-                <PropertyTransfers
-                  deedData={deedData}
-                  onRefresh={() => fetchDeedInfo(deedData.id!)}
-                />
+                <PropertyBidOffers deedData={deedData} />
               </div>
             </div>
           </div>
