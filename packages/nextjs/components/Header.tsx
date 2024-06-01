@@ -16,7 +16,7 @@ export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-  const { primaryWallet } = useWallet();
+  const { primaryWallet, connectWallet } = useWallet();
   const { query, pathname } = useRouter();
   const { id } = query;
   const searchRef = useRef<HTMLInputElement>(null);
@@ -43,6 +43,12 @@ export const Header = () => {
   const isActive = (href: string) => {
     return router.asPath.includes(href);
   };
+
+  useEffect(() => {
+    if (router.query.login) {
+      connectWallet();
+    }
+  }, [router.query]);
 
   const nav = useMemo(
     () => (
