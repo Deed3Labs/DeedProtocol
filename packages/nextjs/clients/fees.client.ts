@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useHttpClient, { HttpClient } from "./base.client";
+import { HttpClient } from "./base.client";
 import useWallet from "~~/hooks/useWallet";
 import { FeesModel } from "~~/models/fees.model";
 import { cacheFees } from "~~/services/cache.service";
