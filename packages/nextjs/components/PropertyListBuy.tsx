@@ -36,6 +36,10 @@ const BidOffers = ({ deedData }: Props) => {
   const listings = useListings({
     token: tokenWithId,
   });
+  const bids = useBids({
+    normalizeRoyalties: true,
+    token: tokenWithId,
+  });
 
   return (
     <div className="flex flex-col border border-white border-opacity-10">
@@ -69,6 +73,7 @@ const BidOffers = ({ deedData }: Props) => {
                       }}
                       onClose={() => {
                         listings.mutate();
+                        bids.mutate();
                       }}
                       onListingError={(error, data) => {
                         notification.error("Error while listing the token");
@@ -91,7 +96,7 @@ const BidOffers = ({ deedData }: Props) => {
                   {isOwner ? (
                     <div className="flex gap-2">
                       <EditListingModal
-                        trigger={<button className="btn bg-secondary  flex-1">Edit</button>}
+                        trigger={<button className="btn btn-secondary  flex-1">Edit</button>}
                         listingId={listings.data[0].id}
                         collectionId={deedNFTAddresss}
                         tokenId={deedData.mintedId!.toString()}
@@ -104,13 +109,14 @@ const BidOffers = ({ deedData }: Props) => {
                         }}
                         onClose={() => {
                           listings.mutate();
+                          bids.mutate();
                         }}
                         enableOnChainRoyalties={fees?.editList_enableOnChainRoyalties}
                         normalizeRoyalties={fees?.editList_normalizeRoyalties}
                       />
                       <CancelListingModal
                         trigger={
-                          <button className="btn bg-secondary text-error flex-1">Cancel</button>
+                          <button className="btn btn-secondary text-error flex-1">Cancel</button>
                         }
                         listingId={listings.data[0].id}
                         onCancelComplete={() => {
@@ -118,6 +124,7 @@ const BidOffers = ({ deedData }: Props) => {
                         }}
                         onClose={() => {
                           listings.mutate();
+                          bids.mutate();
                         }}
                         onCancelError={(error, data) => {
                           notification.error("Error while cancelling the listing");
@@ -141,6 +148,7 @@ const BidOffers = ({ deedData }: Props) => {
                         }}
                         onClose={() => {
                           listings.mutate();
+                          bids.mutate();
                         }}
                         onBidError={(error, data) => {
                           notification.error("Offer Submition Error");
@@ -160,6 +168,7 @@ const BidOffers = ({ deedData }: Props) => {
                         }}
                         onClose={() => {
                           listings.mutate();
+                          bids.mutate();
                         }}
                         onPurchaseError={(error, data) => {
                           notification.error("Purchase Error");

@@ -1,16 +1,10 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Address } from "./scaffold-eth";
 import {
   AcceptBidModal,
-  BidModal,
-  BuyModal,
   CancelBidModal,
-  CancelListingModal,
   EditBidModal,
-  EditListingModal,
-  ListModal,
   useBids,
-  useListings,
 } from "@reservoir0x/reservoir-kit-ui";
 import Countdown from "react-countdown";
 import { ClockIcon } from "@heroicons/react/24/outline";
@@ -117,7 +111,7 @@ const PropertyBidOffers = ({ deedData }: Props) => {
                               <>
                                 {bid.maker.toLowerCase() ===
                                   primaryWallet?.address.toLowerCase() && (
-                                  <div className="flex">
+                                  <div className="flex gap-2">
                                     <EditBidModal
                                       trigger={<button className="btn btn-secondary">Edit</button>}
                                       bidId={bid.id}
@@ -138,7 +132,7 @@ const PropertyBidOffers = ({ deedData }: Props) => {
                                     />
                                     <CancelBidModal
                                       trigger={
-                                        <button className="btn bg-secondary text-error">
+                                        <button className="btn btn-secondary text-error">
                                           Cancel
                                         </button>
                                       }
