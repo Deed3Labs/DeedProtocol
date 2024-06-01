@@ -121,7 +121,7 @@ const Page = ({ router }: WithRouterProps) => {
         }
       }
     },
-    [id, deedData.mintedId, chainId, authToken, primaryWallet?.address, isValidator],
+    [id, deedData.mintedId, chainId, authToken, isValidator],
   );
 
   const handleErrorClick = async () => {

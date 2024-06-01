@@ -5,7 +5,6 @@ import { withRouter } from "next/router";
 import ValidationProcedures from "../../components/ValidationProcedures";
 import PropertyDetails from "../../components/ValidationPropertyDetails";
 import PropertyOverview from "../../components/ValidationPropertyOverview";
-import Map from "../../components/map";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";

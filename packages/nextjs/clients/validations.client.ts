@@ -37,7 +37,7 @@ export class ValidationClient extends HttpClient {
     return result.value;
   }
 
-  public async saveValidation(validation: FileValidationModel): Promise<string | undefined> {
+  public async saveValidation(validation: FileValidationModel): Promise<boolean> {
     const result = await this.post<string>(
       "/api/validations",
       undefined,
@@ -48,10 +48,10 @@ export class ValidationClient extends HttpClient {
         error: result.error,
         message: `Failed to retrieve all validations`,
       });
-      return undefined;
+      return false;
     }
 
-    return result.value;
+    return result.ok;
   }
 }
 
