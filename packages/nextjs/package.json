@@ -6,7 +6,7 @@
     "start": "NEXT_PUBLIC_TARGET_NETWORK=sepolia next dev",
     "start:local": "NEXT_PUBLIC_OFFLINE=true NEXT_PUBLIC_TARGET_NETWORK=localhost next dev",
     "start:prod": "NEXT_PUBLIC_TARGET_NETWORK=polygon next dev",
-    "build": "NEXT_PUBLIC_TARGET_NETWORK=sepolia next build",
+    "build": "next build",
     "build:prod": "NEXT_PUBLIC_TARGET_NETWORK=polygon next build",
     "serve": "next start",
     "lint": "next lint",
