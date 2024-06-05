@@ -89,9 +89,9 @@ const ScaffoldEthApp = (props: AppProps) => {
             }}
           >
             <DynamicWagmiConnector>
-              {/* <ReservoirKitProvider theme={reservoirDarkTheme()} options={reservoirOptions}> */}
-              <Layout {...props} />
-              {/* </ReservoirKitProvider> */}
+              <ReservoirKitProvider theme={reservoirDarkTheme()} options={reservoirOptions}>
+                <Layout {...props} />
+              </ReservoirKitProvider>
             </DynamicWagmiConnector>
           </DynamicContextProvider>
         )}
