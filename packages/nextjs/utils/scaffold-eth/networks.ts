@@ -55,7 +55,6 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
     deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
-    testnet: false,
   },
   [chains.goerli.id]: {
     color: "#0975F6",
