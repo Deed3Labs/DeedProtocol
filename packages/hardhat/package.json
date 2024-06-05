@@ -8,9 +8,10 @@
     "deploy:local": "hardhat deploy --network localhost --tags core",
     "deploy-proxy:local": "hardhat run scripts/reset-proxy.ts --network localhost && hardhat deploy --network localhost --tags core",
     "deploy:gnosis": "hardhat deploy --network gnosis && yarn verify --network gnosis",
-    "deploy-gnosis:sepolia": "hardhat run scripts/reset-proxy.ts --network gnosis && hardhat deploy --network gnosis --tags core",
     "deploy:sepolia": "hardhat deploy --network sepolia --tags core",
     "deploy-proxy:sepolia": "hardhat run scripts/reset-proxy.ts --network sepolia && hardhat deploy --network sepolia --tags core",
+    "deploy:polygon": "hardhat deploy --network polygon --tags core",
+    "deploy-proxy:polygon": "hardhat run scripts/reset-proxy.ts --network polygon && hardhat deploy --network polygon --tags core",
     "deploy-mocks:local": "hardhat deploy --network localhost --tags mocks",
     "deploy:generateTsAbi": "hardhat deploy --tags generateTsAbis --network",
     "coverage": "hardhat coverage --testfiles \"test/*.spec.ts\" --solcoverjs ./test/coverage.solcover.ts",
@@ -20,7 +21,8 @@
     "lint-staged": "eslint --config ./.eslintrc.json --ignore-path ./.eslintignore",
     "test": "hardhat test --network hardhat",
     "verify": "hardhat verify",
-    "verify:sepolia": "yarn verify --network sepolia"
+    "verify:sepolia": "yarn verify --network sepolia",
+    "verify:polygon": "yarn verify --network polygon"
   },
   "devDependencies": {
     "@eth-optimism/hardhat-ovm": "^0.2.4",

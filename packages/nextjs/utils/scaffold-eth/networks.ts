@@ -49,6 +49,14 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     deedSubgraph: "https://api.studio.thegraph.com/query/56229/deed3-sepolia/version/latest",
     ipfsGateway: "https://ipfs.io/ipfs/",
   },
+  [chains.polygon.id]: {
+    color: "#2bbdf7",
+    nativeCurrencyTokenAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
+    stableCoinAddress: "0x0000000000",
+    testnet: false,
+  },
   [chains.goerli.id]: {
     color: "#0975F6",
     nativeCurrencyTokenAddress: "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60",
@@ -59,13 +67,6 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
   [chains.gnosis.id]: {
     color: "#48a9a6",
     nativeCurrencyTokenAddress: "0x0000000000",
-    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFeeDollar: 0,
-    stableCoinAddress: "0x0000000000",
-  },
-  [chains.polygon.id]: {
-    color: "#2bbdf7",
-    nativeCurrencyTokenAddress: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
     storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
     deedMintingFeeDollar: 0,
     stableCoinAddress: "0x0000000000",
@@ -188,7 +189,6 @@ export function getBlockExplorerAddressLink(address: string, network?: chains.Ch
 
 export function getTargetNetwork(): chains.Chain & TChainAttributes {
   const configuredNetwork = CONFIG.targetNetwork;
-
   return {
     ...configuredNetwork,
     ...NETWORKS_EXTRA_DATA[configuredNetwork.id],

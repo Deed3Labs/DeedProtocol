@@ -1,5 +1,5 @@
 import { getClient } from "./contract";
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
 import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Address, getContract } from "viem";
@@ -22,7 +22,7 @@ export const authentify = async (
   res: NextApiResponse,
   constraints: (Constraint[] | Constraint)[],
 ) => {
-  const { chainId } = req.query;
+  const { id: chainId } = getTargetNetwork();
   const walletAddress = getWalletAddressFromToken(req);
   if (!chainId || Number.isNaN(chainId) || isArray(chainId)) {
     res.status(400).send("Error: chainId is required and should be a number");
@@ -79,6 +79,7 @@ export const getWalletAddressFromToken = (req: NextApiRequest) => {
   return undefined;
 };
 
+// DO NOT REMOVE IT SERVES AS PING REGISTRY
 export const testEncryption = async (res: NextApiResponse) => {
   if (process.env.NEXT_PUBLIC_OFFLINE || getTargetNetwork().testnet) {
     return true;
@@ -101,8 +102,8 @@ export const getDecodedToken = (req: NextApiRequest) => {
       return verify(authorizationHeader, publicKey, {
         algorithms: ["RS256"],
       }) as AuthToken;
-    } catch (error) {
-      logger.warn("Failed to decode jwt token: ", error);
+    } catch (error: any) {
+      logger.warn("Failed to decode jwt token: ", error.message);
     }
   }
   return undefined;

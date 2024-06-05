@@ -6,6 +6,7 @@ import OtherInformations from "../../components/OtherInformations";
 import OwnerInformation from "../../components/OwnerInformation";
 import PropertyDetails from "../../components/RegPropertyDetails";
 import useDeedClient from "~~/clients/deeds.client";
+import PaymentInformation from "~~/components/PaymentInformation";
 import SidePanel from "~~/components/SidePanel";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useIsOwner from "~~/hooks/useIsOwner.hook";
@@ -202,9 +203,9 @@ const Page = ({ router }: WithRouterProps) => {
                 <hr className="my-12 opacity-20" />
                 <OtherInformations value={deedData.otherInformation} onChange={handleChange} />
                 <hr className="my-12 opacity-20" />
-                {/* {router.isReady && !deedData.paymentInformation.receipt && (
+                {router.isReady && !deedData.paymentInformation.receipt && (
                   <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
-                )} */}
+                )}
               </div>
             </div>
             <div className="w-full lg:w-1/3 mb-10">

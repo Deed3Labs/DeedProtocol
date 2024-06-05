@@ -47,7 +47,7 @@ const ScaffoldEthApp = (props: AppProps) => {
     apiKey: process.env.NEXT_PUBLIC_RESERVOIR_API_KEY,
     chains: [
       {
-        ...reservoirChains.sepolia,
+        ...reservoirChains[process.env.NEXT_PUBLIC_TARGET_NETWORK as keyof typeof reservoirChains],
         active: true,
       },
     ],
@@ -89,9 +89,9 @@ const ScaffoldEthApp = (props: AppProps) => {
             }}
           >
             <DynamicWagmiConnector>
-              <ReservoirKitProvider theme={reservoirDarkTheme()} options={reservoirOptions}>
-                <Layout {...props} />
-              </ReservoirKitProvider>
+              {/* <ReservoirKitProvider theme={reservoirDarkTheme()} options={reservoirOptions}> */}
+              <Layout {...props} />
+              {/* </ReservoirKitProvider> */}
             </DynamicWagmiConnector>
           </DynamicContextProvider>
         )}

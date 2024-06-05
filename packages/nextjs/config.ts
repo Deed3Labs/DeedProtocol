@@ -2,7 +2,8 @@ import * as chains from "viem/chains";
 
 const CONFIG = {
   // The network where your DApp lives in
-  targetNetwork: process.env.NEXT_PUBLIC_OFFLINE ? chains.localhost : chains.sepolia,
+  targetNetwork:
+    chains[process.env.NEXT_PUBLIC_TARGET_NETWORK as keyof typeof chains] || chains.sepolia,
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect on the local network

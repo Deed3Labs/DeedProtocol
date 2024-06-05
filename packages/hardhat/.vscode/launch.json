@@ -32,6 +32,16 @@
       ]
     },
     {
+      "name": "Hardhat deploy-proxy polygon",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "deploy-proxy:polygon"
+      ]
+    },
+    {
       "name": "Hardhat deploy local",
       "type": "node",
       "request": "launch",

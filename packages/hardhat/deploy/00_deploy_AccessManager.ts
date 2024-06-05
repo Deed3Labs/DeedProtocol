@@ -8,6 +8,7 @@ const contractName = "AccessManager";
 const deployAccessManager: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const namedAccounts = await hre.getNamedAccounts();
   const manager = namedAccounts.manager;
+  console.log({ manager });
   let proxyAddress = getDeployArtifact(hre.network.name, contractName)?.address;
   const contractFactory = await hre.ethers.getContractFactory(contractName);
   let contract;
