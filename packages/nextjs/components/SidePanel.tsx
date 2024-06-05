@@ -288,7 +288,7 @@ const SidePanel = ({
                     <div className="mx-3 text-sm flex flex-row gap-2 justify-between align-middle">
                       <div className="flex flex-col">
                         <span className="font-normal text-[#f0f0f0]">Appraisal and inspection</span>
-                        <span className="text-secondary">
+                        <span className="text-[#ababab]">
                           {USDollar.format(quoteDetails.appraisalAndInspectionFees)}
                         </span>
                       </div>
