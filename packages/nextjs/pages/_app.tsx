@@ -47,7 +47,9 @@ const ScaffoldEthApp = (props: AppProps) => {
     apiKey: process.env.NEXT_PUBLIC_RESERVOIR_API_KEY,
     chains: [
       {
-        ...reservoirChains[process.env.NEXT_PUBLIC_TARGET_NETWORK as keyof typeof reservoirChains],
+        ...reservoirChains[
+          (process.env.NEXT_PUBLIC_TARGET_NETWORK ?? "polygon") as keyof typeof reservoirChains
+        ],
         active: true,
       },
     ],
