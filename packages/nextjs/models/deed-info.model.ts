@@ -12,6 +12,7 @@ import {
   WrapperOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
+import { TokenModel } from "./token.model";
 
 export interface OwnerInformationModel {
   ownerType: ValueExtractor<typeof OwnerTypeOptions>;
@@ -86,7 +87,7 @@ export interface PaymentInformationModel {
   zip?: string;
 
   // -- Crypto only --
-  stableCoin?: Address;
+  stableCoin?: TokenModel;
 }
 
 export interface DeedInfoModel {

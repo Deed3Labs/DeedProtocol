@@ -4,10 +4,10 @@ import logger from "~~/services/logger.service";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 const useCryptoPayement = () => {
-  const { stableCoinAddress, deedMintingFeeDollar, storageAddress } = getTargetNetwork();
+  const { stableCoin, deedMintingFeeDollar, storageAddress } = getTargetNetwork();
 
   const erc20Transfer = useErc20Transfer(
-    stableCoinAddress,
+    stableCoin.address,
     parseEther(deedMintingFeeDollar.toString()),
     storageAddress,
   );

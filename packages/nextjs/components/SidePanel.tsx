@@ -21,26 +21,21 @@ import useIsOwner from "~~/hooks/useIsOwner.hook";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { QuoteModel } from "~~/models/quote.model";
+import { TokenModel } from "~~/models/token.model";
 import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface Props {
-  stableCoinAddress: string;
+  stableCoin: TokenModel;
   deedData: DeedInfoModel;
   initialData?: DeedInfoModel;
   refetchDeedInfo: (id?: string) => void;
   router: NextRouter;
 }
 
-const SidePanel = ({
-  deedData,
-  initialData,
-  stableCoinAddress,
-  refetchDeedInfo,
-  router,
-}: Props) => {
+const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router }: Props) => {
   const isValidator = useIsValidator();
   const { writeValidateAsync } = useDeedValidate();
   const { writeAsync: writeUpdateDeedAsync } = useDeedUpdate(() => refetchDeedInfo());
@@ -334,7 +329,9 @@ const SidePanel = ({
                     <li>
                       <div className="text-xl">Coin:</div>
                       <Address
-                        address={deedData.paymentInformation.stableCoin ?? stableCoinAddress}
+                        address={
+                          deedData.paymentInformation.stableCoin?.address ?? stableCoin?.address
+                        }
                       />
                     </li>
                     <li>

@@ -50,7 +50,7 @@ const config: HardhatUserConfig = {
     manager: {
       localhost: deployerAccount ?? "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
       sepolia: "0xD30aee396a54560581a3265Fd2194B0edB787525",
-      polygon: "0x07AD02e0C1FA0b09fC945ff197E18e9C256838c6",
+      polygon: "0xD0cC723ED8FEE1eaDFf8CB0883A244b16163361B",
     },
   },
   networks: {

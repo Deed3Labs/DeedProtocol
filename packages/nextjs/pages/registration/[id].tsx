@@ -11,58 +11,24 @@ import SidePanel from "~~/components/SidePanel";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useIsOwner from "~~/hooks/useIsOwner.hook";
 import useWallet from "~~/hooks/useWallet";
-import {
-  DeedInfoModel,
-  OwnerInformationModel,
-  PropertyDetailsModel,
-} from "~~/models/deed-info.model";
+import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
-const fakeData: DeedInfoModel = {
-  ownerInformation: {
-    ownerName: "John Doe",
-    ownerSuffix: "Jr.",
-    ownerType: "individual",
-    entityName: "",
-    ownerPosition: "",
-    ownerState: "CA",
-    ownerEntityType: "LLC",
-  } as OwnerInformationModel,
-  propertyDetails: {
-    propertyType: "realEstate",
-    propertyAddress: "1234 Main St",
-    propertyCity: "San Francisco",
-    propertyState: "CA",
-    propertyZoning: "commercial",
-    propertySize: "0.5 acres",
-    propertySubType: "land",
-  } as PropertyDetailsModel,
+const defaultData: DeedInfoModel = {
   otherInformation: {
     wrapper: "trust",
   },
+  ownerInformation: {
+    ownerType: "individual",
+  },
+  propertyDetails: { propertyType: "realEstate" },
   paymentInformation: {
     paymentType: isDev() ? "crypto" : "fiat",
-    stableCoin: getTargetNetwork().stableCoinAddress,
+    stableCoin: getTargetNetwork().stableCoin,
   },
-};
-
-const defaultData: DeedInfoModel = false
-  ? fakeData
-  : ({
-      otherInformation: {
-        wrapper: "trust",
-      },
-      ownerInformation: {
-        ownerType: "individual",
-      },
-      propertyDetails: { propertyType: "realEstate" },
-      paymentInformation: {
-        paymentType: isDev() ? "crypto" : "fiat",
-        stableCoin: getTargetNetwork().stableCoinAddress,
-      },
-    } as DeedInfoModel);
+} as DeedInfoModel;
 
 type ErrorCode = "notFound" | "unauthorized" | "unexpected";
 
@@ -78,7 +44,7 @@ const Page = ({ router }: WithRouterProps) => {
   const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
-  const { id: chainId, stableCoinAddress } = getTargetNetwork();
+  const { id: chainId, stableCoin: stableCoinAddress } = getTargetNetwork();
 
   const deedClient = useDeedClient();
 
@@ -210,7 +176,7 @@ const Page = ({ router }: WithRouterProps) => {
             </div>
             <div className="w-full lg:w-1/3 mb-10">
               <SidePanel
-                stableCoinAddress={stableCoinAddress}
+                stableCoin={stableCoin}
                 deedData={deedData}
                 initialData={initialData}
                 refetchDeedInfo={_id => fetchDeedInfo(_id ?? (id as string))}

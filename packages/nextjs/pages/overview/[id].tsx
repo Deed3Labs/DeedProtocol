@@ -37,7 +37,7 @@ const defaultData: DeedInfoModel = {
   propertyDetails: { propertyType: "realEstate" },
   paymentInformation: {
     paymentType: isDev() ? "crypto" : "fiat",
-    stableCoin: getTargetNetwork().stableCoinAddress,
+    stableCoin: getTargetNetwork().stableCoin,
   },
 } as DeedInfoModel;
 

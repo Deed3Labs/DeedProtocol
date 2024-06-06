@@ -5,6 +5,7 @@ import useFeesClient from "~~/clients/fees.client";
 import TextInput from "~~/components/inputs/TextInput";
 import useIsAdmin from "~~/hooks/contracts/access-manager/useIdAdmin.hook";
 import { LightChangeEvent } from "~~/models/light-change-event";
+import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 const FeesPanel = ({ router }: WithRouterProps) => {
@@ -39,19 +40,23 @@ const FeesPanel = ({ router }: WithRouterProps) => {
   const handleSave = async () => {
     if (feesState) {
       const notif = notification.info("Saving...", { duration: 0 });
-      Object.keys(feesState).map(key => {
-        const keyIn = key as keyof typeof feesState & keyof typeof fees;
-        if (keyIn in feesState)
-          try {
-            if (feesState[keyIn] === "") {
-              fees[keyIn] = undefined;
-            } else {
-              fees[keyIn] = JSON.parse(feesState[keyIn]);
+      const ignoreFields = ["createdOn", "_id", "chainId"];
+      Object.keys(feesState)
+        .filter(x => !ignoreFields.includes(x))
+        .map(key => {
+          const keyIn = key as keyof typeof feesState & keyof typeof fees;
+          if (keyIn in feesState)
+            try {
+              if (feesState[keyIn] === "") {
+                fees[keyIn] = undefined;
+              } else {
+                fees[keyIn] = JSON.parse(feesState[keyIn].replaceAll("'", '"'));
+              }
+            } catch (error) {
+              notification.error(`Failed to parse ${keyIn} with value ${feesState[keyIn]}`);
+              logger.error(`Failed to parse ${keyIn} with value ${feesState[keyIn]}`, error);
             }
-          } catch (error) {
-            notification.error(`Failed to parse ${keyIn} with value ${feesState[keyIn]}`);
-          }
-      });
+        });
       notification.remove(notif);
       if ((await client.saveFees(fees)) === "Saved") {
         notification.success("Fees saved successfully");

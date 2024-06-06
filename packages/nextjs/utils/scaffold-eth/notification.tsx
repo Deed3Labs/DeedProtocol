@@ -8,7 +8,6 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Spinner } from "~~/components/assets/Spinner";
-import { useGlobalState } from "~~/services/store/store";
 
 type TPositions =
   | "top-left"

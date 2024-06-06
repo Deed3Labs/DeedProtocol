@@ -14,7 +14,7 @@ import useIsOwner from "~~/hooks/useIsOwner.hook";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import logger from "~~/services/logger.service";
-import { notification } from "~~/utils/scaffold-eth";
+import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   deedData: DeedInfoModel;
@@ -41,6 +41,8 @@ const BidOffers = ({ deedData }: Props) => {
     token: tokenWithId,
   });
 
+  const currency = getTargetNetwork().stableCoin;
+
   return (
     <div className="flex flex-col border border-white border-opacity-10">
       <div className="flex flex-col p-4 gap-4">
@@ -60,8 +62,10 @@ const BidOffers = ({ deedData }: Props) => {
                       tokenId={deedData.mintedId!.toString()}
                       currencies={[
                         {
-                          contract: "0x0000000000000000000000000000000000000000",
-                          symbol: "ETH",
+                          contract: currency.address,
+                          symbol: currency.symbol,
+                          decimals: currency.decimals,
+                          coinGeckoId: currency.coinGeckoId,
                         },
                       ]}
                       oracleEnabled={true}
@@ -157,6 +161,14 @@ const BidOffers = ({ deedData }: Props) => {
                         feesBps={fees?.bid_feesBps}
                         normalizeRoyalties={fees?.bid_normalizeRoyalties}
                         oracleEnabled={true}
+                        currencies={[
+                          {
+                            contract: currency.address,
+                            symbol: currency.symbol,
+                            decimals: currency.decimals,
+                            coinGeckoId: currency.coinGeckoId,
+                          },
+                        ]}
                       />
                       <BuyModal
                         defaultQuantity={1}
