@@ -11,6 +11,7 @@ import {
   getParsedError,
 } from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
+import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 // Account index to use from generated hardhat accounts.
@@ -54,7 +55,7 @@ export const Faucet = () => {
             </p>
           </>,
         );
-        console.error("⚡️ ~ file: Faucet.tsx:getFaucetAddress ~ error", error);
+        logger.error("⚡️ ~ file: Faucet.tsx:getFaucetAddress ~ error", error);
       }
     };
     getFaucetAddress();
@@ -77,7 +78,7 @@ export const Faucet = () => {
       setSendValue("");
     } catch (error) {
       const parsedError = getParsedError(error);
-      console.error("⚡️ ~ file: Faucet.tsx:sendETH ~ error", error);
+      logger.error("⚡️ ~ file: Faucet.tsx:sendETH ~ error", error);
       notification.error(parsedError);
       setLoading(false);
     }
@@ -139,7 +140,7 @@ export const Faucet = () => {
                 {!loading ? (
                   <BanknotesIcon className="h-6 w-6" />
                 ) : (
-                  <span className="loading loading-spinner loading-sm"></span>
+                  <span className="loading loading-spinner loading-sm" />
                 )}
                 <span>Send</span>
               </button>

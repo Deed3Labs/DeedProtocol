@@ -4,6 +4,7 @@ import { hardhat } from "viem/chains";
 import { useAccount, useNetwork } from "wagmi";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
 import { useAccountBalance, useTransactor } from "~~/hooks/scaffold-eth";
+import logger from "~~/services/logger.service";
 
 // Number of ETH faucet sends to an address
 const NUM_OF_ETH = "1";
@@ -38,7 +39,7 @@ export const FaucetButton = () => {
       });
       setLoading(false);
     } catch (error) {
-      console.error("⚡️ ~ file: FaucetButton.tsx:sendETH ~ error", error);
+      logger.error("⚡️ ~ file: FaucetButton.tsx:sendETH ~ error", error);
       setLoading(false);
     }
   };
@@ -65,7 +66,7 @@ export const FaucetButton = () => {
         {!loading ? (
           <BanknotesIcon className="h-4 w-4" />
         ) : (
-          <span className="loading loading-spinner loading-xs"></span>
+          <span className="loading loading-spinner loading-xs" />
         )}
       </button>
     </div>

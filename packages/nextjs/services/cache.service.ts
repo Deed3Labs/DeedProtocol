@@ -31,9 +31,11 @@ export async function cacheIsValidator(wallet: Address, forceCacheRefresh: boole
     "contract-write",
     JSON.stringify(keyParam),
     () => {
-      return getContractInstance(keyParam.chainId, "AccessManager").read.hasValidatorRole([
-        keyParam.wallet,
-      ]);
+      return getContractInstance(
+        window.location.host,
+        keyParam.chainId,
+        "AccessManager",
+      ).read.hasValidatorRole([keyParam.wallet]);
     },
     3600,
     forceCacheRefresh,
@@ -52,9 +54,11 @@ export async function cacheIsAdmin(wallet: Address, forceCacheRefresh: boolean =
     "contract-write",
     JSON.stringify(keyParam),
     () => {
-      return getContractInstance(keyParam.chainId, "AccessManager").read.hasAdminRole([
-        keyParam.wallet,
-      ]);
+      return getContractInstance(
+        window.location.host,
+        keyParam.chainId,
+        "AccessManager",
+      ).read.hasAdminRole([keyParam.wallet]);
     },
     adminCacheTimeSec,
     forceCacheRefresh,

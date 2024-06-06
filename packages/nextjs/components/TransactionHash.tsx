@@ -13,7 +13,7 @@ export const TransactionHash = ({ hash }: { hash: string }) => {
   return (
     <div className="flex items-center">
       <Link href={txExplorerLink} target="_blank" className="flex flex-row items-center gap-2">
-        <ExternalLinkIcon></ExternalLinkIcon>
+        <ExternalLinkIcon />
         {hash?.substring(0, 6)}...{hash?.substring(hash.length - 4)}
       </Link>
       {addressCopied ? (

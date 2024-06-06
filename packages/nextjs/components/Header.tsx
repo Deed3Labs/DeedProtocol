@@ -3,7 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { RainbowKitCustomConnectButton } from "./scaffold-eth/RainbowKitCustomConnectButton";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import { Bars3Icon, HomeModernIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import { usePropertiesFilter } from "~~/contexts/property-filter.context";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import useWallet from "~~/hooks/useWallet";
@@ -14,12 +15,18 @@ import logger from "~~/services/logger.service";
  */
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [search, setSearch] = useState<string | undefined>();
+  const [search, setSearch] = useState<string | undefined>(undefined);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const { primaryWallet, connectWallet } = useWallet();
   const { query, pathname } = useRouter();
   const { id } = query;
   const searchRef = useRef<HTMLInputElement>(null);
+  const { applyFilter, filter } = usePropertiesFilter();
+  const router = useRouter();
+
+  const isActive = (href: string) => {
+    return router.asPath.includes(href);
+  };
 
   useOutsideClick(
     burgerMenuRef,
@@ -38,32 +45,48 @@ export const Header = () => {
     }
   }, [primaryWallet?.address]);
 
-  const router = useRouter();
-
-  const isActive = (href: string) => {
-    return router.asPath.includes(href);
-  };
-
   useEffect(() => {
     if (router.query.login) {
       connectWallet();
     }
   }, [router.query]);
 
+  // const isSearchFocused = useMemo(
+  //   () => document.activeElement === searchRef.current,
+  //   [document?.activeElement, searchRef?.current],
+  // );
+
   const nav = useMemo(
     () => (
       <>
-        <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
-          <input
-            ref={searchRef}
-            className="hidden sm:flex input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
-            placeholder="Quickly search the entire site"
-            onChange={() => setSearch(searchRef.current?.value)}
-            value={search}
-          />
-          <kbd className="hidden lg:flex bd bg-neutral-focus -ml-11 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
-            /
-          </kbd>
+        <div className="w-full flex flex-col gap-0">
+          <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
+            <input
+              ref={searchRef}
+              className="hidden sm:flex input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
+              placeholder="Quickly search the entire site"
+              onChange={() => setSearch(searchRef.current?.value)}
+              value={search}
+            />
+            <kbd className="hidden lg:flex bd bg-neutral-focus -ml-11 justify-center items-center text-sm font-normal w-8 h-8 rounded-xl">
+              /
+            </kbd>
+          </div>
+          <div className={`w-full dropdown`}>
+            <ul className="w-full p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box">
+              <li>
+                <a>
+                  <HomeModernIcon className="w-4" /> Explorer: {search}
+                </a>
+              </li>
+              <li>
+                <a>
+                  <MapPinIcon className="w-4" />
+                  Overview: {search}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
         <Link
           className={`text-[11px] sm:text-[11px] uppercase tracking-widest link-default ${

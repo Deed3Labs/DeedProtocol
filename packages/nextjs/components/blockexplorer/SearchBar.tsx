@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { isAddress, isHex } from "viem";
 import { hardhat } from "viem/chains";
 import { usePublicClient } from "wagmi";
+import logger from "~~/services/logger.service";
 
 export const SearchBar = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -20,7 +21,7 @@ export const SearchBar = () => {
           return;
         }
       } catch (error) {
-        console.error("Failed to fetch transaction:", error);
+        logger.error("Failed to fetch transaction:", error);
       }
     }
 

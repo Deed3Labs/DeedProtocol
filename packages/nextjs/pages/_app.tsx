@@ -20,7 +20,6 @@ import { useDarkMode } from "usehooks-ts";
 import { WagmiConfig } from "wagmi";
 import useFeesClient from "~~/clients/fees.client";
 import CONFIG from "~~/config";
-import logger from "~~/services/logger.service";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
 import "~~/styles/globals.scss";

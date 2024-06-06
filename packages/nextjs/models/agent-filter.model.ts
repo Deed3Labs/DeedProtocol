@@ -4,4 +4,4 @@ export interface AgentFilterModel {
   agentType?: AgentType | "All";
   featured?: boolean;
   search?: string;
-  
+}

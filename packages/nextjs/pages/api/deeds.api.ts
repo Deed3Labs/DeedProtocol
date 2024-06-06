@@ -52,7 +52,7 @@ async function getDeedFromChain(req: NextApiRequest, res: NextApiResponse, force
     return res.status(400).send("Error: id of type number is required");
   }
 
-  const contract = getContractInstance(chainId, "DeedNFT");
+  const contract = getContractInstance(req.headers.host ?? "", chainId, "DeedNFT");
 
   // Get the deed information from the contract.
   const tokenHash = await contract.read.tokenURI([id as any]);
@@ -64,7 +64,7 @@ async function getDeedFromChain(req: NextApiRequest, res: NextApiResponse, force
   }
 
   // Fetch owner
-  const deedOwner = await getDeedOwner(+id, +chainId);
+  const deedOwner = await getDeedOwner(req.headers.host ?? "", +id, +chainId);
 
   // Fetch isValidated
   const deedInfo = await contract.read.getDeedInfo([id as any]);

@@ -1,4 +1,3 @@
-import { NextApiRequest } from "next";
 import { createPublicClient, getContract, http } from "viem";
 import { gnosis, goerli, localhost, polygon } from "viem/chains";
 import { mainnet, sepolia } from "wagmi";
@@ -6,7 +5,7 @@ import CONFIG from "~~/config";
 import deployedContracts from "~~/contracts/deployedContracts";
 import logger from "~~/services/logger.service";
 
-export const getClient = (req: NextApiRequest, chainId: number | string) => {
+export const getClient = (host: string, chainId: number | string) => {
   let chain;
   chainId = Number(chainId);
   if (chainId === sepolia.id) {
@@ -34,15 +33,15 @@ export const getClient = (req: NextApiRequest, chainId: number | string) => {
     chain: chain,
     transport: http(rpcUrl, {
       fetchOptions: {
-        headers: [["Origin", req.headers.host ?? ""]],
+        headers: [["Origin", host]],
       },
     }),
   });
 };
 
-export const getDeedOwner = async (req: NextApiRequest, id: number, chainId: number) => {
+export const getDeedOwner = async (host: string, id: number, chainId: number) => {
   // Get the contract instance.
-  const contract = getContractInstance(req, chainId, "DeedNFT");
+  const contract = getContractInstance(host, chainId, "DeedNFT");
   try {
     return await contract.read.ownerOf([id as any]);
   } catch (error: any) {
@@ -57,7 +56,7 @@ export const getDeedOwner = async (req: NextApiRequest, id: number, chainId: num
 };
 
 export const getContractInstance = (
-  req: NextApiRequest,
+  host: string,
   chainId: number | string,
   name: keyof (typeof deployedContracts)[137],
 ) => {
@@ -67,6 +66,6 @@ export const getContractInstance = (
   return getContract({
     address: deedNFT.address,
     abi: deedNFT.abi,
-    publicClient: getClient(req, chainId),
+    publicClient: getClient(host, chainId),
   });
 };

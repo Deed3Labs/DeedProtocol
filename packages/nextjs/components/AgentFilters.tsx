@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
 import ExplorerLinks from "./ExplorerLinks";
 import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
@@ -18,7 +17,6 @@ interface Props {
 }
 
 const AgentFilters = ({ onFilter, agents }: Props) => {
-  const searchParams = useSearchParams();
   const [mapOpened, setMapOpened] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
   const [filter, setFilter] = useState<AgentFilterModel>({});
@@ -70,7 +68,7 @@ const AgentFilters = ({ onFilter, agents }: Props) => {
           </button>
           <select
             className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-grow"
-            value={filter.propertyType}
+            value={filter.agentType}
             onChange={ev => applyFilter({ agentType: ev.target.value as AgentType })}
           >
             <option disabled value={0}>

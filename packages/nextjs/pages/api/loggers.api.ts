@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import "./base";
 import { NextApiRequest, NextApiResponse } from "next";
 import withErrorHandler from "~~/middlewares/withErrorHandler";

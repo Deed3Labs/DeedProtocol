@@ -5,7 +5,6 @@ import useFeesClient from "~~/clients/fees.client";
 import TextInput from "~~/components/inputs/TextInput";
 import useIsAdmin from "~~/hooks/contracts/access-manager/useIdAdmin.hook";
 import { LightChangeEvent } from "~~/models/light-change-event";
-import logger from "~~/services/logger.service";
 import { notification } from "~~/utils/scaffold-eth";
 
 const FeesPanel = ({ router }: WithRouterProps) => {

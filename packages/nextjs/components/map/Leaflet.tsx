@@ -2,12 +2,12 @@ import { MapProps } from ".";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 
 const mapboxToken =
   "pk.eyJ1IjoiY29yYW50aW4iLCJhIjoiY2xtdjZiZTV4MGlibDJsbXM5ZzM1dHg0OCJ9.cv78ncZxEq8TE2exs5vvIA";
 
-const Map = (props: MapProps) => {
+const Map = (_props: MapProps) => {
   return (
     <MapContainer
       center={[40.8054, -74.0241]}
