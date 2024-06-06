@@ -13,6 +13,7 @@
     "deploy:polygon": "hardhat deploy --network polygon --tags core",
     "deploy-proxy:polygon": "hardhat run scripts/reset-proxy.ts --network polygon && hardhat deploy --network polygon --tags core",
     "deploy-mocks:local": "hardhat deploy --network localhost --tags mocks",
+    "deploy-mocks:polygon": "hardhat deploy --network polygon --tags mocks",
     "deploy:generateTsAbi": "hardhat deploy --tags generateTsAbis --network",
     "coverage": "hardhat coverage --testfiles \"test/*.spec.ts\" --solcoverjs ./test/coverage.solcover.ts",
     "fork": "MAINNET_FORKING_ENABLED=true hardhat node --network hardhat --no-deploy",

@@ -405,7 +405,7 @@ const SidePanel = ({
               className="btn btn-primary btn-lg uppercase text-sm tracking-widest flex-1"
               disabled={!quoteDetails}
             >
-              {deedData.id || deedData.paymentInformation.receipt || !isOwner
+              {deedData.id || deedData.paymentInformation.receipt || (deedData.id && !isOwner)
                 ? "Save"
                 : "Proceed to payment"}
             </button>

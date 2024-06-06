@@ -12,11 +12,11 @@ import ProfileComponent from "~~/components/ProfilComponent";
 import PropertyBidOffers from "~~/components/PropertyBidOffers";
 import PropertyListBuy from "~~/components/PropertyListBuy";
 import { Address } from "~~/components/scaffold-eth";
-import deployedContracts from "~~/contracts/deployedContracts";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
+import useContractAddress from "~~/hooks/useContractAddress";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
@@ -57,9 +57,7 @@ const Page = ({ router }: WithRouterProps) => {
   const deedClient = useDeedClient();
   const { writeValidateAsync } = useDeedValidate();
   const { id: chainId } = getTargetNetwork();
-  const deedNFTContractAddress =
-    // @ts-ignore
-    deployedContracts[getTargetNetwork().id.toString()]["DeedNFT"].address;
+  const deedNFTContractAddress = useContractAddress("DeedNFT");
 
   useEffect(() => {
     if (router.isReady && !isConnecting) {

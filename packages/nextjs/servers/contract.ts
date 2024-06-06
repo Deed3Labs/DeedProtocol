@@ -33,7 +33,7 @@ export const getClient = (host: string, chainId: number | string) => {
     chain: chain,
     transport: http(rpcUrl, {
       fetchOptions: {
-        headers: [["Origin", host]],
+        headers: { Origin: host },
       },
     }),
   });

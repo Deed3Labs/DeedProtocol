@@ -40,9 +40,7 @@ const defaultData: DeedInfoModel = {
 type ErrorCode = "notFound" | "unauthorized" | "unexpected";
 
 const Page = ({ router }: WithRouterProps) => {
-  // eslint-disable-next-line prefer-const
-  let { id, receipt } = router.query;
-
+  const { id, receipt } = router.query;
   const { primaryWallet, authToken, isConnecting } = useWallet();
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
   const [isLoading, setIsLoading] = useState(true);
@@ -62,8 +60,8 @@ const Page = ({ router }: WithRouterProps) => {
       paymentClient.verifyPayment(receipt as string).then(async resp => {
         if (resp?.isVerified) {
           notification.success("Payment Successfull");
-          // Remove receipt from query
-          await router.replace(router.asPath.split("?")[0]);
+          router.push(`/validation/${resp.registrationId}`);
+          fetchDeedInfo(resp.registrationId);
         } else {
           notification.error("Error verifying payment");
         }
@@ -72,7 +70,7 @@ const Page = ({ router }: WithRouterProps) => {
   }, [receipt]);
 
   useEffect(() => {
-    if (router.isReady && !isConnecting) {
+    if (router.isReady && !isConnecting && id !== "fallback") {
       setIsLoading(true);
       fetchDeedInfo(id as string);
     }
