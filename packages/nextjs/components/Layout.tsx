@@ -6,6 +6,7 @@ import { BackToTop } from "~~/components/BackToTop";
 import ErrorBoundary from "~~/components/ErrorBoundary";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
+import { GlobalStoreProvider } from "~~/contexts/global-store.context";
 import { PropertiesFilterProvider } from "~~/contexts/property-filter.context";
 
 const Layout = ({ pageProps, Component }: AppProps) => {
@@ -32,11 +33,13 @@ const Layout = ({ pageProps, Component }: AppProps) => {
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="relative flex flex-col flex-1">
-          <ErrorBoundary>
-            <PropertiesFilterProvider>
-              <Component {...pageProps} />
-            </PropertiesFilterProvider>
-          </ErrorBoundary>
+          <GlobalStoreProvider>
+            <ErrorBoundary>
+              <PropertiesFilterProvider>
+                <Component {...pageProps} />
+              </PropertiesFilterProvider>
+            </ErrorBoundary>
+          </GlobalStoreProvider>
         </main>
         <Footer />
       </div>

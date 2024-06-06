@@ -1,5 +1,5 @@
 import { getClient } from "./contract";
-import { JwtPayload, verify } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Address, getContract } from "viem";
@@ -40,7 +40,7 @@ export const authentify = async (
         const contract = getContract({
           address: accessManager.address,
           abi: accessManager.abi,
-          publicClient: getClient(chainId),
+          publicClient: getClient(req, chainId),
         });
 
         if (constraint === "Validator") {

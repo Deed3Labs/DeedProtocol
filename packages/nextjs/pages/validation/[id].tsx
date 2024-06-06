@@ -8,6 +8,7 @@ import PropertyOverview from "../../components/ValidationPropertyOverview";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
+import usePaymentClient from "~~/clients/payments.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
@@ -40,7 +41,7 @@ type ErrorCode = "notFound" | "unauthorized" | "unexpected";
 
 const Page = ({ router }: WithRouterProps) => {
   // eslint-disable-next-line prefer-const
-  let { id } = router.query;
+  let { id, receipt } = router.query;
 
   const { primaryWallet, authToken, isConnecting } = useWallet();
   const { writeAsync: writeMintDeedAsync } = useDeedMint(receipt => onDeedMinted(receipt));
@@ -52,8 +53,23 @@ const Page = ({ router }: WithRouterProps) => {
   const isOwner = useIsOwner(deedData);
   const isValidator = useIsValidator();
   const deedClient = useDeedClient();
+  const paymentClient = usePaymentClient();
   const { writeValidateAsync } = useDeedValidate();
   const { id: chainId } = getTargetNetwork();
+
+  useEffect(() => {
+    if (receipt) {
+      paymentClient.verifyPayment(receipt as string).then(async resp => {
+        if (resp?.isVerified) {
+          notification.success("Payment Successfull");
+          // Remove receipt from query
+          await router.replace(router.asPath.split("?")[0]);
+        } else {
+          notification.error("Error verifying payment");
+        }
+      });
+    }
+  }, [receipt]);
 
   useEffect(() => {
     if (router.isReady && !isConnecting) {
@@ -162,8 +178,9 @@ const Page = ({ router }: WithRouterProps) => {
       await writeUpdateDeedAsync(deedData, initialData);
     }
   };
+
   return (
-    <div className="container pt-2 sm:pt-6 pb-10">
+    <div className="container pt-2 sm:pt-4 pb-10">
       {!isLoading ? (
         errorCode && id ? (
           <div className="flex flex-col gap-6 mt-6">
@@ -193,97 +210,102 @@ const Page = ({ router }: WithRouterProps) => {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col lg:flex-row gap-4 w-full">
-            <div className="flex flex-col gap-4 w-full lg:w-[63%]">
-              <div className="flex flex-row w-full items-center justify-between">
-                <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
-                  Validation History
+          <div className="w-full px-4 md:px-8 lg:px-16">
+            {/* Property Validation Title and Switcher Buttons */}
+            <div className="flex flex-row w-full items-center justify-between mb-4 sm:mb-6">
+              <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
+                Validation History
+              </div>
+
+              <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
+                <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
+                  <svg
+                    width="16"
+                    height="15"
+                    viewBox="0 0 16 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 12.75V9.25H2M10 2.25V5.75H14"
+                      stroke="white"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div className="join join-horizontal border border-white border-opacity-10 p-1">
+                  <Link
+                    href={`/overview/${id}`}
+                    className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal !text-zinc-400 !no-underline"
+                  >
+                    Property Overview
+                  </Link>
+                  <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal  bg-base-300 cursor-default">
+                    Validation History
+                  </div>
                 </div>
-                <div className="flex flex-row items-center justify-between sm:gap-4 w-full sm:w-auto">
-                  <button className="btn btn-sm border-white border-opacity-10 m-1 btn-square rounded-lg">
-                    <svg
-                      width="16"
-                      height="15"
-                      viewBox="0 0 16 15"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6 12.75V9.25H2M10 2.25V5.75H14"
-                        stroke="white"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                <div className="dropdown dropdown-end">
+                  <button
+                    tabIndex={0}
+                    className="btn btn-sm m-1 border-white border-opacity-10 btn-square rounded-lg"
+                  >
+                    <EllipsisHorizontalIcon className="h-6" />
                   </button>
-                  <div className="join join-horizontal border border-white border-opacity-10 p-1">
-                    <Link
-                      href={`/overview/${id}`}
-                      className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal !text-zinc-400 !no-underline"
-                    >
-                      Property Overview
-                    </Link>
-                    <div className="join-item py-2 px-3 text-[2.8vw] sm:text-[12px] font-normal  bg-base-300 cursor-default">
-                      Validation History
-                    </div>
-                  </div>
-                  <div className="dropdown dropdown-end">
-                    <button
-                      tabIndex={0}
-                      className="btn btn-sm m-1 border-white border-opacity-10 btn-square rounded-lg"
-                    >
-                      <EllipsisHorizontalIcon className="h-6" />
-                    </button>
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
-                    >
-                      <li>
-                        <Link href={`/registration/${deedData.id}`}>Edit</Link>
-                      </li>
-                      {isValidator && (
-                        <>
-                          {deedData.mintedId ? (
-                            <li>
-                              <a onClick={() => handleValidate()} className="link-default">
-                                {deedData.isValidated ? "Unvalidate" : "Validate"}
-                              </a>
-                            </li>
-                          ) : (
-                            <li>
-                              <a onClick={() => handleMint()} className="link-default">
-                                Mint
-                              </a>
-                            </li>
-                          )}
-                        </>
-                      )}
-                    </ul>
-                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52"
+                  >
+                    <li>
+                      <Link href={`/registration/${deedData.id}`}>Edit</Link>
+                    </li>
+                    {isValidator && (
+                      <>
+                        {deedData.mintedId ? (
+                          <li>
+                            <a onClick={() => handleValidate()} className="link-default">
+                              {deedData.isValidated ? "Unvalidate" : "Validate"}
+                            </a>
+                          </li>
+                        ) : (
+                          <li>
+                            <a onClick={() => handleMint()} className="link-default">
+                              Mint
+                            </a>
+                          </li>
+                        )}
+                      </>
+                    )}
+                  </ul>
                 </div>
               </div>
-              <PropertyOverview
-                deedData={deedData}
-                isOwner={isOwner}
-                onRefresh={() => fetchDeedInfo(deedData.id!)}
-                handleMint={handleMint}
-                handleValidate={handleValidate}
-              />
-              <PropertyDetails
-                propertyDetail={deedData.propertyDetails}
-                isOwner={isOwner}
-                onChange={handleChange}
-                onRefresh={() => fetchDeedInfo(deedData.id!)}
-                onSave={handleSave}
-              />
             </div>
-            <div className="w-full lg:w-[37%]">
-              <ValidationProcedures
-                deedData={deedData}
-                onSave={handleSave}
-                onRefresh={() => fetchDeedInfo(deedData.id!)}
-              />
+            {/* 2 cols layout */}
+            <div className="flex flex-col lg:flex-row mt-4 sm:mt-6 gap-4">
+              <div className="flex flex-col gap-4 w-full lg:w-[63%]">
+                <PropertyOverview
+                  deedData={deedData}
+                  isOwner={isOwner}
+                  onRefresh={() => fetchDeedInfo(deedData.id!)}
+                  handleMint={handleMint}
+                  handleValidate={handleValidate}
+                />
+                <PropertyDetails
+                  propertyDetail={deedData.propertyDetails}
+                  isOwner={isOwner}
+                  onChange={handleChange}
+                  onRefresh={() => fetchDeedInfo(deedData.id!)}
+                  onSave={handleSave}
+                />
+              </div>
+              <div className="w-full lg:w-[37%]">
+                <ValidationProcedures
+                  deedData={deedData}
+                  onSave={handleSave}
+                  onRefresh={() => fetchDeedInfo(deedData.id!)}
+                />
+              </div>
             </div>
           </div>
         )

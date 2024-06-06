@@ -8,6 +8,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Spinner } from "~~/components/assets/Spinner";
+import { useGlobalState } from "~~/services/store/store";
 
 type TPositions =
   | "top-left"
@@ -43,9 +44,6 @@ const ENUM_STATUSES = {
 const DEFAULT_DURATION = 3000;
 const DEFAULT_POSITION: TPositions = "top-center";
 
-let currentNotificationContent: React.ReactNode;
-let currentNotificationId: string;
-
 /**
  * Custom Notification
  */
@@ -57,36 +55,33 @@ const Notification = ({
   position = DEFAULT_POSITION,
   toastId,
 }: TNotificationProps) => {
-  if (currentNotificationContent !== content) {
-    currentNotificationId = toast.custom(
-      t => (
-        <div
-          className={`flex flex-row items-start justify-between max-w-sm rounded-xl shadow-center shadow-accent bg-base-300 p-4 transform-gpu relative transition-all duration-500 ease-in-out space-x-2
+  return toast.custom(
+    t => (
+      <div
+        className={`flex flex-row items-start justify-between max-w-sm rounded-xl shadow-center shadow-accent bg-base-300 p-4 transform-gpu relative transition-all duration-500 ease-in-out space-x-2
         ${
           position.substring(0, 3) == "top"
             ? `hover:translate-y-1 ${t.visible ? "top-0" : "-top-96"}`
             : `hover:-translate-y-1 ${t.visible ? "bottom-0" : "-bottom-96"}`
         }`}
-        >
-          <div className="text-2xl self-start">{icon ? icon : ENUM_STATUSES[status]}</div>
-          <div className={`break-all whitespace-pre-line ${icon ? "mt-1" : ""}`}>{content}</div>
+      >
+        <div className="text-2xl self-start">{icon ? icon : ENUM_STATUSES[status]}</div>
+        <div className={`break-all whitespace-pre-line ${icon ? "mt-1" : ""}`}>{content}</div>
 
-          <div
-            className={`cursor-pointer text-lg ${icon ? "mt-1" : ""}`}
-            onClick={() => toast.dismiss(t.id)}
-          >
-            <XMarkIcon className="w-6 cursor-pointer" onClick={() => toast.remove(t.id)} />
-          </div>
+        <div
+          className={`cursor-pointer text-lg ${icon ? "mt-1" : ""}`}
+          onClick={() => toast.dismiss(t.id)}
+        >
+          <XMarkIcon className="w-6 cursor-pointer" onClick={() => toast.remove(t.id)} />
         </div>
-      ),
-      {
-        duration: status === "loading" ? Infinity : duration,
-        position,
-        id: toastId,
-      },
-    );
-  }
-  return currentNotificationId;
+      </div>
+    ),
+    {
+      duration: status === "loading" ? Infinity : duration,
+      position,
+      id: toastId,
+    },
+  );
 };
 export const notification = {
   success: (content: React.ReactNode, options?: NotificationOptions) => {
