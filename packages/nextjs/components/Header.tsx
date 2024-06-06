@@ -28,7 +28,9 @@ export const Header = () => {
 
   useOutsideClick(
     burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), []),
+    useCallback(() => {
+      setIsDrawerOpen(false);
+    }, []),
   );
 
   useKeyboardShortcut(["/"], ev => {
@@ -67,11 +69,11 @@ export const Header = () => {
     () => (
       <>
         <div className="w-full flex flex-col gap-0">
-          <div className="flex lg:flex-grow lg:items-center w-full lg:pr-6">
+          <div className="flex flex-grow items-center w-full pr-6">
             <input
               ref={searchRef}
               type="search"
-              className="hidden sm:flex input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
+              className="hidden lg:flex input border-white border-opacity-10 border-1 text-sm font-normal w-full lg:w-80"
               placeholder="Quickly search the entire site"
               onChange={ev => setSearch(ev.target.value)}
               value={search}
@@ -80,7 +82,7 @@ export const Header = () => {
               /
             </kbd>
           </div>
-          <div className={`w-full dropdown ${search ? "dropdown-open" : ""}`}>
+          <div className={`hidden lg:dropdown w-full  ${search ? "dropdown-open" : ""}`}>
             <ul className="w-full p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box">
               <li>
                 <a onClick={handleExplorerClicked}>
