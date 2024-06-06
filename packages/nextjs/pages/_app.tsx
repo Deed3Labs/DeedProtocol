@@ -35,31 +35,6 @@ const ScaffoldEthApp = (props: AppProps) => {
   const { fees } = useFeesClient();
 
   useEffect(() => {
-    // Log all the environment variables
-    const envVarkeys = [
-      "NEXT_PUBLIC_ALCHEMY_API_KEY",
-      "NEXT_PUBLIC_MAPBOX_TOKEN",
-      "NEXT_PINATA_API_KEY",
-      "NEXT_PINATA_API_SECRET",
-      "NEXT_PINATA_GATEWAY_KEY",
-      "NEXT_PINATA_GATEWAY",
-      "NEXT_PUBLIC_IGNORE_BUILD_ERROR",
-      "NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID",
-      "NEXT_DYNAMIC_PUBLIC_KEY",
-      "NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID",
-      "NEXT_MANGODB_CONNECTION_STRING",
-      "NEXT_STRIPE_SECRET_KEY",
-      "NEXT_PUBLIC_PAYMENT_LINK",
-      "NEXT_PUBLIC_RESERVOIR_API_KEY",
-      "NEXT_PUBLIC_VERBOSE",
-      "NEXT_PUBLIC_TARGET_NETWORK",
-    ];
-
-    logger.info(
-      "Environment variables:",
-      JSON.stringify(envVarkeys.map(key => `${key}: ${process.env[key]}`)),
-    );
-
     if (!CONFIG.dynamicEnvironementId) {
       throw new Error("Missing environment ID");
     }

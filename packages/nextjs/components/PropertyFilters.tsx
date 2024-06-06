@@ -12,6 +12,7 @@ import { PropertyTypeOptions } from "~~/constants";
 import { usePropertiesFilter } from "~~/contexts/property-filter.context";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
+import useWallet from "~~/hooks/useWallet";
 import { PropertyType } from "~~/models/deed-info.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
 import { PropertyModel } from "~~/models/property.model";
@@ -22,6 +23,7 @@ interface Props {
 
 const PropertyFilters = ({ properties }: Props) => {
   const isValidator = useIsValidator();
+  const { primaryWallet } = useWallet();
   const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
   const { filter, applyFilter } = usePropertiesFilter();
@@ -101,8 +103,12 @@ const PropertyFilters = ({ properties }: Props) => {
               }}
             >
               <option value="true">Verified</option>
-              <option value="false">Not verified{!isValidator ? " (only mine)" : ""}</option>
-              <option value="all">All{!isValidator ? " (only mine)" : ""}</option>
+              {primaryWallet && (
+                <>
+                  <option value="false">Not verified{!isValidator ? " (only mine)" : ""}</option>
+                  <option value="all">All{!isValidator ? " (only mine)" : ""}</option>
+                </>
+              )}
             </select>
             <TextInput
               name="PropertySize"
