@@ -31,17 +31,17 @@ const Layout = ({ pageProps, Component }: AppProps) => {
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <PropertiesFilterProvider>
-          <Header />
-          <main className="relative flex flex-col flex-1">
-            <GlobalStoreProvider>
-              <ErrorBoundary>
+        <Header />
+        <main className="relative flex flex-col flex-1">
+          <GlobalStoreProvider>
+            <ErrorBoundary>
+              <PropertiesFilterProvider>
                 <Component {...pageProps} />
-              </ErrorBoundary>
-            </GlobalStoreProvider>
-          </main>
-          <Footer />
-        </PropertiesFilterProvider>
+              </PropertiesFilterProvider>
+            </ErrorBoundary>
+          </GlobalStoreProvider>
+        </main>
+        <Footer />
       </div>
       <Toaster />
       <BackToTop />

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ExplorerLinks from "./ExplorerLinks";
 import PropertyCard from "./PropertyCard";
 import TextInput from "./inputs/TextInput";
@@ -27,6 +28,13 @@ const PropertyFilters = ({ properties }: Props) => {
   const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
   const { filter, applyFilter } = usePropertiesFilter();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.search) {
+      applyFilter({ search: router.query.search as string });
+    }
+  }, [router.query.search]);
 
   useKeyboardShortcut(["Enter"], () => {
     applyFilter(filter);
