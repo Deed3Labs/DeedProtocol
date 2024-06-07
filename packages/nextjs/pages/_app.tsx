@@ -24,7 +24,6 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
 import "~~/styles/globals.scss";
 import { isDev } from "~~/utils/is-dev";
-import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 config.autoAddCss = false;
 
@@ -33,7 +32,6 @@ const ScaffoldEthApp = (props: AppProps) => {
   const { isDarkMode } = useDarkMode();
 
   const { fees } = useFeesClient();
-  const network = getTargetNetwork();
 
   useEffect(() => {
     if (!CONFIG.dynamicEnvironementId) {
