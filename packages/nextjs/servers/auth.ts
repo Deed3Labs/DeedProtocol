@@ -21,6 +21,7 @@ export const authentify = async (
   req: NextApiRequest,
   res: NextApiResponse,
   constraints: (Constraint[] | Constraint)[],
+  signoutOnFail = true,
 ) => {
   const { id: chainId } = getTargetNetwork();
   const walletAddress = getWalletAddressFromToken(req);
@@ -63,8 +64,9 @@ export const authentify = async (
       }
     }
   }
-
-  res.status(401).send("Error: Unauthorized");
+  if (signoutOnFail) {
+    res.status(401).send("Error: Unauthorized");
+  }
   return false;
 };
 
@@ -74,7 +76,9 @@ export const getWalletAddressFromToken = (req: NextApiRequest) => {
   }
   const decoded = getDecodedToken(req);
   if (decoded) {
-    return decoded.verified_credentials[0].address;
+    return decoded.verified_credentials
+      .filter(x => "address" in x)
+      .sort((a, b) => -a.lastSelectedAt.localeCompare(b.lastSelectedAt))[0].address;
   }
   return undefined;
 };

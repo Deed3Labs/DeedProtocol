@@ -189,6 +189,13 @@ async function searchDeeds(req: NextApiRequest, res: NextApiResponse) {
     currentPage: string;
     pageSize: string;
   };
+
+  const isValidator = await authentify(req, res, ["Validator"], false);
+
+  if (query.validated !== "true" && !isValidator) {
+    query.ownerWallet = getWalletAddressFromToken(req);
+  }
+
   const registrations = await DeedDb.listDeeds(
     query,
     query.currentPage ? +query.currentPage : 0,

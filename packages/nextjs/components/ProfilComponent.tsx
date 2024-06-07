@@ -134,7 +134,7 @@ export default function ProfileComponent({
                 {deedData.mintedId ? (
                   <li>
                     <a
-                      onClick={ () => handleValidate()}
+                      onClick={() => handleValidate()}
                       className="link-default"
                       title={
                         !isOwner ? "Only the owner can validate" : "Toggle deed validation state"
