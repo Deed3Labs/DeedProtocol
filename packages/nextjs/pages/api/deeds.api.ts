@@ -2,7 +2,7 @@ import "./base";
 import { isArray } from "lodash-es";
 import { NextApiRequest, NextApiResponse } from "next";
 import { ExplorerPageSize } from "~~/constants";
-import { DeedDb as RegistrationsDb } from "~~/databases/deeds.db";
+import { DeedDb } from "~~/databases/deeds.db";
 import withErrorHandler from "~~/middlewares/withErrorHandler";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { PropertiesFilterModel } from "~~/models/properties-filter.model";
@@ -87,7 +87,7 @@ async function getDeedFromDatabase(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).send("Error: id of type number is required");
   }
 
-  const deed = await RegistrationsDb.getDeed(id);
+  const deed = await DeedDb.getDeed(id);
 
   if (deed?.mintedId) return getDeedFromChain(req, res, deed.mintedId);
 
@@ -120,7 +120,7 @@ async function saveDeed(req: NextApiRequest, res: NextApiResponse) {
 
   let existingRegistration;
   if (deedInfo.id) {
-    existingRegistration = await RegistrationsDb.getDeed(deedInfo.id);
+    existingRegistration = await DeedDb.getDeed(deedInfo.id);
     if (!(await authentify(req, res, [existingRegistration!.owner!, "Validator"]))) {
       return;
     }
@@ -176,7 +176,7 @@ async function saveDeed(req: NextApiRequest, res: NextApiResponse) {
     deedInfo.owner = walletAddress;
   }
 
-  const id = await RegistrationsDb.saveDeed(deedInfo);
+  const id = await DeedDb.saveDeed(deedInfo);
   if (!id) {
     return res.status(500).send("Error: Unable to save deedInfo");
   } else {
@@ -189,7 +189,7 @@ async function searchDeeds(req: NextApiRequest, res: NextApiResponse) {
     currentPage: string;
     pageSize: string;
   };
-  const registrations = await RegistrationsDb.listDeeds(
+  const registrations = await DeedDb.listDeeds(
     query,
     query.currentPage ? +query.currentPage : 0,
     query.pageSize ? +query.pageSize : ExplorerPageSize,

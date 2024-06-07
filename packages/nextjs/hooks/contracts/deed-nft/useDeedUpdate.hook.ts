@@ -1,4 +1,5 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
+import useIsValidator from "../access-manager/useIsValidator.hook";
 import { updateNFTMetadata } from "./useDeedMint.hook";
 import { TransactionReceipt } from "viem";
 import useDeedClient from "~~/clients/deeds.client";
@@ -13,6 +14,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
   const { primaryWallet, authToken } = useWallet();
   const fileClient = useFileClient();
   const deedClient = useDeedClient();
+  const isValidator = useIsValidator();
 
   const contractWriteHook = useScaffoldContractWrite({
     contractName: "DeedNFT",
@@ -35,10 +37,10 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
       if (!payload) return;
 
       payload = updateNFTMetadata(payload); // Update OpenSea metadata
+      payload.isValidated = isValidator; // If validator, not need to unvalidate the deed
 
       // Start by saving data into database for redundancy
-      await deedClient.saveDeed({ ...data, isValidated: false });
-
+      await deedClient.saveDeed(payload);
       hash = await fileClient.uploadJson(payload);
     } catch (error) {
       notification.error("Error while uploading documents");

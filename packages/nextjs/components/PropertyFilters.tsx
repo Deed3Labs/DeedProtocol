@@ -27,7 +27,7 @@ const PropertyFilters = ({ properties }: Props) => {
   const { primaryWallet } = useWallet();
   const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
-  const { filter, applyFilter } = usePropertiesFilter();
+  const { filter, applyFilter, reset: resetFilter } = usePropertiesFilter();
   const router = useRouter();
 
   useEffect(() => {
@@ -95,6 +95,12 @@ const PropertyFilters = ({ properties }: Props) => {
               onClick={() => setMapOpened(!mapOpened)}
             >
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
+            </button>
+            <button
+              className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10"
+              onClick={() => resetFilter()}
+            >
+              Reset
             </button>
           </div>
         </div>

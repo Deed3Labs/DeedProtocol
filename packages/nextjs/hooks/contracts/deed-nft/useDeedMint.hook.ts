@@ -35,6 +35,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       payload = await uploadFiles(authToken, data, undefined, true);
       if (!payload) return;
       payload = updateNFTMetadata(payload); // Update OpenSea metadata
+      payload.isValidated = true;
       hash = await fileClient.uploadJson(payload);
     } catch (error) {
       notification.error("Error while publishing documents");
@@ -58,7 +59,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
       });
 
       // Save the current state of published documents
-      await registrationsClient.saveDeed({ ...payload, isValidated: true });
+      await registrationsClient.saveDeed(payload);
     } catch (error) {
       notification.error("Error while minting deed");
       logger.error({ message: "Error while minting deed", error });
