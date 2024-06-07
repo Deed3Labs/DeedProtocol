@@ -45,7 +45,7 @@ const ContractEvent = <
                       return (
                         x.log.blockNumber.toString() === search.trim() ||
                         x.log.transactionHash.includes(search) ||
-                        x.log.topics.find(topic => topic.includes(search)) ||
+                        x.log.topics.find((topic: any) => topic.includes(search)) ||
                         (argsString
                           ? argsString.includes(search)
                           : (x.args as any).toString().includes(search))
@@ -69,7 +69,7 @@ const ContractEvent = <
                         <div>
                           <span className="font-bold">Topics:</span>
                           <ul>
-                            {x.log.topics.map((topic, i) => (
+                            {x.log.topics.map((topic: any, i: number) => (
                               <li key={i} className="ml-2">
                                 - {topic}
                               </li>

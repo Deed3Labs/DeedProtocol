@@ -50,6 +50,7 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     },
     deedSubgraph: "https://api.studio.thegraph.com/query/56229/deed3-sepolia/version/latest",
     ipfsGateway: "https://ipfs.io/ipfs/",
+    blockExplorer: "https://blockscout.com/xdai/mainnet",
   },
   [chains.polygon.id]: {
     color: "#5f4bb6",
@@ -62,6 +63,7 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
       symbol: "USDC",
       coinGeckoId: "usd-coin",
     },
+    blockExplorer: "https://polygonscan.com/",
   },
   // [chains.hardhat.id]: {
   //   color: "#b8af0c",

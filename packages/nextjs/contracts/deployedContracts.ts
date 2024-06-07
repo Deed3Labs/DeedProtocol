@@ -377,6 +377,7 @@ const deployedContracts = {
         supportsInterface:
           "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
       },
+      startBlock: 57804878,
     },
     DeedNFT: {
       address: "0x48E1c1b180D01aD435A8641107E235605CDe0A95",
@@ -1245,6 +1246,7 @@ const deployedContracts = {
         transferFrom:
           "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
       },
+      startBlock: 57804881,
     },
     TokenMock: {
       address: "0x8D891d57699CC977269b80C8C993735DAd1F3667",
@@ -1603,6 +1605,7 @@ const deployedContracts = {
         transfer: "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         transferFrom: "@openzeppelin/contracts/token/ERC20/ERC20.sol",
       },
+      startBlock: 57839741,
     },
   },
   1337: {
@@ -3580,7 +3583,7 @@ const deployedContracts = {
         supportsInterface:
           "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
       },
-      startBlock: "5839660",
+      startBlock: 5839660,
     },
     DeedNFT: {
       address: "0xC04836E6FFd56c440fd5d6D48cE9701D1D80a759",
@@ -4449,7 +4452,7 @@ const deployedContracts = {
         transferFrom:
           "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol",
       },
-      startBlock: "5839748",
+      startBlock: 5839748,
     },
     TokenMock: {
       address: "0xb884B7749cEeaA13993b42f030b41A7252043618",

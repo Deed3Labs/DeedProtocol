@@ -64,7 +64,8 @@ export const useScaffoldEventHistory = <
           address: deployedContractData?.address,
           event,
           args: filters as any, // TODO: check if it works and fix type
-          fromBlock: BigInt(deployedContractData.startBlock),
+          // @ts-ignore
+          fromBlock: BigInt(deployedContractData.startBlock ?? 0),
         });
         const newEvents = [];
         for (let i = logs.length - 1; i >= 0; i--) {

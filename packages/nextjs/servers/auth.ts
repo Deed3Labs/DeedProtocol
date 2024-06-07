@@ -40,7 +40,7 @@ export const authentify = async (
         const contract = getContract({
           address: accessManager.address,
           abi: accessManager.abi,
-          publicClient: getClient(req, chainId),
+          publicClient: getClient(req.headers.host ?? "", chainId),
         });
 
         if (constraint === "Validator") {

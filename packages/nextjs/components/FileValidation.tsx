@@ -143,7 +143,7 @@ const FileValidation = ({
   };
 
   const openFile = async (file: FileModel) => {
-    await fileClient.getFile(file.fileId, file.fileName, false);
+    await fileClient.getFile(file, file.fileName, false);
   };
 
   const handleStateChanged = (ev: any) => {

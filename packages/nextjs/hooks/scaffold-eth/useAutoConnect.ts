@@ -3,10 +3,7 @@ import { useEffectOnce, useLocalStorage, useReadLocalStorage } from "usehooks-ts
 import { hardhat } from "viem/chains";
 import { Connector, useAccount, useConnect } from "wagmi";
 import CONFIG from "~~/config";
-import {
-  burnerWalletId,
-  defaultBurnerChainId,
-} from "~~/services/web3/wagmi-burner/BurnerConnector";
+import { burnerWalletId } from "~~/services/web3/wagmi-burner/BurnerConnector";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 const SCAFFOLD_WALLET_STORAGE_KEY = "scaffoldEth2.wallet";
@@ -41,7 +38,7 @@ const getInitialConnector = (
     // The user was not connected to a wallet
     if (allowBurner && CONFIG.walletAutoConnect) {
       const connector = connectors.find(f => f.id === burnerWalletId);
-      return { connector, chainId: defaultBurnerChainId };
+      return { connector, chainId: getTargetNetwork().id };
     }
   } else {
     // the user was connected to wallet
