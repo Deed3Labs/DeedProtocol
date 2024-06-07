@@ -161,7 +161,11 @@ export const Header = () => {
               </ul>
             )}
           </div>
-          <Link href="/" passHref className="lg:flex items-center gap-1 ml-2 sm:ml-4 mr-0">
+          <Link
+            href="/"
+            passHref
+            className="lg:flex gap-1 ml-2 sm:ml-4 mr-0 hover:!no-underline flex items-start"
+          >
             <svg
               width="121"
               height="34"
@@ -177,6 +181,7 @@ export const Header = () => {
                 fill="white"
               />
             </svg>
+            <span className="!hover:no-underline uppercase text-xs text-[#ffc867]">Beta</span>
           </Link>
           <div className="hidden lg:block w-full">
             <div className="flex px-1 text-opacity-60 gap-6 font-medium mx-8 items-center">
