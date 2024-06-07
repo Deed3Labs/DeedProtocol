@@ -1,4 +1,5 @@
 import { useScaffoldContractWrite } from "../../scaffold-eth";
+import { updateNFTMetadata } from "./useDeedMint.hook";
 import { TransactionReceipt } from "viem";
 import useDeedClient from "~~/clients/deeds.client";
 import useFileClient from "~~/clients/files.client";
@@ -30,8 +31,10 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     let toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      const payload = await uploadFiles(authToken, data, old);
+      let payload = await uploadFiles(authToken, data, old);
       if (!payload) return;
+
+      payload = updateNFTMetadata(payload); // Update OpenSea metadata
 
       // Start by saving data into database for redundancy
       await deedClient.saveDeed({ ...data, isValidated: false });

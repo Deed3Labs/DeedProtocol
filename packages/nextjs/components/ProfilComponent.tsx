@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Address } from "./scaffold-eth";
 import {
@@ -6,9 +7,10 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import useContractAddress from "~~/hooks/useContractAddress";
 import useIsOwner from "~~/hooks/useIsOwner.hook";
 import { DeedInfoModel } from "~~/models/deed-info.model";
-import { notification } from "~~/utils/scaffold-eth";
+import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   onRefresh: () => void;
@@ -25,6 +27,9 @@ export default function ProfileComponent({
 }: Props) {
   const isOwner = useIsOwner(deedData);
   const isValidator = useIsValidator();
+  const { id: chainId } = getTargetNetwork();
+  const deedNFTAddresss = useContractAddress("DeedNFT");
+
   const handleChatClick = () => {
     if (isOwner) {
       const subject = encodeURIComponent(
@@ -93,6 +98,20 @@ export default function ProfileComponent({
               />
             </svg>
             Refresh
+          </button>
+          <button
+            className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
+            onClick={() =>
+              window.open(
+                chainId === 137
+                  ? `https://opensea.io/assets/matic/${deedNFTAddresss}/${deedData.mintedId}`
+                  : `https://testnets.opensea.io/assets/sepolia/${deedNFTAddresss}/${deedData.mintedId}`,
+                "_blank",
+              )
+            }
+          >
+            <Image alt="OpenSea Logo" src="/images/opensea-logo.svg" width={20} height={20} />
+            OpenSea
           </button>
         </div>
         <div className="dropdown dropdown-end">

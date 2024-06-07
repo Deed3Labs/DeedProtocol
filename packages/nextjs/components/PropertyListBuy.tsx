@@ -76,11 +76,7 @@ const BidOffers = ({ deedData }: Props) => {
                         notification.success("Property listed");
                       }}
                       onGoToToken={() => {
-                        window.open(
-                          chainId === 137
-                            ? `https://opensea.io/assets/matic/${deedNFTAddresss}/${deedData.mintedId}`
-                            : `https://testnets.opensea.io/assets/sepolia/${deedNFTAddresss}/${deedData.mintedId}`,
-                        );
+                        window.open(`/overview/${deedData.id}`);
                       }}
                       onClose={() => {
                         listings.mutate();

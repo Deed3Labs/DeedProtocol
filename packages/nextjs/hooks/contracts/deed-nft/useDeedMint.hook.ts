@@ -34,11 +34,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     try {
       payload = await uploadFiles(authToken, data, undefined, true);
       if (!payload) return;
-      // Fill NFT metadata as OpenSea standard
-      payload.name = data.propertyDetails.propertyAddress;
-      payload.description = data.propertyDetails.propertyDescription;
-      payload.image = payload.propertyDetails.propertyImages?.[0].fileId;
-      payload.external_url = `https://app.deed3.io/overview/${payload.id}`;
+      payload = updateNFTMetadata(payload); // Update OpenSea metadata
       hash = await fileClient.uploadJson(payload);
     } catch (error) {
       notification.error("Error while publishing documents");
@@ -77,3 +73,59 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
 };
 
 export default useDeedMint;
+
+export const updateNFTMetadata = (data: DeedInfoModel & OpenSeaMetadata) => {
+  // Fill NFT metadata as OpenSea standard
+  data.name = `${data.propertyDetails.propertyAddress}, ${data.propertyDetails.propertyCity},
+   ${data.propertyDetails.propertyState}`;
+  data.description = data.propertyDetails.propertyDescription;
+  data.image = data.propertyDetails.propertyImages?.[0].fileId;
+  data.external_url = `https://app.deed3.io/overview/${data.id}`;
+  data.attributes = [
+    { trait_type: "Type", value: data.propertyDetails.propertyType },
+    { trait_type: "Address", value: data.propertyDetails.propertyAddress },
+  ];
+
+  if (data.propertyDetails.propertySize)
+    data.attributes.push({ trait_type: "Size", value: data.propertyDetails.propertySize });
+  if (data.propertyDetails.propertyBathrooms)
+    data.attributes.push({
+      trait_type: "Bathrooms",
+      value: data.propertyDetails.propertyBathrooms,
+    });
+  if (data.propertyDetails.propertyBedrooms)
+    data.attributes.push({ trait_type: "Bedrooms", value: data.propertyDetails.propertyBedrooms });
+  if (data.propertyDetails.propertyZoning)
+    data.attributes.push({ trait_type: "Zoning", value: data.propertyDetails.propertyZoning });
+  if (data.propertyDetails.propertySquareFootage)
+    data.attributes.push({
+      trait_type: "Square Footage",
+      value: data.propertyDetails.propertySquareFootage,
+    });
+  if (data.propertyDetails.propertyHouseType)
+    data.attributes.push({
+      trait_type: "House Type",
+      value: data.propertyDetails.propertyHouseType,
+    });
+  if (data.propertyDetails.propertyBuildYear)
+    data.attributes.push({
+      trait_type: "Build Year",
+      value: data.propertyDetails.propertyBuildYear,
+    });
+  if (data.propertyDetails.vehicleMake)
+    data.attributes.push({ trait_type: "Vehicle Make", value: data.propertyDetails.vehicleMake });
+  if (data.propertyDetails.vehicleModel)
+    data.attributes.push({ trait_type: "Vehicle Model", value: data.propertyDetails.vehicleModel });
+  if (data.propertyDetails.yearOfManufacture)
+    data.attributes.push({
+      trait_type: "Year of Manufacture",
+      value: data.propertyDetails.yearOfManufacture,
+    });
+  if (data.propertyDetails.currentMileage)
+    data.attributes.push({
+      trait_type: "Current Mileage",
+      value: data.propertyDetails.currentMileage,
+    });
+
+  return data;
+};

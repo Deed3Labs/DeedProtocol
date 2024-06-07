@@ -57,7 +57,7 @@ const ScaffoldEthApp = (props: AppProps) => {
     automatedRoyalties: fees?.global_automatedRoyalties,
     normalizeRoyalties: fees?.global_normalizeRoyalties,
     marketplaceFees: fees?.global_marketplaceFees,
-    source: "deed3.io",
+    source: "app.deed3.io",
   };
 
   return (

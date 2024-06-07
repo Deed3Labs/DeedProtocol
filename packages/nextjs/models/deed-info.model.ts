@@ -121,4 +121,5 @@ export interface OpenSeaMetadata {
   description?: string;
   image?: string;
   external_url?: string;
+  attributes?: { trait_type: string; value: string }[];
 }

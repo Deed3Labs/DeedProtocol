@@ -385,7 +385,7 @@ const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router 
               </button>
             ))}
           <div className="btn-group my-3 flex">
-            {deedData.id && (
+            {deedData.id && !deedData.paymentInformation.receipt && (
               <>
                 <button
                   onClick={() => handlePayment(deedData.id!)}
