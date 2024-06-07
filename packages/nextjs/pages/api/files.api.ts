@@ -69,6 +69,7 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
       if (file.restricted) {
         // Push the file to the database
         response = await FilesDb.createFile(stream, {
+          id: file.fileId,
           fileName: file.fileName,
           mimetype: fileInfo.mimetype,
           size: fileInfo.size,
@@ -93,11 +94,13 @@ const uploadFile = async (req: NextApiRequest, res: NextApiResponse<string>) => 
           response = (await pinata.pinFileToIPFS(stream, options)).IpfsHash;
         }
         await FilesDb.saveFileInfo({
+          id: file.fileId,
+          fileId: response,
           mimetype: fileInfo.mimetype,
           fileName: file.fileName,
           owner: walletAddress,
           size: fileInfo.size,
-          fileId: response,
+          restricted: file.restricted,
           timestamp: new Date(),
         });
       }
@@ -142,7 +145,12 @@ const publishFile = async (req: NextApiRequest, res: NextApiResponse<string>) =>
   // await FilesDb.deleteFile(dbFile.fileInfo);
 
   // Update the file in database
-  await FilesDb.saveFileInfo({ ...dbFile.fileInfo, fileId: ipfsHash, restricted: false });
+  await FilesDb.saveFileInfo({
+    ...dbFile.fileInfo,
+    fileId: ipfsHash,
+    id: file.fileId,
+    restricted: false,
+  });
 
   return res.status(200).send(ipfsHash);
 };

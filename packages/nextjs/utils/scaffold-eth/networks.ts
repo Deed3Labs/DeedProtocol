@@ -55,6 +55,7 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     color: "#5f4bb6",
     storageAddress: "0xD0cC723ED8FEE1eaDFf8CB0883A244b16163361B",
     deedMintingFeeDollar: 500,
+    ipfsGateway: "https://ipfs.io/ipfs/",
     stableCoin: {
       address: "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
       decimals: 6,

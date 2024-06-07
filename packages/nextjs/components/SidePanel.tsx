@@ -388,7 +388,10 @@ const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router 
             {deedData.id && !deedData.paymentInformation.receipt && (
               <>
                 <button
-                  onClick={() => handlePayment(deedData.id!)}
+                  onClick={async () => {
+                    await handlePayment(deedData.id!);
+                    refetchDeedInfo(deedData.id!);
+                  }}
                   className="btn btn-primary btn-lg uppercase text-sm tracking-widest flex-1"
                 >
                   Payment needed

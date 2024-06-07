@@ -99,20 +99,22 @@ export default function ProfileComponent({
             </svg>
             Refresh
           </button>
-          <button
-            className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
-            onClick={() =>
-              window.open(
-                chainId === 137
-                  ? `https://opensea.io/assets/matic/${deedNFTAddresss}/${deedData.mintedId}`
-                  : `https://testnets.opensea.io/assets/sepolia/${deedNFTAddresss}/${deedData.mintedId}`,
-                "_blank",
-              )
-            }
-          >
-            <Image alt="OpenSea Logo" src="/images/opensea-logo.svg" width={20} height={20} />
-            OpenSea
-          </button>
+          {deedData.mintedId && (
+            <button
+              className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
+              onClick={() =>
+                window.open(
+                  chainId === 137
+                    ? `https://opensea.io/assets/matic/${deedNFTAddresss}/${deedData.mintedId}`
+                    : `https://testnets.opensea.io/assets/sepolia/${deedNFTAddresss}/${deedData.mintedId}`,
+                  "_blank",
+                )
+              }
+            >
+              <Image alt="OpenSea Logo" src="/images/opensea-logo.svg" width={20} height={20} />
+              OpenSea
+            </button>
+          )}
         </div>
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn bg-[#0e0e0e] m-1">

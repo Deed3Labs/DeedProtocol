@@ -17,6 +17,7 @@ export interface FileValidationModel {
 
 export interface FileModel {
   _id?: ObjectId;
+  id: string;
   fileId: string;
   owner: string;
   fileName: string;

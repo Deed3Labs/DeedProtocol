@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import Layout from "../components/Layout";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
+import { DynamicContextProvider, EvmNetwork } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -24,6 +24,7 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
 import "~~/styles/globals.scss";
 import { isDev } from "~~/utils/is-dev";
+import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 config.autoAddCss = false;
 
@@ -32,6 +33,7 @@ const ScaffoldEthApp = (props: AppProps) => {
   const { isDarkMode } = useDarkMode();
 
   const { fees } = useFeesClient();
+  const network = getTargetNetwork();
 
   useEffect(() => {
     if (!CONFIG.dynamicEnvironementId) {
@@ -88,6 +90,16 @@ const ScaffoldEthApp = (props: AppProps) => {
               environmentId: CONFIG.dynamicEnvironementId,
               appName: CONFIG.appName,
               walletConnectors: [EthereumWalletConnectors],
+              evmNetworks: [
+                {
+                  ...network,
+                  chainId: network.id,
+                  networkId: network.id,
+                  iconUrls: [],
+                  blockExplorerUrls: network.blockExplorer ? [network.blockExplorer] : [],
+                  rpcUrls: Object.keys(network.rpcUrls).map(key => network.rpcUrls[key].http[0]),
+                },
+              ],
             }}
           >
             <DynamicWagmiConnector>

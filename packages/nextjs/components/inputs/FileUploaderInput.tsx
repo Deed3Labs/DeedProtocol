@@ -76,12 +76,12 @@ export const FileUploaderInput = <TParent,>({
     }
   };
 
-  const download = async (hash: string) => {
-    await fileClient.getFile(hash, name.toString(), true);
+  const download = async (file: FileModel) => {
+    await fileClient.getFile(file, name.toString(), true);
   };
 
-  const openFile = async (hash: string) => {
-    await fileClient.getFile(hash, name.toString(), false);
+  const openFile = async (file: FileModel) => {
+    await fileClient.getFile(file, name.toString(), false);
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
@@ -178,13 +178,13 @@ export const FileUploaderInput = <TParent,>({
                         <div className="flex">
                           <button
                             className="btn btn-sm btn-square pointer-events-auto"
-                            onClick={() => openFile(file.fileId!)}
+                            onClick={() => openFile(file)}
                           >
                             <ExternalLinkIcon />
                           </button>
                           <button
                             className="btn btn-sm btn-square pointer-events-auto"
-                            onClick={() => download(file.fileId!)}
+                            onClick={() => download(file)}
                           >
                             <DownloadLogo />
                           </button>

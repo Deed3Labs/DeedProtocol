@@ -66,19 +66,15 @@ const Page = ({ router }: WithRouterProps) => {
     }
   }, [router.isReady, isConnecting, authToken]);
 
-  const pictures = useMemo(() => {
-    if (!deedData) return undefined;
-    const pictures =
-      deedData?.propertyDetails.propertyImages
-        ?.filter(x => !!x.fileId && !x.restricted)
-        ?.map(image => getTargetNetwork().ipfsGateway + image.fileId) ?? [];
-    if (pictures.length < 4) {
-      for (let index = pictures.length; index <= 4; index++) {
-        pictures.push(`/images/residential${index}.png`);
-      }
+  const pictures =
+    deedData?.propertyDetails.propertyImages
+      ?.filter(x => !!x.fileId && !x.restricted)
+      ?.map(image => getTargetNetwork().ipfsGateway + image.fileId) ?? [];
+  if (pictures.length < 4) {
+    for (let index = pictures.length; index < 4; index++) {
+      pictures.push(`/images/residential${index}.png`);
     }
-    return pictures;
-  }, [deedData]);
+  }
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -102,7 +98,7 @@ const Page = ({ router }: WithRouterProps) => {
   const fetchDeedInfo = useCallback(
     async (id: string) => {
       setIsLoading(true);
-      const resp = await deedClient.getDeed(id, !deedData.mintedId);
+      const resp = await deedClient.getDeed(id, deedData.mintedId !== undefined);
       setErrorCode(undefined);
       setIsLoading(false);
       if (resp.ok && resp.value) {
@@ -301,7 +297,7 @@ const Page = ({ router }: WithRouterProps) => {
               </div>
               {/* Images */}
               <div className="w-[30%] sm:w-1/2 grid grid-rows-4 sm:grid-rows-2 sm:grid-cols-2 gap-2 sm:gap-4">
-                {pictures?.slice(1, 5).map((picture, index) => {
+                {pictures?.slice(0, 4).map((picture, index) => {
                   return (
                     <div key={index} className="w-full h-[85px] sm:h-[300px]">
                       <Image
