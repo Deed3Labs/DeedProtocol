@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/router";
 import {
   BidModal,
   BuyModal,
@@ -34,7 +35,7 @@ const BidOffers = ({ deedData }: Props) => {
   const listOpenState = useState(false);
   const { connectWallet } = useWallet();
   const { fees } = useFeesClient();
-  const { id: chainId } = getTargetNetwork();
+  const router = useRouter();
   const listings = useListings({
     token: tokenWithId,
   });
@@ -76,7 +77,7 @@ const BidOffers = ({ deedData }: Props) => {
                         notification.success("Property listed");
                       }}
                       onGoToToken={() => {
-                        window.open(`/overview/${deedData.id}`);
+                        router.push(`/overview/${deedData.id}`);
                       }}
                       onClose={() => {
                         listings.mutate();
