@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import {
   BidModal,
@@ -32,10 +34,11 @@ const BidOffers = ({ deedData }: Props) => {
   const listOpenState = useState(false);
   const { connectWallet } = useWallet();
   const { fees } = useFeesClient();
-
+  const { id: chainId } = getTargetNetwork();
   const listings = useListings({
     token: tokenWithId,
   });
+
   const bids = useBids({
     normalizeRoyalties: true,
     token: tokenWithId,
@@ -73,7 +76,11 @@ const BidOffers = ({ deedData }: Props) => {
                         notification.success("Property listed");
                       }}
                       onGoToToken={() => {
-                        notification.info("Comming soon...");
+                        window.open(
+                          chainId === 137
+                            ? `https://opensea.io/assets/matic/${deedNFTAddresss}/${deedData.mintedId}`
+                            : `https://testnets.opensea.io/assets/sepolia/${deedNFTAddresss}/${deedData.mintedId}`,
+                        );
                       }}
                       onClose={() => {
                         listings.mutate();

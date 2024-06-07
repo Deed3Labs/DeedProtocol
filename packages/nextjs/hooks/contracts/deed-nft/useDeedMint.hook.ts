@@ -4,7 +4,7 @@ import useDeedClient from "~~/clients/deeds.client";
 import useFileClient from "~~/clients/files.client";
 import { PropertyTypeOptions } from "~~/constants";
 import useWallet from "~~/hooks/useWallet";
-import { DeedInfoModel } from "~~/models/deed-info.model";
+import { DeedInfoModel, OpenSeaMetadata } from "~~/models/deed-info.model";
 import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { indexOfLiteral } from "~~/utils/extract-values";
@@ -30,10 +30,15 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
 
     const toastId = notification.loading("Publishing documents...");
     let hash;
-    let payload: DeedInfoModel;
+    let payload: DeedInfoModel & OpenSeaMetadata;
     try {
       payload = await uploadFiles(authToken, data, undefined, true);
       if (!payload) return;
+      // Fill NFT metadata as OpenSea standard
+      payload.name = data.propertyDetails.propertyAddress;
+      payload.description = data.propertyDetails.propertyDescription;
+      payload.image = payload.propertyDetails.propertyImages?.[0].fileId;
+      payload.external_url = `https://app.deed3.io/overview/${payload.id}`;
       hash = await fileClient.uploadJson(payload);
     } catch (error) {
       notification.error("Error while publishing documents");

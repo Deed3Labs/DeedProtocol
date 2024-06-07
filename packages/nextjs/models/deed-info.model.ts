@@ -1,4 +1,5 @@
 import { FileModel } from "./file.model";
+import { TokenModel } from "./token.model";
 import { Address } from "viem";
 import {
   EntityTypeOptions,
@@ -12,7 +13,6 @@ import {
   WrapperOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
-import { TokenModel } from "./token.model";
 
 export interface OwnerInformationModel {
   ownerType: ValueExtractor<typeof OwnerTypeOptions>;
@@ -114,4 +114,11 @@ export interface DeedInfoModel {
   documentNotorization?: FileModel[];
 
   signatureTx?: string;
+}
+
+export interface OpenSeaMetadata {
+  name?: string;
+  description?: string;
+  image?: string;
+  external_url?: string;
 }
