@@ -90,16 +90,16 @@ const ScaffoldEthApp = (props: AppProps) => {
               environmentId: CONFIG.dynamicEnvironementId,
               appName: CONFIG.appName,
               walletConnectors: [EthereumWalletConnectors],
-              evmNetworks: [
-                {
-                  ...network,
-                  chainId: network.id,
-                  networkId: network.id,
-                  iconUrls: [],
-                  blockExplorerUrls: network.blockExplorer ? [network.blockExplorer] : [],
-                  rpcUrls: Object.keys(network.rpcUrls).map(key => network.rpcUrls[key].http[0]),
-                },
-              ],
+              // evmNetworks: [
+              //   {
+              //     ...network,
+              //     chainId: network.id,
+              //     networkId: network.id,
+              //     iconUrls: [],
+              //     blockExplorerUrls: network.blockExplorer ? [network.blockExplorer] : [],
+              //     rpcUrls: Object.keys(network.rpcUrls).map(key => network.rpcUrls[key].http[0]),
+              //   },
+              // ],
             }}
           >
             <DynamicWagmiConnector>
