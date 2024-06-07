@@ -102,7 +102,7 @@ const AgentExplorer: NextPage = () => {
           <AgentCard key={agent.id} agent={agent} />
         ))}
       </div>
-      {loading && <span className="loading loading-bars loading-lg my-8"></span>}
+      {loading && <span className="loading loading-bars loading-lg my-8" />}
     </div>
   );
 };

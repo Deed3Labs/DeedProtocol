@@ -44,7 +44,7 @@ const Page = ({ router }: WithRouterProps) => {
   const [initialData, setInitialData] = useState<DeedInfoModel>();
   const [deedData, setDeedData] = useState<DeedInfoModel>(defaultData);
   const [errorCode, setErrorCode] = useState<ErrorCode | undefined>(undefined);
-  const { id: chainId, stableCoin: stableCoinAddress } = getTargetNetwork();
+  const { id: chainId, stableCoin } = getTargetNetwork();
 
   const deedClient = useDeedClient();
 
