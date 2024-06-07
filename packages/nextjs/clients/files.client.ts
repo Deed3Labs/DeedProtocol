@@ -13,7 +13,10 @@ export class FileClient extends HttpClient {
 
     if (download) {
       const response = await fetch(url, {
-        headers: [["authorization", this.authorizationToken ?? ""]],
+        headers: [
+          ["authorization", this.authorizationToken ?? ""],
+          ["selected-wallet", this.selectedWallet ?? ""],
+        ],
       });
       notification.remove(toastId);
       if (response.status !== 200) {

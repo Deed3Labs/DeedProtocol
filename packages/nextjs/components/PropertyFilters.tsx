@@ -110,6 +110,12 @@ const PropertyFilters = ({ properties }: Props) => {
             <select
               className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px]"
               value={filter.validated}
+              disabled={!primaryWallet}
+              title={
+                primaryWallet
+                  ? "Filter by validation status"
+                  : "Login to filter by validation status"
+              }
               onChange={ev => {
                 applyFilter({
                   validated: ev.currentTarget.value as PropertiesFilterModel["validated"],
@@ -119,8 +125,8 @@ const PropertyFilters = ({ properties }: Props) => {
               <option value="true">Verified</option>
               {primaryWallet && (
                 <>
-                  <option value="false">Not verified{!isValidator ? " (only mine)" : ""}</option>
-                  <option value="all">All{!isValidator ? " (only mine)" : ""}</option>
+                  <option value="false">{isValidator ? "Not verified" : "Mine"}</option>
+                  <option value="all">All</option>
                 </>
               )}
             </select>

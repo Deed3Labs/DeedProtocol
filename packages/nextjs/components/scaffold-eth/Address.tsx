@@ -10,10 +10,11 @@ import { getBlockExplorerAddressLink, getTargetNetwork, notification } from "~~/
 
 interface TAddressProps {
   address?: string;
-  disableAddressLink?: boolean;
   format?: "short" | "long";
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
   label?: string;
+  showBlockie?: boolean;
+  showLink?: boolean;
 }
 
 const blockieSizeMap = {
@@ -31,10 +32,11 @@ const blockieSizeMap = {
  */
 export const Address = ({
   address,
-  disableAddressLink,
   format,
   size = "base",
   label,
+  showBlockie = true,
+  showLink = true,
 }: TAddressProps) => {
   const [ens, setEns] = useState<string | undefined>();
   const [ensAvatar, setEnsAvatar] = useState<string | undefined>();
@@ -45,6 +47,7 @@ export const Address = ({
     enabled: isAddress(address ?? ""),
     chainId: 1,
   });
+
   const { data: fetchedEnsAvatar } = useEnsAvatar({
     name: fetchedEns,
     enabled: Boolean(fetchedEns),
@@ -90,13 +93,15 @@ export const Address = ({
 
   return (
     <div className="flex items-center gap-3 my-3">
-      <div className="flex-shrink-0">
-        <BlockieAvatar
-          address={address}
-          ensImage={ensAvatar}
-          size={(blockieSizeMap[size] * 34) / blockieSizeMap["base"]}
-        />
-      </div>
+      {showBlockie && (
+        <div className="flex-shrink-0">
+          <BlockieAvatar
+            address={address}
+            ensImage={ensAvatar}
+            size={(blockieSizeMap[size] * 34) / blockieSizeMap["base"]}
+          />
+        </div>
+      )}
       <div className="flex flex-col">
         {label && (
           <div className="text-[2.2vw] sm:text-[10px] font-normal text-zinc-400 uppercase tracking-widest">
@@ -104,7 +109,7 @@ export const Address = ({
           </div>
         )}
         <div className="flex flex-row items-center w-full">
-          {disableAddressLink || !blockExplorerAddressLink ? (
+          {!showLink || !blockExplorerAddressLink ? (
             <span className={`truncate text-[3vw] sm:text-${size} font-normal w-full`}>
               {displayAddress}
             </span>

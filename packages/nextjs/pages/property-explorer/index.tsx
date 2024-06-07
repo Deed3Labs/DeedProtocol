@@ -36,6 +36,7 @@ const PropertyExplorer: NextPage = () => {
   useEffect(() => {
     setCurrentPage(0);
     setProperties([]);
+    setLoading(true);
     loadMoreProperties(filter, 0);
   }, [filter]);
 
@@ -56,6 +57,7 @@ const PropertyExplorer: NextPage = () => {
       const { bottom } = container.getBoundingClientRect();
       const { innerHeight } = window;
       if (bottom <= innerHeight) {
+        setLoading(true);
         loadMoreProperties(filter, currentPage);
       }
     }
@@ -63,7 +65,6 @@ const PropertyExplorer: NextPage = () => {
 
   const loadMoreProperties = useCallback(
     debounce(async (filter?: PropertiesFilterModel, currentPage?: number) => {
-      setLoading(true);
       const response = await deedClient.searchDeeds(filter, currentPage, ExplorerPageSize);
       if (!response.ok || !response.value) {
         setIsLast(true);
@@ -97,6 +98,7 @@ const PropertyExplorer: NextPage = () => {
           type: entity.propertyDetails.propertyType ?? "realEstate",
           icon: propertyIcon,
           validated: entity.isValidated,
+          owner: entity.owner!,
         };
         if (!deed.pictures?.length) {
           deed.pictures = [`/images/residential${(index % 6) + 1}.png`];

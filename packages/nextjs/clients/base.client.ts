@@ -5,19 +5,24 @@ import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 export class HttpClient {
   protected authorizationToken?: string;
+  protected selectedWallet?: string;
   protected get chainId() {
     return getTargetNetwork().id;
   }
 
-  public authentify(authorizationToken?: string) {
+  public authentify(authorizationToken?: string, selectedWallet?: string) {
     this.authorizationToken = authorizationToken;
+    this.selectedWallet = selectedWallet;
     return this;
   }
 
   public async get<TRes = any>(url: string, params: object = {}) {
     url = this.appendQueryParams(url, { ...params, chainId: this.chainId });
     const res = await fetch(url, {
-      headers: [["authorization", this.authorizationToken ?? ""]],
+      headers: [
+        ["authorization", this.authorizationToken ?? ""],
+        ["selected-wallet", this.selectedWallet ?? ""],
+      ],
     });
     const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
@@ -35,7 +40,11 @@ export class HttpClient {
     const res = await fetch(url, {
       method: "POST",
       body: body,
-      headers: [["authorization", this.authorizationToken ?? ""], ...(headers ?? [])],
+      headers: [
+        ["authorization", this.authorizationToken ?? ""],
+        ["selected-wallet", this.selectedWallet ?? ""],
+        ...(headers ?? []),
+      ],
     });
     const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
@@ -48,7 +57,10 @@ export class HttpClient {
     const res = await fetch(url, {
       method: "PUT",
       body: body,
-      headers: [["authorization", this.authorizationToken ?? ""]],
+      headers: [
+        ["authorization", this.authorizationToken ?? ""],
+        ["selected-wallet", this.selectedWallet ?? ""],
+      ],
     });
     const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
@@ -60,7 +72,7 @@ export class HttpClient {
     url = this.appendQueryParams(url, { ...params, chainId: this.chainId });
     const res = await fetch(url, {
       method: "DELETE",
-      headers: [["authorization", this.authorizationToken ?? ""]],
+      headers: [["selected-wallet", this.selectedWallet ?? ""]],
     });
     const error = await this.handleError(url, res);
     if (error) return { status: res.status, error, value: undefined, ok: false };
@@ -122,14 +134,15 @@ export class HttpClient {
 }
 
 const useHttpClient = <TClient extends HttpClient>(_client: TClient): TClient => {
-  const { authToken } = useWallet();
+  const { authToken, primaryWallet } = useWallet();
+
   const [client, setClient] = useState(_client);
 
   useEffect(() => {
-    if (authToken) {
-      setClient(client.authentify(authToken));
+    if (authToken && primaryWallet) {
+      setClient(client.authentify(authToken, primaryWallet?.address));
     }
-  }, [authToken]);
+  }, [authToken, primaryWallet]);
 
   return client ?? new HttpClient();
 };

@@ -74,11 +74,10 @@ export const getWalletAddressFromToken = (req: NextApiRequest) => {
   if (process.env.NEXT_PUBLIC_OFFLINE) {
     return req.headers.authorization ?? (req.query.authorization as string);
   }
+  const selectedWallet = (req.query["selected-wallet"] as string) ?? req.headers["selected-wallet"];
   const decoded = getDecodedToken(req);
   if (decoded) {
-    return decoded.verified_credentials
-      .filter(x => "address" in x)
-      .sort((a, b) => -a.lastSelectedAt.localeCompare(b.lastSelectedAt))[0].address;
+    return decoded.verified_credentials.find(x => x.address === selectedWallet)?.address;
   }
   return undefined;
 };

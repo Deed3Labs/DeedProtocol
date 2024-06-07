@@ -70,16 +70,19 @@ export class DeedDb extends DbBase {
     filter: PropertiesFilterModel,
     currentPage: number,
     pageSize: number,
+    allMineAndPublic = false,
   ): Promise<DeedInfoModel[]> {
     const dbFilter: any = { chainId: DeedDb.getChainId() };
-    if (filter.validated && filter.validated !== "all")
+    if (!allMineAndPublic && filter.validated && filter.validated !== "all")
       dbFilter.isValidated = filter.validated === "true";
-    if (filter.ownerWallet) dbFilter.owner = filter.ownerWallet;
+    if (!allMineAndPublic && filter.ownerWallet) dbFilter.owner = filter.ownerWallet;
     if (filter.propertyType && filter.propertyType != "All")
       dbFilter["propertyDetails.propertyType"] = filter.propertyType;
-    if (filter.propertySize)
-      dbFilter["propertyDetails.propertySize"] = { $regex: filter.propertySize };
+    if (filter.propertySize) dbFilter["propertyDetails.propertySize"] = { $regex: filter };
     if (filter.search) dbFilter.$text = { $search: filter.search + "*" };
+
+    if (allMineAndPublic)
+      dbFilter.$or = [{ isValidated: true }, { owner: filter.ownerWallet ?? "" }];
 
     const result = await this.collection
       .find(dbFilter, { skip: pageSize * currentPage, limit: pageSize })

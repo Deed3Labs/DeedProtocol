@@ -193,13 +193,19 @@ async function searchDeeds(req: NextApiRequest, res: NextApiResponse) {
   const isValidator = await authentify(req, res, ["Validator"], false);
 
   if (query.validated !== "true" && !isValidator) {
-    query.ownerWallet = getWalletAddressFromToken(req);
+    const walletAddress = getWalletAddressFromToken(req);
+    if (walletAddress) {
+      query.ownerWallet = walletAddress;
+    } else {
+      query.validated = "true";
+    }
   }
 
   const registrations = await DeedDb.listDeeds(
     query,
     query.currentPage ? +query.currentPage : 0,
     query.pageSize ? +query.pageSize : ExplorerPageSize,
+    !isValidator && query.validated === "all",
   );
   return res.status(200).send(registrations);
 }

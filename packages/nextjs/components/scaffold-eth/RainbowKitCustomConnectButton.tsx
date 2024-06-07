@@ -183,7 +183,7 @@ export const RainbowKitCustomConnectButton = () => {
                         <div className="space-y-3 py-6">
                           <div className="flex space-x-4 flex-col items-center gap-6">
                             <QRCodeSVG value={account.address} size={256} />
-                            <Address address={account.address} format="long" disableAddressLink />
+                            <Address address={account.address} format="long" showLink={false} />
                           </div>
                         </div>
                       </label>

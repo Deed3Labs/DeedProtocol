@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Address } from "./scaffold-eth";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import { PropertyModel } from "~~/models/property.model";
 
@@ -42,8 +43,20 @@ const PropertyCard = ({ property, small = false }: Props) => {
                     <div className="pr-16 justify-start items-center inline-flex">
                       <div className="justify-start items-center gap-1 flex">
                         <div className="h-5 flex-col justify-center items-start inline-flex">
-                          <div className="text-white text-opacity-60 text-[9px] sm:text-[10px] font-normal leading-none tracking-wider">
-                            USERNAME.ETH
+                          <div className="flex items-center gap-1 text-white text-opacity-60 text-[9px] sm:text-[10px] font-normal leading-none tracking-wider">
+                            <CheckBadgeIcon
+                              // @ts-ignore
+                              title={property.validated ? "Validated" : "Pending Validation"}
+                              className={`${
+                                property.validated ? "text-white" : "text-warning"
+                              } w-5 h-5 mb-[-1px]`}
+                            />
+                            <Address
+                              address={property.owner}
+                              format="short"
+                              showBlockie={false}
+                              showLink={false}
+                            />
                           </div>
                         </div>
                       </div>
