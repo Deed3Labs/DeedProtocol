@@ -72,7 +72,7 @@ const Page = ({ router }: WithRouterProps) => {
       ?.map(image => getTargetNetwork().ipfsGateway + image.fileId) ?? [];
   if (pictures.length < 4) {
     for (let index = pictures.length; index < 4; index++) {
-      pictures.push(`/images/residential${index}.png`);
+      pictures.push(`/images/residential${index + 1}.png`);
     }
   }
 

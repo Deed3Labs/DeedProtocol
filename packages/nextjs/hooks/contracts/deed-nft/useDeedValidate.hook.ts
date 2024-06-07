@@ -21,6 +21,11 @@ const useDeedValidate = () => {
       return;
     }
 
+    if (deed.owner === primaryWallet.address) {
+      notification.error("You cannot validate your own deed");
+      return;
+    }
+
     const toastId = notification.info(isValidated ? "Validating deed..." : "Unvalidating deed...", {
       duration: Infinity,
     });

@@ -7,7 +7,7 @@ import Map from "./map";
 import { AddressInput } from "./scaffold-eth";
 import { useLocalStorage } from "usehooks-ts";
 import { MapIcon } from "@heroicons/react/24/outline";
-import { MapIcon as MapIconSolid } from "@heroicons/react/24/solid";
+import { MapIcon as MapIconSolid, XMarkIcon } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
 import { usePropertiesFilter } from "~~/contexts/property-filter.context";
@@ -97,10 +97,10 @@ const PropertyFilters = ({ properties }: Props) => {
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
             </button>
             <button
-              className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10"
+              className="ml-2 btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10"
               onClick={() => resetFilter()}
             >
-              Reset
+              <XMarkIcon className="w-6" />
             </button>
           </div>
         </div>

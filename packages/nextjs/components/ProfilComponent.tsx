@@ -133,7 +133,13 @@ export default function ProfileComponent({
               <>
                 {deedData.mintedId ? (
                   <li>
-                    <a onClick={() => handleValidate()} className="link-default">
+                    <a
+                      onClick={ () => handleValidate()}
+                      className="link-default"
+                      title={
+                        !isOwner ? "Only the owner can validate" : "Toggle deed validation state"
+                      }
+                    >
                       {deedData.isValidated ? "Unvalidate" : "Validate"}
                     </a>
                   </li>
