@@ -45,7 +45,7 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
     <div className="flex flex-row border border-white border-opacity-10 p-5 sm:p-6 gap-6 flex-wrap">
       {deedData?.propertyDetails && (
         <>
-          <div id="Map" className="max-w-72 h-72 sm:w-72 sm:h-full bg-[#141414] flex-grow">
+          <div id="Map" className="max-w-72 h-72 sm:w-72 sm:h-full bg-[#141414]">
             <Map
               // @ts-ignore
               center={{
