@@ -66,7 +66,7 @@ export default function ProfileComponent({
 
       <hr className="my-0 border-white opacity-10" />
       {/* Buttons */}
-      <div className="flex flex-row w-full items-center justify-between">
+      <div className="flex flex-row w-full h-full items-center justify-between">
         <div className="flex flex-row">
           <button
             className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
