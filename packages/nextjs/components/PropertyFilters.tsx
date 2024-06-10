@@ -106,7 +106,7 @@ const PropertyFilters = ({ properties }: Props) => {
         </div>
 
         {isMoreFilters && (
-          <div className="grid grid-col-3 sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full my-4">
+          <div className="grid grid-col-3 justify-start items-center gap-2 md:gap-4 w-full my-4">
             <select
               className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px]"
               value={filter.validated}
