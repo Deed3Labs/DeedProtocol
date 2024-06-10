@@ -60,8 +60,8 @@ export default function ProfileComponent({
         </button>
       </div>
 
-      <button className="btn btn-secondary btn-lg capitalize w-full my-4 text-sm">
-        View owner profile
+      <button className="btn btn-lg border-white border-opacity-10 bg-base-300 font-normal uppercase w-full my-4 text-sm tracking-widest">
+        Tour this Property
       </button>
 
       <hr className="my-0 border-white opacity-10" />
