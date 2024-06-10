@@ -90,7 +90,7 @@ const OverviewPropertyDescription = ({ deedData, onRefresh, onSave, onChange }: 
                   <hr className="my-0 border-[#2d2d2d] w-full flex-1" />
                   {!!deedData.propertyDetails.propertyDescription && (
                     <button
-                      className="btn btn-lg border-white border-opacity-10 bg-base-300 border-1 font-normal capitalize text-sm tracking-widest"
+                      className="btn btn-lg border-white border-opacity-10 bg-base-300 border-1 font-normal capitalize text-xs tracking-widest"
                       onClick={() => setReadMore(x => !x)}
                     >
                       {isReadMore ? (
