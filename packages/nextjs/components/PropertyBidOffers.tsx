@@ -46,7 +46,7 @@ const PropertyBidOffers = ({ deedData }: Props) => {
 
   return (
     <div className="flex flex-col border border-white border-opacity-10">
-      <div className="bg-secondary w-full uppercase p-4 flex items-center gap-2 justify-between">
+      <div className="bg-base-300 w-full uppercase p-4 flex items-center gap-2 justify-between">
         <div className="flex items-center gap-2">
           {IconInfoSquare}
           Offers
@@ -113,7 +113,7 @@ const PropertyBidOffers = ({ deedData }: Props) => {
                                   primaryWallet?.address.toLowerCase() && (
                                   <div className="flex gap-2">
                                     <EditBidModal
-                                      trigger={<button className="btn btn-secondary">Edit</button>}
+                                      trigger={<button className="btn bg-base-300">Edit</button>}
                                       bidId={bid.id}
                                       collectionId={deedNFTAddresss}
                                       tokenId={deedData.mintedId!.toString()}
@@ -132,7 +132,7 @@ const PropertyBidOffers = ({ deedData }: Props) => {
                                     />
                                     <CancelBidModal
                                       trigger={
-                                        <button className="btn btn-secondary text-error">
+                                        <button className="btn bg-base-300 text-error">
                                           Cancel
                                         </button>
                                       }
