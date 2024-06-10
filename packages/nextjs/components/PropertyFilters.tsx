@@ -97,7 +97,7 @@ const PropertyFilters = ({ properties }: Props) => {
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
             </button>
             <button
-              className="ml-2 btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10"
+              className="ml-2 btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10 hidden"
               onClick={() => resetFilter()}
             >
               <XMarkIcon className="w-6" />
@@ -106,7 +106,7 @@ const PropertyFilters = ({ properties }: Props) => {
         </div>
 
         {isMoreFilters && (
-          <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full my-4">
+          <div className="grid grid-col-3 sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full my-4">
             <select
               className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px]"
               value={filter.validated}
