@@ -177,7 +177,7 @@ const BidOffers = ({ deedData }: Props) => {
                       <BuyModal
                         defaultQuantity={1}
                         onConnectWallet={connectWallet}
-                        trigger={<button className="btn border-white border-opacity-10 bg-base-300 font-normal text-xs flex-1">Buy Now</button>}
+                        trigger={<button className="btn border-white border-opacity-10 bg-base-300 font-normal text-xs flex-1 w-fit">Buy Now</button>}
                         token={tokenWithId}
                         onPurchaseComplete={async () => {
                           notification.success("Purchase Complete");
