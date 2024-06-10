@@ -333,7 +333,7 @@ const Page = ({ router }: WithRouterProps) => {
                   />
                 </div>
                 <div className="flex flex-col border border-white border-opacity-10">
-                  <div className="bg-base-300 w-full font-normal text-[10px] sm:text-xs uppercase p-4 flex items-center gap-2 tracking-widest">
+                  <div className="bg-base-300 w-full font-normal text-[10px] sm:text-xs uppercase p-4 py-4 flex items-center gap-2 tracking-widest">
                     {IconInfoSquare} Deed Information
                   </div>
                   <div className="flex flex-col p-4 gap-4">
