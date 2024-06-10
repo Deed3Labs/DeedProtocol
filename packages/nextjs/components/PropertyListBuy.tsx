@@ -97,7 +97,7 @@ const BidOffers = ({ deedData }: Props) => {
                 <div className="flex flex-row justify-between gap-2">
                   {listings.data[0]?.price?.amount?.usd && (
                     <div className="flex items-center justify-start w-1/2 gap-2">
-                      <span className="text-lg font-bold text-xs sm:text-sm">Price:</span>{" "}
+                      <span className="text-lg font-bold text-sm sm:text-base">Price:</span>{" "}
                       <span>{formatter.format(listings.data[0]?.price?.amount?.usd)}</span>
                     </div>
                   )}
