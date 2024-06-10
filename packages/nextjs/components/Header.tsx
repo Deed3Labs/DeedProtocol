@@ -181,7 +181,7 @@ export const Header = () => {
                 fill="white"
               />
             </svg>
-            <span className="!hover:no-underline font-normal uppercase text-[9px] sm:text-[11px] text-[#ffc867]">Beta</span>
+            <span className="!hover:no-underline font-normal uppercase text-[11px] sm:text-[11px] text-[#ffc867]">Beta</span>
           </Link>
           <div className="hidden lg:block w-full">
             <div className="flex px-1 text-opacity-60 gap-6 font-medium mx-8 items-center">
