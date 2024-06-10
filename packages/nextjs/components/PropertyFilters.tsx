@@ -131,6 +131,7 @@ const PropertyFilters = ({ properties }: Props) => {
               )}
             </select>
             <TextInput
+              className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 sm:text-[16px]"
               name="PropertySize"
               placeholder="Property Size"
               value={filter.propertySize}
@@ -142,6 +143,7 @@ const PropertyFilters = ({ properties }: Props) => {
               large
             />
             <AddressInput
+              className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 sm:text-[16px]"
               placeholder="Owner wallet"
               name="OwnerWallet"
               value={filter.ownerWallet ?? ""}
