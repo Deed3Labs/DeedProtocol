@@ -46,10 +46,10 @@ const PropertyBidOffers = ({ deedData }: Props) => {
 
   return (
     <div className="flex flex-col border border-white border-opacity-10">
-      <div className="bg-base-300 w-full uppercase p-4 flex items-center gap-2 justify-between">
+      <div className="bg-base-300 w-full text-sm sm:text-base uppercase p-4 flex items-center gap-2 justify-between tracking-widest">
         <div className="flex items-center gap-2">
           {IconInfoSquare}
-          Offers
+          Offer Activity
         </div>
         <button
           className="btn btn-link"
