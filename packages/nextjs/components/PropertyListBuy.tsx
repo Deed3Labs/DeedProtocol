@@ -60,7 +60,7 @@ const BidOffers = ({ deedData }: Props) => {
                   <div className="text-gray-500 text-lg">Not listed</div>
                   {isOwner && (
                     <ListModal
-                      trigger={<button className="btn btn-primary">List property</button>}
+                      trigger={<button className="btn btn-primary font-normal">List property</button>}
                       openState={listOpenState}
                       collectionId={deedNFTAddresss}
                       tokenId={deedData.mintedId!.toString()}
@@ -104,7 +104,7 @@ const BidOffers = ({ deedData }: Props) => {
                   {isOwner ? (
                     <div className="flex gap-2">
                       <EditListingModal
-                        trigger={<button className="btn btn-secondary  flex-1">Edit</button>}
+                        trigger={<button className="btn bg-base-300 font-normal flex-1">Edit</button>}
                         listingId={listings.data[0].id}
                         collectionId={deedNFTAddresss}
                         tokenId={deedData.mintedId!.toString()}
@@ -124,7 +124,7 @@ const BidOffers = ({ deedData }: Props) => {
                       />
                       <CancelListingModal
                         trigger={
-                          <button className="btn btn-secondary text-error flex-1">Cancel</button>
+                          <button className="btn bg-base-300 font-normal text-error flex-1">Cancel</button>
                         }
                         listingId={listings.data[0].id}
                         onCancelComplete={() => {
@@ -145,7 +145,7 @@ const BidOffers = ({ deedData }: Props) => {
                     <>
                       <BidModal
                         trigger={
-                          <button className="btn btn-secondary flex-1 w-fit whitespace-nowrap">
+                          <button className="btn bg-base-300 font-normal flex-1 w-fit whitespace-nowrap">
                             Submit An Offer
                           </button>
                         }
@@ -177,7 +177,7 @@ const BidOffers = ({ deedData }: Props) => {
                       <BuyModal
                         defaultQuantity={1}
                         onConnectWallet={connectWallet}
-                        trigger={<button className="btn btn-secondary flex-1">Buy</button>}
+                        trigger={<button className="btn bg-base-300 font-normal flex-1">Buy</button>}
                         token={tokenWithId}
                         onPurchaseComplete={async () => {
                           notification.success("Purchase Complete");
