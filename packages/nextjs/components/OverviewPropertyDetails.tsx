@@ -45,7 +45,7 @@ const PropertyDetails = ({
       {propertyDetail && (
         <div className={`w-full ${noBorders ? "" : "border border-white border-opacity-10"}`}>
           <div className="flex flex-row justify-between items-center px-0 pt-8">
-            <div className="pl-4 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
+            <div className="pl-0 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
               Property Details
             </div>
             {(isOwner || isValidator) && viewMode !== undefined && (
@@ -54,7 +54,7 @@ const PropertyDetails = ({
               </button>
             )}
           </div>
-          <div className="flex flex-row justify-between w-full gap-6 p-6 flex-wrap">
+          <div className="flex flex-row justify-between w-full gap-6 p-0 flex-wrap">
             {/* First col */}
             <div className="flex flex-col flex-grow gap-6">
               <div className="flex flex-row justify-between items-center gap-4 sm:gap-3.5 pb-0 w-full">
