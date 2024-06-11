@@ -45,7 +45,7 @@ const PropertyDetails = ({
       {propertyDetail && (
         <div className={`w-full ${noBorders ? "" : "border border-white border-opacity-10"}`}>
           <div className="flex flex-row justify-between items-center px-0 pt-8">
-            <div className="pl-0 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
+            <div className="pl-0 pb-4 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
               Property Details
             </div>
             {(isOwner || isValidator) && viewMode !== undefined && (
@@ -159,7 +159,7 @@ const PropertyDetails = ({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 auto-cols-min justify-items-start sm:gap-2 pt-6 sm:pt-3.5 pb-6 sm:pb-3">
+          <div className="grid grid-cols-4 auto-cols-min items-start sm:gap-2 pt-6 sm:pt-3.5 pb-6 sm:pb-1">
             <button className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide">
               <svg
                 width="18"
