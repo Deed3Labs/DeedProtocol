@@ -60,7 +60,7 @@ const OverviewPropertyDescription = ({ deedData, onRefresh, onSave, onChange }: 
 
             <hr className="my-0 border-white opacity-10" />
             <div className="flex flex-row justify-between items-center">
-              <div className="pl-4 pb-2 md:text-[12px] text-[14px] font-normal uppercase tracking-widest">
+              <div className="pl-0 pb-2 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
                 Property description
               </div>
               {(isOwner || isValidator) && viewMode !== undefined && (
