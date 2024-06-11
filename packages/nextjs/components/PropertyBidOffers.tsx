@@ -70,7 +70,7 @@ const PropertyBidOffers = ({ deedData }: Props) => {
               <div className="flex flex-col gap-2 w-full">
                 {bids.data.length ? (
                   <div>
-                    <div className="text-lg">Current offers</div>{" "}
+                    <div className="text-lg">Current Offers</div>{" "}
                     {bids.data.map((bid, index) => {
                       return (
                         <div key={bid.id}>
