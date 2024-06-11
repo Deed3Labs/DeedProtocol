@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import PropertyDetails from "./ValidationPropertyDetails";
+import PropertyDetails from "./OverviewPropertyDetails";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import { CheckIcon, PencilIcon } from "@heroicons/react/24/outline";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
