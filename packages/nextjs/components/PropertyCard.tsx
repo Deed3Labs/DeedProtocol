@@ -49,7 +49,7 @@ const PropertyCard = ({ property, small = false }: Props) => {
                               title={property.validated ? "Validated" : "Pending Validation"}
                               className={`${
                                 property.validated ? "text-white" : "text-warning"
-                              } w-3.5 h-3.5 mb-[-1px]`}
+                              } w-4 h-4 mb-[-1px]`}
                             />
                             <Address
                               address={property.owner}
