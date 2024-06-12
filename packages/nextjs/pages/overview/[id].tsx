@@ -7,22 +7,21 @@ import Map from "../../components/map";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
+import OverviewDeedInformations from "~~/components/OverviewDeedInformations";
 import OverviewPropertyDescription from "~~/components/OverviewPropertyDescription";
 import ProfileComponent from "~~/components/ProfilComponent";
 import PropertyBidOffers from "~~/components/PropertyBidOffers";
 import PropertyListBuy from "~~/components/PropertyListBuy";
-import { Address } from "~~/components/scaffold-eth";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
 import useDeedUpdate from "~~/hooks/contracts/deed-nft/useDeedUpdate.hook";
 import useDeedValidate from "~~/hooks/contracts/deed-nft/useDeedValidate.hook";
-import useContractAddress from "~~/hooks/useContractAddress";
+import useIsOwner from "~~/hooks/useIsOwner.hook";
 import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
-import { IconInfoSquare } from "~~/styles/Icons";
 import { parseContractEvent } from "~~/utils/contract";
 import { isDev } from "~~/utils/is-dev";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
@@ -45,7 +44,6 @@ type ErrorCode = "notFound" | "unauthorized" | "unexpected";
 
 const Page = ({ router }: WithRouterProps) => {
   const { id } = router.query;
-
   const { primaryWallet, authToken, isConnecting } = useWallet();
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<DeedInfoModel>(defaultData);
@@ -57,7 +55,7 @@ const Page = ({ router }: WithRouterProps) => {
   const deedClient = useDeedClient();
   const { writeValidateAsync } = useDeedValidate();
   const { id: chainId } = getTargetNetwork();
-  const deedNFTContractAddress = useContractAddress("DeedNFT");
+  const isOwner = useIsOwner(deedData);
 
   useEffect(() => {
     if (router.isReady && !isConnecting) {
@@ -332,43 +330,12 @@ const Page = ({ router }: WithRouterProps) => {
                     onRefresh={() => fetchDeedInfo(deedData.id!)}
                   />
                 </div>
-                <div className="flex flex-col border border-white border-opacity-10">
-                  <div className="bg-base-300 w-full font-normal text-[10px] sm:text-xs uppercase p-4 py-8 flex items-center gap-2 tracking-widest">
-                    {IconInfoSquare} Deed Information
-                  </div>
-                  <div className="flex flex-col p-4 gap-4">
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Deed Type</div>
-                      <div>Grant/Warranty</div>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Parcel Number</div>
-                      <div>006-0153-011-0000</div>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Tax Assessed Value</div>
-                      <div>$297,578</div>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">GPS Coordinates</div>
-                      <div>
-                        {deedData.propertyDetails.propertyLatitude},{" "}
-                        {deedData.propertyDetails.propertyLongitude}
-                      </div>
-                    </div>
-                    <hr className=" border-white opacity-10 w-full" />
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Contract</div>
-                      <div>
-                        <Address address={deedNFTContractAddress} format="short" />
-                      </div>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <div className="text-sm text-[#8c8e97]">Transfer Fee</div>
-                      <div>2.5%</div>
-                    </div>
-                  </div>
-                </div>
+                <OverviewDeedInformations
+                  isOwner={isOwner}
+                  onSave={handleSave}
+                  deedData={deedData}
+                  onChange={handleChange}
+                />
                 <PropertyBidOffers deedData={deedData} />
               </div>
             </div>

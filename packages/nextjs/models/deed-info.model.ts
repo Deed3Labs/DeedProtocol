@@ -90,6 +90,12 @@ export interface PaymentInformationModel {
   stableCoin?: TokenModel;
 }
 
+export interface DeedDetailsModel {
+  deedType: string;
+  parcelNumber: string;
+  taxAssessedValue: string;
+}
+
 export interface DeedInfoModel {
   id?: string;
   mintedId?: number;
@@ -106,8 +112,11 @@ export interface DeedInfoModel {
   // 3. Other Information
   otherInformation: OtherInformationModel;
 
-  //4. Payment Information
+  // 4. Payment Information
   paymentInformation: PaymentInformationModel;
+
+  // 5. Deed info
+  deedDetails: DeedDetailsModel;
 
   process?: FileModel[];
   agreement?: FileModel[];

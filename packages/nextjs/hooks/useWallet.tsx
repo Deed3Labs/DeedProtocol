@@ -1,5 +1,4 @@
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { useAccount } from "wagmi";
 
 const useWallet = () => {
   // OFLINE
