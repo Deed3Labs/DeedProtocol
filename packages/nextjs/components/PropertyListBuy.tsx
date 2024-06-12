@@ -60,7 +60,7 @@ const BidOffers = ({ deedData }: Props) => {
                   <div className="text-gray-500 font-normal text-lg">Not listed</div>
                   {isOwner && (
                     <ListModal
-                      trigger={<button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs">List Property</button>}
+                      trigger={<button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs w-fit whitespace-nowrap">List Property</button>}
                       openState={listOpenState}
                       collectionId={deedNFTAddresss}
                       tokenId={deedData.mintedId!.toString()}
