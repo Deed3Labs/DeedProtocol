@@ -71,7 +71,7 @@ async function getDeedFromChain(req: NextApiRequest, res: NextApiResponse, force
 
   const deedInfoMetadata = tokenMetadataResponse as unknown as DeedInfoModel;
   deedInfoMetadata.mintedId = Number(id);
-  deedInfoMetadata.owner = deedOwner;
+  deedInfoMetadata.ownerInformation.walletAddress = deedOwner!;
   deedInfoMetadata.isValidated = deedInfo.isValidated;
 
   return res.status(200).json(deedInfoMetadata);
@@ -95,7 +95,7 @@ async function getDeedFromDatabase(req: NextApiRequest, res: NextApiResponse) {
     return res.status(404).send(`Error: Deed ${id} not found in drafts`);
   }
 
-  if (!(await authentify(req, res, [deed.owner!, "Validator"]))) {
+  if (!(await authentify(req, res, [deed.ownerInformation.walletAddress!, "Validator"]))) {
     return;
   }
 
@@ -121,7 +121,12 @@ async function saveDeed(req: NextApiRequest, res: NextApiResponse) {
   let existingRegistration;
   if (deedInfo.id) {
     existingRegistration = await DeedDb.getDeed(deedInfo.id);
-    if (!(await authentify(req, res, [existingRegistration!.owner!, "Validator"]))) {
+    if (
+      !(await authentify(req, res, [
+        existingRegistration!.ownerInformation.walletAddress!,
+        "Validator",
+      ]))
+    ) {
       return;
     }
   }
@@ -170,10 +175,6 @@ async function saveDeed(req: NextApiRequest, res: NextApiResponse) {
           .send("Error: Unable to get coordinates from address, please try another address.");
       }
     }
-  }
-
-  if (!deedInfo.owner) {
-    deedInfo.owner = walletAddress;
   }
 
   const id = await DeedDb.saveDeed(deedInfo);

@@ -52,7 +52,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     try {
       await contractWriteHook.writeAsync({
         args: [
-          data.owner,
+          data.ownerInformation.walletAddress,
           hash.toString(),
           indexOfLiteral(PropertyTypeOptions, data.propertyDetails.propertyType),
         ],

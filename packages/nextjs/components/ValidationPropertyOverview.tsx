@@ -26,7 +26,9 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
   const handleChatClick = () => {
     if (isOwner) {
       const subject = encodeURIComponent(
-        `${deedData.propertyDetails.propertyAddress.toUpperCase()} || ${deedData.owner}`,
+        `${deedData.propertyDetails.propertyAddress.toUpperCase()} || ${
+          deedData.ownerInformation.walletAddress
+        }`,
       );
       window.open(`mailto:validation@deed3.io?subject=${subject}`, "_blank");
     } else {
@@ -78,7 +80,11 @@ const PropertyOverview = ({ deedData, onRefresh, handleMint, handleValidate }: P
             </div>
 
             <div className="flex flex-row gap-4 items-center">
-              <Address address={deedData.owner} label="Owner" size="base" />
+              <Address
+                address={deedData.ownerInformation.walletAddress}
+                label="Owner"
+                size="base"
+              />
               <Address address="The Deed & Title Co." label="Validator" size="base" />
               <button
                 className="btn btn-sm sm:btn-sm border border-white border-opacity-10 w-8 p-2 sm:p-1.5 rounded-md"

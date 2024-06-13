@@ -160,15 +160,15 @@ const Page = ({ router }: WithRouterProps) => {
 
               <div className="mb-10">
                 <OwnerInformation value={deedData.ownerInformation} onChange={handleChange} />
-                <hr className="my-12 opacity-20" />
+                <hr className="my-12 border-[#212121]" />
                 <PropertyDetails
                   value={deedData.propertyDetails}
                   onChange={handleChange}
                   isDraft={!deedData.mintedId}
                 />
-                <hr className="my-12 opacity-20" />
+                <hr className="my-12 border-[#212121]" />
                 <OtherInformations value={deedData.otherInformation} onChange={handleChange} />
-                <hr className="my-12 opacity-20" />
+                <hr className="my-12 border-[#212121]" />
                 {router.isReady && !deedData.paymentInformation.receipt && (
                   <PaymentInformation value={deedData.paymentInformation} onChange={handleChange} />
                 )}

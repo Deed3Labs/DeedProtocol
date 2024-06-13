@@ -1,10 +1,12 @@
 import React from "react";
 import Link from "next/link";
+import { AddressInput } from "./scaffold-eth";
 import { FileUploaderInput } from "~~/components/inputs/FileUploaderInput";
 import { RadioBoxesInput } from "~~/components/inputs/RadioBoxesInput";
 import { SelectInput } from "~~/components/inputs/SelectInput";
 import TextInput from "~~/components/inputs/TextInput";
 import { EntityTypeOptions, OwnerTypeOptions, StateOptions } from "~~/constants";
+import useWallet from "~~/hooks/useWallet";
 import { DeedInfoModel, OwnerInformationModel } from "~~/models/deed-info.model";
 import { LightChangeEvent } from "~~/models/light-change-event";
 
@@ -15,6 +17,8 @@ interface Props {
 }
 
 const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
+  const { primaryWallet } = useWallet();
+
   const handleChange = (ev: LightChangeEvent<OwnerInformationModel>) => {
     const updatedValue = { ...value, [ev.name]: ev.value };
     onChange?.({ name: "ownerInformation", value: updatedValue });
@@ -76,6 +80,18 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           value={value?.ownerSuffix}
           onChange={handleChange}
           readOnly={readOnly}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="justify-start items-center inline-flex mb-3" htmlFor="owner">
+          Wallet
+        </label>
+        <AddressInput
+          large
+          name="walletAddress"
+          placeholder="0x..."
+          value={value?.walletAddress ?? primaryWallet?.address ?? ""}
+          onChange={newValue => handleChange({ name: "walletAddress", value: newValue })}
         />
       </div>
       {value?.ownerType === "legal" && (

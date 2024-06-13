@@ -21,7 +21,7 @@ const useDeedValidate = () => {
       return;
     }
 
-    if (deed.owner === primaryWallet.address) {
+    if (deed.ownerInformation.walletAddress === primaryWallet.address) {
       notification.error("You cannot validate your own deed");
       return;
     }

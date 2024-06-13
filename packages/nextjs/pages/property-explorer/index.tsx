@@ -98,7 +98,7 @@ const PropertyExplorer: NextPage = () => {
           type: entity.propertyDetails.propertyType ?? "realEstate",
           icon: propertyIcon,
           validated: entity.isValidated,
-          owner: entity.owner!,
+          owner: entity.ownerInformation.walletAddress,
         };
         if (!deed.pictures?.length) {
           deed.pictures = [`/images/residential${(index % 6) + 1}.png`];

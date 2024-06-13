@@ -20,6 +20,8 @@ export interface OwnerInformationModel {
   ownerName: string;
   ownerSuffix?: string;
 
+  walletAddress: Address;
+
   // -- Corporation Only --
   entityName: string;
   ownerPosition: string;
@@ -99,7 +101,6 @@ export interface DeedDetailsModel {
 export interface DeedInfoModel {
   id?: string;
   mintedId?: number;
-  owner?: Address;
   isValidated?: boolean;
   timestamp?: number;
 

@@ -50,8 +50,8 @@ const FileValidation = ({
   const isValidator = useIsValidator();
   const validationClient = useValidationClient();
   const isOwner = useMemo(() => {
-    return deedData.owner === primaryWallet?.address;
-  }, [deedData.owner, primaryWallet]);
+    return deedData.ownerInformation.walletAddress === primaryWallet?.address;
+  }, [deedData.ownerInformation.walletAddress, primaryWallet]);
 
   useEffect(() => {
     (async () => {

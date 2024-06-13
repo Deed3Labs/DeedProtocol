@@ -82,9 +82,7 @@ const OverviewPropertyDescription = ({ deedData, onRefresh, onSave, onChange }: 
                 </div>
                 <div
                   className={`flex items-center justify-center w-full ${
-                    isReadMore || !deedData.propertyDetails.propertyDescription
-                      ? ""
-                      : ""
+                    isReadMore || !deedData.propertyDetails.propertyDescription ? "" : ""
                   }`}
                 >
                   <hr className="my-0 border-[#2d2d2d] w-full flex-1" />

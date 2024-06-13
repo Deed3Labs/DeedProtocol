@@ -60,7 +60,11 @@ const BidOffers = ({ deedData }: Props) => {
                   <div className="text-gray-500 font-normal text-lg">Not listed</div>
                   {isOwner && (
                     <ListModal
-                      trigger={<button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs w-fit whitespace-nowrap tracking-wide">List Property</button>}
+                      trigger={
+                        <button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs w-fit whitespace-nowrap tracking-wide">
+                          List Property
+                        </button>
+                      }
                       openState={listOpenState}
                       collectionId={deedNFTAddresss}
                       tokenId={deedData.mintedId!.toString()}
@@ -97,14 +101,18 @@ const BidOffers = ({ deedData }: Props) => {
                 <div className="flex flex-row justify-between gap-2">
                   {listings.data[0]?.price?.amount?.usd && (
                     <div className="flex items-center justify-start w-1/2 gap-2">
-                      <span className="text-lg font-bold text-sm sm:text-base">Price:</span>{" "}
+                      <span className="font-bold text-sm sm:text-base">Price:</span>{" "}
                       <span>{formatter.format(listings.data[0]?.price?.amount?.usd)}</span>
                     </div>
                   )}
                   {isOwner ? (
                     <div className="flex gap-2">
                       <EditListingModal
-                        trigger={<button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs flex-1">Edit</button>}
+                        trigger={
+                          <button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs flex-1">
+                            Edit
+                          </button>
+                        }
                         listingId={listings.data[0].id}
                         collectionId={deedNFTAddresss}
                         tokenId={deedData.mintedId!.toString()}
@@ -124,7 +132,9 @@ const BidOffers = ({ deedData }: Props) => {
                       />
                       <CancelListingModal
                         trigger={
-                          <button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs text-error flex-1">Cancel Listing</button>
+                          <button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs text-error flex-1">
+                            Cancel Listing
+                          </button>
                         }
                         listingId={listings.data[0].id}
                         onCancelComplete={() => {
@@ -177,7 +187,11 @@ const BidOffers = ({ deedData }: Props) => {
                       <BuyModal
                         defaultQuantity={1}
                         onConnectWallet={connectWallet}
-                        trigger={<button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs flex-1 w-fit whitespace-nowrap">Buy Now</button>}
+                        trigger={
+                          <button className="btn border-white border-opacity-10 bg-base-300 font-normal text-[10px] sm:text-xs flex-1 w-fit whitespace-nowrap">
+                            Buy Now
+                          </button>
+                        }
                         token={tokenWithId}
                         onPurchaseComplete={async () => {
                           notification.success("Purchase Complete");

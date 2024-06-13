@@ -73,7 +73,7 @@ async function submitPayment(req: NextApiRequest, res: NextApiResponse) {
     return res.status(404).send(`Error: Deed ${id} not found`);
   }
 
-  if (!(await authentify(req, res, [deedInfo.owner!, "Validator"]))) {
+  if (!(await authentify(req, res, [deedInfo.ownerInformation.walletAddress, "Validator"]))) {
     return;
   }
 

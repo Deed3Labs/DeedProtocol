@@ -6,8 +6,8 @@ const useIsOwner = (deedData: DeedInfoModel) => {
   const { primaryWallet, isConnecting } = useWallet();
   const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {
-    setIsOwner(primaryWallet?.address === deedData.owner);
-  }, [primaryWallet?.address, deedData?.owner, isConnecting]);
+    setIsOwner(primaryWallet?.address === deedData.ownerInformation.walletAddress);
+  }, [primaryWallet?.address, deedData?.ownerInformation.walletAddress, isConnecting]);
   return isOwner;
 };
 
