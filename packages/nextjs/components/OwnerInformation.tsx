@@ -87,7 +87,7 @@ const OwnerInformation = ({ value, onChange, readOnly }: Props) => {
           Wallet
         </label>
         <AddressInput
-          large
+          className="input input-md sm:input-lg sm:text-[16px] flex flex-grow"
           name="walletAddress"
           placeholder="0x..."
           value={value?.walletAddress ?? primaryWallet?.address ?? ""}
