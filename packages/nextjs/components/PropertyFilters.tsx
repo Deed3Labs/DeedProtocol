@@ -139,7 +139,6 @@ const PropertyFilters = ({ properties }: Props) => {
                   propertySize: ev.value,
                 })
               }
-              className="input input-md sm:input-lg sm:text-[16px] flex"
             />
             <AddressInput
               className="input input-md sm:input-lg sm:text-[16px] flex flex-grow"
