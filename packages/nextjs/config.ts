@@ -39,6 +39,4 @@ const CONFIG = {
   appName: "Deed3.io",
 } as const;
 
-console.log("CONFIG targetNetwork", CONFIG.targetNetwork);
-
 export default CONFIG;
