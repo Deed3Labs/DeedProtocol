@@ -37,7 +37,7 @@ export const InputBase = <T extends { toString: () => string } | undefined = str
 
   return (
     <div
-      className={`flex border border-white border-opacity-10 bg-base-200 font-normal text-accent input ${
+      className={`flex border border-white border-opacity-10 bg-base-200 font-normal text-accent items-center input ${
         large ? "input-lg" : ""
       } ${modifier} ${className}`}
     >
