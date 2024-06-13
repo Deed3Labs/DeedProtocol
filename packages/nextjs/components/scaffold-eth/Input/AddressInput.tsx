@@ -98,7 +98,7 @@ export const AddressInput = ({
                 }
               </span>
             ) : null}
-            <span className="text-accent px-2">{enteredEnsName ?? ensName}</span>
+            <span className="text-accent items-center px-2">{enteredEnsName ?? ensName}</span>
           </div>
         )
       }
