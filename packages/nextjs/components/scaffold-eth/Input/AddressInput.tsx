@@ -79,7 +79,7 @@ export const AddressInput = ({
       placeholder={placeholder}
       error={ensAddress === null}
       value={value}
-      className={`w-full ${className}`}
+      className={`w-min ${className}`}
       onChange={handleChange}
       disabled={isEnsAddressLoading || isEnsNameLoading || disabled}
       large={large}
