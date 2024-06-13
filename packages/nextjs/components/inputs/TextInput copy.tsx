@@ -46,7 +46,9 @@ const TextInput = <TParent,>({
       <input
         id={name as string}
         name={name as string}
-        className={`input ${large ? "input-lg" : ""} input-bordered ${
+        className={`input text-base ${
+          large ? "input-lg" : ""
+        } bg-transparent border-white border-opacity-10 ${
           required && !value ? "input-error" : ""
         } ${readOnly ? "border-none bg-transparent" : ""}`}
         placeholder={readOnly ? "-" : placeholder}
