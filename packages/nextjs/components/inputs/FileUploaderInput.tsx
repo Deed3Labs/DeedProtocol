@@ -134,7 +134,7 @@ export const FileUploaderInput = <TParent,>({
       ) : (
         <label
           htmlFor={name as string}
-          className={`mt-3 flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-min-36 cursor-pointer hover:bg-base-100 border border-opacity-20 border-secondary ${
+          className={`mt-3 flex flex-row flex-wrap lg:flex-nowrap justify-start gap-8 items-center w-full p-4 lg:h-min-36 cursor-pointer hover:bg-base-100 border border-white border-opacity-10 ${
             readOnly ? "pointer-events-none border-none" : ""
           }`}
           tabIndex={0}
