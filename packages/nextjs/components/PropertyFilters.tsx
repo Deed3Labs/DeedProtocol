@@ -131,7 +131,7 @@ const PropertyFilters = ({ properties }: Props) => {
               )}
             </select>
             <TextInput
-              className="input input-md sm:input-lg sm:text-[16px] flex flex-grow"
+              className="input input-md sm:input-lg sm:text-[16px] flex"
               name="PropertySize"
               placeholder="Property Size"
               value={filter.propertySize}
