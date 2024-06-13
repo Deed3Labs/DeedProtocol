@@ -43,19 +43,18 @@ const OverviewDeedInformations = ({ deedData, isOwner, onChange, onSave }: Props
     <>
       {deedData && (
         <div className={`w-full `}>
-          <div className="flex flex-row justify-between items-center px-0 pt-8">
-            <div className="pl-0 pb-4 text-[11px] sm:text-[12px] font-normal uppercase tracking-widest">
-              Deed Information
-            </div>
-            {(isOwner || isValidator) && !isEditMode !== undefined && (
-              <button className="btn btn-link" onClick={handleViewModeToggle}>
-                {!isEditMode ? <PencilIcon className="w-4" /> : <CheckIcon className="w-4" />}
-              </button>
-            )}
-          </div>
           <div className="flex flex-col border border-white border-opacity-10">
-            <div className="bg-base-300 w-full font-normal text-[10px] sm:text-xs uppercase p-4 py-8 flex items-center gap-2 tracking-widest">
-              {IconInfoSquare} Deed Information
+            <div className="flex flex-row justify-between items-center bg-base-300">
+              <div className=" w-full font-normal text-[10px] sm:text-xs uppercase p-4 py-8 flex items-center gap-2 tracking-widest">
+                {IconInfoSquare} Deed Information
+              </div>
+              {(isOwner || isValidator) && !isEditMode !== undefined && (
+                <div className="pr-2">
+                  <button className="btn btn-link" onClick={handleViewModeToggle}>
+                    {!isEditMode ? <PencilIcon className="w-4" /> : <CheckIcon className="w-4" />}
+                  </button>
+                </div>
+              )}
             </div>
             <div className="flex flex-col p-4 gap-4">
               <div className="flex flex-row justify-between">
@@ -81,7 +80,7 @@ const OverviewDeedInformations = ({ deedData, isOwner, onChange, onSave }: Props
                     onChange={handleChange}
                   />
                 ) : (
-                  <div>006-0153-011-0000</div>
+                  <div>{deedData.deedDetails?.parcelNumber}</div>
                 )}
               </div>
               <div className="flex flex-row justify-between">
