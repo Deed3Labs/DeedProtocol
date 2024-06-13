@@ -38,13 +38,13 @@ export const InputBase = <T extends { toString: () => string } | undefined = str
   return (
     <div
       className={`flex border border-white border-opacity-10 bg-base-200 font-normal text-accent input ${
-        large ? "input-md" : ""
+        large ? "input-lg" : ""
       } ${modifier} ${className}`}
     >
       {prefix}
       <input
         className={`input ${
-          large ? "input-md" : ""
+          large ? "input-lg" : ""
         } px-0 bg-transparent w-full border-none focus:border-none outline-none focus:outline-none text-white`}
         placeholder={placeholder}
         name={name}
