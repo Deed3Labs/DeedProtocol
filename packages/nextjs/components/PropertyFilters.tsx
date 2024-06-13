@@ -131,6 +131,7 @@ const PropertyFilters = ({ properties }: Props) => {
               )}
             </select>
             <TextInput
+              className="input input-md sm:input-lg sm:text-[16px] flex flex-grow"
               name="PropertySize"
               placeholder="Property Size"
               value={filter.propertySize}
@@ -139,13 +140,12 @@ const PropertyFilters = ({ properties }: Props) => {
                   propertySize: ev.value,
                 })
               }
-              large
             />
             <AddressInput
+              className="input input-md sm:input-lg sm:text-[16px] flex flex-grow"
               placeholder="Owner wallet"
               name="OwnerWallet"
               value={filter.ownerWallet ?? ""}
-              large
               onChange={address =>
                 applyFilter({
                   ownerWallet: address,
