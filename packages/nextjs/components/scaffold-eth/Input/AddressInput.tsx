@@ -79,15 +79,15 @@ export const AddressInput = ({
       placeholder={placeholder}
       error={ensAddress === null}
       value={value}
-      className={`w-[545px] ${className}`}
+      className={`w-full ${className}`}
       onChange={handleChange}
       disabled={isEnsAddressLoading || isEnsNameLoading || disabled}
       large={large}
       prefix={
         ensName && (
-          <div className="flex bg-base-300 rounded-l-full items-center">
+          <div className="flex items-center">
             {ensAvatar ? (
-              <span className="w-[35px]">
+              <span className="w-[25px]">
                 {
                   // eslint-disable-next-line
                   <img
@@ -110,8 +110,8 @@ export const AddressInput = ({
             alt=""
             className={`!rounded-full mx-2 ${!value ? "cursor-pointer" : ""}`}
             src={blo((value || primaryWallet?.address) as `0x${string}`)}
-            width="35"
-            height="35"
+            width="25"
+            height="25"
             title={!value ? "Click for current wallet" : "Address Blockie"}
             onClick={onBlockieClicked}
           />
