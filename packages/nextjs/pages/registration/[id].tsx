@@ -48,7 +48,7 @@ const Page = ({ router }: WithRouterProps) => {
 
   const deedClient = useDeedClient();
 
-  const isOwner = useIsOwner(deedData);
+  const isOwner = useIsOwner(deedData, false);
   const isValidator = useIsValidator();
 
   useEffect(() => {

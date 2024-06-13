@@ -4,7 +4,7 @@ import { NextRouter } from "next/router";
 import MarketLogo from "../pages/registration/assets/MarketLogo";
 import QuoteDetail, { USDollar } from "./scaffold-eth/QuoteDetail";
 import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
-import { TransactionReceipt } from "viem";
+import { TransactionReceipt, isAddress } from "viem";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import useDeedClient from "~~/clients/deeds.client";
 import usePaymentClient from "~~/clients/payments.client";
@@ -26,6 +26,7 @@ import { uploadFiles } from "~~/services/file.service";
 import logger from "~~/services/logger.service";
 import { parseContractEvent } from "~~/utils/contract";
 import { notification } from "~~/utils/scaffold-eth";
+import { sleepAsync } from "~~/utils/sleepAsync";
 
 interface Props {
   stableCoin: TokenModel;
@@ -81,6 +82,11 @@ const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router 
         return;
       }
 
+      if (primaryWallet.address !== deedData.ownerInformation.walletAddress) {
+        notification.warning("Please connect to the specified wallet to continue");
+        await sleepAsync(2000);
+      }
+
       if (!deedData.paymentInformation.receipt) {
         if (await handlePayment(response.value)) {
           await router.push(`/validation/${response.value}`);
@@ -100,6 +106,11 @@ const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router 
   };
 
   const validateForm = () => {
+    if (!isAddress(deedData.ownerInformation.walletAddress)) {
+      notification.error("Owner Information walletAddress is invalid", { duration: 3000 });
+      return false;
+    }
+
     // if (!deedData.ownerInformation.ids) {
     //   notification.error("Owner Information ids is required", { duration: 3000 });
     //   return false;
