@@ -10,7 +10,7 @@ import { MapIcon } from "@heroicons/react/24/outline";
 import { MapIcon as MapIconSolid, XMarkIcon } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
-import { usePropertiesFilter } from "~~/contexts/agent-filter.context";
+import { usePropertiesFilter } from "~~/contexts/property-filter.context";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import useWallet from "~~/hooks/useWallet";
