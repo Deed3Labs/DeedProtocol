@@ -1,5 +1,6 @@
 import { AgentType } from "./agent-info.model";
 import { MarkerModel } from "./marker.model";
+import { Address } from "viem";
 
 export interface AgentModel extends MarkerModel {
   id: string;
