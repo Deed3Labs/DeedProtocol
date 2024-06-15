@@ -1,6 +1,6 @@
 import React, { ReactNode, createContext, useContext } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { AgentFilterModel } from "~~/models/agent-filter.model";
+import { PropertiesFilterModel } from "~~/models/agent-filter.model";
 
 export const defaultPropertyFilter: PropertiesFilterModel = {
   search: "",
