@@ -1,4 +1,5 @@
-import { FileModel, FileValidationState } from "./file.model";
+import { FileModel } from "./file.model";
+import { TokenModel } from "./token.model";
 import { Address } from "viem";
 import {
   AgentTypeOptions,
@@ -9,6 +10,7 @@ import {
   PropertyTypeOptions,
   PropertyZoningOptions,
   StateOptions,
+  VehicleMakesAndModels,
   WrapperOptions,
 } from "~~/constants";
 import { ValueExtractor } from "~~/utils/extract-values";
@@ -19,7 +21,9 @@ export interface OwnerInformationModel {
   ownerName: string;
   ownerSuffix?: string;
 
-  // -- Coorporation only --
+  walletAddress: Address;
+
+  // -- Corporation Only --
   entityName: string;
   ownerPosition: string;
   ownerState: ValueExtractor<typeof StateOptions>;
@@ -36,6 +40,7 @@ export type PropertyType = ValueExtractor<typeof PropertyTypeOptions>;
 export type AgentType = ValueExtractor<typeof AgentTypeOptions>;
 
 export interface PropertyDetailsModel {
+  propertyDescription: string;
   propertyType: PropertyType;
   propertySubType?: ValueExtractor<typeof PropertySubtypeOptions>;
   propertyAddress: string;
@@ -48,6 +53,15 @@ export interface PropertyDetailsModel {
   propertyBuildYear?: string;
   propertyHouseType?: string;
   propertySquareFootage?: string;
+  propertyLatitude?: number;
+  propertyLongitude?: number;
+
+  // -- Vehicles Only --
+  vehicleIdentificationNumber: string;
+  currentMileage: string;
+  yearOfManufacture: string;
+  vehicleMake: keyof typeof VehicleMakesAndModels;
+  vehicleModel: string;
 
   propertyImages?: FileModel[];
   propertyDeedOrTitle: FileModel;
@@ -77,12 +91,18 @@ export interface PaymentInformationModel {
   zip?: string;
 
   // -- Crypto only --
-  stableCoin?: Address;
+  stableCoin?: TokenModel;
+}
+
+export interface DeedDetailsModel {
+  deedType: string;
+  parcelNumber: string;
+  taxAssessedValue: string;
 }
 
 export interface DeedInfoModel {
   id?: string;
-  owner?: Address;
+  mintedId?: number;
   isValidated?: boolean;
   timestamp?: number;
 
@@ -95,13 +115,23 @@ export interface DeedInfoModel {
   // 3. Other Information
   otherInformation: OtherInformationModel;
 
-  //4. Payment Information
+  // 4. Payment Information
   paymentInformation: PaymentInformationModel;
+
+  // 5. Deed info
+  deedDetails: DeedDetailsModel;
 
   process?: FileModel[];
   agreement?: FileModel[];
   documentNotorization?: FileModel[];
 
-  validations?: [string, FileValidationState][];
   signatureTx?: string;
+}
+
+export interface OpenSeaMetadata {
+  name?: string;
+  description?: string;
+  image?: string;
+  external_url?: string;
+  attributes?: { trait_type: string; value: string }[];
 }
