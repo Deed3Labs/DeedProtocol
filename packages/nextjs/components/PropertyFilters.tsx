@@ -47,20 +47,20 @@ const PropertyFilters = ({ properties }: Props) => {
         <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full">
           <input
             name="Search"
-            className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] py-2 sm:py-0 w-full sm:flex-grow"
+            className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 text-[9px] sm:text-[16px] py-2 sm:py-0 w-full sm:flex-grow"
             placeholder="Search by City, State, or Zip code"
             value={filter.search}
             onChange={ev => applyFilter({ search: ev.target.value })}
           />
           <button
-            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto flex"
+            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 text-[9px] sm:text-[16px] font-normal capitalize items-center gap-2 h-auto flex flex-1"
             onClick={() => setIsMoreFilters(old => !old)}
           >
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             {isMoreFilters ? "Hide Filters" : "All Filters"}
           </button>
           <select
-            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-1"
+            className="select select-md sm:select-lg border-white border-opacity-10 text-[9px] sm:text-[16px] flex flex-1"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
@@ -108,7 +108,7 @@ const PropertyFilters = ({ properties }: Props) => {
         {isMoreFilters && (
           <div className="flex flex-grow flex-row flex-wrap justify-start items-center gap-2 md:gap-4 w-full my-4">
             <select
-              className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px]"
+              className="select select-md sm:select-lg border-white border-opacity-10 text-[9px] sm:text-[16px]"
               value={filter.validated}
               disabled={!primaryWallet}
               title={
@@ -141,7 +141,7 @@ const PropertyFilters = ({ properties }: Props) => {
               }
             />
             <AddressInput
-              className="input input-md sm:input-lg sm:text-[16px] flex flex-grow"
+              className="input input-md sm:input-lg text-[9px] sm:text-[16px] flex flex-grow"
               placeholder="Owner wallet"
               name="OwnerWallet"
               value={filter.ownerWallet ?? ""}
