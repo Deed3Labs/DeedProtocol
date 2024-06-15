@@ -15,7 +15,7 @@ import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hoo
 import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import useWallet from "~~/hooks/useWallet";
 import { AgentType } from "~~/models/agent-info.model";
-import { AgentFilterModel } from "~~/models/agent-filter.model";
+import { PropertiesFilterModel } from "~~/models/agent-filter.model";
 import { AgentModel } from "~~/models/agent.model";
 
 interface Props {
