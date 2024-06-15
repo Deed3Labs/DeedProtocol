@@ -60,7 +60,7 @@ const PropertyFilters = ({ properties }: Props) => {
             {isMoreFilters ? "Hide Filters" : "More Filters"}
           </button>
           <select
-            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-grow"
+            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
