@@ -53,14 +53,14 @@ const PropertyFilters = ({ properties }: Props) => {
             onChange={ev => applyFilter({ search: ev.target.value })}
           />
           <button
-            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto flex flex-grow"
+            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto flex flex-1"
             onClick={() => setIsMoreFilters(old => !old)}
           >
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             {isMoreFilters ? "Hide Filters" : "All Filters"}
           </button>
           <select
-            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex"
+            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-1"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
@@ -74,7 +74,7 @@ const PropertyFilters = ({ properties }: Props) => {
             ))}
           </select>
           <div className="join">
-            <button className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10">
+            <button className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10 flex flex-1">
               <svg
                 width="13"
                 height="13"
@@ -91,7 +91,7 @@ const PropertyFilters = ({ properties }: Props) => {
               </svg>
             </button>
             <button
-              className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10"
+              className="join-item btn sm:btn-lg btn-square bg-base-300 border-white border-opacity-10 flex flex-1"
               onClick={() => setMapOpened(!mapOpened)}
             >
               {mapOpened ? <MapIconSolid className="w-4" /> : <MapIcon className="w-4" />}
