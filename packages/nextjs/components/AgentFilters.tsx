@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ExplorerLinks from "./ExplorerLinks";
-import PropertyCard from "./PropertyCard";
+import AgentCard from "./AgentCard";
 import TextInput from "./inputs/TextInput";
 import Map from "./map";
 import { AddressInput } from "./scaffold-eth";
