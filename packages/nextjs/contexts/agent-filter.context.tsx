@@ -2,15 +2,15 @@ import React, { ReactNode, createContext, useContext } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { AgentFilterModel } from "~~/models/agent-filter.model";
 
-export const defaultPropertyFilter: AgentFilterModel = {
+export const defaultPropertyFilter: PropertiesFilterModel = {
   search: "",
   agentType: "realEstate",
   validated: "true",
 };
 
 interface FilterContextModel {
-  filter: AgentFilterModel;
-  applyFilter: React.Dispatch<React.SetStateAction<AgentFilterModel>>;
+  filter: PropertiesFilterModel;
+  applyFilter: React.Dispatch<React.SetStateAction<PropertiesFilterModel>>;
   reset: () => void;
 }
 
