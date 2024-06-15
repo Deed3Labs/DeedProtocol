@@ -21,7 +21,7 @@ const AgentCard = ({ agent, small = false }: Props) => {
   const image = (
     <div
       className={`self-stretch ${
-        small ? "h-16 w-16" : "h-40"
+        small ? "h-16 w-16" : "h-36"
       } bg-neutral-900 flex-col justify-end items-start flex relative`}
     >
       <div className={`h-14 ${small ? "h-16 w-16" : "p-0"} border border-white border-opacity-10 flex justify-center items-center`}>
