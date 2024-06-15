@@ -44,9 +44,9 @@ const AgentCard = ({ agent, small = false }: Props) => {
   );
 
   return (
-    <div className={`w-full ${small ? "h-24 p-0" : "h-60"} p-2 bg-[#0e0e0e] border border-white border-opacity-10 flex-col justify-start items-start inline-flex`}>
+    <div className={`w-full ${small ? "h-24 p-0" : "h-60 p-2"} bg-[#0e0e0e] border border-white border-opacity-10 flex-col justify-start items-start inline-flex`}>
       {small ? (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-1">
           {image}
           <div className="text-white text-xs font-bold font-['Montserrat']">{agent.name}</div>
         </div>
