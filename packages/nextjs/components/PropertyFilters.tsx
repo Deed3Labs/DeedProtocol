@@ -53,14 +53,14 @@ const PropertyFilters = ({ properties }: Props) => {
             onChange={ev => applyFilter({ search: ev.target.value })}
           />
           <button
-            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 text-[9px] sm:text-[16px] font-normal capitalize items-center gap-2 h-auto flex flex-1"
+            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 text-[11px] sm:text-[16px] font-normal capitalize items-center gap-2 h-auto flex flex-1"
             onClick={() => setIsMoreFilters(old => !old)}
           >
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
             {isMoreFilters ? "Hide Filters" : "All Filters"}
           </button>
           <select
-            className="select select-md sm:select-lg border-white border-opacity-10 text-[9px] sm:text-[16px] flex flex-1"
+            className="select select-md sm:select-lg border-white border-opacity-10 text-[11px] sm:text-[16px] flex flex-1"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
@@ -108,7 +108,7 @@ const PropertyFilters = ({ properties }: Props) => {
         {isMoreFilters && (
           <div className="flex flex-grow flex-row flex-wrap justify-start items-center gap-2 md:gap-4 w-full my-4">
             <select
-              className="select select-md sm:select-lg border-white border-opacity-10 text-[9px] sm:text-[16px]"
+              className="select select-md sm:select-lg border-white border-opacity-10 text-[11px] sm:text-[16px]"
               value={filter.validated}
               disabled={!primaryWallet}
               title={
@@ -141,7 +141,7 @@ const PropertyFilters = ({ properties }: Props) => {
               }
             />
             <AddressInput
-              className="input input-md sm:input-lg text-[9px] sm:text-[16px] flex flex-grow"
+              className="input input-md sm:input-lg text-[11px] sm:text-[16px] flex flex-grow"
               placeholder="Owner wallet"
               name="OwnerWallet"
               value={filter.ownerWallet ?? ""}
