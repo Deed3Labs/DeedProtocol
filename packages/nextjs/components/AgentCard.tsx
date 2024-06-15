@@ -22,9 +22,9 @@ const AgentCard = ({ agent, small = false }: Props) => {
     <div
       className={`self-stretch ${
         small ? "h-16 w-16" : "h-60"
-      } bg-neutral-900 flex-col justify-end items-start flex relative`}
+      } bg-white bg-opacity-5 flex-col justify-end items-start flex relative`}
     >
-      <div className={`h-14 ${small ? "h-16 w-16" : "p-0.5"} border border-white border-opacity-10 flex justify-center items-center`}>
+      <div className={`h-14 ${small ? "h-16 w-16" : "p-1"} border border-white border-opacity-10 flex justify-center items-center`}>
         <Image
           src={agent.profile}
           alt="Agent Profile"
@@ -44,9 +44,9 @@ const AgentCard = ({ agent, small = false }: Props) => {
   );
 
   return (
-    <div className={`w-full ${small ? "h-24" : "h-60"} p-2 bg-[0e0e0e] border border-white border-opacity-10 flex-col justify-start items-start inline-flex`}>
+    <div className={`w-full ${small ? "h-24" : "h-60"} p-0 bg-zinc-900 bg-opacity-40 border border-white border-opacity-10 flex-col justify-start items-start inline-flex`}>
       {small ? (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center gap-1">
           {image}
           <div className="text-white text-xs font-bold font-['Montserrat']">{agent.name}</div>
         </div>
