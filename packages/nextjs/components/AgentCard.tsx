@@ -21,10 +21,10 @@ const AgentCard = ({ agent, small = false }: Props) => {
   const image = (
     <div
       className={`self-stretch ${
-        small ? "h-16 w-16" : "h-60"
+        small ? "h-16 w-16" : "h-40"
       } bg-neutral-900 flex-col justify-end items-start flex relative`}
     >
-      <div className={`h-14 ${small ? "h-16 w-16" : "p-1"} border border-white border-opacity-10 flex justify-center items-center`}>
+      <div className={`h-14 ${small ? "h-16 w-16" : "p-0"} border border-white border-opacity-10 flex justify-center items-center`}>
         <Image
           src={agent.profile}
           alt="Agent Profile"
@@ -44,7 +44,7 @@ const AgentCard = ({ agent, small = false }: Props) => {
   );
 
   return (
-    <div className={`w-full ${small ? "h-24 p-0" : "h-60 p-2"} bg-[#0e0e0e] border border-white border-opacity-10 flex-col justify-start items-start inline-flex`}>
+    <div className={`w-full ${small ? "h-24 p-0" : "h-60 p-2 bg-[#0e0e0e]"} border border-white border-opacity-10 flex-col justify-start items-start inline-flex`}>
       {small ? (
         <div className="flex flex-col items-center">
           {image}
