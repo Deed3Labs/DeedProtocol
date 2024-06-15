@@ -61,8 +61,8 @@ const AgentFilters = ({ agents }: Props) => {
           </button>
           <select
             className="select select-md sm:select-lg border-white border-opacity-10 text-[12px] sm:text-[16px] flex flex-1"
-            value={filter.agentType}
-            onChange={ev => applyFilter({ agentType: ev.target.value as AgentType })}
+            value={filter.propertyType}
+            onChange={ev => applyFilter({ propertyType: ev.target.value as AgentType })}
           >
             <option disabled value={0}>
               Property type
