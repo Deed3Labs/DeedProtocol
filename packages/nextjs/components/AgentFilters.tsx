@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
 import ExplorerLinks from "./ExplorerLinks";
+import PropertyCard from "./PropertyCard";
+import TextInput from "./inputs/TextInput";
 import Map from "./map";
 import { AddressInput } from "./scaffold-eth";
 import { useLocalStorage } from "usehooks-ts";
@@ -10,20 +11,18 @@ import { MapIcon as MapIconSolid, XMarkIcon } from "@heroicons/react/24/solid";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import { PropertyTypeOptions } from "~~/constants";
 import { usePropertiesFilter } from "~~/contexts/property-filter.context";
-import useDebouncer from "~~/hooks/useDebouncer";
-import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
+import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
 import useWallet from "~~/hooks/useWallet";
-import { AgentFilterModel } from "~~/models/agent-filter.model";
 import { AgentType } from "~~/models/agent-info.model";
+import { AgentFilterModel } from "~~/models/agent-filter.model";
 import { AgentModel } from "~~/models/agent.model";
 
 interface Props {
   agents: AgentModel[];
-  onFilter: (filter?: AgentFilterModel) => void;
 }
 
-const AgentFilters = ({ onFilter, agents }: Props) => {
+const AgentFilters = ({ agents }: Props) => {
   const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
   const { filter, applyFilter, reset: resetFilter } = usePropertiesFilter();
