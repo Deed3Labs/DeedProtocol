@@ -41,7 +41,7 @@ const PropertyFilters = ({ properties }: Props) => {
   });
 
   return (
-    <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-2.5 sm:mb-8">
+    <div className="Wrapper flex flex-col space-y-[-20px] sm:space-y-[-16px] w-full mb-4 sm:mb-8">
       <ExplorerLinks />
       <div className="filters">
         <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full">
