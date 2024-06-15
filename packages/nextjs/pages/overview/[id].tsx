@@ -198,7 +198,7 @@ const Page = ({ router }: WithRouterProps) => {
             </button>
           </div>
         ) : (
-          <div className="w-full px-1.5 sm:px-1">
+          <div className="w-full px-0 sm:px-0">
             {/* Property Overview Title and Switcher Buttons */}
             <div className="flex flex-row w-full items-center justify-between mb-4 sm:mb-6">
               <div className="hidden sm:flex items-center text-xl sm:text-2xl w-auto">
