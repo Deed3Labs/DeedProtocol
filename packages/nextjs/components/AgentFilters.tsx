@@ -23,7 +23,7 @@ interface Props {
 }
 
 const AgentFilters = ({ agents }: Props) => {
-  const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
+  const [mapOpened, setMapOpened] = useLocalStorage("AgentFilter.MapOpened", false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
   const { filter, applyFilter, reset: resetFilter } = usePropertiesFilter();
   const router = useRouter();
