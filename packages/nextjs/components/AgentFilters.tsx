@@ -23,6 +23,8 @@ interface Props {
 }
 
 const AgentFilters = ({ agents }: Props) => {
+  const isValidator = useIsValidator();
+  const { primaryWallet } = useWallet();
   const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
   const [isMoreFilters, setIsMoreFilters] = useState(false);
   const { filter, applyFilter, reset: resetFilter } = usePropertiesFilter();
