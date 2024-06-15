@@ -53,7 +53,7 @@ const PropertyFilters = ({ properties }: Props) => {
             onChange={ev => applyFilter({ search: ev.target.value })}
           />
           <button
-            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto"
+            className="btn btn-md sm:btn-lg border-white border-opacity-10 bg-base-300 sm:text-[16px] font-normal capitalize items-center gap-2 h-auto flex"
             onClick={() => setIsMoreFilters(old => !old)}
           >
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
