@@ -158,7 +158,7 @@ const AgentFilters = ({ agents }: Props) => {
         <div className="!mt-4 border h-[420px]">
           <Map
             markers={agents}
-            popupContent={marker => <PropertyCard agent={marker as AgentModel} small />}
+            popupContent={marker => <PropertyCard property={marker as AgentModel} small />}
           />
         </div>
       )}
