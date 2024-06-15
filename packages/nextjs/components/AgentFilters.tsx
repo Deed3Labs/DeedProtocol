@@ -22,7 +22,7 @@ interface Props {
   agents: AgentModel[];
 }
 
-const PropertyFilters = ({ agents }: Props) => {
+const AgentFilters = ({ agents }: Props) => {
   const isValidator = useIsValidator();
   const { primaryWallet } = useWallet();
   const [mapOpened, setMapOpened] = useLocalStorage("PropertyFilter.MapOpened", false);
