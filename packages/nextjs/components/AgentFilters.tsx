@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ExplorerLinks from "./ExplorerLinks";
-import PropertyCard from "./PropertyCard";
+import AgentCard from "./AgentCard";
 import TextInput from "./inputs/TextInput";
 import Map from "./map";
 import { AddressInput } from "./scaffold-eth";
@@ -158,7 +158,7 @@ const AgentFilters = ({ agents }: Props) => {
         <div className="!mt-4 border h-[420px]">
           <Map
             markers={agents}
-            popupContent={marker => <PropertyCard property={marker as AgentModel} small />}
+            popupContent={marker => <AgentCard agent={marker as AgentModel} small />}
           />
         </div>
       )}
