@@ -57,10 +57,10 @@ const PropertyFilters = ({ properties }: Props) => {
             onClick={() => setIsMoreFilters(old => !old)}
           >
             <AdjustmentsHorizontalIcon className="h-auto w-4" />
-            {isMoreFilters ? "Hide Filters" : "More Filters"}
+            {isMoreFilters ? "Hide Filters" : "All Filters"}
           </button>
           <select
-            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex"
+            className="select select-md sm:select-lg border-white border-opacity-10 sm:text-[16px] flex flex-grow"
             value={filter.propertyType}
             onChange={ev => applyFilter({ propertyType: ev.target.value as PropertyType })}
           >
