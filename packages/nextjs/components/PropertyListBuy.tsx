@@ -57,7 +57,7 @@ const BidOffers = ({ deedData }: Props) => {
             <>
               {!listings.data.length || listings.data[0].quantityRemaining === 0 ? (
                 <div className="flex flex-row items-center gap-2 w-full justify-between">
-                  <div className="text-gray-500 font-normal text-lg">Not listed</div>
+                  <div className="text-white/70 font-normal text-sm sm:text-base">Not listed</div>
                   {isOwner && (
                     <ListModal
                       trigger={
