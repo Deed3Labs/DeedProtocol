@@ -47,7 +47,7 @@ const PropertyFilters = ({ properties }: Props) => {
         <div className="flex flex-row flex-wrap sm:flex-nowrap justify-start items-center gap-2 md:gap-4 w-full">
           <input
             name="Search"
-            className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 text-white/70 text-[12px] sm:text-[16px] py-2 sm:py-0 w-full sm:flex-grow"
+            className="input input-md sm:input-lg border-white border-opacity-10 bg-base-300 text-white/30 text-[12px] sm:text-[16px] py-2 sm:py-0 w-full sm:flex-grow"
             placeholder="Search by City, State, or Zip code"
             value={filter.search}
             onChange={ev => applyFilter({ search: ev.target.value })}
