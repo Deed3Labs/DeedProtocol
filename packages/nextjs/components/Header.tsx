@@ -73,7 +73,7 @@ export const Header = () => {
             <input
               ref={searchRef}
               type="search"
-              className="hidden lg:flex input border-white border-opacity-10 border-1 text-white/30 text-[12px] font-normal w-full lg:w-80"
+              className="hidden lg:flex input border-white border-opacity-10 border-1 text-white/30 text-[13px] font-normal w-full lg:w-80"
               placeholder="Quickly search the entire site"
               onChange={ev => setSearch(ev.target.value)}
               value={search}
