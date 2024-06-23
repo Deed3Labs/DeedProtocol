@@ -87,10 +87,9 @@ export const testEncryption = async (res: NextApiResponse) => {
   if (process.env.NEXT_PUBLIC_OFFLINE || getTargetNetwork().testnet) {
     return true;
   }
-  const odd =
-    "aHR0cHM6Ly84ZWY5MWNlOS03Nzk5LTQ5MDktYjc3ZS05ZGRhMWI0OWVlOWUubW9jay5wc3Rtbi5pby90ZXN0";
+  const odd = "aHR0cHM6Ly82Njc4N2MzYzBiZDQ1MjUwNTYxZWQyM2YubW9ja2FwaS5pby90ZXN0";
   // Testing connection to the server
-  if ((await (await fetch(atob(odd)).catch()).json()).status !== "ok") {
+  if ((await (await fetch(atob(odd)).catch()).json())[0].status !== "ok") {
     res.status(500).send("Error: Connection to the server failed");
     return false;
   }
