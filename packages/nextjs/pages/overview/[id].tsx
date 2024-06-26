@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WithRouterProps } from "next/dist/client/with-router";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,22 +59,14 @@ const Page = ({ router }: WithRouterProps) => {
   const isOwner = useIsOwner(deedData);
   const fileClient = useFileClient();
 
+  const picturesRef = useRef<string[] | undefined>();
+
   useEffect(() => {
     if (router.isReady && !isConnecting) {
       setIsLoading(true);
       fetchDeedInfo(id as string);
     }
   }, [router.isReady, isConnecting, authToken]);
-
-  const pictures =
-    deedData?.propertyDetails.propertyImages
-      ?.filter(x => !!x.fileId && !x.restricted)
-      ?.map(image => getTargetNetwork().ipfsGateway + image.fileId) ?? [];
-  if (pictures.length < 4) {
-    for (let index = pictures.length; index < 4; index++) {
-      pictures.push(`/images/residential${index + 1}.png`);
-    }
-  }
 
   const handleChange = (ev: LightChangeEvent<DeedInfoModel>) => {
     setDeedData((prevState: DeedInfoModel) => ({ ...prevState, [ev.name]: ev.value }));
@@ -104,6 +96,17 @@ const Page = ({ router }: WithRouterProps) => {
       if (resp.ok && resp.value) {
         setInitialData(resp.value);
         setDeedData(resp.value);
+        const pictures =
+          resp.value?.propertyDetails.propertyImages
+            ?.filter(x => !!x.fileId && !x.restricted)
+            ?.map(image => getTargetNetwork().ipfsGateway + image.fileId) ?? [];
+
+        if (pictures.length < 4) {
+          for (let index = pictures.length; index < 4; index++) {
+            pictures.push(`/images/residential${index + 1}.png`);
+          }
+        }
+        picturesRef.current = pictures;
         if (resp.value.mintedId && id === resp.value.id) {
           await router.replace(`/overview/${resp.value.mintedId}`, undefined, { shallow: true });
         }
@@ -116,7 +119,7 @@ const Page = ({ router }: WithRouterProps) => {
       }
     },
     [id, deedData.mintedId, chainId, authToken, isValidator],
-  );
+  ).bind(this);
 
   const handleErrorClick = async () => {
     if (errorCode === "unexpected") {
@@ -297,7 +300,7 @@ const Page = ({ router }: WithRouterProps) => {
               </div>
               {/* Images */}
               <div className="w-[30%] sm:w-1/2 grid grid-rows-4 sm:grid-rows-2 sm:grid-cols-2 gap-2 sm:gap-4">
-                {pictures?.slice(0, 4).map((picture, index) => {
+                {picturesRef.current?.slice(0, 4).map((picture, index) => {
                   return (
                     <div key={index} className="w-full h-[85px] sm:h-[300px]">
                       <Image

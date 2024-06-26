@@ -29,25 +29,17 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     deedSubgraph: "http://localhost:8000/subgraphs/name/Deed3",
     ipfsGateway: "http://localhost:8080/ipfs/",
   },
-  [chains.mainnet.id]: {
-    color: "#ff8b9e",
-    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
-    deedMintingFeeDollar: 0,
-    stableCoin: {
-      address: "0x0000000000",
-      decimals: 18,
-      symbol: "ETH",
-    },
-  },
   [chains.arbitrum.id]: {
     color: "#28a0f0",
-    storageAddress: "arb1:0x84F1d8D4B10b1C56e032aE09bCA57f393638cd4E",
+    storageAddress: "0x84F1d8D4B10b1C56e032aE09bCA57f393638cd4E",
     deedMintingFeeDollar: 500,
     stableCoin: {
       address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       decimals: 6,
       symbol: "USDC",
     },
+    ipfsGateway: "https://ipfs.io/ipfs/",
+    blockExplorer: "https://arbiscan.io/",
   },
   [chains.sepolia.id]: {
     color: "#2bbdf7",
@@ -58,7 +50,6 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
       decimals: 18,
       symbol: "DAI",
     },
-    deedSubgraph: "https://api.studio.thegraph.com/query/56229/deed3-sepolia/version/latest",
     ipfsGateway: "https://ipfs.io/ipfs/",
     blockExplorer: "https://blockscout.com/xdai/mainnet",
   },
@@ -74,6 +65,16 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
       coinGeckoId: "usd-coin",
     },
     blockExplorer: "https://polygonscan.com/",
+  },
+  [chains.mainnet.id]: {
+    color: "#ff8b9e",
+    storageAddress: "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
+    deedMintingFeeDollar: 0,
+    stableCoin: {
+      address: "0x0000000000",
+      decimals: 18,
+      symbol: "ETH",
+    },
   },
   // [chains.hardhat.id]: {
   //   color: "#b8af0c",
