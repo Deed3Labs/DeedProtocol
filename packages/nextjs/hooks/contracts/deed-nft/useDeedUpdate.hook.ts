@@ -33,7 +33,7 @@ const useDeedUpdate = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) =
     let toastId = notification.loading("Uploading documents...");
     let hash;
     try {
-      let payload = await uploadFiles(authToken, data, old);
+      let payload = await uploadFiles(fileClient, authToken, data, old);
       if (!payload) return;
 
       payload = updateNFTMetadata(payload); // Update OpenSea metadata

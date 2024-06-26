@@ -7,6 +7,7 @@ import Map from "../../components/map";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
+import useFileClient from "~~/clients/files.client";
 import OverviewDeedInformations from "~~/components/OverviewDeedInformations";
 import OverviewPropertyDescription from "~~/components/OverviewPropertyDescription";
 import ProfileComponent from "~~/components/ProfilComponent";
@@ -56,6 +57,7 @@ const Page = ({ router }: WithRouterProps) => {
   const { writeValidateAsync } = useDeedValidate();
   const { id: chainId } = getTargetNetwork();
   const isOwner = useIsOwner(deedData);
+  const fileClient = useFileClient();
 
   useEffect(() => {
     if (router.isReady && !isConnecting) {
@@ -144,7 +146,7 @@ const Page = ({ router }: WithRouterProps) => {
       }
 
       let toastId = notification.loading("Uploading documents...");
-      const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
+      const newDeedData = await uploadFiles(fileClient, authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
       const response = await deedClient.saveDeed(newDeedData);

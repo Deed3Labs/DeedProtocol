@@ -7,6 +7,7 @@ import { ExternalLinkIcon } from "@dynamic-labs/sdk-react-core";
 import { TransactionReceipt, isAddress } from "viem";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import useDeedClient from "~~/clients/deeds.client";
+import useFileClient, { FileClient } from "~~/clients/files.client";
 import usePaymentClient from "~~/clients/payments.client";
 import useQuoteClient from "~~/clients/quotes.client";
 import { TransactionHash } from "~~/components/blockexplorer";
@@ -51,6 +52,7 @@ const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router 
   const quoteClient = useQuoteClient();
   const deedClient = useDeedClient();
   const isOwner = useIsOwner(deedData);
+  const fileClient = useFileClient();
 
   useEffect(() => {
     if (!quoteDetails) {
@@ -71,7 +73,7 @@ const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router 
       }
 
       let toastId = notification.loading("Uploading documents...");
-      const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
+      const newDeedData = await uploadFiles(fileClient, authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
       const response = await registrationClient.saveDeed(newDeedData);
@@ -106,6 +108,10 @@ const SidePanel = ({ deedData, initialData, stableCoin, refetchDeedInfo, router 
   };
 
   const validateForm = () => {
+    if (!deedData.ownerInformation.walletAddress && primaryWallet?.address) {
+      deedData.ownerInformation.walletAddress = primaryWallet?.address;
+    }
+
     if (!isAddress(deedData.ownerInformation.walletAddress)) {
       notification.error("Owner Information walletAddress is invalid", { duration: 3000 });
       return false;

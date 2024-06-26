@@ -32,7 +32,7 @@ const useDeedMint = (onConfirmed?: (txnReceipt: TransactionReceipt) => void) => 
     let hash;
     let payload: DeedInfoModel & OpenSeaMetadata;
     try {
-      payload = await uploadFiles(authToken, data, undefined, true);
+      payload = await uploadFiles(fileClient, authToken, data, undefined, true);
       if (!payload) return;
       payload = updateNFTMetadata(payload); // Update OpenSea metadata
       payload.isValidated = true;

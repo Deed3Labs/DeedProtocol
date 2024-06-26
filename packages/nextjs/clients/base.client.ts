@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useWallet from "~~/hooks/useWallet";
 import logger from "~~/services/logger.service";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
@@ -11,8 +11,8 @@ export class HttpClient {
   }
 
   public authentify(authorizationToken?: string, selectedWallet?: string) {
-    this.authorizationToken = authorizationToken;
-    this.selectedWallet = selectedWallet;
+    if (authorizationToken) this.authorizationToken = authorizationToken;
+    if (selectedWallet) this.selectedWallet = selectedWallet;
     return this;
   }
 
@@ -135,16 +135,9 @@ export class HttpClient {
 
 const useHttpClient = <TClient extends HttpClient>(_client: TClient): TClient => {
   const { authToken, primaryWallet } = useWallet();
-
-  const [client, setClient] = useState(_client);
-
-  useEffect(() => {
-    if (authToken && primaryWallet) {
-      setClient(client.authentify(authToken, primaryWallet?.address));
-    }
+  return useMemo(() => {
+    return (_client ?? new HttpClient()).authentify(authToken, primaryWallet?.address) as TClient;
   }, [authToken, primaryWallet]);
-
-  return client ?? new HttpClient();
 };
 
 export default useHttpClient;

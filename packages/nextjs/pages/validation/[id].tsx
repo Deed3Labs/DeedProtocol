@@ -8,6 +8,7 @@ import PropertyOverview from "../../components/ValidationPropertyOverview";
 import { TransactionReceipt } from "viem";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import useDeedClient from "~~/clients/deeds.client";
+import useFileClient from "~~/clients/files.client";
 import usePaymentClient from "~~/clients/payments.client";
 import useIsValidator from "~~/hooks/contracts/access-manager/useIsValidator.hook";
 import useDeedMint from "~~/hooks/contracts/deed-nft/useDeedMint.hook";
@@ -54,6 +55,7 @@ const Page = ({ router }: WithRouterProps) => {
   const paymentClient = usePaymentClient();
   const { writeValidateAsync } = useDeedValidate();
   const { id: chainId } = getTargetNetwork();
+  const fileClient = useFileClient();
 
   useEffect(() => {
     if (receipt) {
@@ -154,7 +156,7 @@ const Page = ({ router }: WithRouterProps) => {
       }
 
       let toastId = notification.loading("Uploading documents...");
-      const newDeedData = await uploadFiles(authToken!, deedData, initialData, false);
+      const newDeedData = await uploadFiles(fileClient, authToken!, deedData, initialData, false);
       notification.remove(toastId);
       toastId = notification.loading("Saving...");
       const response = await deedClient.saveDeed(newDeedData);

@@ -107,8 +107,8 @@ export default function ProfileComponent({
               onClick={() =>
                 window.open(
                   chainId === 137
-                    ? `https://opensea.io/assets/matic/${deedNFTAddresss}/${deedData.mintedId}`
-                    : `https://testnets.opensea.io/assets/arbitrum/${deedNFTAddresss}/${deedData.mintedId}`,
+                    ? `https://opensea.io/assets/arbitrum/${deedNFTAddresss}/${deedData.mintedId}`
+                    : `https://testnets.opensea.io/assets/sepolia/${deedNFTAddresss}/${deedData.mintedId}`,
                   "_blank",
                 )
               }

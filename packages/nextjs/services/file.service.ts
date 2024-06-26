@@ -3,17 +3,14 @@ import { FileClient } from "~~/clients/files.client";
 import { DeedInfoModel } from "~~/models/deed-info.model";
 import { FileFieldKeyLabel } from "~~/models/file.model";
 
-const fileClient = new FileClient();
-
 export async function uploadFiles(
+  fileClient: FileClient,
   authToken: string,
   data: DeedInfoModel,
   old?: DeedInfoModel,
   publish: boolean = false,
   isMinted: boolean = false,
 ) {
-  fileClient.authentify(authToken);
-
   const toBeUploaded = getSupportedFiles(data, old, publish, isMinted);
 
   const payload = cloneDeep(data);
