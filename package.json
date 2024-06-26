@@ -1,32 +1,34 @@
 {
-  "name": "se-2",
+  "name": "deed-protocol",
   "version": "0.0.1",
   "private": true,
   "workspaces": {
     "packages": [
       "packages/hardhat",
-      "packages/nextjs"
+      "packages/nextjs",
+      "packages/subgraph/Deed3"
     ]
   },
   "scripts": {
-    "account": "yarn workspace @se-2/hardhat account",
-    "chain": "yarn workspace @se-2/hardhat chain",
-    "fork": "yarn workspace @se-2/hardhat fork",
-    "deploy": "yarn workspace @se-2/hardhat deploy",
-    "verify": "yarn workspace @se-2/hardhat verify",
-    "compile": "yarn workspace @se-2/hardhat compile",
-    "generate": "yarn workspace @se-2/hardhat generate",
-    "hardhat:lint": "yarn workspace @se-2/hardhat lint",
-    "hardhat:lint-staged": "yarn workspace @se-2/hardhat lint-staged",
-    "hardhat:test": "yarn workspace @se-2/hardhat test",
-    "start": "yarn workspace @se-2/nextjs dev",
-    "next:lint": "yarn workspace @se-2/nextjs lint",
-    "next:format": "yarn workspace @se-2/nextjs format",
-    "next:check-types": "yarn workspace @se-2/nextjs check-types",
+    "account": "yarn workspace @deed-protocol/hardhat account",
+    "chain": "yarn workspace @deed-protocol/hardhat chain",
+    "fork": "yarn workspace @deed-protocol/hardhat fork",
+    "deploy": "yarn workspace @deed-protocol/hardhat deploy",
+    "verify": "yarn workspace @deed-protocol/hardhat verify",
+    "compile": "yarn workspace @deed-protocol/hardhat compile",
+    "generate": "yarn workspace @deed-protocol/hardhat generate",
+    "hardhat:lint": "yarn workspace @deed-protocol/hardhat lint",
+    "hardhat:lint-staged": "yarn workspace @deed-protocol/hardhat lint-staged",
+    "hardhat:test": "yarn workspace @deed-protocol/hardhat test",
+    "coverage": "yarn workspace @deed-protocol/hardhat coverage",
+    "start": "yarn workspace @deed-protocol/nextjs dev",
+    "next:lint": "yarn workspace @deed-protocol/nextjs lint",
+    "next:format": "yarn workspace @deed-protocol/nextjs format",
+    "next:check-types": "yarn workspace @deed-protocol/nextjs check-types",
     "postinstall": "husky install",
     "precommit": "lint-staged",
-    "vercel": "yarn workspace @se-2/nextjs vercel",
-    "vercel:yolo": "yarn workspace @se-2/nextjs vercel:yolo"
+    "vercel": "yarn workspace @deed-protocol/nextjs vercel",
+    "vercel:yolo": "yarn workspace @deed-protocol/nextjs vercel:yolo"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
@@ -35,5 +37,8 @@
   },
   "resolutions": {
     "usehooks-ts@^2.7.2": "patch:usehooks-ts@npm:^2.7.2#./.yarn/patches/usehooks-ts-npm-2.7.2-fceffe0e43.patch"
+  },
+  "dependencies": {
+    "node-gyp": "^9.4.0"
   }
 }

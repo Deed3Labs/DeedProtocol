@@ -1,60 +1,39 @@
-import { useMemo, useState } from "react";
-import { Abi } from "abitype";
-import { useContract, useProvider } from "wagmi";
-import { Spinner } from "~~/components/Spinner";
-import {
-  Address,
-  Balance,
-  getAllContractFunctions,
-  getContractReadOnlyMethodsWithParams,
-  getContractVariablesAndNoParamsReadMethods,
-  getContractWriteMethods,
-} from "~~/components/scaffold-eth";
+import { useReducer, useState } from "react";
+import { ContractReadMethods } from "./ContractReadMethods";
+import { ContractVariables } from "./ContractVariables";
+import { ContractWriteMethods } from "./ContractWriteMethods";
+import { ArrowDownIcon } from "@dynamic-labs/sdk-react-core";
+import { Spinner } from "~~/components/assets/Spinner";
+import { Address, Balance } from "~~/components/scaffold-eth";
 import { useDeployedContractInfo, useNetworkColor } from "~~/hooks/scaffold-eth";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { ContractName } from "~~/utils/scaffold-eth/contract";
 
-type ContractUIProps = {
+interface ContractUIProps {
   contractName: ContractName;
   className?: string;
-};
+}
 
 /**
  * UI component to interface with deployed contracts.
  **/
 export const ContractUI = ({ contractName, className = "" }: ContractUIProps) => {
-  const provider = useProvider();
-  const [refreshDisplayVariables, setRefreshDisplayVariables] = useState(false);
+  const [readCollapsed, setReadCollapsed] = useState(false);
+  const [writeCollapsed, setWriteCollapsed] = useState(false);
+  const [refreshDisplayVariables, triggerRefreshDisplayVariables] = useReducer(
+    value => !value,
+    false,
+  );
   const configuredNetwork = getTargetNetwork();
 
-  const { data: deployedContractData, isLoading: deployedContractLoading } = useDeployedContractInfo(contractName);
+  const { data: deployedContractData, isLoading: deployedContractLoading } =
+    useDeployedContractInfo(contractName);
   const networkColor = useNetworkColor();
-
-  const contract = useContract({
-    address: deployedContractData?.address,
-    abi: deployedContractData?.abi as Abi,
-    signerOrProvider: provider,
-  });
-
-  const displayedContractFunctions = useMemo(() => getAllContractFunctions(contract), [contract]);
-
-  const contractVariablesDisplay = useMemo(() => {
-    return getContractVariablesAndNoParamsReadMethods(contract, displayedContractFunctions, refreshDisplayVariables);
-  }, [contract, displayedContractFunctions, refreshDisplayVariables]);
-
-  const contractMethodsDisplay = useMemo(
-    () => getContractReadOnlyMethodsWithParams(contract, displayedContractFunctions),
-    [contract, displayedContractFunctions],
-  );
-  const contractWriteMethods = useMemo(
-    () => getContractWriteMethods(contract, displayedContractFunctions, setRefreshDisplayVariables),
-    [contract, displayedContractFunctions],
-  );
 
   if (deployedContractLoading) {
     return (
       <div className="mt-14">
-        <Spinner width="50px" height="50px" />
+        <Spinner />
       </div>
     );
   }
@@ -67,18 +46,28 @@ export const ContractUI = ({ contractName, className = "" }: ContractUIProps) =>
     );
   }
 
+  const scrollToEvents = () => {
+    const scrollView = window;
+    scrollView?.scrollTo({ top: document.getElementById("Events")?.offsetTop, behavior: "auto" });
+  };
+
   return (
-    <div className={`grid grid-cols-1 lg:grid-cols-6 px-6 lg:px-10 lg:gap-12 w-full max-w-7xl my-0 ${className}`}>
-      <div className="col-span-5 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
-        <div className="col-span-1 flex flex-col">
-          <div className="bg-base-100 border-base-300 border shadow-md shadow-secondary rounded-3xl px-6 lg:px-8 mb-6 space-y-1 py-4">
+    <div
+      className={`grid grid-cols-1 lg:grid-cols-6 px-6 lg:px-10 lg:gap-12 w-full max-w-7xl my-0${className}`}
+    >
+      <div className="col-span-6 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+        <div className="col-span-1 flex flex-col gap-6">
+          <div className="bg-base-100 border-base-300 border shadow-md shadow-secondary rounded-3xl px-6 lg:px-8 space-y-1 py-4">
             <div className="flex">
               <div className="flex flex-col gap-1">
                 <span className="font-bold">{contractName}</span>
                 <Address address={deployedContractData.address} />
                 <div className="flex gap-1 items-center">
                   <span className="font-bold text-sm">Balance:</span>
-                  <Balance address={deployedContractData.address} className="px-0 h-1.5 min-h-[0.375rem]" />
+                  <Balance
+                    address={deployedContractData.address}
+                    className="px-0 h-1.5 min-h-[0.375rem]"
+                  />
                 </div>
               </div>
             </div>
@@ -90,7 +79,18 @@ export const ContractUI = ({ contractName, className = "" }: ContractUIProps) =>
             )}
           </div>
           <div className="bg-base-300 rounded-3xl px-6 lg:px-8 py-4 shadow-lg shadow-base-300">
-            {contractVariablesDisplay.methods.length > 0 ? contractVariablesDisplay.methods : "No contract variables"}
+            <ContractVariables
+              refreshDisplayVariables={refreshDisplayVariables}
+              deployedContractData={deployedContractData}
+            />
+          </div>
+          <div className="bg-base-300 rounded-1xl px-6 lg:px-8 py-4 shadow-lg shadow-base-300">
+            <button
+              className={`btn bg-base-300 hover:bg-secondary font-light btn-sm ml-8`}
+              onClick={() => scrollToEvents()}
+            >
+              Events <ArrowDownIcon className="h-4" />
+            </button>
           </div>
         </div>
         <div className="col-span-1 lg:col-span-2 flex flex-col gap-6">
@@ -98,24 +98,41 @@ export const ContractUI = ({ contractName, className = "" }: ContractUIProps) =>
             <div className="bg-base-100 rounded-3xl shadow-md shadow-secondary border border-base-300 flex flex-col mt-10 relative">
               <div className="h-[5rem] w-[5.5rem] bg-base-300 absolute self-start rounded-[22px] -top-[38px] -left-[1px] -z-10 py-[0.65rem] shadow-lg shadow-base-300">
                 <div className="flex items-center justify-center space-x-2">
-                  <p className="my-0 text-sm">Read</p>
+                  <p
+                    className="my-0 text-sm cursor-pointer"
+                    onClick={() => setReadCollapsed(x => !x)}
+                  >
+                    Read {readCollapsed ? "+" : "-"}
+                  </p>
                 </div>
               </div>
-              <div className="p-5 divide-y divide-base-300">
-                {contractMethodsDisplay.methods.length > 0 ? contractMethodsDisplay.methods : "No read methods"}
-              </div>
+              {!readCollapsed && (
+                <div className="p-5 divide-y divide-base-300">
+                  <ContractReadMethods deployedContractData={deployedContractData} />
+                </div>
+              )}
             </div>
           </div>
-          <div className="z-10">
+          <div className="z-10 mt-8">
             <div className="bg-base-100 rounded-3xl shadow-md shadow-secondary border border-base-300 flex flex-col mt-10 relative">
               <div className="h-[5rem] w-[5.5rem] bg-base-300 absolute self-start rounded-[22px] -top-[38px] -left-[1px] -z-10 py-[0.65rem] shadow-lg shadow-base-300">
                 <div className="flex items-center justify-center space-x-2">
-                  <p className="my-0 text-sm">Write</p>
+                  <p
+                    className="my-0 text-sm cursor-pointer"
+                    onClick={() => setWriteCollapsed(x => !x)}
+                  >
+                    Write {writeCollapsed ? "+" : "-"}
+                  </p>
                 </div>
               </div>
-              <div className="p-5 divide-y divide-base-300">
-                {contractWriteMethods.methods.length > 0 ? contractWriteMethods.methods : "No write methods"}
-              </div>
+              {!writeCollapsed && (
+                <div className="p-5 divide-y divide-base-300">
+                  <ContractWriteMethods
+                    deployedContractData={deployedContractData}
+                    onChange={triggerRefreshDisplayVariables}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

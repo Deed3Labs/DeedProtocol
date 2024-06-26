@@ -1,0 +1,30 @@
+.mainStyle {
+  max-width: 100%;
+  height: 100%;
+}
+.mapStyle {
+  width: 100%;
+  height: 100%;
+}
+.popupTitle {
+  background-color: #87bd41;
+  font-weight: 700;
+  font-size: medium;
+  color: ivory;
+  padding: 10px;
+}
+.popupInfo {
+  font-weight: 400;
+  font-size: 14px;
+  padding: 10px;
+}
+.popupLabel {
+  font-weight: bold;
+}
+.popupWebUrl {
+  color: dodgerblue;
+}
+.popupWebUrl:active,
+.popupWebUrl:focus {
+  outline: 0;
+}

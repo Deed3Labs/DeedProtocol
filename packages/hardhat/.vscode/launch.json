@@ -1,0 +1,55 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Hardhat test",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "test"
+      ]
+    },
+    {
+      "name": "Hardhat deploy-proxy sepolia",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "deploy-proxy:sepolia"
+      ]
+    },
+    {
+      "name": "Hardhat deploy-proxy local",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "deploy-proxy:local"
+      ]
+    },
+    {
+      "name": "Hardhat deploy-proxy polygon",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "deploy-proxy:polygon"
+      ]
+    },
+    {
+      "name": "Hardhat deploy local",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "deploy:local"
+      ]
+    }
+  ]
+}

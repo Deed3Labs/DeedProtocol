@@ -1,0 +1,45 @@
+{
+  "folders": [
+    {
+      "name": "Frontend",
+      "path": "./packages/nextjs",
+    },
+    {
+      "name": "Hardhat",
+      "path": "./packages/hardhat"
+    },
+    {
+      "name": "Subgraph",
+      "path": "./packages/subgraph"
+    },
+    {
+      "name": "Root",
+      "path": "."
+    },
+    {
+      "path": "packages/nextjs/public/images"
+    }
+  ],
+  "settings": {
+    "editor.tabSize": 2,
+    "prettier.tabWidth": 4,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[solidity]": {
+      "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "dsznajder.es7-react-js-snippets",
+      "dbaeumer.vscode-eslint",
+      "xabikos.javascriptsnippets",
+      "styled-components.vscode-styled-components"
+    ]
+  }
+}

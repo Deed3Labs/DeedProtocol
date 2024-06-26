@@ -1,0 +1,28 @@
+{
+  "name": "Deed3",
+  "license": "UNLICENSED",
+  "scripts": {
+    "prepare:local": "node scripts/prepare.mjs localhost",
+    "prepare:goerli": "node scripts/prepare.mjs goerli",
+    "prepare:sepolia": "node scripts/prepare.mjs sepolia",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "load-env": "node scripts/load-env.mjs",
+    "deploy:goerli": "yarn prepare:goerli && graph deploy --studio deed3-goerli",
+    "deploy:sepolia": "yarn prepare:sepolia && graph deploy --studio deed3-sepolia",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ Deed3",
+    "create:local": "graph create --node http://localhost:8020/ deed3",
+    "remove:local": "graph remove --node http://localhost:8020/ Deed3",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 deed3",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.67.3",
+    "@graphprotocol/graph-ts": "0.32.0",
+    "mustache": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4",
+    "matchstick-as": "0.5.0"
+  }
+}

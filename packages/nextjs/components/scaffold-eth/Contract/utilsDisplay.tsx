@@ -1,10 +1,19 @@
 import { ReactElement } from "react";
-import { TransactionResponse } from "@ethersproject/providers";
-import { formatUnits } from "@ethersproject/units";
-import { BigNumber } from "ethers";
+import Link from "next/link";
+import { TransactionBase, TransactionReceipt, formatEther, hexToString } from "viem";
 import { Address } from "~~/components/scaffold-eth";
+import { getIpfsUrl, getObjectFromIpfs } from "~~/servers/ipfs";
+import { replacer } from "~~/utils/scaffold-eth/common";
 
-type DisplayContent = string | number | BigNumber | Record<string, any> | TransactionResponse | undefined | unknown;
+type DisplayContent =
+  | string
+  | number
+  | bigint
+  | Record<string, any>
+  | TransactionBase
+  | TransactionReceipt
+  | undefined
+  | unknown;
 
 export const displayTxResult = (
   displayContent: DisplayContent | DisplayContent[],
@@ -14,31 +23,62 @@ export const displayTxResult = (
     return "";
   }
 
-  if (displayContent && BigNumber.isBigNumber(displayContent)) {
+  if (typeof displayContent === "bigint") {
     try {
-      return displayContent.toNumber();
+      const asNumber = Number(displayContent);
+      if (asNumber <= Number.MAX_SAFE_INTEGER && asNumber >= Number.MIN_SAFE_INTEGER) {
+        return asNumber;
+      } else {
+        return "Ξ" + formatEther(displayContent);
+      }
     } catch (e) {
-      return "Ξ" + formatUnits(displayContent, "ether");
+      return "Ξ" + formatEther(displayContent);
     }
   }
 
-  if (typeof displayContent === "string" && displayContent.indexOf("0x") === 0 && displayContent.length === 42) {
+  if (
+    typeof displayContent === "string" &&
+    displayContent.indexOf("0x") === 0 &&
+    displayContent.length === 42
+  ) {
     return asText ? displayContent : <Address address={displayContent} />;
   }
 
-  if (displayContent && Array.isArray(displayContent)) {
+  // Most likely a ipfs hash
+  if (
+    typeof displayContent === "string" &&
+    displayContent.indexOf("0x") === 0 &&
+    displayContent.length === 94
+  ) {
+    const ascii = hexToString(displayContent as `0x${string}`);
+    const ipfsUrl = getIpfsUrl(hexToString(displayContent as `0x${string}`));
+    getObjectFromIpfs(displayContent as `0x${string}`);
+    return (
+      <div>
+        {displayContent} &gt;{" "}
+        <Link href={ipfsUrl} target="_blank">
+          {ascii}
+        </Link>
+      </div>
+    );
+  }
+
+  if (Array.isArray(displayContent)) {
     const mostReadable = (v: DisplayContent) =>
       ["number", "boolean"].includes(typeof v) ? v : displayTxResultAsText(v);
-    const displayable = JSON.stringify(displayContent.map(mostReadable));
+    const displayable = JSON.stringify(displayContent.map(mostReadable), replacer);
 
     return asText ? (
       displayable
     ) : (
-      <span style={{ overflowWrap: "break-word", width: "100%" }}>{displayable.replaceAll(",", ",\n")}</span>
+      <span style={{ overflowWrap: "break-word", width: "100%" }}>
+        {displayable.replaceAll(",", ",\n")}
+      </span>
     );
   }
 
-  return JSON.stringify(displayContent, null, 2);
+  return JSON.stringify(displayContent, replacer, 2);
 };
 
-const displayTxResultAsText = (displayContent: DisplayContent) => displayTxResult(displayContent, true);
+const displayTxResultAsText = (displayContent: DisplayContent) =>
+  displayTxResult(displayContent, true);

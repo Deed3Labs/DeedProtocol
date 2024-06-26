@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn start"
+    },
+    {
+      "name": "Next.js: debug server-side local",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn start:local"
+    },
+    {
+      "name": "Next.js: debug server-side prod",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn start:prod"
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000"
+    },
+    {
+      "name": "Next.js: debug full stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn start",
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    }
+  ]
+}

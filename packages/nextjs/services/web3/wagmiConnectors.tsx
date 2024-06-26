@@ -1,26 +1,17 @@
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
-import {
-  braveWallet,
-  coinbaseWallet,
-  ledgerWallet,
-  metaMaskWallet,
-  rainbowWallet,
-  walletConnectWallet,
-} from "@rainbow-me/rainbowkit/wallets";
+import { metaMaskWallet } from "@rainbow-me/rainbowkit/wallets";
+import * as chains from "viem/chains";
 import { configureChains } from "wagmi";
-import * as chains from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
-import scaffoldConfig from "~~/scaffold.config";
-import { burnerWalletConfig } from "~~/services/web3/wagmi-burner/burnerWalletConfig";
+import CONFIG from "~~/config";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 const configuredNetwork = getTargetNetwork();
-const burnerConfig = scaffoldConfig.burnerWallet;
 
 // We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
 const enabledChains =
-  (configuredNetwork.id as number) === 1 ? [configuredNetwork] : [configuredNetwork, chains.mainnet];
+  configuredNetwork.id === 1 ? [configuredNetwork] : [configuredNetwork, chains.mainnet];
 
 /**
  * Chains for the app
@@ -29,30 +20,28 @@ export const appChains = configureChains(
   enabledChains,
   [
     alchemyProvider({
-      apiKey: scaffoldConfig.alchemyApiKey,
-      priority: 0,
+      apiKey: CONFIG.alchemyApiKey,
     }),
-    publicProvider({ priority: 1 }),
+    publicProvider(),
   ],
   {
+    // We might not need this checkout https://github.com/scaffold-eth/scaffold-eth-2/pull/45#discussion_r1024496359, will test and remove this before merging
     stallTimeout: 3_000,
     // Sets pollingInterval if using chain's other than local hardhat chain
     ...(configuredNetwork.id !== chains.hardhat.id
       ? {
-          pollingInterval: scaffoldConfig.pollingInterval,
+          pollingInterval: CONFIG.pollingInterval,
         }
       : {}),
   },
 );
 
-const wallets = [
-  metaMaskWallet({ chains: appChains.chains, shimDisconnect: true }),
-  walletConnectWallet({ chains: appChains.chains }),
-  ledgerWallet({ chains: appChains.chains }),
-  braveWallet({ chains: appChains.chains }),
-  coinbaseWallet({ appName: "scaffold-eth-2", chains: appChains.chains }),
-  rainbowWallet({ chains: appChains.chains }),
-];
+const walletsOptions = {
+  chains: appChains.chains,
+  projectId: CONFIG.walletConnectProjectId,
+};
+
+const wallets = [metaMaskWallet({ ...walletsOptions })];
 
 /**
  * wagmi connectors for the wagmi context
@@ -60,6 +49,6 @@ const wallets = [
 export const wagmiConnectors = connectorsForWallets([
   {
     groupName: "Supported Wallets",
-    wallets: burnerConfig.enabled ? [...wallets, burnerWalletConfig({ chains: [appChains.chains[0]] })] : wallets,
+    wallets,
   },
 ]);

@@ -1,0 +1,57 @@
+specVersion: 0.0.7
+schema:
+  file: ./schema.graphql
+templates:
+  - name: DeedMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/deed-metadata.mapping.ts
+      handler: handleMetadata
+      entities:
+        - DeedMetadata
+        - DeedMetadata
+        - FileInfo
+      abis:
+        - name: DeedNFT
+          file: ./abis/DeedNFT.json
+dataSources:
+- kind: ethereum
+  name: DeedNFT
+  network: sepolia
+  source:
+    address: "0xC04836E6FFd56c440fd5d6D48cE9701D1D80a759"
+    abi: DeedNFT
+    startBlock: 5839748
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.7
+    language: wasm/assemblyscript
+    entities:
+      - Approval
+      - ApprovalForAll
+      - DeedEntity
+      - DeedMetadata
+      - Transfer
+    abis:
+      - name: DeedNFT
+        file: ./abis/DeedNFT.json
+    eventHandlers:
+      - event: Approval(indexed address,indexed address,indexed uint256)
+        handler: handleApproval
+      - event: ApprovalForAll(indexed address,indexed address,bool)
+        handler: handleApprovalForAll
+      - event: DeedNFTAssetTypeChanged(uint256,uint8)
+        handler: handleDeedNFTAssetValidationSet
+      - event: DeedNFTBurned(uint256)
+        handler: handleDeedNFTBurned
+      - event: DeedNFTMinted(uint256,(uint8,bool,uint256[10]),address,string)
+        handler: handleDeedNFTMinted
+      - event: DeedNFTUriChanged(uint256,string)
+        handler: handleDeedNFTUriChanged
+      - event: DeedNFTValidatedChanged(uint256,bool)
+        handler: handleDeedNFTValidatedChanged
+      - event: Transfer(indexed address,indexed address,indexed uint256)
+        handler: handleTransfer
+    file: ./src/deed-nft.mapping.ts

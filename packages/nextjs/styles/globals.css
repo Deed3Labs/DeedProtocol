@@ -4,11 +4,12 @@
 
 :root,
 [data-theme] {
-  background: hsl(var(--b2));
+  background: #0e0e0e;
 }
 
 body {
   min-height: 100vh;
+  background-color: #0e0e0e;
 }
 
 h1,
@@ -29,4 +30,10 @@ p {
 
 .btn.btn-ghost {
   @apply shadow-none;
+}
+
+.single-column-radio-inputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }

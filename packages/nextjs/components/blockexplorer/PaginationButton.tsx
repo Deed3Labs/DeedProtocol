@@ -8,7 +8,11 @@ interface PaginationButtonProps {
 
 const ITEMS_PER_PAGE = 20;
 
-export const PaginationButton = ({ currentPage, totalItems, setCurrentPage }: PaginationButtonProps) => {
+export const PaginationButton = ({
+  currentPage,
+  totalItems,
+  setCurrentPage,
+}: PaginationButtonProps) => {
   const isPrevButtonDisabled = currentPage === 0;
   const isNextButtonDisabled = currentPage + 1 >= Math.ceil(totalItems / ITEMS_PER_PAGE);
 
@@ -18,7 +22,7 @@ export const PaginationButton = ({ currentPage, totalItems, setCurrentPage }: Pa
   if (isNextButtonDisabled && isPrevButtonDisabled) return null;
 
   return (
-    <div className="mt-5 justify-end flex gap-3">
+    <div className="mt-5 justify-end flex gap-3 mx-5">
       <button
         className={`btn btn-sm ${prevButtonClass}`}
         disabled={isPrevButtonDisabled}

@@ -1,0 +1,193 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@font-face {
+  font-family: "GeneralSans";
+  src: url("./fonts/General_Sans/GeneralSans-Regular.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GeneralSans";
+  src: url("./fonts/General_Sans/GeneralSans-Bold.otf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GeneralSans";
+  src: url("./fonts/General_Sans/GeneralSans-BoldItalic.otf");
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GeneralSans";
+  src: url("./fonts/General_Sans/GeneralSans-Italic.otf");
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GeneralSans";
+  src: url("./fonts/General_Sans/GeneralSans-Medium.otf");
+  font-weight: normal;
+  font-style: normal;
+  font-size: medium;
+}
+
+@font-face {
+  font-family: "Coolvetica";
+  src: url("./fonts/Coolvetica/coolvetica-compressed-hv.otf");
+  font-weight: bold;
+  font-stretch: extra-condensed;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Coolvetica";
+  src: url("./fonts/Coolvetica/coolvetica\ condensed\ rg.otf");
+  font-weight: normal;
+  font-stretch: condensed;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Coolvetica";
+  src: url("./fonts/Coolvetica/coolvetica\ rg.otf");
+  font-weight: normal;
+  font-stretch: semi-condensed;
+  font-style: normal;
+}
+
+:root,
+[data-theme] {
+  background: #0e0e0e;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "GeneralSans", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+p {
+  margin: 1rem 0;
+}
+
+.container {
+  max-width: 95% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.dynamic-shadow-dom {
+  --dynamic-border-radius: 0;
+  --dynamic-connect-button-radius: 0px;
+  --dynamic-connect-button-color: #141414;
+}
+
+/* Leaflet override */
+
+.marker-popup {
+  .leaflet-popup-content-wrapper {
+    padding: 0;
+    .leaflet-popup-content {
+      margin: 0;
+      color: #fafcff;
+      width: fit-content !important;
+    }
+  }
+
+  .leaflet-popup-close-button > span {
+    border-radius: 2px;
+    padding: 0 4px;
+    background: hsl(var(--b1));
+    color: hsl(var(--bc));
+  }
+}
+
+.property-icon,
+.agent-icon {
+  .marker-pin {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: #000000;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+  }
+
+  // to align icon
+  svg {
+    position: absolute;
+    width: 22px;
+    font-size: 22px;
+    left: 0;
+    right: 0;
+    margin: 10px auto;
+    text-align: center;
+    color: white;
+  }
+}
+
+.drop-zone-active {
+  border: none !important;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' strokeWidth='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+}
+
+@layer utilities {
+  .font-condensed {
+    font-stretch: condensed;
+  }
+
+  .font-extra-condensed {
+    font-stretch: extra-condensed;
+  }
+
+  .text-5xl {
+    font-size: 3rem;
+  }
+
+  .text-secondary {
+    opacity: 0.8;
+  }
+}
+
+a:not(.link-default) {
+  color: var(--text-accent);
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+html,
+*,
+.btn-outline {
+  scrollbar-width: thin;
+  scrollbar-color: #212121 #171717;
+  border-color: #404040;
+}
+
+.btn-secondary {
+  border-color: #2d2d2d;
+  background-color: #1b1b1b;
+  &:hover {
+    background-color: #2b2a2a;
+  }
+}

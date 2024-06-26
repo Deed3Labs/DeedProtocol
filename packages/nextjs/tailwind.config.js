@@ -1,57 +1,47 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}", "./utils/**/*.{js,ts,jsx,tsx}"],
+  mode: "jit",
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./utils/**/*.{js,ts,jsx,tsx}",
+  ],
   plugins: [require("daisyui")],
   darkTheme: "scaffoldEthDark",
   // DaisyUI theme colors
   daisyui: {
     themes: [
       {
-        scaffoldEth: {
-          primary: "#93BBFB",
-          "primary-content": "#212638",
-          secondary: "#DAE8FF",
-          "secondary-content": "#212638",
-          accent: "#93BBFB",
-          "accent-content": "#212638",
-          neutral: "#212638",
-          "neutral-content": "#ffffff",
-          "base-100": "#ffffff",
-          "base-200": "#f4f8ff",
-          "base-300": "#DAE8FF",
-          "base-content": "#212638",
-          info: "#93BBFB",
-          success: "#34EEB6",
-          warning: "#FFCF72",
-          error: "#FF8863",
-
-          "--rounded-btn": "9999rem",
-
-          ".tooltip": {
-            "--tooltip-tail": "6px",
-          },
-        },
-      },
-      {
         scaffoldEthDark: {
-          primary: "#212638",
-          "primary-content": "#F9FBFF",
-          secondary: "#2A3655",
-          "secondary-content": "#F9FBFF",
-          accent: "#4969A6",
-          "accent-content": "#F9FBFF",
-          neutral: "#F9FBFF",
+          primary: "#bababa",
+          "primary-content": "#0e0e0e",
+          secondary: "#1b1b1b",
+          "secondary-content": "#9f9f9f",
+          accent: "#92b8ff",
+          "accent-content": "#252525",
+          neutral: "#141414",
           "neutral-content": "#385183",
-          "base-100": "#385183",
-          "base-200": "#2A3655",
-          "base-300": "#212638",
+          "neutral-focus": "#242424",
+          "base-100": "#141414",
+          "base-200": "#0e0e0e",
+          "base-300": "#141414",
           "base-content": "#F9FBFF",
           info: "#385183",
-          success: "#34EEB6",
+          success: "#7fc18e",
           warning: "#FFCF72",
-          error: "#FF8863",
+          error: "#7c3d3d",
 
-          "--rounded-btn": "9999rem",
+          "--text-accent": "#92b8ff",
+          "--rounded-box": "0", // border radius rounded-box utility class, used in card and other large boxes
+          "--rounded-btn": "0", // border radius rounded-btn utility class, used in buttons and similar element
+          "--rounded-badge": "0", // border radius rounded-badge utility class, used in badges and similar
+          "--animation-btn": "0.25s", // duration of animation when you click on button
+          "--animation-input": "0.2s", // duration of animation for inputs like checkbox, toggle, radio, etc
+          "--btn-text-case": "uppercase", // set default text transform for buttons
+          "--btn-focus-scale": "0.95", // scale transform of button when you focus on it
+          "--border-btn": "1px", // border width of buttons
+          "--tab-border": "1px", // border width of tabs
+          "--tab-radius": "0", // border radius of tabs
 
           ".tooltip": {
             "--tooltip-tail": "6px",
@@ -60,25 +50,34 @@ module.exports = {
         },
       },
       {
-        exampleUi: {
-          primary: "#000000",
-          "primary-content": "#ffffff",
-          secondary: "#FF6644",
+        scaffoldEth: {
+          primary: "#93BBFB",
+          "primary-content": "#212638",
+          secondary: "#DAE8FF",
           "secondary-content": "#212638",
           accent: "#93BBFB",
           "accent-content": "#212638",
-          neutral: "#f3f3f3",
-          "neutral-content": "#212638",
+          neutral: "#141414",
+          "neutral-content": "#ffffff",
           "base-100": "#ffffff",
-          "base-200": "#f1f1f1",
-          "base-300": "#d0d0d0",
+          "base-200": "#0e0e0e",
+          "base-300": "#DAE8FF",
           "base-content": "#212638",
           info: "#93BBFB",
           success: "#34EEB6",
           warning: "#FFCF72",
           error: "#FF8863",
 
-          "--rounded-btn": "9999rem",
+          "--rounded-box": "0", // border radius rounded-box utility class, used in card and other large boxes
+          "--rounded-btn": "0", // border radius rounded-btn utility class, used in buttons and similar element
+          "--rounded-badge": "0", // border radius rounded-badge utility class, used in badges and similar
+          "--animation-btn": "0.25s", // duration of animation when you click on button
+          "--animation-input": "0.2s", // duration of animation for inputs like checkbox, toggle, radio, etc
+          "--btn-text-case": "uppercase", // set default text transform for buttons
+          "--btn-focus-scale": "0.95", // scale transform of button when you focus on it
+          "--border-btn": "1px", // border width of buttons
+          "--tab-border": "1px", // border width of tabs
+          "--tab-radius": "0", // border radius of tabs
 
           ".tooltip": {
             "--tooltip-tail": "6px",
@@ -91,6 +90,7 @@ module.exports = {
     // Extend Tailwind classes (e.g. font-bai-jamjuree, animate-grow)
     extend: {
       fontFamily: {
+        coolvetica: ["Coolvetica", "sans-serif"],
         "bai-jamjuree": ["Bai Jamjuree", "sans-serif"],
       },
       keyframes: {

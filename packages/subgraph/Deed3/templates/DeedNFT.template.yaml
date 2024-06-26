@@ -1,0 +1,38 @@
+- kind: ethereum
+  name: DeedNFT
+  network: {{network}}
+  source:
+    address: "{{address}}"
+    abi: DeedNFT
+    startBlock: {{startBlock}}
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.7
+    language: wasm/assemblyscript
+    entities:
+      - Approval
+      - ApprovalForAll
+      - DeedEntity
+      - DeedMetadata
+      - Transfer
+    abis:
+      - name: DeedNFT
+        file: ./abis/DeedNFT.json
+    eventHandlers:
+      - event: Approval(indexed address,indexed address,indexed uint256)
+        handler: handleApproval
+      - event: ApprovalForAll(indexed address,indexed address,bool)
+        handler: handleApprovalForAll
+      - event: DeedNFTAssetTypeChanged(uint256,uint8)
+        handler: handleDeedNFTAssetValidationSet
+      - event: DeedNFTBurned(uint256)
+        handler: handleDeedNFTBurned
+      - event: DeedNFTMinted(uint256,(uint8,bool,uint256[10]),address,string)
+        handler: handleDeedNFTMinted
+      - event: DeedNFTUriChanged(uint256,string)
+        handler: handleDeedNFTUriChanged
+      - event: DeedNFTValidatedChanged(uint256,bool)
+        handler: handleDeedNFTValidatedChanged
+      - event: Transfer(indexed address,indexed address,indexed uint256)
+        handler: handleTransfer
+    file: ./src/deed-nft.mapping.ts

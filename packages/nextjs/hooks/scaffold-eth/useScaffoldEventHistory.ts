@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
-import { Abi, ExtractAbiEventNames } from "abitype";
-import { ethers } from "ethers";
-import { useContract, useProvider } from "wagmi";
+import { useEffect, useMemo, useState } from "react";
+import { Abi, AbiEvent, ExtractAbiEventNames } from "abitype";
+import { Hash } from "viem";
+import { usePublicClient } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
-import { ContractAbi, ContractName, UseScaffoldEventHistoryConfig } from "~~/utils/scaffold-eth/contract";
+import { replacer } from "~~/utils/scaffold-eth/common";
+import {
+  ContractAbi,
+  ContractName,
+  UseScaffoldEventHistoryConfig,
+  UseScaffoldEventHistoryData,
+} from "~~/utils/scaffold-eth/contract";
 
 /**
  * @dev reads events from a deployed contract
@@ -19,82 +25,68 @@ import { ContractAbi, ContractName, UseScaffoldEventHistoryConfig } from "~~/uti
 export const useScaffoldEventHistory = <
   TContractName extends ContractName,
   TEventName extends ExtractAbiEventNames<ContractAbi<TContractName>>,
+  TBlockData extends boolean = false,
+  TTransactionData extends boolean = false,
+  TReceiptData extends boolean = false,
 >({
   contractName,
   eventName,
-  fromBlock,
   filters,
   blockData,
   transactionData,
   receiptData,
-}: UseScaffoldEventHistoryConfig<TContractName, TEventName>) => {
+}: UseScaffoldEventHistoryConfig<
+  TContractName,
+  TEventName,
+  TBlockData,
+  TTransactionData,
+  TReceiptData
+>) => {
   const [events, setEvents] = useState<any[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>();
-  const { data: deployedContractData, isLoading: deployedContractLoading } = useDeployedContractInfo(contractName);
-  const provider = useProvider();
-
-  const contract = useContract({
-    address: deployedContractData?.address,
-    abi: deployedContractData?.abi as Abi,
-    signerOrProvider: provider,
-  });
+  const { data: deployedContractData, isLoading: deployedContractLoading } =
+    useDeployedContractInfo(contractName);
+  const publicClient = usePublicClient();
 
   useEffect(() => {
     async function readEvents() {
       try {
-        if (!deployedContractData || !contract) {
+        if (!deployedContractData) {
           throw new Error("Contract not found");
         }
 
-        const fragment = contract.interface.getEvent(eventName);
-        const emptyIface = new ethers.utils.Interface([]);
-        const topicHash = emptyIface.getEventTopic(fragment);
-        const topics = [topicHash] as any[];
+        const event = (deployedContractData.abi as Abi).find(
+          part => part.type === "event" && part.name === eventName,
+        ) as AbiEvent;
 
-        const indexedParameters = fragment.inputs.filter(input => input.indexed);
-
-        if (indexedParameters.length > 0 && filters) {
-          const indexedTopics = indexedParameters.map(input => {
-            const value = (filters as any)[input.name];
-            if (value === undefined) {
-              return null;
-            }
-            if (Array.isArray(value)) {
-              return value.map(v => ethers.utils.hexZeroPad(ethers.utils.hexlify(v), 32));
-            }
-            return ethers.utils.hexZeroPad(ethers.utils.hexlify(value), 32);
-          });
-          topics.push(...indexedTopics);
-        }
-
-        const logs = await provider.getLogs({
+        const logs = await publicClient.getLogs({
           address: deployedContractData?.address,
-          topics: topics,
-          fromBlock: fromBlock,
+          event,
+          args: filters as any, // TODO: check if it works and fix type
+          // @ts-ignore
+          fromBlock: BigInt(deployedContractData.startBlock ?? 0),
         });
         const newEvents = [];
         for (let i = logs.length - 1; i >= 0; i--) {
-          let block;
-          if (blockData) {
-            block = await provider.getBlock(logs[i].blockHash);
-          }
-          let transaction;
-          if (transactionData) {
-            transaction = await provider.getTransaction(logs[i].transactionHash);
-          }
-          let receipt;
-          if (receiptData) {
-            receipt = await provider.getTransactionReceipt(logs[i].transactionHash);
-          }
-          const log = {
+          newEvents.push({
             log: logs[i],
-            args: contract.interface.parseLog(logs[i]).args,
-            block: block,
-            transaction: transaction,
-            receipt: receipt,
-          };
-          newEvents.push(log);
+            args: logs[i].args,
+            block:
+              blockData && logs[i].blockHash === null
+                ? null
+                : await publicClient.getBlock({ blockHash: logs[i].blockHash as Hash }),
+            transaction:
+              transactionData && logs[i].transactionHash !== null
+                ? await publicClient.getTransaction({ hash: logs[i].transactionHash as Hash })
+                : null,
+            receipt:
+              receiptData && logs[i].transactionHash !== null
+                ? await publicClient.getTransactionReceipt({
+                    hash: logs[i].transactionHash as Hash,
+                  })
+                : null,
+          });
         }
         setEvents(newEvents);
         setError(undefined);
@@ -111,24 +103,42 @@ export const useScaffoldEventHistory = <
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    provider,
-    fromBlock,
+    publicClient,
     contractName,
     eventName,
     deployedContractLoading,
     deployedContractData?.address,
-    contract,
     deployedContractData,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(filters),
+    JSON.stringify(filters, replacer),
     blockData,
     transactionData,
     receiptData,
   ]);
 
+  const eventHistoryData = useMemo(
+    () =>
+      events?.map(addIndexedArgsToEvent) as UseScaffoldEventHistoryData<
+        TContractName,
+        TEventName,
+        TBlockData,
+        TTransactionData,
+        TReceiptData
+      >,
+    [events],
+  );
+
   return {
-    data: events,
+    data: eventHistoryData,
     isLoading: isLoading,
     error: error,
   };
+};
+
+export const addIndexedArgsToEvent = (event: any) => {
+  if (event.args && !Array.isArray(event.args)) {
+    return { ...event, args: { ...event.args, ...Object.values(event.args) } };
+  }
+
+  return event;
 };

@@ -1,76 +1,70 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TransactionReceipt } from "@ethersproject/abstract-provider";
-import { BigNumber } from "ethers";
-import { FunctionFragment } from "ethers/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { InheritanceTooltip } from "./InheritanceTooltip";
+import { Abi, AbiFunction } from "abitype";
+import { Address, TransactionReceipt } from "viem";
 import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
 import {
   ContractInput,
   IntegerInput,
   TxReceipt,
   getFunctionInputKey,
+  getInitialFormState,
   getParsedContractFunctionArgs,
-  getParsedEthersError,
+  getParsedError,
 } from "~~/components/scaffold-eth";
 import { useTransactor } from "~~/hooks/scaffold-eth";
-import { getTargetNetwork, notification, parseTxnValue } from "~~/utils/scaffold-eth";
+import { useKeyboardShortcut } from "~~/hooks/useKeyboardShortcut";
+import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 
-// TODO set sensible initial state values to avoid error on first render, also put it in utilsContract
-const getInitialFormState = (functionFragment: FunctionFragment) => {
-  const initialForm: Record<string, any> = {};
-  functionFragment.inputs.forEach((input, inputIndex) => {
-    const key = getFunctionInputKey(functionFragment, input, inputIndex);
-    initialForm[key] = "";
-  });
-  return initialForm;
-};
-
-type TWriteOnlyFunctionFormProps = {
-  functionFragment: FunctionFragment;
-  contractAddress: string;
-  setRefreshDisplayVariables: Dispatch<SetStateAction<boolean>>;
-};
+interface WriteOnlyFunctionFormProps {
+  abiFunction: AbiFunction;
+  onChange: () => void;
+  contractAddress: Address;
+  inheritedFrom?: string;
+}
 
 export const WriteOnlyFunctionForm = ({
-  functionFragment,
+  abiFunction,
+  onChange,
   contractAddress,
-  setRefreshDisplayVariables,
-}: TWriteOnlyFunctionFormProps) => {
-  const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(functionFragment));
-  const [txValue, setTxValue] = useState<string | BigNumber>("");
+  inheritedFrom,
+}: WriteOnlyFunctionFormProps) => {
+  const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(abiFunction));
+  const [txValue, setTxValue] = useState<string | bigint>("");
   const { chain } = useNetwork();
   const writeTxn = useTransactor();
   const writeDisabled = !chain || chain?.id !== getTargetNetwork().id;
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // We are omitting usePrepareContractWrite here to avoid unnecessary RPC calls and wrong gas estimations.
-  // See:
-  //   - https://github.com/scaffold-eth/se-2/issues/59
-  //   - https://github.com/scaffold-eth/se-2/pull/86#issuecomment-1374902738
   const {
     data: result,
     isLoading,
     writeAsync,
   } = useContractWrite({
     address: contractAddress,
-    functionName: functionFragment.name,
-    abi: [functionFragment],
+    functionName: abiFunction.name,
+    abi: [abiFunction] as Abi,
     args: getParsedContractFunctionArgs(form),
-    mode: "recklesslyUnprepared",
-    overrides: {
-      value: typeof txValue === "string" ? parseTxnValue(txValue) : txValue,
-    },
   });
 
   const handleWrite = async () => {
     if (writeAsync) {
       try {
-        await writeTxn(writeAsync());
-        setRefreshDisplayVariables(prevState => !prevState);
+        const makeWriteWithParams = () => writeAsync({ value: BigInt(txValue) });
+        await writeTxn(makeWriteWithParams);
+        onChange();
       } catch (e: any) {
-        const message = getParsedEthersError(e);
+        const message = getParsedError(e);
         notification.error(message);
       }
     }
   };
+
+  useKeyboardShortcut(["Enter"], () => {
+    if (wrapperRef.current && wrapperRef.current.contains(document.activeElement)) {
+      handleWrite();
+    }
+  });
 
   const [displayedTxResult, setDisplayedTxResult] = useState<TransactionReceipt>();
   const { data: txResult } = useWaitForTransaction({
@@ -81,8 +75,8 @@ export const WriteOnlyFunctionForm = ({
   }, [txResult]);
 
   // TODO use `useMemo` to optimize also update in ReadOnlyFunctionForm
-  const inputs = functionFragment.inputs.map((input, inputIndex) => {
-    const key = getFunctionInputKey(functionFragment, input, inputIndex);
+  const inputs = abiFunction.inputs.map((input, inputIndex) => {
+    const key = getFunctionInputKey(abiFunction.name, input, inputIndex);
     return (
       <ContractInput
         key={key}
@@ -96,14 +90,21 @@ export const WriteOnlyFunctionForm = ({
       />
     );
   });
-  const zeroInputs = inputs.length === 0 && !functionFragment.payable;
+  const zeroInputs = inputs.length === 0 && abiFunction.stateMutability !== "payable";
 
   return (
-    <div className="py-5 space-y-3 first:pt-0 last:pb-1">
-      <div className={`flex gap-3 ${zeroInputs ? "flex-row justify-between items-center" : "flex-col"}`}>
-        <p className="font-medium my-0 break-words">{functionFragment.name}</p>
+    <div className="py-5 space-y-3 first:pt-0 last:pb-1" ref={wrapperRef}>
+      <div
+        className={`flex gap-3 ${
+          zeroInputs ? "flex-row justify-between items-center" : "flex-col"
+        }`}
+      >
+        <p className="font-medium my-0 break-words">
+          {abiFunction.name}
+          <InheritanceTooltip inheritedFrom={inheritedFrom} />
+        </p>
         {inputs}
-        {functionFragment.payable ? (
+        {abiFunction.stateMutability === "payable" ? (
           <IntegerInput
             value={txValue}
             onChange={updatedTxValue => {
@@ -127,10 +128,11 @@ export const WriteOnlyFunctionForm = ({
             data-tip={`${writeDisabled && "Wallet not connected or in the wrong network"}`}
           >
             <button
-              className={`btn btn-secondary btn-sm ${isLoading ? "loading" : ""}`}
-              disabled={writeDisabled}
+              className="btn btn-secondary btn-sm"
+              disabled={writeDisabled || isLoading}
               onClick={handleWrite}
             >
+              {isLoading && <span className="loading loading-spinner loading-xs" />}
               Send 💸
             </button>
           </div>

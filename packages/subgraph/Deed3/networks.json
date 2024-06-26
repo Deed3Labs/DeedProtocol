@@ -1,0 +1,16 @@
+{
+  "sepolia": {
+    "network": "sepolia",
+    "DeedNFT": {
+      "address": "0xC04836E6FFd56c440fd5d6D48cE9701D1D80a759",
+      "startBlock": 5839748
+    }
+  },
+  "localhost": {
+    "network": "mainnet",
+    "DeedNFT": {
+      "address": "0x7ab49dAe595D847159AEa0A78F5DdB00820a1841",
+      "startBlock": 1
+    }
+  }
+}

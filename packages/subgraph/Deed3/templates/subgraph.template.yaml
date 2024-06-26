@@ -1,0 +1,19 @@
+specVersion: 0.0.7
+schema:
+  file: ./schema.graphql
+templates:
+  - name: DeedMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/deed-metadata.mapping.ts
+      handler: handleMetadata
+      entities:
+        - DeedMetadata
+        - DeedMetadata
+        - FileInfo
+      abis:
+        - name: DeedNFT
+          file: ./abis/DeedNFT.json
+dataSources:

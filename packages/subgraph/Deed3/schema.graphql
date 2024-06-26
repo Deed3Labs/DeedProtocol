@@ -1,0 +1,88 @@
+type DeedEntity @entity(immutable: false) {
+    id: ID!
+    deedId: BigInt! # uint256
+    owner: Bytes! # address
+    assetType: Int! # uint8
+    isValidated: Boolean! # bool
+    minter: Bytes! # address
+    uri: String! # string
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+    deedMetadata: DeedMetadata!
+}
+
+type DeedMetadata @entity(immutable: false) {
+    id: ID!
+
+    # Owner Information
+    ownerInformation_type: String!
+    ownerInformation_name: String!
+    ownerInformation_position: String
+    ownerInformation_entityName: String
+    ownerInformation_entityType: String
+
+    ownerInformation_ids: FileInfo
+    ownerInformation_operatingAgreement: FileInfo
+    ownerInformation_articleIncorporation: FileInfo
+    ownerInformation_proofBill: FileInfo
+    ownerInformation_supportingDoc: [FileInfo!]
+
+    # Property Details
+    propertyDetails_type: String!
+    propertyDetails_address: String!
+    propertyDetails_latitude: String
+    propertyDetails_longitude: String
+    propertyDetails_city: String!
+    propertyDetails_state: String!
+    propertyDetails_size: String
+    propertyDetails_subType: String
+    propertyDetails_zoning: String
+
+    propertyDetails_purchaseContract: FileInfo
+    propertyDetails_deedOrTitle: FileInfo
+    propertyDetails_images: [FileInfo!]
+
+    # Other Information
+    otherInformation_wrapper: String!
+}
+
+type Transfer @entity(immutable: true) {
+    id: Bytes!
+    from: Bytes! # address
+    to: Bytes! # address
+    tokenId: BigInt! # uint256
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+}
+
+type Approval @entity(immutable: true) {
+    id: Bytes!
+    owner: Bytes! # address
+    approved: Bytes! # address
+    tokenId: BigInt! # uint256
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+}
+
+type ApprovalForAll @entity(immutable: true) {
+    id: Bytes!
+    owner: Bytes! # address
+    operator: Bytes! # address
+    approved: Boolean! # bool
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
+}
+
+type FileInfo @entity(immutable: false) {
+    id: ID!
+    fileId: String
+    name: String
+    size: BigInt
+    type: String
+    timestamp: String
+    restricted: Boolean
+}
