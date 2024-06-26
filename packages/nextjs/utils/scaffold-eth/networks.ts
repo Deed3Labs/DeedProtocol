@@ -39,6 +39,16 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
       symbol: "ETH",
     },
   },
+  [chains.arbitrum.id]: {
+    color: "#28a0f0",
+    storageAddress: "arb1:0x84F1d8D4B10b1C56e032aE09bCA57f393638cd4E",
+    deedMintingFeeDollar: 500,
+    stableCoin: {
+      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      decimals: 6,
+      symbol: "USDC",
+    },
+  },
   [chains.sepolia.id]: {
     color: "#2bbdf7",
     storageAddress: "0xD30aee396a54560581a3265Fd2194B0edB787525",

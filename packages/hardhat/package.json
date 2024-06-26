@@ -12,8 +12,11 @@
     "deploy-proxy:sepolia": "hardhat run scripts/reset-proxy.ts --network sepolia && hardhat deploy --network sepolia --tags core",
     "deploy:polygon": "hardhat deploy --network polygon --tags core",
     "deploy-proxy:polygon": "hardhat run scripts/reset-proxy.ts --network polygon && hardhat deploy --network polygon --tags core",
+    "deploy:arbitrum": "hardhat deploy --network arbitrum --tags core",
+    "deploy-proxy:arbitrum": "hardhat run scripts/reset-proxy.ts --network arbitrum && hardhat deploy --network arbitrum --tags core",
     "deploy-mocks:local": "hardhat deploy --network localhost --tags mocks",
     "deploy-mocks:polygon": "hardhat deploy --network polygon --tags mocks",
+    "deploy-mocks:arbitrum": "hardhat deploy --network arbitrum --tags mocks",
     "deploy:generateTsAbi": "hardhat deploy --tags generateTsAbis --network",
     "coverage": "hardhat coverage --testfiles \"test/*.spec.ts\" --solcoverjs ./test/coverage.solcover.ts",
     "fork": "MAINNET_FORKING_ENABLED=true hardhat node --network hardhat --no-deploy",
@@ -23,7 +26,8 @@
     "test": "hardhat test --network hardhat",
     "verify": "hardhat verify",
     "verify:sepolia": "yarn verify --network sepolia",
-    "verify:polygon": "yarn verify --network polygon"
+    "verify:polygon": "yarn verify --network polygon",
+    "verify:arbitrum": "yarn verify --network arbitrum"
   },
   "devDependencies": {
     "@eth-optimism/hardhat-ovm": "^0.2.4",

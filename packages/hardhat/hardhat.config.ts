@@ -16,6 +16,7 @@ const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY!;
 // If not set, it uses ours Etherscan default API key.
 const etherscanApiKey = process.env.ETHERSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
 const polygonscanApiKey = process.env.POLYGONSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
+const arbiscanApiKey = process.env.ARBISCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
 const deployerAccount = process.env.DEPLOYER_ACCOUNT!;
 const config: HardhatUserConfig = {
   solidity: {
@@ -46,11 +47,13 @@ const config: HardhatUserConfig = {
       localhost: deployerAccount,
       sepolia: deployerAccount,
       polygon: deployerAccount,
+      arbitrum: deployerAccount,
     },
     manager: {
       localhost: deployerAccount ?? "0x91B0d67D3F47A30FBEeB159E67209Ad6cb2cE22E",
       sepolia: "0xD30aee396a54560581a3265Fd2194B0edB787525",
       polygon: "0xD0cC723ED8FEE1eaDFf8CB0883A244b16163361B",
+      arbitrum: "0x84F1d8D4B10b1C56e032aE09bCA57f393638cd4E",
     },
   },
   networks: {
@@ -65,6 +68,11 @@ const config: HardhatUserConfig = {
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
+    },
+    arbitrum: {
+      url: `https://arb-mainnet.g.alchemy.com/v2/${providerApiKey}`,
+      accounts: [deployerPrivateKey],
+      saveDeployments: true,
     },
     polygon: {
       url: `https://polygon-mainnet.g.alchemy.com/v2/${providerApiKey}`,
@@ -91,10 +99,6 @@ const config: HardhatUserConfig = {
       url: `https://eth-goerli.alchemyapi.io/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
     },
-    arbitrum: {
-      url: `https://arb-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
     arbitrumGoerli: {
       url: `https://arb-goerli.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
@@ -113,7 +117,7 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: { sepolia: `${etherscanApiKey}`, polygon: `${polygonscanApiKey}` },
+    apiKey: { sepolia: `${etherscanApiKey}`, polygon: `${polygonscanApiKey}`, arbitrumOne: `${arbiscanApiKey}` },
   },
 };
 

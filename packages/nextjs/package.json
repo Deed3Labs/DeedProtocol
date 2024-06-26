@@ -5,9 +5,9 @@
   "scripts": {
     "start": "NEXT_PUBLIC_TARGET_NETWORK=sepolia next dev",
     "start:local": "NEXT_PUBLIC_OFFLINE=true NEXT_PUBLIC_TARGET_NETWORK=localhost next dev",
-    "start:prod": "NEXT_PUBLIC_TARGET_NETWORK=polygon next dev",
+    "start:prod": "NEXT_PUBLIC_TARGET_NETWORK=arbitrum next dev",
     "build": "next build",
-    "build:prod": "NEXT_PUBLIC_TARGET_NETWORK=polygon next build",
+    "build:prod": "NEXT_PUBLIC_TARGET_NETWORK=arbitrum next build",
     "serve": "next start",
     "lint": "next lint",
     "format": "prettier --write . '!(node_modules|.next|contracts)/**/*'",

@@ -1,5 +1,5 @@
 import { createPublicClient, getContract, http } from "viem";
-import { gnosis, goerli, localhost, polygon } from "viem/chains";
+import { arbitrum, gnosis, goerli, localhost, polygon } from "viem/chains";
 import { mainnet, sepolia } from "wagmi";
 import CONFIG from "~~/config";
 import deployedContracts from "~~/contracts/deployedContracts";
@@ -12,6 +12,8 @@ export const getClient = (host: string, chainId: number | string) => {
     chain = sepolia;
   } else if (chainId === mainnet.id) {
     chain = mainnet;
+  } else if (chainId === arbitrum.id) {
+    chain = arbitrum;
   } else if (chainId === polygon.id) {
     chain = polygon;
   } else if (chainId === gnosis.id) {
