@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Address } from "./scaffold-eth";
+import { arbitrum } from "viem/chains";
 import {
   ChatBubbleBottomCenterTextIcon,
   EllipsisHorizontalIcon,
@@ -106,7 +107,7 @@ export default function ProfileComponent({
               className="btn btn-link no-underline text-[2.2vw] sm:text-[12px] text-zinc-400 font-normal uppercase tracking-wide"
               onClick={() =>
                 window.open(
-                  chainId === 137
+                  chainId === arbitrum.id
                     ? `https://opensea.io/assets/arbitrum/${deedNFTAddresss}/${deedData.mintedId}`
                     : `https://testnets.opensea.io/assets/sepolia/${deedNFTAddresss}/${deedData.mintedId}`,
                   "_blank",

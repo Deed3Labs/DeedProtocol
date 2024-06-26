@@ -60,7 +60,7 @@ export const getDeedOwner = async (host: string, id: number, chainId: number) =>
 export const getContractInstance = (
   host: string,
   chainId: number | string,
-  name: keyof (typeof deployedContracts)[137],
+  name: keyof (typeof deployedContracts)[42161],
 ) => {
   chainId = Number(chainId);
   const deedNFT = deployedContracts[+chainId as keyof typeof deployedContracts][name];
